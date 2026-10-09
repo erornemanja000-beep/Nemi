@@ -309,7 +309,7 @@ class Scene:
         self.grain = [self.rng.normal(0, 2.0, (OH, OW, 1)).astype(np.float32) for _ in range(6)]
         yy, xx = np.mgrid[0:OH, 0:OW].astype(np.float32)
         r2 = ((xx - OW / 2) / (OW / 2)) ** 2 + ((yy - OH / 2) / (OH / 2)) ** 2
-        self.vignette = (1 - 0.13 * np.clip(r2 - 0.25, 0, None))[..., None].astype(np.float32)
+        self.vig_mask = np.clip(r2 - 0.25, 0, None)[..., None].astype(np.float32)
 
     def make_plate(self, base, n):
         sx, sy, tx, ty = align.ALIGN[n]
@@ -1021,7 +1021,11 @@ class Scene:
             Dim = pil_from_premul(D).transform((OW, OH), Image.AFFINE, (a, 0, c, 0, e, f), resample=Image.BICUBIC)
             Dp = premul_from_pil(Dim)
             O = O * (1 - Dp[..., 3:4]) + Dp[..., :3]
-        O = O * self.vignette + self.grain[int(t * S.FPS) % len(self.grain)]
+        # vinjeta i zrno se uvode postepeno, da prvi kadar bude isti kao kraj prethodnog klipa
+        v = 0.08 * smoothstep(0.0, 1.2, t)
+        if v > 0:
+            O = O * (1 - v * self.vig_mask)
+        O = O + self.grain[int(t * S.FPS) % len(self.grain)] * smoothstep(0.0, 0.6, t)
         return np.clip(O + 0.5, 0, 255).astype(np.uint8)
 
 

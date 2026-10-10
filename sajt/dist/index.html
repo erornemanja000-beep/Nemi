@@ -120,8 +120,10 @@ p{margin:0}
 .intro-art{position:relative;aspect-ratio:4/5;max-width:100%}
 .intro-art .photo{position:absolute;inset:0 0 8% 10%;border-radius:220px 220px 28px 28px;overflow:hidden;box-shadow:0 30px 60px -30px rgba(59,42,39,.5)}
 .intro-art .photo img{position:absolute;left:0;top:-10%;width:100%;height:120%;object-fit:cover;object-position:50% 45%}
-.intro-art .badge{position:absolute;left:0;bottom:0;width:42%;filter:drop-shadow(0 14px 22px rgba(59,42,39,.3));animation:float 6s ease-in-out infinite}
-@keyframes float{50%{transform:translateY(-10px) rotate(-3deg)}}
+.intro-art .label{position:absolute;left:0;bottom:14%;transform:rotate(-5deg)}
+.intro-art .label .tag{font-size:1.7rem;padding:12px 20px 14px}
+.intro-art .label small{display:block;font:600 .8rem var(--body);letter-spacing:.12em;text-transform:uppercase;color:#E7B9A4;margin-bottom:4px}
+.intro-art .ring2{position:absolute;right:-4%;top:-4%;width:30%;aspect-ratio:1;border-radius:50%;border:2px dashed color-mix(in srgb,var(--pistachio) 45%,transparent)}
 @media (max-width:860px){.intro-grid{grid-template-columns:1fr}.intro-art{width:min(420px,100%);margin-inline:auto}}
 
 /* ---------- Was es bei Don gibt ---------- */
@@ -140,34 +142,31 @@ p{margin:0}
 .tile .go{display:inline-flex;gap:8px;align-items:center;margin-top:14px;font-weight:700;font-size:.95rem}
 .tile .go::after{content:"→";transition:transform .25s}
 .tile:hover .go::after{transform:translateX(4px)}
-.t-eis{grid-column:span 4;grid-row:span 2}
+.t-eis{grid-column:span 4;grid-row:span 2;min-height:420px}
 .t-crepe{grid-column:span 2;grid-row:span 2}
-.t-pinsa,.t-kaffee{grid-column:span 3}
-.tile.flat{color:var(--cocoa)}
-.tile.flat::after{display:none}
-.t-pinsa{background:var(--mint)}
-.tile.flat.t-kaffee{background:var(--chalk);color:var(--cream)}
-.t-kaffee h3{color:var(--cream)}
-.t-pinsa h3{color:var(--pistachio)}
-.tile .glyph{position:absolute;right:18px;top:8px;font-family:var(--hand);font-size:clamp(2.4rem,4vw,3.4rem);line-height:1;opacity:.9;color:var(--rose)}
-.t-kaffee .glyph{color:#E7B9A4}
-@media (max-width:860px){.bento{grid-template-columns:1fr 1fr}.t-eis{grid-column:span 2;grid-row:span 1;min-height:300px}.t-crepe{grid-column:span 2;grid-row:span 1;min-height:280px}.t-pinsa,.t-kaffee{grid-column:span 1}}
-@media (max-width:520px){.t-pinsa,.t-kaffee{grid-column:span 2}}
+.t-pinsa,.t-kaffee,.t-limo{grid-column:span 2;min-height:230px}
+.tile .price-tag{position:absolute;top:18px;right:18px;background:var(--paper);color:var(--rose);font:700 .85rem var(--body);border-radius:999px;padding:7px 13px;box-shadow:0 8px 18px -10px rgba(0,0,0,.5)}
+@media (max-width:860px){.bento{grid-template-columns:1fr 1fr}.t-eis{grid-column:span 2;grid-row:span 1;min-height:300px}.t-crepe{grid-column:span 1;grid-row:span 2}.t-pinsa,.t-kaffee{grid-column:span 1;min-height:210px}.t-limo{grid-column:span 2;min-height:240px}}
+@media (max-width:520px){.tile{padding:18px}.tile p{display:none}.t-eis p{display:block}}
 
-/* ---------- Sorten (Kreidetafel-Band) ---------- */
-.sorten{position:relative;padding-block:clamp(56px,8vw,110px);overflow:hidden}
-.sorten-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:clamp(24px,5vw,64px);align-items:center}
-.sorten .photo{border-radius:var(--radius);overflow:hidden;aspect-ratio:4/3;box-shadow:0 30px 60px -34px rgba(59,42,39,.55)}
-.sorten .photo{position:relative}
-.sorten .photo img{position:absolute;left:0;top:-10%;width:100%;height:120%;object-fit:cover}
-.marquee{margin-top:28px;display:grid;gap:12px;mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+/* ---------- Sorten: Vitrine als Film-Schaufenster ---------- */
+.sorten{position:relative;padding-block:clamp(56px,8vw,110px) clamp(48px,7vw,90px);overflow:hidden}
+.sorten .head{margin-inline:auto;text-align:center;justify-items:center}
+.show{--p:0;position:relative;height:min(56.25vw,88svh);min-height:420px}
+.window{position:absolute;inset:0;overflow:hidden;background:var(--chalk);clip-path:inset(calc((1 - var(--p)) * 7%) calc((1 - var(--p)) * 9%) round calc(18px + (1 - var(--p)) * 30px))}
+.window video{width:100%;height:100%;object-fit:cover;transform:scale(calc(1.12 - var(--p) * .12))}
+.window::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(46,37,35,.25),transparent 30%,transparent 60%,rgba(46,37,35,.55));pointer-events:none}
+.live{position:absolute;z-index:1;left:calc(9% + 22px);top:calc(7% + 22px);display:inline-flex;align-items:center;gap:8px;font:700 .85rem var(--body);color:var(--paper);background:rgba(46,37,35,.45);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-radius:999px;padding:8px 14px;opacity:calc(var(--p) * 1.4 - .2)}
+.live i{width:8px;height:8px;border-radius:50%;background:#FF6B81;animation:pulse2 1.6s infinite}
+@keyframes pulse2{50%{opacity:.35}}
+.marquee{position:relative;z-index:2;margin-top:calc(-1 * clamp(40px,5vw,64px));display:grid;gap:12px;mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
 .row{display:flex;gap:12px;width:max-content;animation:slide 38s linear infinite}
 .row.rev{animation-direction:reverse;animation-duration:44s}
 @keyframes slide{to{transform:translateX(-50%)}}
 .tag{font-family:var(--hand);font-weight:700;font-size:1.55rem;line-height:1;color:#F5EDE6;background:var(--chalk);padding:10px 18px 12px;border-radius:10px;transform:rotate(var(--r,-2deg));box-shadow:0 8px 16px -10px rgba(0,0,0,.6);white-space:nowrap}
 .tag::after{content:" ♡";font-size:.8em;opacity:.8}
-.note{margin-top:18px;color:var(--muted);font-size:.98rem;max-width:52ch}
-@media (max-width:860px){.sorten-grid{grid-template-columns:1fr}}
+.note{margin:26px auto 0;color:var(--muted);font-size:.98rem;max-width:52ch;text-align:center}
+@media (max-width:760px){.show{height:auto;aspect-ratio:4/5;min-height:0}.live{left:calc(9% + 14px);top:calc(7% + 14px)}}
 
 /* ---------- Karte: Reise durch die Kategorien ---------- */
 @property --kbg{syntax:"<color>";inherits:true;initial-value:#F6DADC}
@@ -186,8 +185,6 @@ p{margin:0}
 .scene{position:absolute;inset:4%;border-radius:50%;overflow:hidden;clip-path:circle(0% at 50% 50%);transform:rotate(-14deg) scale(1.06);transition:clip-path 1s cubic-bezier(.7,0,.2,1),transform 1.2s cubic-bezier(.2,.7,.2,1)}
 .scene.on{clip-path:circle(50% at 50% 50%);transform:none}
 .scene img{width:100%;height:100%;object-fit:cover}
-.scene.art{display:grid;place-items:center;background:radial-gradient(circle at 35% 30%,var(--paper),var(--sbg,var(--mint)))}
-.scene.art svg{width:58%;height:58%;color:var(--cocoa)}
 .scene .word{position:absolute;bottom:12%;left:0;right:0;text-align:center;font-family:var(--hand);font-weight:700;font-size:clamp(1.8rem,3.6vw,2.8rem);color:var(--rose)}
 .bigword{position:absolute;z-index:-1;font-family:var(--display);font-weight:800;font-size:clamp(5rem,15vw,13rem);line-height:.8;color:transparent;-webkit-text-stroke:1.5px color-mix(in srgb,var(--pistachio) 35%,transparent);white-space:nowrap;letter-spacing:-.03em;transition:opacity .6s,transform .9s cubic-bezier(.2,.7,.2,1)}
 .bigword.swap{opacity:0;transform:translateY(30px)}
@@ -197,18 +194,21 @@ p{margin:0}
 .chapter{background:var(--paper);border-radius:28px;padding:clamp(22px,3.5vw,44px);box-shadow:0 40px 80px -55px rgba(59,42,39,.5);scroll-margin-top:150px;min-width:0}
 .chapter header{display:grid;gap:4px;margin-bottom:8px}
 .chapter h3.ct{font-size:var(--step-3)}
-.chapter .mini{display:none;margin:-4px 0 14px;aspect-ratio:16/10;border-radius:20px;overflow:hidden;background:var(--sbg,var(--mint))}
-.chapter .mini img{width:100%;height:100%;object-fit:cover}
-.chapter .mini.art{display:none;place-items:center}
-.chapter .mini.art svg{width:40%;height:70%}
+.pics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:8px 0 14px}
+.pics figure{position:relative;margin:0;border-radius:18px;overflow:hidden;aspect-ratio:4/5;background:var(--blush)}
+.pics img{width:100%;height:100%;object-fit:cover;transition:transform .8s cubic-bezier(.2,.7,.2,1)}
+.pics figure:hover img{transform:scale(1.06)}
+.pics figcaption{position:absolute;inset:auto 0 0 0;padding:28px 10px 8px;font-family:var(--hand);font-weight:700;font-size:1.3rem;line-height:1;color:var(--paper);background:linear-gradient(transparent,rgba(46,37,35,.7))}
+.pics.n1{grid-template-columns:minmax(0,1fr)}.pics.n1 figure{aspect-ratio:16/10}
+.pics.n2{grid-template-columns:repeat(2,minmax(0,1fr))}
 .chapter h4{font-family:var(--display);font-size:var(--step-2);color:var(--pistachio);margin:10px 0 4px;font-weight:600}
 @media (max-width:900px){
   .journey{grid-template-columns:1fr}
   .stagecol{display:none}
-  .chapter .mini{display:block}
-  .chapter .mini.art{display:grid}
   .rail{top:calc(78px + env(safe-area-inset-top,0px))}
-  .rail a{padding:8px 12px;font-size:.85rem}
+  .rail{flex-wrap:nowrap;justify-content:flex-start;overflow-x:auto;scrollbar-width:none;max-width:calc(100vw - 2 * var(--gutter))}
+  .rail::-webkit-scrollbar{display:none}
+  .rail a{padding:8px 12px;font-size:.85rem;white-space:nowrap;flex:none}
 }
 .items{display:grid;list-style:none;margin:0;padding:0}
 .items.two{grid-template-columns:1fr 1fr;column-gap:40px}
@@ -246,7 +246,13 @@ details.allergens summary{cursor:pointer;font-weight:700;color:var(--pistachio)}
 
 /* ---------- Galerie ---------- */
 .gallery{padding-block:0 clamp(56px,8vw,100px)}
-.strip{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(240px,1fr);gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:10px;scrollbar-width:thin}
+.gal-head{display:flex;justify-content:space-between;align-items:end;gap:16px;flex-wrap:wrap;margin-bottom:20px}
+.gal-head h2{font-size:var(--step-2)}
+.gal-nav{display:flex;gap:8px}
+.gal-nav button{width:46px;height:46px;border-radius:50%;border:1px solid var(--line);background:var(--paper);font-size:1.2rem;cursor:pointer;color:var(--cocoa);transition:background .25s}
+.gal-nav button:hover{background:var(--blush)}
+.strip{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(230px,calc((100% - 48px) / 4));gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:10px;scrollbar-width:none}
+.strip::-webkit-scrollbar{display:none}
 .strip figure{margin:0;border-radius:var(--radius);overflow:hidden;aspect-ratio:3/4;scroll-snap-align:start;position:relative}
 .strip img{width:100%;height:100%;object-fit:cover;transition:transform .8s}
 .strip figure:hover img{transform:scale(1.05)}
@@ -269,13 +275,12 @@ details.allergens summary{cursor:pointer;font-weight:700;color:var(--pistachio)}
 .phone{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .phone output{font-weight:600;user-select:all}
 .copybtn{border:1px solid var(--line);background:var(--cream);border-radius:999px;padding:6px 12px;font:700 .8rem var(--body);cursor:pointer;color:var(--cocoa)}
-.mapcard{text-decoration:none;position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;gap:24px;background:var(--chalk);color:var(--cream);min-height:380px}
-.mapcard canvas{position:absolute;inset:0;width:100%;height:100%}
-.mapcard > *{position:relative}
-.mapcard h3{color:var(--cream);font-size:var(--step-3)}
-.mapcard .hand{color:#F2B8C3}
-.pin{display:inline-grid;place-items:center;width:64px;height:64px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:var(--rose);box-shadow:0 14px 30px -10px rgba(0,0,0,.6)}
-.pin img{width:46px;transform:rotate(45deg);border-radius:50%}
+.shopcard{position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;gap:14px;min-height:460px;padding:clamp(22px,3.5vw,40px);color:var(--paper);text-decoration:none;isolation:isolate}
+.shopcard img{position:absolute;left:0;top:-10%;width:100%;height:120%;object-fit:cover;object-position:50% 30%;z-index:-2}
+.shopcard::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,transparent 40%,rgba(46,37,35,.78))}
+.shopcard h3{color:var(--paper);font-size:var(--step-3)}
+.shopcard .hand{color:#F6C9D1}
+.shopcard .chip{align-self:flex-start}
 @media (max-width:860px){.visit-grid{grid-template-columns:1fr}}
 
 /* ---------- Footer ---------- */
@@ -367,8 +372,9 @@ footer{background:var(--chalk);color:#E9DCD5;padding-block:56px calc(36px + env(
         </div>
       </div>
       <div class="intro-art rise">
-        <div class="photo"><img class="parallax" data-speed="-0.06" src="assets/img/rose.jpg" alt="Eisrose aus Erdbeer- und Pistazieneis in der Waffel" loading="lazy"></div>
-        <img class="badge" src="assets/img/don-badge.png" alt="Logo von DON'S Eisdiele: Französische Bulldogge Don mit Eistüte" loading="lazy">
+        <span class="ring2" aria-hidden="true"></span>
+        <div class="photo"><img class="parallax" data-speed="-0.06" src="assets/img/intro-becher.jpg" alt="Erdbeerbecher mit frischen Erdbeeren, Schlagobers, Erdbeersauce und Waffel" loading="lazy"></div>
+        <div class="label"><span class="tag" style="--r:0deg"><small data-i18n="intro.fav">Lieblingsbecher</small>Erdbeerbecher</span></div>
       </div>
     </div>
   </section>
@@ -383,27 +389,34 @@ footer{background:var(--chalk);color:#E9DCD5;padding-block:56px calc(36px + env(
       </div>
       <div class="bento">
         <a class="tile t-eis rise" href="#karte" data-tab="eisbecher">
-          <img class="parallax" data-speed="-0.05" src="assets/img/kugeln.jpg" alt="Eiskugeln mit Früchten, Waffeln und Schokolade" loading="lazy">
+          <img class="parallax" data-speed="-0.05" src="assets/img/tile-eis.jpg" alt="Eisvitrine mit Jaffa-, Schoko-, Erdbeer- und Blue-Sky-Eis" loading="lazy">
+          <span class="price-tag"><span data-i18n="menu.from">ab</span> €4,90</span>
           <h3 data-i18n="offer.eis">Eis &amp; Eisbecher</h3>
           <p data-i18n="offer.eisP">Cremiges Eis aus der eigenen Vitrine, vom Pinokio Eis bis zum Dubai Dream Becher.</p>
           <span class="go" data-i18n="offer.toMenu">Zur Karte</span>
         </a>
         <a class="tile t-crepe rise" href="#karte" data-tab="crepes">
-          <img src="assets/img/crepe.jpg" alt="Crêpe mit weißer und dunkler Schokolade, Schokoraspeln und Waffelriegel" loading="lazy">
+          <img src="assets/img/tile-crepe.jpg" alt="Crêpe mit Erdbeeren, Schokoladensauce, Kokos und Schlagobers" loading="lazy">
           <h3>Crêpes</h3>
           <p data-i18n="offer.crepeP">Warm, gerollt und großzügig garniert.</p>
           <span class="go" data-i18n="offer.toMenu">Zur Karte</span>
         </a>
-        <a class="tile flat t-pinsa rise" href="#karte" data-tab="pinsa">
-          <span class="glyph" aria-hidden="true">Pinsa!</span>
+        <a class="tile t-pinsa rise" href="#karte" data-tab="pinsa">
+          <img src="assets/img/tile-pinsa.jpg" alt="Zwei Pinsa Romana: Salami mit Basilikum und Prosciutto mit Rucola und Parmesan" loading="lazy">
           <h3>Pinsa Romana</h3>
           <p data-i18n="offer.pinsaP">Knusprig außen, luftig innen. Original italienisch, ab €7,90.</p>
           <span class="go" data-i18n="offer.toMenu">Zur Karte</span>
         </a>
-        <a class="tile flat t-kaffee rise" href="#karte" data-tab="kaffee">
-          <span class="glyph" aria-hidden="true">Kaffee</span>
-          <h3 data-i18n="offer.kaffee">Kaffee &amp; Limonade</h3>
-          <p data-i18n="offer.kaffeeP">Wiener Klassiker von Melange bis Affogato und hausgemachte Limonaden.</p>
+        <a class="tile t-kaffee rise" href="#karte" data-tab="kaffee">
+          <img src="assets/img/tile-kaffee.jpg" alt="Kaffee mit Eis und gehackten Pistazien in einer mintgrünen Tasse" loading="lazy">
+          <h3 data-i18n="offer.kaffee">Kaffee</h3>
+          <p data-i18n="offer.kaffeeP">Wiener Klassiker von Melange bis Affogato.</p>
+          <span class="go" data-i18n="offer.toMenu">Zur Karte</span>
+        </a>
+        <a class="tile t-limo rise" href="#karte" data-tab="getraenke">
+          <img src="assets/img/tile-limo.jpg" alt="Hausgemachte Minz-Limonade mit Zitrone im Glaskrug" loading="lazy">
+          <h3 data-i18n="offer.limo">Hausgemachte Limonade</h3>
+          <p data-i18n="offer.limoP">Acht Sorten, frisch gemischt, mit Minze und Früchten.</p>
           <span class="go" data-i18n="offer.toMenu">Zur Karte</span>
         </a>
       </div>
@@ -412,18 +425,22 @@ footer{background:var(--chalk);color:#E9DCD5;padding-block:56px calc(36px + env(
   <svg class="drip" data-drip="3" style="--drip:var(--blush);background:var(--cream)" viewBox="0 0 1200 80" preserveAspectRatio="none" aria-hidden="true"></svg>
 
   <section class="sorten" id="sorten">
-    <div class="wrap sorten-grid">
-      <div class="photo rise"><img class="parallax" data-speed="-0.05" src="assets/img/sorten.jpg" alt="Eisvitrine mit Kreideschildern: Pistazien, Oreo, Jaffa, Mango, Himbeere, Amarena und mehr" loading="lazy"></div>
-      <div class="rise">
-        <span class="hand" data-i18n="ice.kicker">aus der Vitrine</span>
-        <h2 style="font-size:var(--step-3);margin-top:10px" data-i18n="ice.h2">Jeden Tag andere Sorten</h2>
-        <p class="note" style="font-size:var(--step-1)" data-i18n="ice.p">Unsere Vitrine wechselt ständig. Diese Schildchen hingen zuletzt dort. Komm vorbei und lass dich überraschen, was heute dabei ist.</p>
+    <div class="wrap head rise">
+      <span class="hand" data-i18n="ice.kicker">aus der Vitrine</span>
+      <h2 data-i18n="ice.h2">Jeden Tag andere Sorten</h2>
+      <p data-i18n="ice.p">Unsere Vitrine wechselt ständig. Komm vorbei und lass dich überraschen, was heute dabei ist.</p>
+    </div>
+    <div class="show" id="show">
+      <div class="window">
+        <video id="vitrine" src="assets/video/sorten.mp4" poster="assets/img/sorten-poster.jpg" muted loop playsinline preload="metadata" aria-label="Video: Eisvitrine von DON'S mit Mango, Himbeere, Jaffa, Oreo und Kinder"></video>
       </div>
+      <span class="live"><i></i><span data-i18n="ice.live">frisch aus unserer Vitrine</span></span>
     </div>
     <div class="marquee" aria-label="Beispiele für Sorten">
       <div class="row" id="row1"></div>
       <div class="row rev" id="row2"></div>
     </div>
+    <p class="note wrap" data-i18n="ice.note">Die Schildchen zeigen Sorten, die zuletzt in der Vitrine waren.</p>
   </section>
 
   <section class="karte" id="karte">
@@ -471,11 +488,18 @@ footer{background:var(--chalk);color:#E9DCD5;padding-block:56px calc(36px + env(
 
   <section class="gallery" aria-label="Galerie">
     <div class="wrap">
-      <div class="strip">
+      <div class="gal-head rise">
+        <div><span class="hand" data-i18n="gal.kicker">frisch gepostet</span><h2 style="margin-top:6px"><a href="https://www.instagram.com/donseisdiele/" target="_blank" rel="noopener" style="text-decoration:none">@donseisdiele</a></h2></div>
+        <div class="gal-nav"><button type="button" id="galPrev" aria-label="Zurück">←</button><button type="button" id="galNext" aria-label="Weiter">→</button></div>
+      </div>
+      <div class="strip" id="strip">
+        <figure><img src="assets/img/g-vitrine.jpg" alt="Eisvitrine mit dem Logo von DON'S im Lokal" loading="lazy"><figcaption data-i18n="gal.vitrine">unsere Vitrine</figcaption></figure>
+        <figure><img src="assets/img/g-bueno.jpg" alt="Bueno Dream Crêpe mit Schokoladeneis, Schlagobers und Kirsche" loading="lazy"><figcaption>Bueno Dream</figcaption></figure>
+        <figure><img src="assets/img/g-kinder.jpg" alt="Kinder-, Oreo- und Schwarzwald-Eis in der Vitrine" loading="lazy"><figcaption data-i18n="gal.kinder">Kinder &amp; Oreo</figcaption></figure>
+        <figure><img src="assets/img/g-limo.jpg" alt="Zitronen-Minz-Limonade im Glaskrug" loading="lazy"><figcaption data-i18n="gal.limo">Zitrone-Minze</figcaption></figure>
+        <figure><img src="assets/img/g-pinsa.jpg" alt="Pinsa mit Burrata, Rohschinken und Basilikum" loading="lazy"><figcaption>Pinsa Burrata</figcaption></figure>
+        <figure><img src="assets/img/g-erdbeer.jpg" alt="Crêpe mit Erdbeeren und Schokoladensauce" loading="lazy"><figcaption data-i18n="gal.crepe">Erdbeer-Crêpe</figcaption></figure>
         <figure><img src="assets/img/lokal.jpg" alt="Fassade von DON'S Eisdiele in der Geiselbergstraße" loading="lazy"><figcaption>Geiselbergstraße 24</figcaption></figure>
-        <figure><img src="assets/img/vitrina.jpg" alt="Eisvitrine mit Logo von DON'S" loading="lazy"><figcaption data-i18n="gal.vitrine">unsere Vitrine</figcaption></figure>
-        <figure><img src="assets/img/crepe-wide.jpg" alt="Crêpe mit Schokoladeneis, Schlagobers und Kirsche" loading="lazy"><figcaption>Crêpe Deluxe</figcaption></figure>
-        <figure><img src="assets/img/rose.jpg" alt="Eisrose in der Waffel" loading="lazy"><figcaption data-i18n="gal.rose">Eis mit Liebe</figcaption></figure>
       </div>
     </div>
   </section>
@@ -509,13 +533,12 @@ footer{background:var(--chalk);color:#E9DCD5;padding-block:56px calc(36px + env(
             <div><h3>Instagram</h3><a class="link" href="https://www.instagram.com/donseisdiele/" target="_blank" rel="noopener">@donseisdiele</a> <span data-i18n="visit.insta">für die süßesten Updates.</span></div>
           </div>
         </div>
-        <a class="card mapcard rise" href="https://www.google.com/maps/search/?api=1&amp;query=Geiselbergstra%C3%9Fe+24%2C+1110+Wien" target="_blank" rel="noopener">
-          <canvas id="map" aria-hidden="true"></canvas>
+        <a class="card shopcard rise" href="https://www.google.com/maps/search/?api=1&amp;query=Geiselbergstra%C3%9Fe+24%2C+1110+Wien" target="_blank" rel="noopener">
+          <img class="parallax" data-speed="-0.05" src="assets/img/lokal.jpg" alt="Eingang von DON'S Eisdiele mit großem DON'S-Schriftzug und Vitrine im Schaufenster" loading="lazy">
           <div><span class="hand" data-i18n="visit.find">hier findest du uns</span>
             <h3 style="margin-top:8px">Geiselbergstraße 24</h3>
             <p data-i18n="visit.near">Wien-Simmering, nahe Geiselbergstraße und Werkstättenweg.</p></div>
-          <span class="pin"><img src="assets/img/don-badge.png" alt=""></span>
-          <span class="chip" style="align-self:flex-start" data-i18n="visit.open">Karte öffnen →</span>
+          <span class="chip" data-i18n="visit.open">Route öffnen →</span>
         </a>
       </div>
     </div>
@@ -606,19 +629,21 @@ document.documentElement.classList.add('js');
     'offer.eis':['Eis & Eisbecher','Ice cream & sundaes'],'offer.eisP':['Cremiges Eis aus der eigenen Vitrine, vom Pinokio Eis bis zum Dubai Dream Becher.','Creamy ice cream from our own counter, from the Pinokio cone to the Dubai Dream sundae.'],
     'offer.crepeP':['Warm, gerollt und großzügig garniert.','Warm, rolled and generously topped.'],
     'offer.pinsaP':['Knusprig außen, luftig innen. Original italienisch, ab €7,90.','Crispy outside, airy inside. The Italian original, from €7.90.'],
-    'offer.kaffee':['Kaffee & Limonade','Coffee & lemonade'],'offer.kaffeeP':['Wiener Klassiker von Melange bis Affogato und hausgemachte Limonaden.','Viennese classics from Melange to Affogato, plus homemade lemonades.'],'offer.toMenu':['Zur Karte','To the menu'],
+    'offer.kaffee':['Kaffee','Coffee'],'offer.kaffeeP':['Wiener Klassiker von Melange bis Affogato.','Viennese classics from Melange to Affogato.'],
+    'offer.limo':['Hausgemachte Limonade','Homemade lemonade'],'offer.limoP':['Acht Sorten, frisch gemischt, mit Minze und Früchten.','Eight flavours, freshly mixed with mint and fruit.'],'intro.fav':['Lieblingsbecher','House favourite'],'offer.toMenu':['Zur Karte','To the menu'],
     'ice.kicker':['aus der Vitrine','from the counter'],'ice.h2':['Jeden Tag andere Sorten','Different flavours every day'],
-    'ice.p':['Unsere Vitrine wechselt ständig. Diese Schildchen hingen zuletzt dort. Komm vorbei und lass dich überraschen, was heute dabei ist.','Our counter changes all the time. These labels were there recently. Come by and see what we have today.'],
+    'ice.p':['Unsere Vitrine wechselt ständig. Komm vorbei und lass dich überraschen, was heute dabei ist.','Our counter changes all the time. Come by and see what we have today.'],
+    'ice.live':['frisch aus unserer Vitrine','fresh from our counter'],'ice.note':['Die Schildchen zeigen Sorten, die zuletzt in der Vitrine waren.','The labels show flavours from our counter in recent days.'],
     'menu.kicker':['die Karte','the menu'],'menu.h2':['Unser Menü','Our menu'],'menu.p':['Frisch, ehrlich, hausgemacht. Stöbere durch unsere süßen und herzhaften Kreationen.','Fresh, honest, homemade. Browse our sweet and savoury creations.'],
     'menu.alg':['Allergenkennzeichnung (EU-Standard)','Allergen labelling (EU standard)'],'menu.algNote':['Trotz sorgfältiger Herstellung können Spuren von Allergenen enthalten sein.','Despite careful preparation, traces of allergens may be present.'],
     'menu.from':['ab','from'],'menu.lemon':['Hausgemachte Limonade','Homemade lemonade'],'menu.soft':['Erfrischende Getränke','Soft drinks'],
     'don.kicker':['unsere Geschichte','our story'],'don.h2a':['Benannt nach einem','Named after a'],'don.h2b':['treuen Freund.','loyal friend.'],
     'don.p1':['Don ist mehr als nur ein Name auf unserem Schild. Er ist unser Hund, unser täglicher Begleiter und die Inspiration hinter allem, was wir tun. Genau wie bei Don soll sich jeder Besuch bei uns anfühlen wie nach Hause kommen: warm, herzlich und voller süßer Überraschungen.','Don is more than a name on our sign. He is our dog, our daily companion and the inspiration behind everything we do. Just like Don, we want every visit to feel like coming home: warm, friendly and full of sweet surprises.'],
     'don.p2':['Wir machen unser Eis frisch, brühen unseren Kaffee mit Sorgfalt und backen unsere Pinsa nach originaler italienischer Rezeptur. Jedes Detail, von der Pastellfarbe an den Wänden bis zum letzten Tropfen Schokoladensauce, ist mit Liebe gewählt.','We make our ice cream fresh, brew our coffee with care and bake our pinsa to the original Italian recipe. Every detail, from the pastel walls to the last drop of chocolate sauce, is chosen with love.'],
-    'don.sign':['Willkommen in Don\'s Welt','Welcome to Don\'s world'],'gal.vitrine':['unsere Vitrine','our counter'],'gal.rose':['Eis mit Liebe','made with love'],
+    'don.sign':['Willkommen in Don\'s Welt','Welcome to Don\'s world'],'gal.vitrine':['unsere Vitrine','our counter'],'gal.kicker':['frisch gepostet','freshly posted'],'gal.kinder':['Kinder & Oreo','Kinder & Oreo'],'gal.limo':['Zitrone-Minze','Lemon & mint'],'gal.crepe':['Erdbeer-Crêpe','Strawberry crêpe'],
     'visit.kicker':['komm vorbei','come by'],'visit.h2':['Wir freuen uns auf dich','We look forward to seeing you'],'visit.addr':['Adresse','Address'],'visit.route':['Route in Google Maps öffnen →','Open route in Google Maps →'],
     'visit.hours':['Öffnungszeiten','Opening hours'],'visit.phone':['Telefon','Phone'],'visit.copy':['Kopieren','Copy'],'visit.copied':['Kopiert','Copied'],'visit.insta':['für die süßesten Updates.','for the sweetest updates.'],
-    'visit.find':['hier findest du uns','find us here'],'visit.near':['Wien-Simmering, nahe Geiselbergstraße und Werkstättenweg.','Vienna-Simmering, near Geiselbergstraße and Werkstättenweg.'],'visit.open':['Karte öffnen →','Open map →'],
+    'visit.find':['hier findest du uns','find us here'],'visit.near':['Wien-Simmering, nahe Geiselbergstraße und Werkstättenweg.','Vienna-Simmering, near Geiselbergstraße and Werkstättenweg.'],'visit.open':['Route öffnen →','Get directions →'],
     'days.wk':['Mo – Fr','Mon – Fri'],'days.we':['Sa – So','Sat – Sun'],
     'foot.p':['Hausgemachtes Eis, Crêpes, Pinsa und Kaffee in Wien-Simmering.','Homemade ice cream, crêpes, pinsa and coffee in Vienna-Simmering.'],'foot.imprint':['Impressum','Imprint'],'foot.owner':['Inhaberin: Vesna Stamenović','Owner: Vesna Stamenović'],'foot.made':['Mit Liebe gemacht in Wien','Made with love in Vienna'],
     'open.now':['Jetzt geöffnet · bis 22:00','Open now · until 22:00'],'open.later':['Heute ab {t} geöffnet','Opens today at {t}'],'open.closed':['Geschlossen · morgen ab {t}','Closed · opens tomorrow at {t}']
@@ -629,21 +654,14 @@ document.documentElement.classList.add('js');
   const t = k => (T[k] ? T[k][L()] : k);
 
   /* ---------------- Karte: Kapitel ---------------- */
-  // Für jede Kategorie: Hintergrundfarbe und Bild auf dem Teller.
-  // Eigene Fotos einsetzen: img:'assets/img/pinsa.jpg' usw. (art wird dann ignoriert)
-  const ART = {
-    pinsa:'<svg viewBox="0 0 120 90" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><ellipse cx="60" cy="45" rx="52" ry="34" fill="#F3D9B1"/><ellipse cx="60" cy="45" rx="42" ry="25" fill="#E8826F" stroke="none"/><circle cx="44" cy="40" r="7" fill="#FFF6EC" stroke="none"/><circle cx="70" cy="52" r="8" fill="#FFF6EC" stroke="none"/><circle cx="76" cy="34" r="5" fill="#FFF6EC" stroke="none"/><path d="M52 55c3-4 7-4 9 0M84 44c2-3 5-3 7 0M36 30c3-3 6-2 8 1" stroke="#5E9B63"/></svg>',
-    toast:'<svg viewBox="0 0 120 90" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"><path d="M14 70 60 14l46 56z" fill="#F0C98F"/><path d="M24 64 60 22l36 42" fill="#FFE7A8" stroke="none"/><path d="M22 70c10-6 20 4 30-2s20 4 30-2 16 4 22 0" stroke="#5E9B63"/><path d="M14 78 60 22l46 56z" fill="none"/></svg>',
-    kaffee:'<svg viewBox="0 0 120 100" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M26 42h58v18a29 29 0 0 1-58 0z" fill="#FFF6EC"/><path d="M84 48h8a10 10 0 0 1 0 20h-9"/><ellipse cx="55" cy="42" rx="29" ry="5" fill="#B57E5B"/><path d="M14 92h82" /><path d="M44 30c-4-6 4-8 0-15M58 30c-4-6 4-8 0-15M72 30c-4-6 4-8 0-15" stroke="#C9667A"/></svg>',
-    getraenke:'<svg viewBox="0 0 100 120" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"><path d="M24 30h52l-7 80H31z" fill="#FBE1E5"/><path d="M27 58h46l-4 52H31z" fill="#F2A3B2" stroke="none"/><path d="M58 30 72 4" stroke="#5E9B63"/><circle cx="76" cy="32" r="12" fill="#F7E58E"/><path d="M76 22v20M66 32h20" stroke-width="2"/><circle cx="44" cy="74" r="4" fill="#FFF6EC" stroke="none"/><circle cx="54" cy="90" r="3" fill="#FFF6EC" stroke="none"/></svg>'
-  };
+  // Für jede Kategorie: Hintergrundfarbe, Foto auf dem Teller und Fotos im Kapitel [Datei, Bildunterschrift DE, EN].
   const LOOK = {
-    eisbecher:{bg:'#F6DADC',img:'assets/img/kugeln.jpg',word:['Eis','Eis']},
-    crepes:{bg:'#F5E4CF',img:'assets/img/crepe.jpg',word:['Crêpes','Crêpes']},
-    pinsa:{bg:'#DCEBD8',art:'pinsa',sbg:'#CFE3C8',word:['Pinsa','Pinsa']},
-    toast:{bg:'#F3EAD9',art:'toast',sbg:'#EFDDBF',word:['Panini','Panini']},
-    kaffee:{bg:'#EADBCB',art:'kaffee',sbg:'#DCC4AE',word:['Kaffee','Coffee']},
-    getraenke:{bg:'#E2EFDD',art:'getraenke',sbg:'#F7D9DE',word:['Limo','Drinks']}
+    eisbecher:{bg:'#F6DADC',img:'assets/img/p-eis.jpg',word:['Eis','Eis'],pics:[['c-erdbeer','Erdbeerbecher','Strawberry sundae'],['c-spaghetti','Eisspaghetti','Spaghetti ice']]},
+    crepes:{bg:'#F5E4CF',img:'assets/img/p-crepe.jpg',word:['Crêpes','Crêpes'],pics:[['c-jaffa','Jaffa Dream','Jaffa Dream'],['c-erdbeercrepe','Erdbeer-Crêpe','Strawberry crêpe'],['c-bueno','Bueno Dream','Bueno Dream']]},
+    pinsa:{bg:'#DCEBD8',img:'assets/img/p-pinsa.jpg',word:['Pinsa','Pinsa'],pics:[['c-burrata','Pinsa Burrata','Pinsa Burrata'],['c-pinsa2','Salami & Rucola','Salami & rocket']]},
+    toast:{bg:'#F3EAD9',img:'assets/img/p-panini.jpg',word:['Panini','Panini'],pics:[['c-panini','Panini Pesto','Panini pesto']]},
+    kaffee:{bg:'#EADBCB',img:'assets/img/p-kaffee.jpg',word:['Kaffee','Coffee'],pics:[['c-kaffee','Kaffee mit Eis & Pistazie','Coffee with ice cream & pistachio']]},
+    getraenke:{bg:'#E2EFDD',img:'assets/img/p-limo.jpg',word:['Limo','Drinks'],pics:[['c-beere','Beeren-Limo','Berry lemonade'],['c-zitrone','Zitrone-Minze','Lemon & mint'],['c-minze','Minz-Limo','Mint lemonade']]}
   };
   const chaptersEl = document.getElementById('chapters'), rail = document.getElementById('rail'), plate = document.getElementById('plate');
   const bigword = document.getElementById('bigword'), fromPrice = document.getElementById('fromPrice');
@@ -656,18 +674,14 @@ document.documentElement.classList.add('js');
   const price = p => (lang === 'en' ? '€' + p.replace(',', '.') : '€' + p);
   const itemHtml = it => '<li class="item"><h3>' + esc(it[0]) + ' ' + algHtml(it[1]) + '</h3><span class="price">' + price(it[2]) + '</span>' + (it[3] ? '<p>' + esc(lang === 'en' ? it[4] : it[3]) + '</p>' : '') + '</li>';
   const minPrice = c => c.items.reduce((m, it) => Math.min(m, parseFloat(it[2].replace(',', '.'))), 99).toFixed(2).replace('.', ',');
-  const visual = (id, cls) => {
-    const v = LOOK[id];
-    if (v.img) return '<div class="' + cls + '"><img src="' + v.img + '" alt="" loading="lazy"></div>';
-    return '<div class="' + cls + ' art" style="--sbg:' + v.sbg + '">' + ART[v.art] + '</div>';
-  };
+  const pics = id => { const p = LOOK[id].pics; return '<div class="pics n' + Math.min(p.length, 3) + '">' + p.map(x => '<figure><img src="assets/img/' + x[0] + '.jpg" alt="' + esc(x[1 + L()]) + '" loading="lazy"><figcaption>' + esc(x[1 + L()]) + '</figcaption></figure>').join('') + '</div>'; };
   // Teller-Szenen einmal anlegen
-  plate.insertAdjacentHTML('beforeend', MENU.map(c => visual(c.id, 'scene').replace('class="scene', 'data-scene="' + c.id + '" class="scene')).join(''));
+  plate.insertAdjacentHTML('beforeend', MENU.map(c => '<div class="scene" data-scene="' + c.id + '"><img src="' + LOOK[c.id].img + '" alt="" loading="lazy"></div>').join(''));
   function renderChapters() {
     rail.innerHTML = MENU.map(c => '<a href="#karte-' + c.id + '" data-id="' + c.id + '" aria-current="' + (c.id === current) + '">' + c.name[L()] + '</a>').join('');
     chaptersEl.innerHTML = MENU.map(c => {
       let h = '<article class="chapter" id="karte-' + c.id + '" data-id="' + c.id + '"><header><span class="hand">' + (c.tag ? c.tag[L()] : (lang === 'en' ? 'from €' : 'ab €') + minPrice(c).replace(',', lang === 'en' ? '.' : ',')) + '</span><h3 class="ct">' + c.name[L()] + '</h3></header>';
-      h += visual(c.id, 'mini');
+      h += pics(c.id);
       if (c.drinks) h += '<h4>' + t('menu.lemon') + '</h4><div class="sizes"><span>0,25 l · ' + price('3,60') + '</span><span>0,5 l · ' + price('4,80') + '</span></div><ul class="flavors">' + LEMON.map(f => '<li>' + f + '</li>').join('') + '</ul><h4>' + t('menu.soft') + '</h4>';
       h += '<ul class="items' + (c.two ? ' two' : '') + '">' + c.items.map(itemHtml).join('') + '</ul></article>';
       return h;
@@ -683,6 +697,8 @@ document.documentElement.classList.add('js');
     document.documentElement.style.setProperty('--kbg', v.bg);
     plate.querySelectorAll('.scene').forEach(s => s.classList.toggle('on', s.dataset.scene === id));
     rail.querySelectorAll('a').forEach(a => a.setAttribute('aria-current', String(a.dataset.id === id)));
+    const act = rail.querySelector('[aria-current="true"]');
+    if (act && rail.scrollWidth > rail.clientWidth) rail.scrollTo({left:act.offsetLeft - (rail.clientWidth - act.offsetWidth) / 2, behavior: reduce ? 'auto' : 'smooth'});
     fromPrice.textContent = price(minPrice(c));
     bigword.classList.add('swap');
     setTimeout(() => { bigword.textContent = v.word[L()]; bigword.classList.remove('swap'); }, force ? 0 : 280);
@@ -744,7 +760,11 @@ document.documentElement.classList.add('js');
   }
   sound.addEventListener('click', () => { film.muted = !film.muted; if (film.paused) film.play().catch(() => {}); syncSound(); });
   replay.addEventListener('click', () => { film.currentTime = 0; film.play().catch(() => {}); replay.hidden = true; welcome.classList.remove('show'); });
-  film.addEventListener('ended', () => { replay.hidden = false; welcome.classList.add('show'); });
+  // Nach dem Film: Willkommensgruß, dann sanft weiter zum Rest der Seite (nur wenn noch nicht gescrollt wurde)
+  film.addEventListener('ended', () => {
+    replay.hidden = false; welcome.classList.add('show');
+    setTimeout(() => { if (scrollY < 40 && !reduce) document.getElementById('willkommen').scrollIntoView({behavior:'smooth'}); }, 1900);
+  });
   if (reduce) { film.removeAttribute('autoplay'); film.pause(); replay.hidden = false; replay.querySelector('span').textContent = t('hero.replay'); }
   film.play().catch(() => { replay.hidden = false; });
 
@@ -792,20 +812,18 @@ document.documentElement.classList.add('js');
   if (!reduce) new IntersectionObserver(es => es.forEach(e => { const was = running; running = e.isIntersecting; if (running && !was) requestAnimationFrame(draw); })).observe(cv);
   addEventListener('resize', () => { sizeCv(); if (!running) draw(); });
 
-  /* ---------------- Karten-Illustration ---------------- */
-  const mc = document.getElementById('map'), mx = mc.getContext('2d');
-  function drawMap() {
-    const w = mc.clientWidth, h = mc.clientHeight, r = Math.min(2, devicePixelRatio || 1);
-    mc.width = w * r; mc.height = h * r; mx.setTransform(r, 0, 0, r, 0, 0);
-    mx.strokeStyle = 'rgba(245,237,230,.10)'; mx.lineWidth = 1;
-    for (let i = -h; i < w; i += 46) { mx.beginPath(); mx.moveTo(i, h); mx.lineTo(i + h * .6, 0); mx.stroke(); }
-    mx.lineWidth = 18; mx.strokeStyle = 'rgba(245,237,230,.08)';
-    mx.beginPath(); mx.moveTo(0, h * .62); mx.lineTo(w, h * .7); mx.stroke();
-    mx.beginPath(); mx.moveTo(w * .58, 0); mx.bezierCurveTo(w * .55, h * .4, w * .62, h * .7, w * .5, h); mx.stroke();
-    mx.lineWidth = 2; mx.setLineDash([2, 10]); mx.strokeStyle = 'rgba(242,184,195,.55)';
-    mx.beginPath(); mx.moveTo(w * .1, h * .95); mx.bezierCurveTo(w * .3, h * .75, w * .4, h * .78, w * .56, h * .66); mx.stroke(); mx.setLineDash([]);
-  }
-  drawMap(); addEventListener('resize', drawMap);
+  /* ---------------- Vitrinen-Video ---------------- */
+  const show = document.getElementById('show'), vit = document.getElementById('vitrine');
+  new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting && !reduce) vit.play().catch(() => {}); else vit.pause();
+  }), {rootMargin:'200px 0px'}).observe(show);
+  if (reduce) show.style.setProperty('--p', 1);
+
+  /* ---------------- Galerie-Pfeile ---------------- */
+  const strip = document.getElementById('strip');
+  const galStep = d => strip.scrollBy({left:d * (strip.querySelector('figure').offsetWidth + 16), behavior: reduce ? 'auto' : 'smooth'});
+  document.getElementById('galPrev').addEventListener('click', () => galStep(-1));
+  document.getElementById('galNext').addEventListener('click', () => galStep(1));
 
   /* ---------------- Scroll: Nav, Reveal, Parallax ---------------- */
   const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), {rootMargin:'0px 0px -8% 0px'});
@@ -819,6 +837,10 @@ document.documentElement.classList.add('js');
       if (r.bottom < 0 || r.top > innerHeight) return;
       el.style.transform = 'translate3d(0,' + ((r.top + r.height / 2 - innerHeight / 2) * +el.dataset.speed).toFixed(1) + 'px,0)';
     });
+    if (!reduce) {
+      const r = show.getBoundingClientRect();
+      if (r.bottom > 0 && r.top < innerHeight) show.style.setProperty('--p', Math.min(1, Math.max(0, (innerHeight - r.top) / (innerHeight * .9))).toFixed(3));
+    }
     ticking = false;
   }
   addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } }, {passive:true});

@@ -193,3 +193,24 @@ Smooth, satisfying, playful but realistic, mouth-watering, premium, 4K.
 
 Avoid: real ants, insects, legs on the shavings, creepy, different shavings, sprinkles, chocolate chips, white background, background change, different table, new crepe, changing crepe shape or size, unrolling crepe, different drizzle pattern, caramel color, extra sauces, ice cream, whipped cream, cherry, chocolate bar, extra food, messy splashes, camera orbit, people, hands, text, logos, watermark, cartoon, CGI look, morphing, flicker, jump cuts, blurry.
 ```
+
+---
+
+# Deo 1, lebdeća palačinka v2 (bez reči "ants", mrvice klize u kolonama)
+
+Start: `frames/palacinka_prazna_16x9.png` · End: `frames/palacinka_prelivi_16x9.png` · 16:9, 10 s
+
+```
+Magical photorealistic dessert commercial, macro food photography, natural soft daylight, shallow depth of field, the same dark blurred cafe background and dark grey table during the whole video. Locked camera, almost static. The video starts exactly on the start image and ends exactly on the end image.
+
+0-1.5s: the plain rolled crepe slowly lifts off the yellow plate and floats in the air about a hand's width above it, gently rotating around its long axis, golden sparkles around it.
+1.5-5s: while the crepe floats and slowly rotates, a glossy cream-colored white chocolate sauce stream comes from the left and a glossy milk chocolate sauce stream comes from the right. They wind around the whole crepe in spirals, all the way around it, the white one moving from left to right and the chocolate one from right to left, wrapping it completely like ribbons.
+5-6s: the two spirals meet in the middle and merge, then settle into exactly the drizzle pattern of the end image on top of the crepe, dripping down its sides.
+6-6.8s: the crepe suddenly drops back onto the yellow plate, landing with a soft bounce in exactly the same position as in the end image, a few chocolate drops land on the plate.
+6.8-9s: small curled milk chocolate shavings, glossy brown chocolate curls exactly like in the end image, slide and tumble across the yellow plate in two neat rows, one row from the left edge of the plate and one row from the right edge, like a tiny chocolate parade. They hop up onto the two ends of the crepe and settle into piles of chocolate shavings, ending with exactly the same chocolate shavings, shape, size, color and amount as in the end image.
+9-10s: everything holds still exactly on the end image.
+
+Smooth, satisfying, playful but realistic, mouth-watering, premium, 4K.
+
+Avoid: insects, bugs, ants, beetles, any living creatures, legs, eyes, faces, creepy, different shavings, sprinkles, chocolate chips, white background, background change, different table, new crepe, changing crepe shape or size, unrolling crepe, different drizzle pattern, caramel color, extra sauces, ice cream, whipped cream, cherry, chocolate bar, extra food, messy splashes, camera orbit, people, hands, text, logos, watermark, cartoon, CGI look, morphing, flicker, jump cuts, blurry.
+```

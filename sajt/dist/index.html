@@ -38,7 +38,7 @@
   color-scheme:light;
 }
 *{box-sizing:border-box}
-html{scroll-behavior:smooth;scroll-padding-top:84px}
+html{scroll-behavior:smooth;scroll-padding-top:84px;overflow-x:clip}
 body{background:var(--cream);color:var(--cocoa);font-family:var(--body);font-size:var(--step-0);line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased}
 img,video{display:block;max-width:100%}
 a{color:inherit}
@@ -83,7 +83,8 @@ p{margin:0}
 
 /* ---------- Intro-Film (Vollbild, vor der Seite) ---------- */
 html.intro-on,html.intro-on body{overflow:hidden}
-.film{position:fixed;inset:0;z-index:100;background:radial-gradient(circle at 25% 35%,#F7DDE0,transparent 55%),radial-gradient(circle at 78% 65%,#DDEBD9,transparent 55%),#F6EEEA;transition:transform 1.25s cubic-bezier(.75,0,.2,1)}
+html:not(.js) .film{display:none}
+.film{position:fixed;inset:0;z-index:100;overflow:hidden;overscroll-behavior:none;touch-action:none;background:radial-gradient(circle at 25% 35%,#F7DDE0,transparent 55%),radial-gradient(circle at 78% 65%,#DDEBD9,transparent 55%),#F6EEEA;transition:transform 1.25s cubic-bezier(.75,0,.2,1)}
 .film video{width:100%;height:100%;object-fit:contain}
 .film.out{transform:translateY(calc(-100% - 110px))}
 .film.gone{display:none}
@@ -102,7 +103,11 @@ html.intro-on .brand img{opacity:0}
 .scrim{position:absolute;inset:0;opacity:0;transition:opacity .8s ease}
 .scrim.l{background:linear-gradient(90deg,rgba(38,26,24,.7),rgba(38,26,24,.32) 40%,transparent 66%)}
 .scrim.r{background:linear-gradient(270deg,rgba(38,26,24,.7),rgba(38,26,24,.32) 40%,transparent 66%)}
+.scrim.t{background:linear-gradient(180deg,rgba(38,26,24,.66),rgba(38,26,24,.28) 30%,transparent 52%)}
+.scrim.b{background:linear-gradient(0deg,rgba(38,26,24,.66),rgba(38,26,24,.28) 30%,transparent 52%)}
 .scrim.on{opacity:1}
+.caps.p .cap{max-width:86%}.caps.p .cap.l{left:7%}.caps.p .cap.r{right:7%}.caps.p .cap.c{max-width:90%}
+.caps.p .cap .k::before{width:1.6em}
 .cap{position:absolute;max-width:44%;display:grid;gap:.5em}
 .cap.l{left:5.5%}.cap.r{right:5.5%;text-align:right;justify-items:end}.cap.c{left:0;right:0;margin-inline:auto;max-width:70%;text-align:center;justify-items:center}
 .cap .k{display:inline-flex;align-items:center;gap:.6em;font-family:var(--hand);font-weight:700;font-size:2.3em;line-height:1;color:#F8C6D0}
@@ -122,7 +127,7 @@ html.intro-on .brand img{opacity:0}
 .cap.off .w,.cap.off .k{transition:opacity .45s,filter .45s,transform .6s;transition-delay:0s;opacity:0;filter:blur(6px);transform:translateY(-.5em)}
 
 /* ---------- Hero: die Vitrine als Film ---------- */
-.hero{--h:0;position:relative;height:100svh;min-height:640px;background:var(--cream)}
+.hero{--h:0;position:relative;height:100svh;min-height:640px;background:var(--cream);overflow:hidden}
 .hero-media{position:absolute;inset:0;overflow:hidden;background:var(--chalk);clip-path:inset(calc(var(--h) * 3.5%) calc(var(--h) * 3.5%) round calc(var(--h) * 40px))}
 .hero-media video{width:100%;height:100%;object-fit:cover;transform:scale(calc(1 + var(--h) * .08))}
 .hero-media::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(40,30,28,.62) 0%,rgba(40,30,28,.32) 34%,transparent 62%),linear-gradient(0deg,rgba(40,30,28,.5),transparent 32%)}
@@ -137,10 +142,21 @@ html.intro-on .hero h1 .w>span{transform:translateY(110%)}
 html.intro-on .hero .fade{opacity:0;transform:translateY(20px)}
 .btn-glass{background:rgba(255,253,251,.16);color:var(--paper);box-shadow:inset 0 0 0 1.5px rgba(255,253,251,.7);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
 .hero .open-pill{background:rgba(255,253,251,.16);border-color:rgba(255,253,251,.35);color:var(--paper);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
-.hero-foot{position:absolute;z-index:2;left:0;right:0;bottom:clamp(54px,6vw,86px)}
+.hero-foot{position:absolute;z-index:2;left:0;right:0;bottom:clamp(54px,6vw,86px);overflow:hidden;padding-block:6px}
 .hero-foot .marquee{margin:0}
 .hero .replay{position:absolute;z-index:3;right:var(--gutter);top:calc(90px + env(safe-area-inset-top,0px))}
 .hero .drip{position:absolute;left:0;bottom:-1px;z-index:2;transform:scaleY(-1)}
+@media (max-width:700px){
+  .hero{min-height:560px}
+  .hero-media::after{background:linear-gradient(0deg,rgba(40,30,28,.72) 0%,rgba(40,30,28,.45) 38%,rgba(40,30,28,.08) 62%,rgba(40,30,28,.25) 100%)}
+  .hero-copy{justify-content:flex-end;padding-bottom:calc(150px + env(safe-area-inset-bottom,0px))}
+  .hero h1{font-size:clamp(2.7rem,12.5vw,4rem);margin:16px 0 14px}
+  .hero .lede{font-size:1.02rem}
+  .hero .cta .btn{padding:13px 20px;font-size:.95rem}
+  .hero-foot{bottom:clamp(44px,12vw,64px)}
+  .hero-foot .tag{font-size:1.25rem;padding:8px 14px 10px}
+  .hero .replay{top:calc(84px + env(safe-area-inset-top,0px));padding:8px 12px;font-size:.8rem}
+}
 .nav:not(.solid) .links a{color:var(--paper);text-shadow:0 1px 10px rgba(0,0,0,.35)}
 .nav:not(.solid) .links a:hover{background:rgba(255,253,251,.18)}
 .nav:not(.solid) .brand b{color:var(--paper);text-shadow:0 1px 10px rgba(0,0,0,.35)}
@@ -236,12 +252,12 @@ html.intro-on .hero .fade{opacity:0;transform:translateY(20px)}
 .faves-bar{position:absolute;left:var(--gutter);right:var(--gutter);bottom:clamp(20px,4vh,40px);height:3px;border-radius:3px;background:rgba(94,155,99,.18)}
 .faves-bar i{display:block;height:100%;width:0;border-radius:3px;background:var(--pistachio)}
 @media (max-width:900px){
-  .faves{height:auto!important;padding-block:64px}
-  .faves-pin{position:static;height:auto;display:block}
-  .faves-track{overflow-x:auto;scroll-snap-type:x mandatory;transform:none!important;padding-bottom:20px;align-items:flex-start;scrollbar-width:none}
-  .fav,.fav-intro{scroll-snap-align:start}
-  .fav:nth-child(n){margin-top:0}
-  .faves-bar{display:none}
+  .fav{width:min(74vw,340px)}
+  .fav-intro{width:min(78vw,360px)}
+  .fav-intro h2{font-size:clamp(2.3rem,10vw,3.2rem)}
+  .fav:nth-child(odd){margin-top:4vh}.fav:nth-child(even){margin-top:-4vh}
+  .faves-track{padding-inline:var(--gutter) 10vw}
+}
 }
 
 /* ---------- Großes Wortband ---------- */
@@ -410,9 +426,9 @@ footer{background:var(--chalk);color:#E9DCD5;padding-block:56px calc(36px + env(
 </header>
 
 <div class="film" id="filmLayer" aria-label="Intro-Film">
-  <!-- Intro-Film austauschen: assets/video/hero.mp4 (+ Poster assets/img/hero-poster.jpg) -->
-  <video id="film" src="assets/video/hero.mp4" poster="assets/img/hero-poster.jpg" muted playsinline preload="auto"></video>
-  <div class="caps" id="caps" aria-live="off"><div class="scrim l" data-s="l"></div><div class="scrim r" data-s="r"></div></div>
+  <!-- Intro-Film: assets/video/hero.mp4 (Querformat) und hero-m.mp4 (Telefon hochkant), Quellen setzt das Script (VID) -->
+  <video id="film" muted playsinline preload="auto"></video>
+  <div class="caps" id="caps" aria-live="off"><div class="scrim l" data-s="l"></div><div class="scrim r" data-s="r"></div><div class="scrim t" data-s="t"></div><div class="scrim b" data-s="b"></div></div>
   <button class="bigplay" id="bigplay" type="button" hidden data-i18n="film.play">▶ Film abspielen</button>
   <div class="film-ui">
     <button class="chip" id="sound" type="button" aria-pressed="false">
@@ -430,8 +446,8 @@ footer{background:var(--chalk);color:#E9DCD5;padding-block:56px calc(36px + env(
 <main id="top">
   <section class="hero" id="hero" aria-label="Willkommen">
     <div class="hero-media">
-      <!-- Vitrinen-Video austauschen: assets/video/sorten.mp4 -->
-      <video id="vitrine" src="assets/video/sorten.mp4" poster="assets/img/sorten-poster.jpg" muted loop playsinline preload="none" aria-label="Video: Eisvitrine von DON'S mit Mango, Himbeere, Jaffa, Oreo und Kinder"></video>
+      <!-- Vitrinen-Video: assets/video/sorten.mp4 und sorten-m.mp4 (hochkant), Quellen setzt das Script (VID) -->
+      <video id="vitrine" muted loop playsinline preload="none" aria-label="Video: Eisvitrine von DON'S mit Mango, Himbeere, Jaffa, Oreo und Kinder"></video>
     </div>
     <div class="wrap hero-copy">
       <span class="open-pill fade" id="openPill"><i></i><span id="openText">Wien 1110 · Simmering</span></span>
@@ -837,8 +853,16 @@ document.documentElement.classList.add('js');
   const layer = document.getElementById('filmLayer'), film = document.getElementById('film'), fly = document.getElementById('flylogo');
   const sound = document.getElementById('sound'), skip = document.getElementById('skip'), bigplay = document.getElementById('bigplay');
   const bar = document.getElementById('filmBar'), vit = document.getElementById('vitrine');
-  // Lage des Logos im letzten Filmbild (Anteile von 1920×1080), passend zu don-badge.png
-  const LOGO = {x:.2953, y:.075, w:.43};
+  // Telefon hochkant: eigene 9:16-Fassungen, aus denselben Filmen mit einer "Kamera" herausgeschnitten
+  // (scripts/mobile/reframe.py). Logo = Lage von don-badge.png im letzten Filmbild (Anteile des Videobildes).
+  const PORTRAIT = innerHeight > innerWidth * 1.2;
+  const VID = PORTRAIT
+    ? {film:'assets/video/hero-m.mp4', poster:'assets/img/hero-poster-m.jpg', vit:'assets/video/sorten-m.mp4', vitPoster:'assets/img/sorten-poster-m.jpg', ar:9 / 16, logo:{x:.0863, y:.1994, w:.8691} /*LOGO_M*/}
+    : {film:'assets/video/hero.mp4', poster:'assets/img/hero-poster.jpg', vit:'assets/video/sorten.mp4', vitPoster:'assets/img/sorten-poster.jpg', ar:16 / 9, logo:{x:.2953, y:.075, w:.43}};
+  // Hochkant füllt der Film den Bildschirm (cover), solange der Bildschirm schmaler ist als 9:16; sonst ganz sichtbar
+  const cover = () => PORTRAIT && innerWidth / innerHeight <= VID.ar;
+  film.poster = VID.poster; film.src = VID.film; vit.poster = VID.vitPoster; vit.src = VID.vit;
+  const LOGO = VID.logo;
   let introDone = false;
   function syncSound() {
     const on = !film.muted;
@@ -847,8 +871,11 @@ document.documentElement.classList.add('js');
     document.getElementById('wave').setAttribute('opacity', on ? '1' : '.35');
   }
   function videoRect() {
-    const W = innerWidth, H = innerHeight, ar = 16 / 9;
-    const w = W / H > ar ? H * ar : W, h = w / ar;
+    const W = innerWidth, H = innerHeight, ar = VID.ar;
+    let w, h;
+    if (cover()) { if (W / H > ar) { w = W; h = W / ar; } else { h = H; w = H * ar; } }
+    else { w = W / H > ar ? H * ar : W; h = w / ar; }
+    film.style.objectFit = cover() ? 'cover' : 'contain';
     return {x:(W - w) / 2, y:(H - h) / 2, w, h};
   }
   // Die Geschichte: [von, bis (Sekunden im Film), Seite l/r/c, Höhe in %, Stil, Überzeile DE/EN, Zeile DE/EN]. *Wort* = betont.
@@ -866,7 +893,10 @@ document.documentElement.classList.add('js');
     [27.5, 31.7, 'l', 8, '', ['', ''], ['… und ganz oben: *eine Kirsche.*', '… and right on top: *a cherry.*']],
     [32.2, 34.5, 'c', 66, 'dark big', ['', ''], ['Willkommen in *Don\'s Welt.*', 'Welcome to *Don\'s world.*']]
   ];
+  // Hochkant: [Ausrichtung l/c/r, Höhe in %] je Zeile, passend zum 9:16-Bildausschnitt
+  const CAPS_P = /*CAPS_P*/[['l',10],['l',10],['l',10],['l',72],['l',10],['l',10],['l',12],['l',22],['l',32],['l',10],['l',10],['c',70]];
   const capsEl = document.getElementById('caps');
+  capsEl.classList.toggle('p', PORTRAIT);
   function renderCaps() {
     capsEl.querySelectorAll('.cap').forEach(el => el.remove());
     capsEl.insertAdjacentHTML('beforeend', CAPS.map((c, n) => {
@@ -874,33 +904,40 @@ document.documentElement.classList.add('js');
       const words = esc(c[6][L()]).split(' ').map(w => w).join(' ');
       const html = words.replace(/\*([^*]+)\*/g, (_, m) => '<em>' + m + '</em>')
         .replace(/(<em>)?([^\s<>]+)(<\/em>)?/g, (all, a, w, b) => (a || '') + '<span class="w" style="--i:' + (i++) + '">' + w + '</span>' + (b || ''));
-      return '<div class="cap ' + c[2] + ' ' + c[4] + '" data-n="' + n + '" style="top:' + c[3] + '%">' + (c[5][L()] ? '<span class="k">' + esc(c[5][L()]) + '</span>' : '') + '<p class="m">' + html + '</p></div>';
+      const pos = PORTRAIT && CAPS_P[n] ? CAPS_P[n] : [c[2], c[3]];
+      return '<div class="cap ' + pos[0] + ' ' + c[4] + '" data-n="' + n + '" style="top:' + pos[1] + '%">' + (c[5][L()] ? '<span class="k">' + esc(c[5][L()]) + '</span>' : '') + '<p class="m">' + html + '</p></div>';
     }).join(''));
   }
   function placeCaps() {
-    const v = videoRect();
-    Object.assign(capsEl.style, {left:v.x + 'px', top:v.y + 'px', width:v.w + 'px', height:v.h + 'px'});
-    capsEl.style.setProperty('--u', (v.w / 100) + 'px');
+    // Text nur im sichtbaren Teil des Videos (bei cover ragt das Video seitlich über den Bildschirm)
+    const v = videoRect(), x0 = Math.max(0, v.x), y0 = Math.max(0, v.y);
+    const w = Math.min(innerWidth, v.x + v.w) - x0, h = Math.min(innerHeight, v.y + v.h) - y0;
+    Object.assign(capsEl.style, {left:x0 + 'px', top:y0 + 'px', width:w + 'px', height:h + 'px'});
+    capsEl.style.setProperty('--u', (PORTRAIT ? w / 100 * 2.05 : v.w / 100) + 'px');
   }
   addEventListener('resize', placeCaps);
   function tickCaps() {
-    const tm = film.currentTime, sides = {l:false, r:false};
+    const tm = film.currentTime, sides = {l:false, r:false, t:false, b:false};
     capsEl.querySelectorAll('.cap').forEach(el => {
-      const c = CAPS[+el.dataset.n], on = tm >= c[0] && tm < c[1];
-      if (on && c[4] !== 'dark' && sides[c[2]] !== undefined) sides[c[2]] = true;
+      const n = +el.dataset.n, c = CAPS[n], on = tm >= c[0] && tm < c[1];
+      const side = PORTRAIT ? ((CAPS_P[n] ? CAPS_P[n][1] : c[3]) < 50 ? 't' : 'b') : c[2];
+      if (on && !c[4].includes('dark') && sides[side] !== undefined) sides[side] = true;
       if (on !== el.classList.contains('on')) { el.classList.toggle('on', on); el.classList.toggle('off', !on && tm >= c[1]); }
       if (tm < c[0]) el.classList.remove('off');
     });
     capsEl.querySelectorAll('.scrim').forEach(s => s.classList.toggle('on', sides[s.dataset.s]));
     if (!introDone) requestAnimationFrame(tickCaps);
   }
+  layer.addEventListener('touchmove', e => { if (!introDone) e.preventDefault(); }, {passive:false});
   function finishIntro(fromEnd) {
     if (introDone) return; introDone = true;
+    if (scrollY) scrollTo(0, 0);
     vit.play().catch(() => {});
     const brandImg = document.querySelector('.nav .brand img');
     const done = () => {
       document.documentElement.classList.remove('intro-on');
-      layer.classList.add('gone'); film.pause(); fly.style.opacity = 0;
+      layer.classList.add('gone'); film.pause();
+      fly.getAnimations().forEach(x => x.cancel()); fly.style.opacity = 0;
     };
     if (reduce) { done(); return; }
     const v = videoRect(), sw = v.w * LOGO.w, sx = v.x + v.w * LOGO.x, sy = v.y + v.h * LOGO.y;
@@ -963,10 +1000,14 @@ document.documentElement.classList.add('js');
   function renderFaves() {
     favTrack.querySelectorAll('.fav').forEach(el => el.remove());
     favTrack.insertAdjacentHTML('beforeend', FAV.map((f, i) => '<article class="fav"><figure><img src="assets/img/' + f[0] + '.jpg" alt="' + esc(f[1]) + '" loading="lazy"><span class="num">0' + (i + 1) + '</span><span class="tag" style="--r:-4deg">' + (f[0] === 'l-limo' ? (lang === 'en' ? 'from ' : 'ab ') : '') + price(f[2]) + '</span></figure><h3>' + esc(f[1]) + '</h3><p>' + esc(f[3 + L()]) + '</p></article>').join(''));
-    sizeFaves();
+    sizeFaves(true);
   }
-  const pinFaves = () => innerWidth > 900 && !reduce;
-  function sizeFaves() {
+  const pinFaves = () => !reduce;
+  // Höhe nur bei echter Größenänderung neu setzen (nicht wenn am Telefon die Adressleiste ein- und ausfährt)
+  let favW = 0, favH = 0;
+  function sizeFaves(force) {
+    if (force !== true && innerWidth === favW && Math.abs(innerHeight - favH) < 160) return;
+    favW = innerWidth; favH = innerHeight;
     faves.style.height = pinFaves() ? (favTrack.scrollWidth - innerWidth + innerHeight) + 'px' : '';
   }
   addEventListener('resize', sizeFaves);

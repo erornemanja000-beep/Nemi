@@ -44,3 +44,41 @@ people, hands, workers, construction tools, cranes, scaffolding, plastic toy bri
 
 Napomena: reč "Lego" je namerno izbegnuta u promptu (piše "blocks"), jer AI tada
 napravi prave plastične Lego kockice sa ispupčenjima.
+
+---
+
+# Kling O3 Video Edit (RADNJA-1)
+
+Kling O3 video edit zadržava kameru, kadar i pokrete iz ubačenog snimka i menja
+samo izgled. Zato ovde nema pokreta kamere u promptu: približavanje se radi u
+CapCut-u (dole). Ulaz: RADNJA-1.mov (4,1 s, a Kling prima 3–10 s); izlaz je
+iste dužine.
+
+## Edit prompt
+
+```
+Edit @Video1: turn it into an ultra-realistic, high-end cinematic commercial shot. Keep exactly the same camera position, framing, timing and movement of every piece as in @Video1, the same building, the same window shape and the same colors. Only upgrade realism, materials and lighting.
+
+Make the facade real blush pink plaster with fine texture, a dark metal gutter and real upper windows, lit by warm golden hour sunlight from the left with soft shadows and gentle volumetric light rays.
+When the cream panel cracks, the cracks glow softly pink from inside.
+The flying blocks are solid cream plaster blocks with real weight, chipped edges, rough texture and soft shadows, tumbling realistically and releasing fine dust that catches the sunlight.
+The window frame pieces are glossy white aluminum profiles with sharp edges and soft reflections. Every time a piece lands it makes a tiny puff of dust and a short sparkle of light.
+The glass panes are real glass with soft reflections of the street and the sky, and the light sweep across them looks like a real sun reflection.
+Behind the glass: warm pink walls, a soft pink glow and realistic depth.
+Add subtle floating dust particles and a few small golden sparkles in the air.
+
+Style: premium ice cream brand commercial, 35mm lens, natural depth of field, soft film grain, high dynamic range, soft pastel colors (blush pink, cream, warm gold), photorealistic, 4K detail.
+```
+
+## Negativni prompt (ako postoji polje)
+
+```
+different building, changed layout, different window design, extra windows, extra doors, people, hands, workers, tools, scaffolding, plastic toy bricks, LEGO studs, text, logos, watermark, cartoon, CGI look, warped lines, bending walls, melting, morphing, flicker, camera drift, random camera movement, low resolution, blurry, oversaturated
+```
+
+## Približavanje kamere u CapCut-u (keyframe)
+
+Na klipu koji Kling vrati, Scale + Position keyframe, kriva "Ease in/out":
+- 0,0 s i 0,6 s: Scale 100%
+- 2,0 s: Scale 115% (pomeri sliku tako da prozor ostane u sredini)
+- 3,6 s: Scale 100% (vrati se u početni kadar)

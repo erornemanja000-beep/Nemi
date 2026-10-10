@@ -48,3 +48,23 @@ Magical photorealistic ice cream shop commercial, warm golden hour sunlight, blu
 3.5-5s: a warm light sweep passes across the finished DON'S sign, golden sparkles fade, everything holds exactly on the end image.
 Avoid: wrong letters, misspelled sign, extra letters, extra text, dripping mess, melting letters at the end, changing the shop, people, hands, cartoon, CGI look, flicker, camera movement, jump cuts, blurry.
 ```
+
+---
+
+# ISPRAVKA: slika 3 (roze prozor) se preskače
+
+Novi redosled: kadar 1 (1_zid → 2_izlog_prazan), kadar 2 (2_izlog_prazan → 4_lokal_pun),
+kadar 3 (4_lokal_pun → 5_lokal_dons, isti prompt kao stari "Kadar 4").
+
+## Novi kadar 2 (2_izlog_prazan → 4_lokal_pun), 8–10 s
+
+```
+Magical photorealistic ice cream shop commercial, warm golden hour sunlight, blush pink and pistachio green tones, soft golden sparkles. Locked camera, straight frontal view of the same pink building, the facade, gutter and upper windows never change. Starts exactly on the start image and ends exactly on the end image.
+0-1.5s: the empty shop behind the glass. The extra vertical glass post on the right softly dissolves into golden sparkles, a narrow glass pane above the door forms with a glint.
+1.5-3s: soft strawberry-milk pink color flows down the inside walls like pouring cream and paints the whole room pink, the ceiling lights switch on one by one like little fireflies landing.
+3-5s: three white menu boards flutter in like paper butterflies and settle on the back wall, the coffee bar and the counter rise smoothly from the floor, a drinks fridge full of colorful cans glides in from the right, the COFFEE TIME sign flickers on.
+5-7s: colorful scoops of gelato fly in through the open door like a small flock and land in the display trays one after another with tiny bounces, filling it with color.
+7-8.5s: a ribbon of green and pink light paints the DON'S eisdiele logo with the french bulldog onto the front of the display, a pink sticker and a small mascot pop up on the counter.
+8.5-10s: everything settles exactly into the end image, sparkles fade.
+Avoid: people, customers, hands, real butterflies, birds, insects, creatures, mess, spilled paint, different shop layout, extra furniture, misspelled text, random logos, cartoon, CGI look, morphing building, warped lines, flicker, camera movement, jump cuts, blurry.
+```

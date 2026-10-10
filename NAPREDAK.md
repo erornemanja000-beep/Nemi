@@ -22,6 +22,7 @@ Boje: puder roze `#F6DCDC`, prašnjava ruža `#E5B3B6`, pistaći `#CFE0C3`,
 | `video/gradnja_sfx.wav` | samo zvučni efekti |
 | `video/gradnja_deo1.mp4`, `video/gradnja_deo2.mp4` | video podeljen na dva dela ispod 10 s (za AI programe) |
 | `video/prompt_gradnja.md` | promptovi za AI program (ceo video i oba dela) + negativni prompt |
+| `video/prompt_radnja1.md` | filmski prompt za RADNJA-1 (zid → prozor) sa pokretom kamere |
 | `video/dons_natpis.mp4` | ranija verzija samo za slova DON'S |
 | `frames/` | početni i završni kadrovi za AI klipove (16:9) |
 | `assets/lokal/faza_1..5.png` | originalne slike lokala po fazama |

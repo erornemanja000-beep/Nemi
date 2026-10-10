@@ -95,3 +95,26 @@ Charming magical photorealistic ice cream shop commercial, warm golden hour sunl
 8.5-10s: a warm light sweep passes across the DON'S letters, sparkles fade, the shop holds exactly on the end image.
 Avoid: wrong letters, misspelled sign, extra letters, extra text, the elf staying in the final frame, multiple elves, creepy face, deformed character, giant character, changing the shop, people, cartoon flat style, morphing building, warped lines, flicker, camera movement, jump cuts, blurry.
 ```
+
+---
+
+# 15 s, jedan kadar: majstori + vilenjak (2_izlog_prazan → 5_lokal_dons)
+
+```
+Charming magical photorealistic ice cream shop commercial, warm golden hour sunlight, blush pink and pistachio green tones, soft golden sparkles. Locked camera, straight frontal view the whole time. The building, the facade, the gutter, the upper windows, the storefront frames, the glass and the door stay exactly as in the images; only the interior and the sign above the entrance get added. Starts exactly on the start image and ends exactly on the end image.
+
+0-1.5s: the empty shop behind the glass with the empty white gelato display. A team of tiny cheerful craftsmen, each only as tall as a gelato cup, in little pink overalls and pistachio green caps, march in through the open glass door in a line.
+1.5-3.5s: two craftsmen roll soft pink paint over the back wall, one climbs a tiny ladder and screws in the ceiling lights, which switch on one by one with a warm glow.
+3.5-5s: three craftsmen carry in the white menu boards and hang them on the back wall, the extra glass post on the right is lifted out by two craftsmen and a narrow glass pane above the door clicks into place.
+5-7s: a group of craftsmen push the drinks fridge full of colorful cans into place on the right, another group carries the coffee machine onto the counter and switches on the COFFEE TIME sign.
+7-9s: they carry colorful scoops of gelato in their arms like big balls and place them into the display trays one by one, one craftsman sticks the DON'S eisdiele logo with the french bulldog onto the front of the display and polishes it.
+9-10s: the craftsmen wave goodbye and march out of the frame through the door.
+10-10.8s: a tiny elf with a pink pointed hat and a pistachio green coat, about the size of a gelato cone, flies up to the empty wall above the entrance on a sparkling trail, holding a small glowing wand.
+10.8-13s: the elf taps the wall and the large dark grey letters appear one by one in bursts of golden sparkles: D, O, N, apostrophe, S, the elf flying from spot to spot.
+13-14s: the elf admires the finished DON'S sign, waves and disappears in a puff of pink sparkles.
+14-15s: a warm light sweep passes across the DON'S letters, sparkles fade, the shop holds exactly on the end image.
+
+Smooth, joyful, premium, highly detailed, 4K.
+
+Avoid: craftsmen or elf in the final frame, giant or real-size people, customers, creepy faces, deformed characters, multiple elves, different shop layout, different storefront, extra furniture, wrong letters, misspelled sign, extra text, random logos, mess, cartoon flat style, morphing building, warped lines, flicker, camera movement, jump cuts, blurry.
+```

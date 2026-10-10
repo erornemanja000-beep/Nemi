@@ -70,3 +70,34 @@ Whimsical but realistic, smooth transformations, satisfying, mouth-watering, pre
 
 Avoid: people, hands, legs, background people, cartoon style, 3D animation look, plastic look, changing the crepe, moving the wafer bar, extra cherries, extra scoops, messy plate, melting mess, different plate, different table, extra food, text, logos, brand names, watermark, flicker, jump cuts, shaky camera, oversaturated, blurry.
 ```
+
+---
+
+# Deo 1, popravljena verzija (AI je pravio svoju palačinku)
+
+Uzrok: pokret kamere + mnogo dešavanja bez end frame-a → AI "izmisli" novu palačinku.
+Rešenje: kamera skoro mirna, manje dešavanja, i (preporuka) end frame kao sidro.
+
+## Srednji kadar (end frame za deo 1), u programu za slike, ulaz = originalna fotografija
+
+```
+Edit this photo: remove only the chocolate wafer bar, the chocolate shavings, the whipped cream and the cherry. Keep the crepe, the light caramel and chocolate drizzle lines, the chocolate ice cream scoop, the yellow plate, the table, the camera angle and the lighting exactly the same. Photorealistic.
+```
+
+## Video prompt, deo 1 (10 s)
+
+Start = prazna palačinka · End = srednji kadar (ako postoji) · 16:9, 10 s
+
+```
+Photorealistic dessert commercial, macro food photography, warm soft daylight, shallow depth of field. Locked camera, almost static, only a very slow, subtle push-in. One single crepe that never changes: the same golden-brown rolled crepe with the same shape, size, color and position on the same yellow rectangular plate on the same dark table during the whole video.
+
+0-1.5s: the plain rolled crepe rests on the plate, tiny golden sparkles float in the air.
+1.5-5s: a thin glossy stream of light caramel sauce appears in the air and draws long zigzag lines across the crepe from left to right, like thin shiny ribbons wrapping around it, the lines run down over the top and drip down the sides of the crepe.
+5-7.5s: a thin stream of milk chocolate sauce draws finer zigzag lines between the caramel lines, also wrapping over the crepe and dripping down its sides, a few small drops land on the plate.
+7.5-9.5s: a round scoop of chocolate ice cream gently drops from above onto the plate behind the left half of the crepe, lands with a soft small bounce and settles.
+9.5-10s: everything is still: the crepe with caramel and chocolate drizzle and the chocolate ice cream scoop behind it.
+
+Smooth, satisfying, mouth-watering, premium, 4K.
+
+Avoid: new crepe, replacing the crepe, changing crepe shape or size, folded crepe, multiple crepes, crepe moving, camera orbit, big camera movement, whipped cream, cherry, chocolate bar, chocolate shavings, extra toppings, extra food, messy plate, sauce splashing everywhere, people, hands, legs, text, logos, watermark, cartoon, CGI look, morphing, flicker, jump cuts, blurry, oversaturated.
+```

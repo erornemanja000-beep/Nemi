@@ -68,3 +68,30 @@ Magical photorealistic ice cream shop commercial, warm golden hour sunlight, blu
 8.5-10s: everything settles exactly into the end image, sparkles fade.
 Avoid: people, customers, hands, real butterflies, birds, insects, creatures, mess, spilled paint, different shop layout, extra furniture, misspelled text, random logos, cartoon, CGI look, morphing building, warped lines, flicker, camera movement, jump cuts, blurry.
 ```
+
+---
+
+# Verzija sa likovima (vilenjak + mali majstori)
+
+## Kadar A: 2_izlog_prazan → 4_lokal_pun (mali majstori), 10 s
+
+```
+Charming magical photorealistic ice cream shop commercial, warm golden hour sunlight, blush pink and pistachio green tones, soft golden sparkles. Locked camera, straight frontal view. The building, the storefront frames, the glass, the door and the shop layout stay exactly as in the images; only the interior gets filled. Starts exactly on the start image and ends exactly on the end image.
+0-1.5s: a team of tiny cheerful craftsmen, each only as tall as a gelato cup, in little pink overalls and pistachio green caps, march in through the open glass door in a line.
+1.5-4s: they get to work inside: two of them roll pink paint over the back wall, one climbs a tiny ladder and screws in the ceiling lights, which switch on one by one, three of them carry in the white menu boards and hang them on the back wall.
+4-6.5s: a group of craftsmen push the drinks fridge into place on the right, another group carries the coffee machine onto the counter and switches on the COFFEE TIME sign.
+6.5-8.5s: they carry colorful scoops of gelato in their arms like big balls and place them into the display trays one by one, one craftsman sticks the DON'S eisdiele logo with the french bulldog onto the front of the display and polishes it.
+8.5-10s: the craftsmen wave goodbye and quickly march out of the frame, the shop is finished and looks exactly like the end image.
+Avoid: craftsmen staying in the final frame, giant people, real-size workers, creepy faces, deformed characters, different shop layout, different storefront, extra furniture, misspelled text, random logos, mess, cartoon flat style, morphing building, warped lines, flicker, camera movement, jump cuts, blurry.
+```
+
+## Kadar B: 4_lokal_pun → 5_lokal_dons (vilenjak pravi slova), 10 s
+
+```
+Charming magical photorealistic ice cream shop commercial, warm golden hour sunlight, blush pink tones, soft golden sparkles. Locked camera, straight frontal view of the same finished ice cream shop, the shop never changes, only the sign above the entrance appears. Starts exactly on the start image and ends exactly on the end image.
+0-1.5s: a tiny elf with a pink pointed hat and a pistachio green coat, about the size of a gelato cone, flies up to the empty wall above the entrance on a sparkling trail, holding a small glowing wand.
+1.5-7s: the elf taps the wall with the wand and the large dark grey letters appear one by one in a burst of golden sparkles: D, then O, then N, then the apostrophe, then S. After each letter the elf flies to the next spot and gives it a little polish with its sleeve.
+7-8.5s: the elf flies to the side, admires the finished DON'S sign, waves and disappears in a puff of pink sparkles.
+8.5-10s: a warm light sweep passes across the DON'S letters, sparkles fade, the shop holds exactly on the end image.
+Avoid: wrong letters, misspelled sign, extra letters, extra text, the elf staying in the final frame, multiple elves, creepy face, deformed character, giant character, changing the shop, people, cartoon flat style, morphing building, warped lines, flicker, camera movement, jump cuts, blurry.
+```

@@ -235,3 +235,24 @@ Smooth, satisfying, playful but realistic, mouth-watering, premium, 4K.
 
 Avoid: changing the crepe, changing the drizzle, new crepe, insects, creatures, animals, faces, multiple cherries, multiple chocolate bars, extra scoops, sprinkles, chocolate chips, brand names, text, logos, watermark, melting mess, messy splashes, white background, different plate, extra food, people, hands, cartoon, CGI look, morphing, flicker, jump cuts, shaky camera, blurry, oversaturated.
 ```
+
+---
+
+# Deo 2 v2: "Mali svet na tanjiru" (animirano)
+
+Start: III · End: finalna slika · 16:9, 10 s
+
+```
+Magical photorealistic dessert commercial, a tiny enchanted world on a plate, macro food photography, natural soft daylight, shallow depth of field, soft golden sparkles in the air. The video starts exactly on the start image and ends exactly on the end image. The crepe with its white chocolate and milk chocolate drizzle stays exactly the same the whole time. Smooth camera: from the close view of the start image the camera slowly pulls back and settles exactly into the framing of the end image, with the same dark grey table and dark background as the end image.
+
+0-2s: a gentle breeze blows small curled milk chocolate shavings in like autumn leaves, they swirl around the crepe and settle in piles on both ends, exactly like in the end image.
+2-4s: a tiny cute squirrel made of glossy milk chocolate runs across the plate, leaps onto the top of the crepe, curls into a ball and smoothly transforms into the striped chocolate wafer bar lying diagonally on the crepe, exactly in the position of the end image.
+4-6s: in the front right corner of the plate a miniature snowy mountain rises up, then its snow softens and swirls into the fluffy whipped cream mound of the end image.
+6-7.5s: a tiny cherry tree sprouts on top of the whipped cream mountain and blossoms, one glossy red cherry drops from its branch onto the top of the cream with a soft bounce, then the little tree dissolves into pink sparkles.
+7.5-9s: behind the left half of the crepe a small snowball rolls in and turns into the scoop of chocolate ice cream of the end image.
+9-10s: everything holds still exactly on the end image, a few golden sparkles fade.
+
+Whimsical but realistic, smooth transformations, satisfying, mouth-watering, premium, 4K.
+
+Avoid: changing the crepe, changing the drizzle, new crepe, real squirrel with fur, creepy or deformed animal, extra animals, multiple squirrels, insects, the squirrel staying at the end, multiple cherries, multiple chocolate bars, extra scoops, sprinkles, brand names, text, logos, watermark, melting mess, messy splashes, white background, different plate, extra food, people, hands, cartoon, 3D animation look, CGI look, morphing crepe, flicker, jump cuts, shaky camera, blurry, oversaturated.
+```

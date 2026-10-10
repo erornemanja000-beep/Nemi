@@ -214,3 +214,24 @@ Smooth, satisfying, playful but realistic, mouth-watering, premium, 4K.
 
 Avoid: insects, bugs, ants, beetles, any living creatures, legs, eyes, faces, creepy, different shavings, sprinkles, chocolate chips, white background, background change, different table, new crepe, changing crepe shape or size, unrolling crepe, different drizzle pattern, caramel color, extra sauces, ice cream, whipped cream, cherry, chocolate bar, extra food, messy splashes, camera orbit, people, hands, text, logos, watermark, cartoon, CGI look, morphing, flicker, jump cuts, blurry.
 ```
+
+---
+
+# Deo 2: mrvice, sladoled, čokoladica, šlag i trešnja
+
+Start: III (palačinka sa prelivima, kapi čokolade na tanjiru) · End: finalna slika (`frames/palacinka_end_16x9.png` ili tvoja 1920×1080) · 16:9, 10 s
+
+```
+Magical photorealistic dessert commercial, macro food photography, natural soft daylight, shallow depth of field. The video starts exactly on the start image and ends exactly on the end image. The crepe with its white chocolate and milk chocolate drizzle stays exactly the same the whole time. Smooth camera: starting from the close view of the start image, the camera slowly pulls back and settles exactly into the framing of the end image, with the same dark grey table and dark background as the end image. The toppings arrive one by one with a satisfying rhythm, each with a soft bounce and a few golden sparkles.
+
+0-2s: small curled milk chocolate shavings rain down from above like little autumn leaves and settle in piles on both ends of the crepe, exactly like in the end image. The chocolate drops on the plate stay as small drizzle spots.
+2-4s: a scoop of chocolate ice cream drops from above onto the plate behind the left half of the crepe, lands with a soft squish and settles exactly where it is in the end image.
+4-6s: a striped milk chocolate wafer bar spins down from above and lands diagonally on top of the crepe, exactly in the position of the end image.
+6-8s: in the front right corner of the plate a fluffy swirl of whipped cream rises up like a little snowy mountain and settles into the whipped cream mound of the end image.
+8-9.2s: one glossy red cocktail cherry drops from above onto the top of the whipped cream, bounces once and stops.
+9.2-10s: everything holds still exactly on the end image.
+
+Smooth, satisfying, playful but realistic, mouth-watering, premium, 4K.
+
+Avoid: changing the crepe, changing the drizzle, new crepe, insects, creatures, animals, faces, multiple cherries, multiple chocolate bars, extra scoops, sprinkles, chocolate chips, brand names, text, logos, watermark, melting mess, messy splashes, white background, different plate, extra food, people, hands, cartoon, CGI look, morphing, flicker, jump cuts, shaky camera, blurry, oversaturated.
+```

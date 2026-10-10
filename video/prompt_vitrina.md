@@ -41,3 +41,21 @@ Dynamic but smooth camera, satisfying rhythm, appetizing, premium, shallow depth
 ```
 slow motion throughout, slow camera, static camera, people, hands, scoops, melting gelato, messy splashes, different display, changed logo, different dog, extra text, misspelled labels, warped glass, distorted trays, objects merging, morphing, flicker, shaky handheld camera, jump cuts, scene change, cartoon, CGI look, oversaturated, low quality, blurry
 ```
+
+---
+
+# Bullet time v3 (kamera prilazi ODMAH dok se sladoled diže)
+
+```
+High-end ice cream commercial, photorealistic, fast-paced cinematic bullet-time sequence, warm soft daylight, blush pink and pistachio green brand colors, crisp 4K macro detail.
+
+0-1s: front view of the white gelato display with the green DON'S eisdiele logo and the french bulldog. In the same instant that the gelato swirls and toppings burst upward out of the trays (fresh raspberries, lemon slices, mango cubes, chocolate bar pieces, cookie crumbs, pistachio crumbs, curls of creamy gelato, glossy drops of raspberry and chocolate sauce), the camera immediately rushes forward with them in one fast snap zoom, flying up together with the rising pieces, with no pause, ending in an extreme close-up right in the middle of them.
+1s: at the peak, time freezes completely. Everything hangs perfectly still in mid-air, sharp and glossy, light refracting through the sauce drops like crystals, tiny ice crystals sparkling.
+1-6s: bullet time: the camera orbits a full 360 degrees around the frozen toppings at a fast, steady speed, sweeping very close past a raspberry, a lemon slice and a chocolate piece, background softly blurred by the motion. One frozen sauce drop reflects the green DON'S logo like a tiny mirror.
+6-7.5s: speed ramp: time snaps back to normal and all toppings rain down into their gelato trays, bam bam bam, each landing with a small bounce and a puff of cold mist.
+7.5-10s: the camera settles into a close-up of the colorful gelato display, creamy swirls glistening, a few golden sparkles fading.
+
+Dynamic but smooth camera, satisfying rhythm, appetizing, premium, shallow depth of field.
+```
+
+Negativni prompt: isti kao za v2, plus na početak dodati: `camera waiting, delayed camera move, wide shot held too long,`

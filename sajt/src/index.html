@@ -90,6 +90,30 @@ html.intro-on,html.intro-on body{overflow:hidden}
 .flylogo{position:fixed;left:0;top:0;z-index:120;transform-origin:0 0;pointer-events:none;opacity:0;will-change:transform}
 html.intro-on .brand img{opacity:0}
 
+/* Geschichte zum Film: kurze Zeilen, passend zu den Szenen */
+.caps{position:absolute;pointer-events:none;overflow:hidden;font-size:max(var(--u,10px),7px)}
+.scrim{position:absolute;inset:0;opacity:0;transition:opacity .8s ease}
+.scrim.l{background:linear-gradient(90deg,rgba(38,26,24,.7),rgba(38,26,24,.32) 40%,transparent 66%)}
+.scrim.r{background:linear-gradient(270deg,rgba(38,26,24,.7),rgba(38,26,24,.32) 40%,transparent 66%)}
+.scrim.on{opacity:1}
+.cap{position:absolute;max-width:44%;display:grid;gap:.5em}
+.cap.l{left:5.5%}.cap.r{right:5.5%;text-align:right;justify-items:end}.cap.c{left:0;right:0;margin-inline:auto;max-width:70%;text-align:center;justify-items:center}
+.cap .k{display:inline-flex;align-items:center;gap:.6em;font-family:var(--hand);font-weight:700;font-size:2.3em;line-height:1;color:#F8C6D0}
+.cap .k::before{content:"";width:2.2em;height:2px;background:currentColor;transform-origin:left;transform:scaleX(0);transition:transform .7s cubic-bezier(.2,.8,.2,1)}
+.cap.r .k{flex-direction:row-reverse}.cap.r .k::before{transform-origin:right}
+.cap .m{font-family:var(--display);font-weight:600;font-size:4.3em;line-height:1.02;letter-spacing:-.015em;color:#FFFDFB;text-shadow:0 .08em .6em rgba(30,20,18,.45);font-variation-settings:"SOFT" 100,"opsz" 144;text-wrap:balance}
+.cap.big .m{font-size:6.6em}
+.cap .m em{font-style:italic;font-weight:500;color:#F8C6D0}
+.cap.dark .m{color:var(--pistachio);text-shadow:0 0 .5em rgba(255,253,251,.9)}
+.cap.dark .m em{color:var(--rose)}
+.cap.dark .k{color:var(--rose)}
+.cap .w{display:inline-block;opacity:0;filter:blur(10px);transform:translateX(var(--from,-1.4em)) rotate(var(--rot,-4deg));transition:opacity .7s,filter .8s,transform 1s cubic-bezier(.2,.85,.25,1);transition-delay:calc(var(--i) * 75ms + 120ms)}
+.cap.r .w{--from:1.4em;--rot:4deg}.cap.c .w{--from:0;--rot:0deg;transform:translateY(.6em) scale(.96)}
+.cap .k{opacity:0;transition:opacity .6s}
+.cap.on .w{opacity:1;filter:none;transform:none}
+.cap.on .k{opacity:1}.cap.on .k::before{transform:none}
+.cap.off .w,.cap.off .k{transition:opacity .45s,filter .45s,transform .6s;transition-delay:0s;opacity:0;filter:blur(6px);transform:translateY(-.5em)}
+
 /* ---------- Hero: die Vitrine als Film ---------- */
 .hero{--h:0;position:relative;height:100svh;min-height:640px;background:var(--cream)}
 .hero-media{position:absolute;inset:0;overflow:hidden;background:var(--chalk);clip-path:inset(calc(var(--h) * 3.5%) calc(var(--h) * 3.5%) round calc(var(--h) * 40px))}
@@ -378,6 +402,7 @@ footer{background:var(--chalk);color:#E9DCD5;padding-block:56px calc(36px + env(
 <div class="film" id="filmLayer" aria-label="Intro-Film">
   <!-- Intro-Film austauschen: assets/video/hero.mp4 (+ Poster assets/img/hero-poster.jpg) -->
   <video id="film" src="assets/video/hero.mp4" poster="assets/img/hero-poster.jpg" muted playsinline preload="auto"></video>
+  <div class="caps" id="caps" aria-live="off"><div class="scrim l" data-s="l"></div><div class="scrim r" data-s="r"></div></div>
   <button class="bigplay" id="bigplay" type="button" hidden data-i18n="film.play">▶ Film abspielen</button>
   <div class="film-ui">
     <button class="chip" id="sound" type="button" aria-pressed="false">
@@ -596,7 +621,7 @@ footer{background:var(--chalk);color:#E9DCD5;padding-block:56px calc(36px + env(
       </div>
       <div>
         <h4 data-i18n="visit.hours">Öffnungszeiten</h4>
-        <ul><li><span data-i18n="days.wk">Mo – Fr</span> 09:00 – 22:00</li><li><span data-i18n="days.we">Sa – So</span> 10:00 – 22:00</li></ul>
+        <ul><li><span data-i18n="days.wk">Mo – Fr</span> 07:00 – 20:00</li><li><span data-i18n="days.we">Sa – So</span> 10:00 – 22:00</li></ul>
       </div>
       <div>
         <h4 data-i18n="foot.imprint">Impressum</h4>
@@ -692,7 +717,7 @@ document.documentElement.classList.add('js');
     'visit.find':['hier findest du uns','find us here'],'visit.near':['Wien-Simmering, nahe Geiselbergstraße und Werkstättenweg.','Vienna-Simmering, near Geiselbergstraße and Werkstättenweg.'],'visit.open':['Route öffnen →','Get directions →'],
     'days.wk':['Mo – Fr','Mon – Fri'],'days.we':['Sa – So','Sat – Sun'],
     'foot.p':['Hausgemachtes Eis, Crêpes, Pinsa und Kaffee in Wien-Simmering.','Homemade ice cream, crêpes, pinsa and coffee in Vienna-Simmering.'],'foot.imprint':['Impressum','Imprint'],'foot.owner':['Inhaberin: Vesna Stamenović','Owner: Vesna Stamenović'],'foot.made':['Mit Liebe gemacht in Wien','Made with love in Vienna'],
-    'open.now':['Jetzt geöffnet · bis 22:00','Open now · until 22:00'],'open.later':['Heute ab {t} geöffnet','Opens today at {t}'],'open.closed':['Geschlossen · morgen ab {t}','Closed · opens tomorrow at {t}']
+    'open.now':['Jetzt geöffnet · bis {t}','Open now · until {t}'],'open.later':['Heute ab {t} geöffnet','Opens today at {t}'],'open.closed':['Geschlossen · morgen ab {t}','Closed · opens tomorrow at {t}']
   };
   let lang = 'de';
   try { const s = localStorage.getItem('dons-lang'); if (s === 'en' || s === 'de') lang = s; } catch (e) {}
@@ -759,7 +784,7 @@ document.documentElement.classList.add('js');
   }
 
   /* ---------------- Öffnungszeiten ---------------- */
-  const HOURS = [[10,22],[9,22],[9,22],[9,22],[9,22],[9,22],[10,22]]; // So..Sa
+  const HOURS = [[10,22],[7,20],[7,20],[7,20],[7,20],[7,20],[10,22]]; // So..Sa
   const DAY = [['So','Sun'],['Mo','Mon'],['Di','Tue'],['Mi','Wed'],['Do','Thu'],['Fr','Fri'],['Sa','Sat']];
   function vienna() {
     const p = new Intl.DateTimeFormat('en-GB', {timeZone:'Europe/Vienna', weekday:'short', hour:'2-digit', minute:'2-digit', hour12:false}).formatToParts(new Date());
@@ -775,7 +800,7 @@ document.documentElement.classList.add('js');
     }).join('');
     const [o, c] = HOURS[now.d], pill = document.getElementById('openPill'), txt = document.getElementById('openText');
     const fmt = h => String(h).padStart(2, '0') + ':00';
-    if (now.h >= o && now.h < c) { pill.classList.add('is-open'); txt.textContent = t('open.now'); }
+    if (now.h >= o && now.h < c) { pill.classList.add('is-open'); txt.textContent = t('open.now').replace('{t}', fmt(c)); }
     else { pill.classList.remove('is-open'); txt.textContent = now.h < o ? t('open.later').replace('{t}', fmt(o)) : t('open.closed').replace('{t}', fmt(HOURS[(now.d + 1) % 7][0])); }
   }
 
@@ -785,7 +810,7 @@ document.documentElement.classList.add('js');
     document.documentElement.lang = lang;
     document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.dataset.i18n); });
     document.querySelectorAll('.lang button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.lang === lang)));
-    splitTitle(); renderChapters(); renderAllergens(); renderHours(); renderFaves(); renderWords(); syncSound();
+    splitTitle(); renderCaps(); renderChapters(); renderAllergens(); renderHours(); renderFaves(); renderWords(); syncSound();
   }
   document.querySelectorAll('.lang button').forEach(b => b.addEventListener('click', () => {
     lang = b.dataset.lang; try { localStorage.setItem('dons-lang', lang); } catch (e) {} applyLang();
@@ -816,6 +841,49 @@ document.documentElement.classList.add('js');
     const w = W / H > ar ? H * ar : W, h = w / ar;
     return {x:(W - w) / 2, y:(H - h) / 2, w, h};
   }
+  // Die Geschichte: [von, bis (Sekunden im Film), Seite l/r/c, Höhe in %, Stil, Überzeile DE/EN, Zeile DE/EN]. *Wort* = betont.
+  const CAPS = [
+    [0.5, 2.1, 'l', 36, '', ['Don\'s Welt', 'Don\'s world'], ['Alles beginnt mit *einer Kugel.*', 'It all starts with *a single scoop.*']],
+    [2.4, 4.6, 'l', 58, '', ['', ''], ['Ein bisschen Liebe, und sie *blüht auf.*', 'Add a little love and it *blooms.*']],
+    [4.9, 7.1, 'l', 12, '', ['', ''], ['Ein Blütenblatt macht sich *auf den Weg …*', 'One petal sets off *on a journey …*']],
+    [7.4, 10.7, 'l', 62, '', ['Wien · 1110', 'Vienna · 1110'], ['… nach Simmering, in die *Geiselbergstraße 24.*', '… to Simmering, to *Geiselbergstraße 24.*']],
+    [11.0, 14.7, 'r', 9, '', ['', ''], ['Kleine Helfer zaubern einen Ort *voller Süße.*', 'Little helpers conjure up a place *full of sweetness.*']],
+    [15.0, 16.4, 'r', 9, '', ['', ''], ['Jeden Tag *frisch gefüllt.*', 'Freshly filled, *every day.*']],
+    [16.7, 21.8, 'l', 22, 'big', ['hausgemacht', 'homemade'], ['*Himbeere.*', '*Raspberry.*']],
+    [18.8, 21.8, 'l', 44, 'big', ['', ''], ['Zitrone.', 'Lemon.']],
+    [20.0, 21.8, 'l', 60, 'big', ['', ''], ['*Schokolade.*', '*Chocolate.*']],
+    [22.3, 27.1, 'r', 8, '', ['', ''], ['Warme Crêpes, *gerollt mit Liebe …*', 'Warm crêpes, *rolled with love …*']],
+    [27.5, 31.7, 'l', 8, '', ['', ''], ['… und ganz oben: *eine Kirsche.*', '… and right on top: *a cherry.*']],
+    [32.2, 34.5, 'c', 66, 'dark big', ['', ''], ['Willkommen in *Don\'s Welt.*', 'Welcome to *Don\'s world.*']]
+  ];
+  const capsEl = document.getElementById('caps');
+  function renderCaps() {
+    capsEl.querySelectorAll('.cap').forEach(el => el.remove());
+    capsEl.insertAdjacentHTML('beforeend', CAPS.map((c, n) => {
+      let i = 0;
+      const words = esc(c[6][L()]).split(' ').map(w => w).join(' ');
+      const html = words.replace(/\*([^*]+)\*/g, (_, m) => '<em>' + m + '</em>')
+        .replace(/(<em>)?([^\s<>]+)(<\/em>)?/g, (all, a, w, b) => (a || '') + '<span class="w" style="--i:' + (i++) + '">' + w + '</span>' + (b || ''));
+      return '<div class="cap ' + c[2] + ' ' + c[4] + '" data-n="' + n + '" style="top:' + c[3] + '%">' + (c[5][L()] ? '<span class="k">' + esc(c[5][L()]) + '</span>' : '') + '<p class="m">' + html + '</p></div>';
+    }).join(''));
+  }
+  function placeCaps() {
+    const v = videoRect();
+    Object.assign(capsEl.style, {left:v.x + 'px', top:v.y + 'px', width:v.w + 'px', height:v.h + 'px'});
+    capsEl.style.setProperty('--u', (v.w / 100) + 'px');
+  }
+  addEventListener('resize', placeCaps);
+  function tickCaps() {
+    const tm = film.currentTime, sides = {l:false, r:false};
+    capsEl.querySelectorAll('.cap').forEach(el => {
+      const c = CAPS[+el.dataset.n], on = tm >= c[0] && tm < c[1];
+      if (on && c[4] !== 'dark' && sides[c[2]] !== undefined) sides[c[2]] = true;
+      if (on !== el.classList.contains('on')) { el.classList.toggle('on', on); el.classList.toggle('off', !on && tm >= c[1]); }
+      if (tm < c[0]) el.classList.remove('off');
+    });
+    capsEl.querySelectorAll('.scrim').forEach(s => s.classList.toggle('on', sides[s.dataset.s]));
+    if (!introDone) requestAnimationFrame(tickCaps);
+  }
   function finishIntro(fromEnd) {
     if (introDone) return; introDone = true;
     vit.play().catch(() => {});
@@ -845,6 +913,7 @@ document.documentElement.classList.add('js');
     document.documentElement.classList.add('intro-on'); introDone = false;
     layer.classList.remove('gone', 'out'); fly.getAnimations().forEach(x => x.cancel()); fly.style.opacity = 0;
     film.currentTime = 0; bigplay.hidden = true; scrollTo(0, 0);
+    placeCaps(); capsEl.querySelectorAll('.cap').forEach(el => el.classList.remove('on', 'off')); requestAnimationFrame(tickCaps);
     film.play().catch(() => { bigplay.hidden = false; });
   }
   film.addEventListener('timeupdate', () => {

@@ -128,3 +128,24 @@ Smooth, satisfying, mouth-watering, premium, warm, 4K.
 
 Avoid: white background, studio background, plain background, removing the background, changing the table, changing the plate, new crepe, replacing the crepe, changing crepe shape or size, multiple crepes, crepe moving, camera orbit, big camera movement, ice cream, whipped cream, cherry, chocolate bar, extra food, messy plate, sauce splashing everywhere, people, hands, legs, text, logos, watermark, cartoon, CGI look, morphing, flicker, jump cuts, blurry, oversaturated.
 ```
+
+---
+
+# Deo 1, TAČNO kao druga slika (brza verzija)
+
+Start: `frames/palacinka_prazna_16x9.png` · End: `frames/palacinka_prelivi_16x9.png`
+(druga slika sa vraćenom tamnom pozadinom, prelivi i mrvice netaknuti). 16:9, 5 s.
+
+```
+Fast, punchy photorealistic dessert commercial, macro food photography, natural soft daylight, shallow depth of field, dark blurred cafe background. The video starts exactly on the start image and ends exactly on the end image: the same rolled crepe on the same yellow plate, and the final drizzle and chocolate shavings must look exactly like in the end image. The background never changes. Camera almost static with a slight push-in.
+
+0-0.5s: the plain rolled crepe on the plate.
+0.5-2s: fast: glossy ribbons of cream-colored white chocolate sauce shoot in from the left side and wrap quickly around the crepe in several tight loops like shiny chains, snapping into place.
+1.5-3s: fast: thinner ribbons of milk chocolate sauce shoot in from the right side and wrap quickly around the crepe between the white lines, then all ribbons instantly relax into the exact drizzle pattern of the end image, dripping down the sides, with the same few chocolate drops on the plate.
+3-4.2s: chocolate shavings burst out from inside both open ends of the crepe like a small confetti pop, fly up briefly and land in piles on the left and right ends exactly as in the end image.
+4.2-5s: everything settles and holds still exactly on the end image.
+
+Quick satisfying rhythm, smooth, mouth-watering, premium, 4K.
+
+Avoid: white background, studio background, background change, new crepe, changing crepe shape, different drizzle pattern, caramel color, extra sauces, sprinkles, ice cream, whipped cream, cherry, chocolate bar, extra food, messy splashes, slow motion, long pauses, camera orbit, people, hands, text, logos, watermark, cartoon, CGI look, morphing, flicker, jump cuts, blurry.
+```

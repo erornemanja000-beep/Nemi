@@ -149,3 +149,26 @@ Quick satisfying rhythm, smooth, mouth-watering, premium, 4K.
 
 Avoid: white background, studio background, background change, new crepe, changing crepe shape, different drizzle pattern, caramel color, extra sauces, sprinkles, ice cream, whipped cream, cherry, chocolate bar, extra food, messy splashes, slow motion, long pauses, camera orbit, people, hands, text, logos, watermark, cartoon, CGI look, morphing, flicker, jump cuts, blurry.
 ```
+
+---
+
+# Deo 1, spirala (beli sleva, čokoladni zdesna) + mrvice tačno kao na slici
+
+Start: `frames/palacinka_prazna_16x9.png` · End: `frames/palacinka_prelivi_16x9.png` · 16:9, 5 s
+
+```
+Photorealistic dessert commercial, macro food photography, natural soft daylight, shallow depth of field, dark blurred cafe background. The video starts exactly on the start image and ends exactly on the end image. The crepe, the plate, the table and the background never change. Locked camera, almost static.
+
+0-0.5s: the plain rolled crepe on the yellow plate.
+0.5-3s: two glossy sauce streams appear at the same time: a cream-colored white chocolate stream starts at the left end of the crepe and a milk chocolate stream starts at the right end of the crepe. They wrap around the crepe in tight spirals, the white one moving from left to right and the chocolate one moving from right to left, coiling around it like ribbons, crossing each other in the middle.
+3-3.8s: the spirals soften and settle into exactly the drizzle pattern of the end image, dripping down the sides of the crepe, with the same few chocolate drops on the plate.
+3.8-4.5s: the chocolate shavings appear in place on the left and right ends of the crepe, softly fading in exactly where they are in the end image, exactly the same shape, size, color and amount as in the end image.
+4.5-5s: everything holds still exactly on the end image.
+
+Smooth, fast, satisfying, mouth-watering, premium, 4K.
+
+Avoid: new chocolate shavings, different shavings, sprinkles, chocolate chips, flying shavings, sauce coming from outside the frame, white background, background change, new crepe, changing crepe shape, different drizzle pattern, caramel color, extra sauces, ice cream, whipped cream, cherry, chocolate bar, extra food, messy splashes, slow motion, camera orbit, people, hands, text, logos, watermark, cartoon, CGI look, morphing, flicker, jump cuts, blurry.
+```
+
+Sigurnost za dalje kadrove: u CapCut-u stavi end frame sliku na sam kraj klipa (0,3 s crossfade),
+i za start sledećeg dela koristi `palacinka_prelivi_16x9.png`, ne poslednji kadar videa.

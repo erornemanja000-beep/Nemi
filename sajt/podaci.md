@@ -100,9 +100,17 @@ Ukusi: Hibiscus Berry, Ginger Strawberry Kick, Green Apple Fresh, Passion Lime T
 - Instagram: @donseisdiele ("für die süßesten Updates")
 - Telefon: +43 690 105 397 35
 
-## Nedostaje (nije bilo na screenshotovima)
-- Stranica "Eis": lista ukusa i cena kugle
-- Legenda alergena (Allergenkennzeichnung, zatvoren meni)
-- Pinsa: da li ima stavki između Salami i Vege
-- Opisi za Crêpes (Bueno Dream, Pistazien Royal, Jaffa Dream, Fruchtzauber)
-- Impressum (ime firme/vlasnika, UID, email) i footer
+## Allergenkennzeichnung (EU-Standard)
+A – Glutenhaltiges Getreide · B – Krebstiere · C – Eier · D – Fisch · E – Erdnüsse · F – Soja ·
+G – Milch (inkl. Laktose) · H – Schalenfrüchte · L – Sellerie · M – Senf · N – Sesam · O – Sulfite ·
+P – Lupinen · R – Weichtiere
+"Trotz sorgfältiger Herstellung können Spuren von Allergenen enthalten sein."
+
+## Vlasnik / Impressum
+- Vlasnica: Vesna Stamenović
+- Email: (čeka se adresa)
+- UID: ne stavljamo za sada
+
+## Napomene
+- Ukusi sladoleda se stalno menjaju, pa sajt nema fiksnu listu ukusa.
+- Pinsa: možda ima stavki između Salami i Vege (nije potvrđeno).

@@ -101,3 +101,30 @@ Smooth, satisfying, mouth-watering, premium, 4K.
 
 Avoid: new crepe, replacing the crepe, changing crepe shape or size, folded crepe, multiple crepes, crepe moving, camera orbit, big camera movement, whipped cream, cherry, chocolate bar, chocolate shavings, extra toppings, extra food, messy plate, sauce splashing everywhere, people, hands, legs, text, logos, watermark, cartoon, CGI look, morphing, flicker, jump cuts, blurry, oversaturated.
 ```
+
+---
+
+# Deo 1, finalno: prazna palačinka → prelivi kao lanci + mrvice (10 s)
+
+Start: `frames/palacinka_prazna_16x9.png`. End: najbolje bez end frame-a (slika sa belom pozadinom kvari pozadinu).
+Ako se pravi end frame, u programu za slike ulaz = prazna palačinka:
+
+```
+Edit this photo: add glossy light caramel zigzag drizzle lines and thinner milk chocolate drizzle lines across the top of the crepe, dripping down its sides, with a few small chocolate drops on the plate, and a pile of chocolate shavings on both ends of the crepe. Keep the same crepe, the same yellow plate, the same dark grey table and dark background, the same camera angle and the same natural daylight. Do not change or remove the background.
+```
+
+## Video prompt
+
+```
+Photorealistic dessert commercial filmed on location, macro food photography, natural soft daylight, shallow depth of field. The scene is exactly the start image: the same golden rolled crepe on the same yellow rectangular plate with brown rim, standing on the same dark grey metal table, with the same dark blurred cafe background. The background, the table, the plate and the crepe stay exactly the same during the whole video. Locked camera, almost static, only a very slow subtle push-in.
+
+0-1.5s: the plain crepe rests on the plate, a few tiny golden sparkles float in the air.
+1.5-4.5s: from the left side of the frame, several glossy ribbons of light caramel sauce fly in through the air like shiny liquid chains. They wrap around the crepe one after another in diagonal loops, tighten gently as if holding the crepe, then soften and settle into thick glossy zigzag drizzle lines across the top, dripping down the sides.
+4.5-7s: from the right side, thinner ribbons of milk chocolate sauce fly in the same way, like delicate dark chains, wrap around the crepe between the caramel lines, then relax into fine glossy chocolate drizzle lines dripping down the sides, a few small chocolate drops fall onto the plate.
+7-9s: small curled chocolate shavings rain down from above like little autumn leaves, bouncing slightly, and pile up on both ends of the crepe, left and right, leaving the middle with only the drizzle.
+9-10s: everything is still: the same crepe on the same plate and table, covered with caramel and chocolate drizzle and chocolate shavings on both ends.
+
+Smooth, satisfying, mouth-watering, premium, warm, 4K.
+
+Avoid: white background, studio background, plain background, removing the background, changing the table, changing the plate, new crepe, replacing the crepe, changing crepe shape or size, multiple crepes, crepe moving, camera orbit, big camera movement, ice cream, whipped cream, cherry, chocolate bar, extra food, messy plate, sauce splashing everywhere, people, hands, legs, text, logos, watermark, cartoon, CGI look, morphing, flicker, jump cuts, blurry, oversaturated.
+```

@@ -130,7 +130,7 @@ def main():
     n = int(a.dur * SR)
 
     mus, root = render_music(music, n + SR * 2)
-    mus = mus[:n]
+    mus = mus[:n] * (1.0 if a.music_gain > 0 else 0.0)   # --music-gain 0: samo zvučni efekti, bez muzike
     sfx = np.zeros((n + SR * 4, 2), np.float32)
     for e in events:
         y = S.render_event(e, root)

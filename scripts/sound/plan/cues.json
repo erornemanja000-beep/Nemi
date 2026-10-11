@@ -642,8 +642,8 @@
   {
    "t": 13.033,
    "dur": 0.8,
-   "type": "chime",
-   "intensity": 0.65,
+   "type": "twinkle",
+   "intensity": 0.52,
    "pan": -0.6,
    "pitch": "low",
    "what": "D fully formed in gold, the first note of the rising letter motif"
@@ -705,8 +705,8 @@
   {
    "t": 13.7,
    "dur": 0.7,
-   "type": "chime",
-   "intensity": 0.6,
+   "type": "twinkle",
+   "intensity": 0.48,
    "pan": -0.2,
    "pitch": "mid",
    "what": "O formed, the second note of the motif"
@@ -732,8 +732,8 @@
   {
    "t": 14.233,
    "dur": 0.7,
-   "type": "chime",
-   "intensity": 0.6,
+   "type": "twinkle",
+   "intensity": 0.48,
    "pan": 0.15,
    "pitch": "mid",
    "what": "N formed, the third note of the motif"
@@ -786,8 +786,8 @@
   {
    "t": 14.867,
    "dur": 0.6,
-   "type": "chime",
-   "intensity": 0.6,
+   "type": "twinkle",
+   "intensity": 0.48,
    "pan": 0.3,
    "pitch": "high",
    "what": "Apostrophe snaps into its comma shape, the fourth note (frame 446)"
@@ -804,8 +804,8 @@
   {
    "t": 15.1,
    "dur": 0.9,
-   "type": "chime",
-   "intensity": 0.75,
+   "type": "twinkle",
+   "intensity": 0.6,
    "pan": 0.47,
    "pitch": "high",
    "what": "S formed and DON'S is complete, the top note of the motif (frame 453)"
@@ -921,8 +921,8 @@
   {
    "t": 18.433,
    "dur": 0.8,
-   "type": "chime",
-   "intensity": 0.6,
+   "type": "twinkle",
+   "intensity": 0.48,
    "pan": 0,
    "pitch": "high",
    "what": "mirrored DON'S eisdiele logo settles, readable inside the bubble"
@@ -1749,8 +1749,8 @@
   {
    "t": 36.733,
    "dur": 0.633,
-   "type": "chime",
-   "intensity": 0.6,
+   "type": "twinkle",
+   "intensity": 0.48,
    "pan": 0,
    "pitch": "high",
    "what": "Logo completes with the flourish dashes around 'eisdiele' and holds to the end (1102-1120)"

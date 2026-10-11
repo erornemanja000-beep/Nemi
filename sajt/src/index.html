@@ -157,6 +157,9 @@ html.intro-on .hero .fade{opacity:0;transform:translateY(20px)}
 
 .chip{display:inline-flex;align-items:center;gap:8px;border:0;border-radius:999px;padding:10px 16px;background:color-mix(in srgb,var(--paper) 82%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);font:700 .88rem var(--body);color:var(--cocoa);cursor:pointer;text-decoration:none;box-shadow:0 6px 18px -8px rgba(59,42,39,.35)}
 .chip svg{width:16px;height:16px}
+/* Ton-Knopf lädt ein paar Mal sanft zum Antippen ein (Browser erlauben Ton erst nach einem Klick) */
+#sound[aria-pressed="false"]{animation:invite 2.2s ease-in-out 1.5s 4}
+@keyframes invite{50%{box-shadow:0 0 0 7px rgba(201,102,122,.35),0 6px 18px -8px rgba(59,42,39,.35);transform:scale(1.06)}}
 
 /* Kreide-Schildchen */
 .marquee{display:grid;gap:12px;mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
@@ -964,7 +967,8 @@ document.documentElement.classList.add('js');
   sound.addEventListener('click', () => { film.muted = !film.muted; if (film.paused) film.play().catch(() => {}); syncSound(); });
   skip.addEventListener('click', () => finishIntro(false));
   bigplay.addEventListener('click', () => { bigplay.hidden = true; film.play().catch(() => finishIntro(false)); });
-  document.getElementById('replay').addEventListener('click', startFilm);
+  // Nochmal ansehen ist ein Klick, also darf der Film gleich mit Ton laufen
+  document.getElementById('replay').addEventListener('click', () => { film.muted = false; syncSound(); startFilm(); });
   addEventListener('keydown', e => { if (e.key === 'Escape' && !introDone) finishIntro(false); });
   if (reduce) { document.documentElement.classList.add('intro-on'); bigplay.hidden = false; }
   else startFilm();

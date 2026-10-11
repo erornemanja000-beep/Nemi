@@ -1,5 +1,5 @@
 {
- "note": "Kamera za uspravni snimak vitrine (vreme izvora sladoled_w2.mov).",
+ "note": "Kamera za uspravnu verziju (vreme = kadar/30 s, px izvora 1920x1080), spojeno iz planova po scenama i njihovih provera.",
  "keyframes": [
   {
    "t": 0,
@@ -7,8 +7,7 @@
    "wc": 607.5,
    "by": 0.5,
    "cut": false,
-   "src": "gel1",
-   "why": "Segment start. The Himbeere sign text (1127-1432) and the raspberry skewer are centred and inside the safe area 1032-1518."
+   "src": "gel1"
   },
   {
    "t": 1.6,
@@ -16,17 +15,23 @@
    "wc": 607.5,
    "by": 0.5,
    "cut": false,
-   "src": "gel1",
-   "why": "Slow 35 px drift that follows the sign as it grows with the push-in (text 1136-1509 at 1.5 s, safe area 1067-1553). This is the last moment "
+   "src": "gel1"
   },
   {
-   "t": 3.6,
+   "t": 2.45,
+   "cx": 1320,
+   "wc": 607.5,
+   "by": 0.5,
+   "cut": false,
+   "src": "gel1"
+  },
+  {
+   "t": 3.45,
    "cx": 1616,
    "wc": 607.5,
    "by": 0.5,
    "cut": false,
-   "src": "gel1",
-   "why": "Eased move to the right, in the same direction as the content, which softens the source pan. The Himbeere sign slides out to the right and t"
+   "src": "gel1"
   },
   {
    "t": 4.067,
@@ -34,8 +39,7 @@
    "wc": 607.5,
    "by": 0.5,
    "cut": false,
-   "src": "gel1",
-   "why": "Hold at the right edge on the MANGO sign and mango swirl until the last frame of shot 1. The sign drifts about 50 px further right during th"
+   "src": "gel1"
   },
   {
    "t": 4.09,
@@ -43,8 +47,7 @@
    "wc": 607.5,
    "by": 0.5,
    "cut": true,
-   "src": "gel1",
-   "why": "Hard cut to the wide mango shot. The crop (981-1589) frames the top cut mango with its raspberry at upper left and the full MANGO sign: the "
+   "src": "gel1"
   },
   {
    "t": 8.07,
@@ -52,8 +55,7 @@
    "wc": 607.5,
    "by": 0.5,
    "cut": false,
-   "src": "gel1",
-   "why": "Calm hold through the dry-ice mist. This is the last still frame before the whip pan starts."
+   "src": "gel1"
   },
   {
    "t": 9.25,
@@ -61,8 +63,7 @@
    "wc": 607.5,
    "by": 0.5,
    "cut": false,
-   "src": "gel1",
-   "why": "Segment end. A gentle 245 px leftward drift during the fast pan lands the JAFFA chalk sign (780-1150, text about 840-1100) in the centre of "
+   "src": "gel2"
   },
   {
    "t": 9.9,
@@ -70,8 +71,7 @@
    "wc": 607.5,
    "by": 0.5,
    "cut": false,
-   "src": "gel2",
-   "why": "Follows the slowing rightward drift (+290 px) so the tag stays put. Because the camera starts from rest, it trails the tag by up to about 85"
+   "src": "gel2"
   },
   {
    "t": 10.47,
@@ -79,8 +79,7 @@
    "wc": 607.5,
    "by": 0.5,
    "cut": false,
-   "src": "gel2",
-   "why": "Slow drift with the last of the source motion. Tag 1130-1490, flower and berry about 1300, chocolate bar on the left. Checked in the overlay"
+   "src": "gel2"
   },
   {
    "t": 10.77,
@@ -88,8 +87,7 @@
    "wc": 607.5,
    "by": 0.5,
    "cut": false,
-   "src": "gel2",
-   "why": "Eased pan of 240 px in 0.3 s that matches the source jerk at 10.53-10.70 (content moves about 220 px left). The tag stays centre-right throu"
+   "src": "gel2"
   },
   {
    "t": 11.75,
@@ -97,26 +95,23 @@
    "wc": 607.5,
    "by": 0.5,
    "cut": false,
-   "src": "gel2",
-   "why": "Hold. The source is still from 10.73 to 11.83 and JAFFA is clearly readable inside the safe area."
+   "src": "gel2"
   },
   {
    "t": 12.25,
-   "cx": 955,
+   "cx": 970,
    "wc": 607.5,
    "by": 0.5,
    "cut": false,
-   "src": "gel2",
-   "why": "Pan left to pick up the chocolate stream entering from the top at about 740-800 (visible from 11.87, inside the phone-visible area from abou"
+   "src": "gel2"
   },
   {
    "t": 13.167,
-   "cx": 985,
+   "cx": 1015,
    "wc": 607.5,
    "by": 0.5,
    "cut": false,
-   "src": "gel2",
-   "why": "Slow 30 px drift with the source drift and push-in, so the stream column (790-830) stays visible at about 18% and more of the tag stays in. "
+   "src": "gel2"
   },
   {
    "t": 13.19,
@@ -124,8 +119,7 @@
    "wc": 607.5,
    "by": 0.5,
    "cut": true,
-   "src": "gel2",
-   "why": "Hard cut to the Oreo tub. The Oreo tag (980-1260) sits centre-right inside the safe area, with the whole cookie (660-820) partly in at the l"
+   "src": "gel2"
   },
   {
    "t": 14.65,
@@ -133,26 +127,23 @@
    "wc": 607.5,
    "by": 0.5,
    "cut": false,
-   "src": "gel2",
-   "why": "Hold while the source is still, up to the start of its move at 14.63."
+   "src": "gel2"
   },
   {
    "t": 15.9,
-   "cx": 945,
+   "cx": 930,
    "wc": 607.5,
    "by": 0.5,
    "cut": false,
-   "src": "gel2",
-   "why": "Calm 70 px drift left during the source's diagonal move. The Oreo leaves to the right and the Kinder tag and white chocolate come in from bo"
+   "src": "gel2"
   },
   {
    "t": 18.37,
-   "cx": 975,
+   "cx": 985,
    "wc": 607.5,
    "by": 0.5,
    "cut": false,
-   "src": "gel2",
-   "why": "Very slow 30 px drift that follows the push-in toward the right. Kinder tag 790-1160 at 16.5 and 810-1240 at 18.3, right white bar 700-1100,"
+   "src": "gel2"
   }
  ]
 }

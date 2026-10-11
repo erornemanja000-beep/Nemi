@@ -32,7 +32,7 @@
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;scroll-padding-top:84px;overflow-x:clip}
-body{background:var(--cream);color:var(--cocoa);font-family:var(--body);font-size:var(--step-0);line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+body{margin:0;background:var(--cream);color:var(--cocoa);font-family:var(--body);font-size:var(--step-0);line-height:1.6;overflow-x:clip;-webkit-font-smoothing:antialiased}
 img,video{display:block;max-width:100%}
 a{color:inherit}
 h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1.04;margin:0;text-wrap:balance;font-variation-settings:"SOFT" 100,"opsz" 120;color:var(--pistachio);letter-spacing:-.01em}
@@ -88,7 +88,7 @@ html:not(.js) .film{display:none}
 .film-bar{position:absolute;left:0;right:0;bottom:0;height:3px;background:rgba(201,102,122,.15)}
 .film-bar i{display:block;height:100%;width:0;background:var(--rose)}
 .bigplay{position:absolute;inset:0;margin:auto;width:max-content;height:max-content;border:0;border-radius:999px;padding:18px 30px;background:var(--rose);color:var(--paper);font:700 1.1rem var(--body);cursor:pointer;box-shadow:0 20px 40px -16px var(--rose)}
-.flylogo{position:fixed;left:0;top:0;z-index:120;transform-origin:0 0;pointer-events:none;opacity:0;will-change:transform}
+.flylogo{position:fixed;left:0;top:0;z-index:120;max-width:none;transform-origin:0 0;pointer-events:none;opacity:0;will-change:transform}
 html.intro-on .brand img{opacity:0}
 
 /* Geschichte zum Film: kurze Zeilen, passend zu den Szenen */
@@ -847,13 +847,13 @@ document.documentElement.classList.add('js');
   // (scripts/mobile/reframe.py). Logo = Lage von don-badge.png im letzten Filmbild (Anteile des Videobildes).
   const PORTRAIT = innerHeight > innerWidth * 1.2;
   const VID = PORTRAIT
-    ? {film:'assets/video/hero-m.mp4', poster:'assets/img/hero-poster-m.jpg', vit:'assets/video/sorten-m.mp4', vitPoster:'assets/img/sorten-poster-m.jpg', ar:9 / 16, logo:{x:.0863, y:.1994, w:.8691} /*LOGO_M*/}
+    ? {film:'assets/video/hero-m.mp4', poster:'assets/img/hero-poster-m.jpg', vit:'assets/video/sorten-m.mp4', vitPoster:'assets/img/sorten-poster-m.jpg', ar:9 / 16, logo:{x:.0453, y:.1998, w:.96} /*LOGO_M*/}
     : {film:'assets/video/hero.mp4', poster:'assets/img/hero-poster.jpg', vit:'assets/video/sorten.mp4', vitPoster:'assets/img/sorten-poster.jpg', ar:16 / 9, logo:{x:.2953, y:.075, w:.43}};
   // Hochkant füllt der Film den Bildschirm (cover), solange der Bildschirm schmaler ist als 9:16; sonst ganz sichtbar
   const cover = () => PORTRAIT && innerWidth / innerHeight <= VID.ar;
   film.poster = VID.poster; film.src = VID.film; vit.poster = VID.vitPoster; vit.src = VID.vit;
   const LOGO = VID.logo;
-  let introDone = false;
+  let introDone = false, flyAnims = [];
   function syncSound() {
     const on = !film.muted;
     sound.setAttribute('aria-pressed', String(on));
@@ -884,7 +884,7 @@ document.documentElement.classList.add('js');
     [32.2, 34.5, 'c', 66, 'dark big', ['', ''], ['Willkommen in *Don\'s Welt.*', 'Welcome to *Don\'s world.*']]
   ];
   // Hochkant: [Ausrichtung l/c/r, Höhe in %] je Zeile, passend zum 9:16-Bildausschnitt
-  const CAPS_P = /*CAPS_P*/[['l',10],['l',10],['l',10],['l',72],['l',10],['l',10],['l',12],['l',22],['l',32],['l',10],['l',10],['c',70]];
+  const CAPS_P = /*CAPS_P*/[['c',74],['c',74],['c',74],['c',9],['c',72],['c',9],['c',8],['c',20],['c',29],['c',8],['c',8],['c',9]];
   const capsEl = document.getElementById('caps');
   capsEl.classList.toggle('p', PORTRAIT);
   function renderCaps() {
@@ -927,7 +927,8 @@ document.documentElement.classList.add('js');
     const done = () => {
       document.documentElement.classList.remove('intro-on');
       layer.classList.add('gone'); film.pause();
-      fly.getAnimations().forEach(x => x.cancel()); fly.style.opacity = 0;
+      // gespeicherte Animationen selbst beenden (getAnimations() liefert beendete nicht immer zuverlässig)
+      flyAnims.forEach(x => x.cancel()); flyAnims = []; fly.style.opacity = 0; fly.hidden = true;
     };
     if (reduce) { done(); return; }
     const v = videoRect(), sw = v.w * LOGO.w, sx = v.x + v.w * LOGO.x, sy = v.y + v.h * LOGO.y;
@@ -938,17 +939,17 @@ document.documentElement.classList.add('js');
     const b = 'translate(' + r.left + 'px,' + r.top + 'px) scale(' + k + ')';
     const go = () => {
       layer.classList.add('out');
-      fly.animate([{transform:a}, {transform:mid, offset:.45}, {transform:b}], {duration:1300, easing:'cubic-bezier(.65,0,.25,1)', fill:'forwards'});
+      flyAnims.push(fly.animate([{transform:a}, {transform:mid, offset:.45}, {transform:b}], {duration:1300, easing:'cubic-bezier(.65,0,.25,1)', fill:'forwards'}));
       document.documentElement.classList.remove('intro-on');
       setTimeout(done, 1350);
     };
-    fly.style.transform = a;
-    fly.animate([{opacity:0}, {opacity:1}], {duration:fromEnd ? 350 : 200, fill:'forwards'});
+    fly.style.transform = a; fly.hidden = false;
+    flyAnims.push(fly.animate([{opacity:0}, {opacity:1}], {duration:fromEnd ? 350 : 200, fill:'forwards'}));
     setTimeout(go, fromEnd ? 450 : 220);
   }
   function startFilm() {
     document.documentElement.classList.add('intro-on'); introDone = false;
-    layer.classList.remove('gone', 'out'); fly.getAnimations().forEach(x => x.cancel()); fly.style.opacity = 0;
+    layer.classList.remove('gone', 'out'); flyAnims.forEach(x => x.cancel()); flyAnims = []; fly.style.opacity = 0;
     film.currentTime = 0; bigplay.hidden = true; scrollTo(0, 0);
     placeCaps(); capsEl.querySelectorAll('.cap').forEach(el => el.classList.remove('on', 'off')); requestAnimationFrame(tickCaps);
     film.play().catch(() => { bigplay.hidden = false; });

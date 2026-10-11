@@ -66,7 +66,7 @@ def render_frame(img, cx, wc, by, OW, OH):
     s = OW / wc                                   # izlazni px po px izvora (1920-skala)
     bh = 1080 * s                                 # visina oštre trake u izlazu
     if bh >= OH - 0.5:                            # pun isečak, bez popune
-        y_over = (bh - OH) / s / 2 * k            # (samo zbog zaokruživanja)
+        y_over = max(0.0, (bh - OH) / s / 2 * k)  # (samo zbog zaokruživanja)
         return img.resize((OW, OH), Image.LANCZOS, box=(x0, y_over, x1, img.height - y_over))
     band_h = int(round(bh))
     band = img.resize((OW, band_h), Image.LANCZOS, box=(x0, 0, x1, img.height))

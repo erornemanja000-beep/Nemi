@@ -23,18 +23,26 @@ def reframe(plan, out):
     return json.loads(res.strip().splitlines()[-1])
 
 
-def film(crf):
+def film(crf, size=(1080, 1920), redo=False):
     kf = json.load(open(HERE / 'plans' / 'film.json'))
-    plan = {
-        'fps': 30, 'size': [1080, 1920], 'crf': crf,
-        # prvi deo je 4K original (0-10 s), zatim delovi 2 i 3 (1080p)
-        'inputs': [{'path': str(FIN / '01_100811.mov')}, {'path': str(FIN / '02_q1.mov')}, {'path': str(FIN / '03_q2.mov')}],
-        'keyframes': kf['keyframes'], 'post_vf': FILM_VF,
-        'audio': str(OUT / 'video' / 'hero.mp4'),
-        'logo': {'x': 567, 'y': 81, 'w': 825.6},   # don-badge.png preko loga u poslednjem kadru (px izvora)
-    }
+    raw = pathlib.Path(tempfile.gettempdir()) / 'hero-m-raw.mp4'
+    info_file = raw.with_suffix('.json')
+    if redo or not raw.exists():
+        plan = {
+            'fps': 30, 'size': list(size), 'crf': 12,
+            # prvi deo je 4K original (0-10 s), zatim delovi 2 i 3 (1080p)
+            'inputs': [{'path': str(FIN / '01_100811.mov')}, {'path': str(FIN / '02_q1.mov')}, {'path': str(FIN / '03_q2.mov')}],
+            'keyframes': kf['keyframes'],
+            'logo': {'x': 567, 'y': 81, 'w': 825.6},   # don-badge.png preko loga u poslednjem kadru (px izvora)
+        }
+        info_file.write_text(json.dumps(reframe(plan, raw)))
+    info = json.loads(info_file.read_text())
     out = OUT / 'video' / 'hero-m.mp4'
-    info = reframe(plan, out)
+    # završno: isto izoštravanje kao široki film, zvuk iz širokog filma
+    subprocess.check_call(['ffmpeg', '-v', 'error', '-y', '-i', str(raw), '-i', str(OUT / 'video' / 'hero.mp4'),
+                           '-map', '0:v', '-map', '1:a?', '-vf', FILM_VF, '-c:v', 'libx264', '-preset', 'slow',
+                           '-crf', str(crf), '-profile:v', 'high', '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-b:a', '128k',
+                           '-shortest', '-movflags', '+faststart', str(out)])
     subprocess.check_call(['ffmpeg', '-v', 'error', '-y', '-i', str(out), '-frames:v', '1', '-vf', 'scale=720:-2',
                            '-q:v', '4', str(OUT / 'img' / 'hero-poster-m.jpg')])
     print(json.dumps(info), out.stat().st_size // 1024, 'KB')
@@ -61,5 +69,8 @@ def gel(crf):
 
 if __name__ == '__main__':
     what = sys.argv[1]
-    crf = int(sys.argv[2]) if len(sys.argv) > 2 else (22 if what == 'film' else 24)
-    {'film': film, 'gel': gel}[what](crf)
+    crf = int(sys.argv[2]) if len(sys.argv) > 2 else (26 if what == 'film' else 24)
+    if what == 'film':
+        film(crf, redo='--redo' in sys.argv)
+    else:
+        gel(crf)

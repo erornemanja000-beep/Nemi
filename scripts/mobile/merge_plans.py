@@ -18,7 +18,7 @@ for k in keys:
         kf = {f: x[f] for f in ('t', 'cx', 'wc', 'by', 'cut')}
         kf['t'] = round(kf['t'], 3)
         kf['src'] = k
-        if kf['cut'] and abs(kf['t'] * 30 - round(kf['t'] * 30)) < 0.02:
+        if kf['cut'] and kf['t'] > 0 and abs(kf['t'] * 30 - round(kf['t'] * 30)) < 0.02:
             kf['t'] = round(kf['t'] - 0.01, 3)
         prev = out[-1] if out else None
         if prev and abs(prev['t'] - kf['t']) < 0.02 and prev['src'] != k:

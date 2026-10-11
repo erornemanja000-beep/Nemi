@@ -1,5 +1,5 @@
 {
- "note": "Kamera za uspravni intro film (vreme = kadar/30 s, px izvora 1920x1080). Iz analize po scenama, granice usklađene.",
+ "note": "Kamera za uspravnu verziju (vreme = kadar/30 s, px izvora 1920x1080), spojeno iz planova po scenama i njihovih provera.",
  "keyframes": [
   {
    "t": 0,
@@ -7,8 +7,7 @@
    "wc": 607.5,
    "by": 0.5,
    "cut": false,
-   "src": "film1",
-   "why": "Segment start. Centers the scoop (840-996) and the slightly tilted cone (tip ~966). The soft cream background makes a full-height crop ideal"
+   "src": "film1"
   },
   {
    "t": 0.8,
@@ -16,8 +15,7 @@
    "wc": 607.5,
    "by": 0.5,
    "cut": false,
-   "src": "film1",
-   "why": "Almost a hold while the scoop morphs into a rose (scoop/rose center 925-933). Full-height 4K crop, sharp."
+   "src": "film1"
   },
   {
    "t": 1.33,
@@ -25,26 +23,31 @@
    "wc": 607.5,
    "by": 0.5,
    "cut": false,
-   "src": "film1",
-   "why": "Rose heart ~936. The outer petals (540-1320) are trimmed on purpose and the heart, inner petals and cone stay in the safe area. Last full fr"
+   "src": "film1"
   },
   {
    "t": 1.56,
-   "cx": 970,
-   "wc": 1250,
+   "cx": 995,
+   "wc": 1300,
    "by": 0.5,
    "cut": false,
-   "src": "film1",
-   "why": "Pull back with the fold so the whole spinning cube reads as an object (cube ~440-1460, safe area 470-1470). The fill around it is dark/blurr"
+   "src": "film1"
   },
   {
-   "t": 1.98,
-   "cx": 915,
+   "t": 1.85,
+   "cx": 995,
+   "wc": 1300,
+   "by": 0.5,
+   "cut": false,
+   "src": "film1"
+  },
+  {
+   "t": 2,
+   "cx": 918,
    "wc": 1250,
    "by": 0.5,
    "cut": false,
-   "src": "film1",
-   "why": "Hold the wide framing on the cube as it drifts slightly left (1.93-2.00 s cube 380-1420, safe area 415-1415)."
+   "src": "film1"
   },
   {
    "t": 2.17,
@@ -52,35 +55,39 @@
    "wc": 607.5,
    "by": 0.5,
    "cut": false,
-   "src": "film1",
-   "why": "Push back to a full-height crop as the next face fills the frame (no black edges in the crop from ~2.07 s). Rose heart 870-945 inside the sa"
+   "src": "film1"
   },
   {
-   "t": 3.6,
-   "cx": 940,
+   "t": 3.7,
+   "cx": 942,
    "wc": 607.5,
    "by": 0.5,
    "cut": false,
-   "src": "film1",
-   "why": "Slow drift that follows the rose heart (~918 at 3.0 s, ~936 at 3.6 s). Hold on the dripping-glaze macro. This is the start point of the pan "
+   "src": "film1"
   },
   {
-   "t": 4.33,
+   "t": 4.25,
    "cx": 1545,
    "wc": 607.5,
    "by": 0.5,
    "cut": false,
-   "src": "film1",
-   "why": "Follow the petal as it peels off (from ~3.9 s at x 1340) and flies up-right. Checked: 3.9 s cx~1166 keeps the rose heart and the peeling pet"
+   "src": "film1"
   },
   {
-   "t": 5,
-   "cx": 990,
+   "t": 4.3,
+   "cx": 1545,
    "wc": 607.5,
    "by": 0.5,
    "cut": false,
-   "src": "film1",
-   "why": "Follow the petal arcing back left as the source camera tilts up (measured petal centers: 4.53 s ~1400, 4.67 s ~1230, 4.8 s ~1120, 4.93 s ~10"
+   "src": "film1"
+  },
+  {
+   "t": 5,
+   "cx": 985,
+   "wc": 607.5,
+   "by": 0.5,
+   "cut": false,
+   "src": "film2"
   },
   {
    "t": 5.15,
@@ -88,8 +95,7 @@
    "wc": 607.5,
    "by": 0.5,
    "cut": false,
-   "src": "film2",
-   "why": "Catch up with the petal as it swings left and settles (663-1182). The source camera is also moving, so the 60 px pan is not noticeable."
+   "src": "film2"
   },
   {
    "t": 5.4,
@@ -97,8 +103,7 @@
    "wc": 607.5,
    "by": 0.5,
    "cut": false,
-   "src": "film2",
-   "why": "Near-hold while the petal tumbles around its centre at x 910-945. Its tips extend past the crop, which is unavoidable at full-height crop."
+   "src": "film2"
   },
   {
    "t": 5.68,
@@ -106,8 +111,7 @@
    "wc": 607.5,
    "by": 0.5,
    "cut": false,
-   "src": "film2",
-   "why": "Follow the petal sweeping left (bbox 426-1116 at 5.7, centre ~771)."
+   "src": "film2"
   },
   {
    "t": 6.033,
@@ -115,17 +119,15 @@
    "wc": 607.5,
    "by": 0.5,
    "cut": false,
-   "src": "film2",
-   "why": "Follow the petal back right as it turns toward the camera (centre 835 at 5.9, 894 at 6.03). The morph into the facade is centred at x~895."
+   "src": "film2"
   },
   {
-   "t": 6.1,
+   "t": 6.09,
    "cx": 905,
    "wc": 607.5,
    "by": 0.5,
    "cut": true,
-   "src": "film2",
-   "why": "Facade shot starts inside the morph transition. Small petal at x~900. Jump from 898 is only 7 px, so it is invisible."
+   "src": "film2"
   },
   {
    "t": 7.567,
@@ -133,8 +135,7 @@
    "wc": 607.5,
    "by": 0.5,
    "cut": false,
-   "src": "film2",
-   "why": "Hold through the landing, ripple and push-in. Petal stays at 895-935 and the imprint at 705-975, all inside the safe area 662-1148. Last fra"
+   "src": "film2"
   },
   {
    "t": 7.59,
@@ -142,8 +143,7 @@
    "wc": 607.5,
    "by": 0.5,
    "cut": true,
-   "src": "film2",
-   "why": "Hard blur/whip cut to the wider facade. Panel centre is 906-922 during the fast pull-back (7.63-7.8)."
+   "src": "film2"
   },
   {
    "t": 9,
@@ -151,8 +151,7 @@
    "wc": 607.5,
    "by": 0.5,
    "cut": false,
-   "src": "film2",
-   "why": "Hold on the melting panel (576-1251, centre ~915). Goo and interior fill the frame. Side edges of the panel fall slightly outside the crop."
+   "src": "film2"
   },
   {
    "t": 10,
@@ -160,98 +159,127 @@
    "wc": 607.5,
    "by": 0.5,
    "cut": false,
-   "src": "film2",
-   "why": "Slow 18 px drift right as the storefront forms, to centre the finished window (trim 584-1300, centre ~940; glass 650-1270). Safe area 697-11"
+   "src": "film3"
   },
   {
    "t": 10.7,
-   "cx": 960,
+   "cx": 940,
    "wc": 607.5,
    "by": 0.5,
    "cut": false,
-   "src": "film3",
-   "why": "Hold on the window up to the last frame before the cut."
+   "src": "film3"
   },
   {
-   "t": 10.733,
+   "t": 10.723,
    "cx": 1080,
    "wc": 607.5,
    "by": 0.5,
    "cut": true,
-   "src": "film3",
-   "why": "Hard cut to the shop entrance (frame 322). The crop shows the right two-thirds of the entrance, with the counter and its DON'S logo (880-108"
+   "src": "film3"
   },
   {
-   "t": 12.767,
+   "t": 12.733,
    "cx": 1080,
    "wc": 607.5,
    "by": 0.5,
    "cut": false,
-   "src": "film3",
-   "why": "Hold. The elf flies in from the right edge (enters the crop ~11.2, the safe area ~11.3) and settles centred (face 1000-1140, body 920-1320) "
+   "src": "film3"
   },
   {
-   "t": 13.133,
-   "cx": 520,
+   "t": 13.2,
+   "cx": 455,
    "wc": 607.5,
    "by": 0.5,
    "cut": false,
-   "src": "film3",
-   "why": "Fast follow-pan left with the elf's swoop: face 1140 to 700 in 0.2 s while the source pushes in. The camera stays on her face until ~13.07 a"
+   "src": "film3"
+  },
+  {
+   "t": 13.45,
+   "cx": 455,
+   "wc": 607.5,
+   "by": 0.5,
+   "cut": false,
+   "src": "film3"
+  },
+  {
+   "t": 13.85,
+   "cx": 840,
+   "wc": 607.5,
+   "by": 0.5,
+   "cut": false,
+   "src": "film3"
+  },
+  {
+   "t": 14,
+   "cx": 845,
+   "wc": 607.5,
+   "by": 0.5,
+   "cut": false,
+   "src": "film3"
+  },
+  {
+   "t": 14.4,
+   "cx": 1150,
+   "wc": 607.5,
+   "by": 0.5,
+   "cut": false,
+   "src": "film3"
+  },
+  {
+   "t": 14.65,
+   "cx": 1150,
+   "wc": 607.5,
+   "by": 0.5,
+   "cut": false,
+   "src": "film3"
   },
   {
    "t": 15.15,
-   "cx": 1400,
+   "cx": 1390,
    "wc": 607.5,
    "by": 0.5,
    "cut": false,
-   "src": "film3",
-   "why": "One long, calm pan right that reveals DON'S letter by letter: O at 13.73-14.07 (cx 707-911), N at 14.23-14.57 (cx 1020-1222), apostrophe at "
+   "src": "film3"
   },
   {
    "t": 15.4,
-   "cx": 1400,
+   "cx": 1390,
    "wc": 607.5,
    "by": 0.5,
    "cut": false,
-   "src": "film3",
-   "why": "Hold on the apostrophe and S (1160-1600), the helper fixing the S and the wand star (1600). All are in the safe area 1157-1643."
+   "src": "film3"
   },
   {
-   "t": 15.433,
-   "cx": 1180,
+   "t": 15.423,
+   "cx": 1050,
    "wc": 607.5,
    "by": 0.5,
    "cut": true,
-   "src": "film3",
-   "why": "Hard cut to the gelato counter (frame 463). The dog medallion (913-1187) is centred under a column of gelato, which makes a good portrait co"
+   "src": "film3"
   },
   {
    "t": 15.5,
-   "cx": 1180,
+   "cx": 1050,
    "wc": 607.5,
    "by": 0.5,
    "cut": false,
-   "src": "film4",
-   "why": "Segment start, in the middle of the counter shot. The crop 876-1484 holds the gelato on top and the bulldog logo circle (910-1180) almost en"
+   "src": "film4"
   },
   {
    "t": 15.7,
-   "cx": 1180,
+   "cx": 1050,
    "wc": 607.5,
    "by": 0.5,
    "cut": false,
-   "src": "film4",
-   "why": "Hold through the last counter frame."
+   "src": "film4"
   },
   {
-   "t": 15.733,
+   "t": 15.723,
    "cx": 1215,
    "wc": 607.5,
    "by": 0.5,
    "cut": true,
-   "src": "film4",
-   "why": "Hard jump-zoom cut. Re-centre slightly onto the zoom focus and the hero raspberry, which emerges here (the 35 px step is hidden by the cut)."
+   "src": "film4"
   },
   {
    "t": 17.2,
@@ -259,8 +287,7 @@
    "wc": 607.5,
    "by": 0.5,
    "cut": false,
-   "src": "film4",
-   "why": "Hold. The hero raspberry centre stays within 1197-1241, so it is centred (within ±26 px) as it grows to fill the frame."
+   "src": "film4"
   },
   {
    "t": 17.82,
@@ -268,26 +295,23 @@
    "wc": 607.5,
    "by": 1,
    "cut": false,
-   "src": "film4",
-   "why": "Follow the raspberry left with the source pan (camera 1152 vs raspberry 1167 at 17.4, 1091 vs 1112 at 17.5, 1030 vs about 1000 at 17.6) and "
+   "src": "film4"
   },
   {
    "t": 18.45,
-   "cx": 948,
-   "wc": 880,
+   "cx": 950,
+   "wc": 1000,
    "by": 1,
    "cut": false,
-   "src": "film4",
-   "why": "Gentle zoom-out while the source pushes in, so the whole glass bubble (580-1344 wide) and its mirrored DON'S logo read as one object. The ba"
+   "src": "film4"
   },
   {
    "t": 19,
-   "cx": 946,
-   "wc": 880,
+   "cx": 952,
+   "wc": 1000,
    "by": 1,
    "cut": false,
-   "src": "film4",
-   "why": "Hold on the bubble (centre 942-957). Its rims (536-1356) reach about 60 px past the 80% safe area on each side; the lemon and the logo stay "
+   "src": "film4"
   },
   {
    "t": 19.133,
@@ -295,8 +319,7 @@
    "wc": 1150,
    "by": 0.5,
    "cut": false,
-   "src": "film4",
-   "why": "Pull back with the box-spin transition so the whole rotating cube (552-1440) is visible, centred on a black screen. The fill is blurred blac"
+   "src": "film4"
   },
   {
    "t": 19.367,
@@ -304,8 +327,7 @@
    "wc": 1150,
    "by": 0.5,
    "cut": false,
-   "src": "film4",
-   "why": "Hold while the cube spins (its centre stays at 936-1000)."
+   "src": "film4"
   },
   {
    "t": 19.467,
@@ -313,17 +335,15 @@
    "wc": 607.5,
    "by": 0.5,
    "cut": false,
-   "src": "film4",
-   "why": "Ease back to full-height crop as the incoming lemon face slams out to fill the frame (face 412-1360 at 19.4, 208-1632 at 19.433, full at 19."
+   "src": "film4"
   },
   {
-   "t": 19.5,
+   "t": 19.49,
    "cx": 960,
    "wc": 607.5,
    "by": 1,
    "cut": true,
-   "src": "film4",
-   "why": "First clean frame of the lemon whip-pan shot. Same framing as 19.467, so there is no visible jump (only by changes, and by is ignored at 607"
+   "src": "film4"
   },
   {
    "t": 20.25,
@@ -331,8 +351,7 @@
    "wc": 607.5,
    "by": 1,
    "cut": false,
-   "src": "film4",
-   "why": "Static centre during the whip (lemon, cream, mango cross the frame). Do not add camera motion to the source's own whip."
+   "src": "film4"
   },
   {
    "t": 20.9,
@@ -340,8 +359,7 @@
    "wc": 740,
    "by": 1,
    "cut": false,
-   "src": "film4",
-   "why": "Pan right (blurred chocolate passage) and slightly zoom out to catch the egg as it enters from the right edge (egg body from 1440 at 20.83)."
+   "src": "film4"
   },
   {
    "t": 21.7,
@@ -349,8 +367,7 @@
    "wc": 740,
    "by": 1,
    "cut": false,
-   "src": "film4",
-   "why": "Single smooth follow as the egg slows down (lettering centre 1636 to 1054). wc 740 makes the safe area 592 px for the 510-px lettering. Simu"
+   "src": "film4"
   },
   {
    "t": 22,
@@ -358,8 +375,7 @@
    "wc": 740,
    "by": 1,
    "cut": false,
-   "src": "film4",
-   "why": "Segment end. Keep drifting left with the egg (lettering 581-1077 against safe 584-1176). The egg then whips out left and the crêpe cut follo"
+   "src": "film5"
   },
   {
    "t": 22.333,
@@ -367,8 +383,7 @@
    "wc": 740,
    "by": 1,
    "cut": false,
-   "src": "film5",
-   "why": "Moderate follow as the ball flies out left (on the last frame before the cut). A faster follow would be a whip pan."
+   "src": "film5"
   },
   {
    "t": 22.35,
@@ -376,8 +391,7 @@
    "wc": 607.5,
    "by": 0.5,
    "cut": true,
-   "src": "film5",
-   "why": "Cut to the crêpe, full-height crop on its middle. Safe area 817-1303 holds the crêpe body, the arcs of both sauce streams and the point near"
+   "src": "film5"
   },
   {
    "t": 23.95,
@@ -385,8 +399,7 @@
    "wc": 607.5,
    "by": 0.5,
    "cut": false,
-   "src": "film5",
-   "why": "Near-hold while the spirals wrap the crêpe. The drizzle at 1000-1300 stays in view."
+   "src": "film5"
   },
   {
    "t": 24.45,
@@ -394,8 +407,7 @@
    "wc": 607.5,
    "by": 0.5,
    "cut": false,
-   "src": "film5",
-   "why": "Small drift left during the motion-blur morph, onto the drips (800-1000). This also lines up the crop that avoids the seams."
+   "src": "film5"
   },
   {
    "t": 24.95,
@@ -403,8 +415,7 @@
    "wc": 607.5,
    "by": 0.5,
    "cut": false,
-   "src": "film5",
-   "why": "Hold. The crop 658-1266 keeps the persistent AI seams at x≈637 and x≈1289-1325 just outside the frame. Do not change cx between 24.45 and 24"
+   "src": "film5"
   },
   {
    "t": 25.633,
@@ -412,8 +423,7 @@
    "wc": 607.5,
    "by": 0.5,
    "cut": false,
-   "src": "film5",
-   "why": "Gentle drift right to take in the chocolate curls piling up on the lower-right plate (1040-1600) as they fall. This is the last frame before"
+   "src": "film5"
   },
   {
    "t": 25.65,
@@ -421,8 +431,7 @@
    "wc": 607.5,
    "by": 0.5,
    "cut": true,
-   "src": "film5",
-   "why": "Cut to the squirrel shot. The squirrel's head (850-950) and body enter from the left inside safe 657-1143; the tail is cut off on the left."
+   "src": "film5"
   },
   {
    "t": 26,
@@ -430,8 +439,7 @@
    "wc": 607.5,
    "by": 0.5,
    "cut": false,
-   "src": "film5",
-   "why": "Follow the squirrel as it climbs to the right. Checked frame by frame: its head (1100-1320) stays inside safe 753-1333 from 25.83 to 26.03."
+   "src": "film5"
   },
   {
    "t": 26.13,
@@ -439,8 +447,7 @@
    "wc": 607.5,
    "by": 0.5,
    "cut": false,
-   "src": "film5",
-   "why": "Hold while the squirrel sits up with its tail curled (940-1280)."
+   "src": "film5"
   },
   {
    "t": 26.38,
@@ -448,8 +455,7 @@
    "wc": 607.5,
    "by": 0.5,
    "cut": false,
-   "src": "film5",
-   "why": "Ease left as the squirrel turns to face left (head 760-900, body and tail 860-1200)."
+   "src": "film5"
   },
   {
    "t": 26.933,
@@ -457,35 +463,31 @@
    "wc": 607.5,
    "by": 0.5,
    "cut": false,
-   "src": "film5",
-   "why": "Hold on the Bueno bar after the morph (680-1300 sits in crop 696-1304). This is the last frame before the cut."
+   "src": "film5"
   },
   {
    "t": 26.95,
-   "cx": 1150,
+   "cx": 1270,
    "wc": 607.5,
    "by": 0.5,
    "cut": true,
-   "src": "film5",
-   "why": "Cut to the whipped cream shot. The frame favours the cream splash landing at the bottom right (peak 1200-1520) and keeps the right half of t"
+   "src": "film5"
   },
   {
    "t": 28,
-   "cx": 1470,
+   "cx": 1440,
    "wc": 607.5,
    "by": 0.5,
    "cut": false,
-   "src": "film6",
-   "why": "Segment start, mid-shot (the crêpe shot continues from the previous segment, where the cream sits at x 1150-1780 and centres at ~1470). The "
+   "src": "film6"
   },
   {
    "t": 31.67,
-   "cx": 1470,
+   "cx": 1440,
    "wc": 607.5,
    "by": 0.5,
    "cut": false,
-   "src": "film6",
-   "why": "Hold through the blossom bloom, the cherry landing on the cream, the glitch flash and the tile shake. The cherry stays between x 1368 and 15"
+   "src": "film6"
   },
   {
    "t": 31.93,
@@ -493,8 +495,7 @@
    "wc": 607.5,
    "by": 0.5,
    "cut": false,
-   "src": "film6",
-   "why": "Short motivated pan following the cherry as it shoots up and left (1486 -> 1282) during the on-screen whip-tilt. The cherry stays inside the"
+   "src": "film6"
   },
   {
    "t": 31.96,
@@ -502,17 +503,15 @@
    "wc": 607.5,
    "by": 0.5,
    "cut": true,
-   "src": "film6",
-   "why": "Hard cut to the sky. The first sky frame is 31.967 and the last crêpe frame is 31.933. The rising cherry is at x 962-967, so it stays centre"
+   "src": "film6"
   },
   {
-   "t": 32.7,
+   "t": 32.69,
    "cx": 958,
    "wc": 607.5,
    "by": 0.5,
    "cut": true,
-   "src": "film6",
-   "why": "Watercolour-splash transition into the pastel animation. The camera values do not change, so nothing jumps. The full-height crop keeps the c"
+   "src": "film6"
   },
   {
    "t": 33.25,
@@ -520,8 +519,7 @@
    "wc": 607.5,
    "by": 0.5,
    "cut": false,
-   "src": "film6",
-   "why": "Hold until the splash has cleared. From here only a plain pastel background with edge doodles and falling hearts is on screen, so it is a ca"
+   "src": "film6"
   },
   {
    "t": 34,
@@ -529,8 +527,7 @@
    "wc": 860,
    "by": 0.5,
    "cut": false,
-   "src": "film6",
-   "why": "The ease-out ends before the cream ring starts (33.97). The final logo framing is now reached: safe area 614-1302, and the logo at 678-1239 "
+   "src": "film6"
   },
   {
    "t": 37.37,
@@ -538,8 +535,7 @@
    "wc": 860,
    "by": 0.5,
    "cut": false,
-   "src": "film6",
-   "why": "Static hold from 34.00 to the end of the film: the cream ring, the logo build and the final logo all sit in one fixed frame, so the site bad"
+   "src": "film6"
   }
  ]
 }

@@ -96,7 +96,7 @@ Ukusi: Hibiscus Berry, Ginger Strawberry Kick, Green Apple Fresh, Passion Lime T
 
 ## Kontakt ("komm vorbei" / "Wir freuen uns auf dich")
 - Adresse: Geiselbergstraße 24, 1110 Wien · Simmering (link "Route in Google Maps öffnen", ugrađena Google mapa)
-- Öffnungszeiten: Mo–Fr 07:00–20:00 · Sa–So 10:00–22:00
+- Öffnungszeiten: Mo–Fr 07:00–20:00 · Sa–So 10:00–20:00
 - Instagram: @donseisdiele ("für die süßesten Updates")
 - Telefon: +43 690 105 397 35
 

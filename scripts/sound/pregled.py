@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Slika zvuka za proveru bez slušanja: spektrogram + talasni oblik, sa trakom kadrova iz filma iznad.
 
-  python3 inspect.py audio.wav out.png [--video film.mp4] [--from 0 --to 37.4] [--cues cues.json]
+  python3 pregled.py audio.wav out.png [--video film.mp4] [--from 0 --to 37.4] [--cues cues.json]
 """
 import argparse, json, subprocess, tempfile, wave
 import numpy as np

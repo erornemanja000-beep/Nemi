@@ -226,7 +226,7 @@ def sparkle(dur, intensity=0.5, pitch='high', pan=0.0, key_root=72, density=14):
 
 def shimmer(dur, intensity=0.5, pitch='high', pan=0.0, key_root=72):
     n = int((dur + 0.8) * SR)
-    air = hp(noise(dur + 0.8), 6000) * env_asr(n, dur * 0.4, dur * 0.6 + 0.6) * 0.05
+    air = hp(noise(dur + 0.8), 6000) * env_asr(n, dur * 0.4, dur * 0.6 + 0.6) * 0.03
     out = sparkle(dur, intensity, pitch, pan, key_root, density=28)
     m = min(len(out), n)
     out[:m] += stereo(air[:m] * intensity, pan, 0.6)
@@ -265,7 +265,7 @@ def bell_hit(intensity=0.7, pitch='mid', pan=0.0, key_root=72):
 
 
 def whoosh(dur, intensity=0.5, pitch='mid', pan=0.0, fast=False):
-    f0, f1 = {'low': (180, 900), 'mid': (300, 2400), 'high': (900, 6000)}[pitch]
+    f0, f1 = {'low': (180, 900), 'mid': (300, 2400), 'high': (800, 4500)}[pitch]
     x = noise(dur)
     # gore pa dole: brzo naraste, pa se spusti
     up = sweep_filter(x, f0, f1, q=1.6, steps=18)

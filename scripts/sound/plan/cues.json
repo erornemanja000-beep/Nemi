@@ -1,0 +1,1759 @@
+{
+ "events": [
+  {
+   "t": 0,
+   "dur": 0.4,
+   "type": "shimmer",
+   "intensity": 0.25,
+   "pan": 0.4,
+   "pitch": "high",
+   "what": "fine golden dust drifts down to the right of the pink scoop (f0-f12)"
+  },
+  {
+   "t": 0.3,
+   "dur": 0.3,
+   "type": "magic_wand",
+   "intensity": 0.55,
+   "pan": 0,
+   "pitch": "high",
+   "what": "scoop surface starts to ripple: magic morph begins (f9-f10)"
+  },
+  {
+   "t": 0.333,
+   "dur": 0.3,
+   "type": "swirl",
+   "intensity": 0.4,
+   "pan": 0,
+   "pitch": "mid",
+   "what": "scoop ridges twist into petal folds (f10-f19)"
+  },
+  {
+   "t": 0.467,
+   "dur": 0.17,
+   "type": "goo",
+   "intensity": 0.3,
+   "pan": 0,
+   "pitch": "mid",
+   "what": "creamy creases fold into a rose bud (f14-f19)"
+  },
+  {
+   "t": 0.633,
+   "dur": 0.1,
+   "type": "pop",
+   "intensity": 0.45,
+   "pan": 0,
+   "pitch": "high",
+   "what": "first green leaf pops out under the bud (f19)"
+  },
+  {
+   "t": 0.733,
+   "dur": 0.27,
+   "type": "rustle",
+   "intensity": 0.35,
+   "pan": 0,
+   "pitch": "mid",
+   "what": "side leaves unfurl left and right (f22-f30)"
+  },
+  {
+   "t": 0.867,
+   "dur": 0.35,
+   "type": "sparkle",
+   "intensity": 0.55,
+   "pan": 0.05,
+   "pitch": "high",
+   "what": "rose petals open fully, golden glitter bursts above the bloom (f26-f36)"
+  },
+  {
+   "t": 1,
+   "dur": 0.23,
+   "type": "whoosh_soft",
+   "intensity": 0.3,
+   "pan": 0.8,
+   "pitch": "mid",
+   "what": "hand sweeps in from the right edge toward the cone (f30-f37)"
+  },
+  {
+   "t": 1,
+   "dur": 0.37,
+   "type": "shimmer",
+   "intensity": 0.3,
+   "pan": 0.3,
+   "pitch": "high",
+   "what": "gold flecks keep floating around the rose until the transition (f30-f41)"
+  },
+  {
+   "t": 1.233,
+   "dur": 0.12,
+   "type": "crunch",
+   "intensity": 0.25,
+   "pan": 0.1,
+   "pitch": "mid",
+   "what": "fingers close around the waffle cone (f37-f39)"
+  },
+  {
+   "t": 1.367,
+   "dur": 0.3,
+   "type": "whoosh_fast",
+   "intensity": 0.75,
+   "pan": 0,
+   "pitch": "mid",
+   "what": "frame shrinks, tilts and folds onto a 3D cube (f41-f44)"
+  },
+  {
+   "t": 1.467,
+   "dur": 0.4,
+   "type": "glass_shine",
+   "intensity": 0.5,
+   "pan": 0.1,
+   "pitch": "high",
+   "what": "glowing cube edges light up on black (f44)"
+  },
+  {
+   "t": 1.467,
+   "dur": 0.6,
+   "type": "swirl",
+   "intensity": 0.55,
+   "pan": 0,
+   "pitch": "low",
+   "what": "cube spins on black (f44-f62)"
+  },
+  {
+   "t": 1.533,
+   "dur": 0.1,
+   "type": "glitch",
+   "intensity": 0.6,
+   "pan": 0,
+   "pitch": "mid",
+   "what": "first stutter: cube faces double up into bright shards (f46-f48)"
+  },
+  {
+   "t": 1.733,
+   "dur": 0.1,
+   "type": "glitch",
+   "intensity": 0.45,
+   "pan": 0.2,
+   "pitch": "mid",
+   "what": "second stutter: a cube slab shears off to the right (f52-f54)"
+  },
+  {
+   "t": 1.9,
+   "dur": 0.07,
+   "type": "glitch",
+   "intensity": 0.5,
+   "pan": -0.05,
+   "pitch": "mid",
+   "what": "third stutter: cube faces split (f57-f58)"
+  },
+  {
+   "t": 2.033,
+   "dur": 0.14,
+   "type": "whoosh_fast",
+   "intensity": 0.6,
+   "pan": 0,
+   "pitch": "mid",
+   "what": "rose face swings toward the camera and grows (f61-f65)"
+  },
+  {
+   "t": 2.1,
+   "dur": 0.23,
+   "type": "pour",
+   "intensity": 0.4,
+   "pan": -0.1,
+   "pitch": "mid",
+   "what": "thin glaze stream pours into the rose centre (f63-f68)"
+  },
+  {
+   "t": 2.167,
+   "dur": 0.3,
+   "type": "thud_soft",
+   "intensity": 0.65,
+   "pan": 0,
+   "pitch": "low",
+   "what": "rose close-up fills the frame, landing on the macro shot (f65)"
+  },
+  {
+   "t": 2.3,
+   "dur": 0.6,
+   "type": "goo",
+   "intensity": 0.3,
+   "pan": -0.05,
+   "pitch": "low",
+   "what": "glaze pools and starts creeping over the petal edge (f69-f87)"
+  },
+  {
+   "t": 2.367,
+   "dur": 0.3,
+   "type": "click",
+   "intensity": 0.3,
+   "pan": 0.6,
+   "pitch": "high",
+   "what": "pistachio pieces land and bounce on the table at right (f71-f80)"
+  },
+  {
+   "t": 2.533,
+   "dur": 0.27,
+   "type": "click",
+   "intensity": 0.22,
+   "pan": -0.55,
+   "pitch": "high",
+   "what": "more pistachio pieces fall off the rose and land on the table at left (f76-f84)"
+  },
+  {
+   "t": 2.867,
+   "dur": 0.25,
+   "type": "drip",
+   "intensity": 0.3,
+   "pan": -0.05,
+   "pitch": "mid",
+   "what": "glaze drip lengthens down over the lower petal (f86)"
+  },
+  {
+   "t": 3.333,
+   "dur": 0.25,
+   "type": "drip",
+   "intensity": 0.25,
+   "pan": -0.05,
+   "pitch": "mid",
+   "what": "glaze drip reaches the leaves and cone (f98-f100)"
+  },
+  {
+   "t": 3.9,
+   "dur": 0.13,
+   "type": "creak",
+   "intensity": 0.3,
+   "pan": 0.55,
+   "pitch": "high",
+   "what": "outer petal on the right starts to peel away (f117-f119)"
+  },
+  {
+   "t": 4,
+   "dur": 0.1,
+   "type": "snap",
+   "intensity": 0.6,
+   "pan": 0.55,
+   "pitch": "mid",
+   "what": "petal snaps free from the rose (f120)"
+  },
+  {
+   "t": 4.033,
+   "dur": 0.75,
+   "type": "crumble",
+   "intensity": 0.4,
+   "pan": 0.6,
+   "pitch": "high",
+   "what": "pistachio crumbs shake off the petal, rain down at right and settle on the table (f121-f143)"
+  },
+  {
+   "t": 4.033,
+   "dur": 0.33,
+   "type": "whoosh_soft",
+   "intensity": 0.5,
+   "pan": 0.65,
+   "pitch": "mid",
+   "what": "petal flies up and right to the top of the frame (f121-f131)"
+  },
+  {
+   "t": 4.133,
+   "dur": 0.83,
+   "type": "flutter",
+   "intensity": 0.35,
+   "pan": 0.5,
+   "pitch": "high",
+   "what": "petal tumbles through the air, peaking top right then arcing back to centre (f124-f149)"
+  },
+  {
+   "t": 4.233,
+   "dur": 0.7,
+   "type": "shimmer",
+   "intensity": 0.4,
+   "pan": 0.55,
+   "pitch": "high",
+   "what": "pink magic sparkle trail follows the petal (f127-f148)"
+  },
+  {
+   "t": 4.467,
+   "dur": 0.53,
+   "type": "whoosh_soft",
+   "intensity": 0.45,
+   "pan": 0,
+   "pitch": "low",
+   "what": "camera pulls back and tilts up past the bowl to the window and flower pot; the rose drops out at the bottom (f134-f153)"
+  },
+  {
+   "t": 5,
+   "dur": 0.37,
+   "type": "flutter",
+   "intensity": 0.35,
+   "pan": -0.05,
+   "pitch": "mid",
+   "what": "Petal keeps tumbling while the camera tilts up off the table (continues from the previous segment)"
+  },
+  {
+   "t": 5.2667,
+   "dur": 0.5,
+   "type": "swish",
+   "intensity": 0.42,
+   "pan": -0.08,
+   "pitch": "mid",
+   "what": "Petal flips edge-on (frames 156-160) and glides left from x about 960 to 780 (frames 160-170). Merged with the separate glide whoosh"
+  },
+  {
+   "t": 5.3,
+   "dur": 0.5,
+   "type": "shimmer",
+   "intensity": 0.45,
+   "pan": 0.45,
+   "pitch": "high",
+   "what": "Pink sparkle trail streams out from the petal tip across the right half (frames 159-174)"
+  },
+  {
+   "t": 5.7333,
+   "dur": 0.2,
+   "type": "flutter",
+   "intensity": 0.3,
+   "pan": -0.18,
+   "pitch": "mid",
+   "what": "Petal rolls around to face the camera (frames 172-176)"
+  },
+  {
+   "t": 5.8667,
+   "dur": 0.4,
+   "type": "heart_ping",
+   "intensity": 0.5,
+   "pan": -0.13,
+   "pitch": "high",
+   "what": "Petal faces the camera as a heart shape and drifts back toward the centre (frames 176-180)"
+  },
+  {
+   "t": 6.0333,
+   "dur": 0.45,
+   "type": "magic_wand",
+   "intensity": 0.75,
+   "pan": -0.08,
+   "pitch": "high",
+   "what": "Heart petal dissolves into a portal that shows the pink facade, with a tiny petal in the middle (frame 181)"
+  },
+  {
+   "t": 6.0667,
+   "dur": 0.43,
+   "type": "swirl",
+   "intensity": 0.45,
+   "pan": 0.2,
+   "pitch": "mid",
+   "what": "Smoky portal edges spread out and fade, mostly on the right, with street greenery flashing at the edges (frames 182-194)"
+  },
+  {
+   "t": 6.4333,
+   "dur": 0.14,
+   "type": "whoosh_soft",
+   "intensity": 0.3,
+   "pan": 0.1,
+   "pitch": "high",
+   "what": "Petal shadow closes in from the right toward the petal (frames 193-196)"
+  },
+  {
+   "t": 6.5667,
+   "dur": 0.15,
+   "type": "thud_soft",
+   "intensity": 0.5,
+   "pan": -0.05,
+   "pitch": "mid",
+   "what": "Petal lands and sticks flat at the centre of the closed panel (frame 197)"
+  },
+  {
+   "t": 6.7667,
+   "dur": 0.3,
+   "type": "bloop",
+   "intensity": 0.6,
+   "pan": -0.05,
+   "pitch": "low",
+   "what": "Radial ripple bursts out of the stuck petal. A faint glow starts at frame 201 and the burst is clear at frame 203"
+  },
+  {
+   "t": 6.9333,
+   "dur": 0.33,
+   "type": "shimmer",
+   "intensity": 0.4,
+   "pan": -0.05,
+   "pitch": "high",
+   "what": "Ripple spreads over the whole panel and glints appear (frames 208-218)"
+  },
+  {
+   "t": 7.2333,
+   "dur": 0.37,
+   "type": "riser",
+   "intensity": 0.55,
+   "pan": 0,
+   "pitch": "mid",
+   "what": "Camera pushes in on the rippled panel with blur (a jump in at frames 219-220, then it holds until frame 226), building to the whip"
+  },
+  {
+   "t": 7.3,
+   "dur": 0.3,
+   "type": "twinkle",
+   "intensity": 0.4,
+   "pan": -0.1,
+   "pitch": "high",
+   "what": "Sparkles twinkle across the whole panel during the push-in, a few more on the left and top (frames 220-226)"
+  },
+  {
+   "t": 7.5333,
+   "dur": 0.2,
+   "type": "whoosh_fast",
+   "intensity": 0.85,
+   "pan": 0,
+   "pitch": "mid",
+   "what": "Pull-out and chromatic whip (frames 227-228) into the hard cut at frame 229"
+  },
+  {
+   "t": 7.6,
+   "dur": 0.1,
+   "type": "glitch",
+   "intensity": 0.3,
+   "pan": 0,
+   "pitch": "high",
+   "what": "Rainbow chromatic fringing and double image on the whip frames (frames 228-230)"
+  },
+  {
+   "t": 7.6333,
+   "dur": 0.2,
+   "type": "whoosh_soft",
+   "intensity": 0.38,
+   "pan": 0,
+   "pitch": "low",
+   "what": "New wide facade shot. The camera pulls back fast and settles around frame 233-234"
+  },
+  {
+   "t": 7.8333,
+   "dur": 0.37,
+   "type": "goo",
+   "intensity": 0.35,
+   "pan": -0.03,
+   "pitch": "low",
+   "what": "Panel warms to cream and starts to wobble like jelly (frames 235-246)"
+  },
+  {
+   "t": 8.0333,
+   "dur": 0.1,
+   "type": "pop",
+   "intensity": 0.4,
+   "pan": 0.15,
+   "pitch": "high",
+   "what": "First holes pop open at the lower right of the panel (frame 241)"
+  },
+  {
+   "t": 8.2,
+   "dur": 0.73,
+   "type": "goo",
+   "intensity": 0.7,
+   "pan": -0.03,
+   "pitch": "low",
+   "what": "Panel melts into thick cream goo that sags and flows down (frames 246-268)"
+  },
+  {
+   "t": 8.2333,
+   "dur": 0.1,
+   "type": "pop",
+   "intensity": 0.3,
+   "pan": 0.05,
+   "pitch": "high",
+   "what": "Row of holes opens along the top edge (frames 246-249)"
+  },
+  {
+   "t": 8.4667,
+   "dur": 0.25,
+   "type": "bloop",
+   "intensity": 0.5,
+   "pan": 0,
+   "pitch": "low",
+   "what": "The top holes merge and the goo layer slumps, showing the shop interior at the top (frames 253-254)"
+  },
+  {
+   "t": 8.6,
+   "dur": 0.2,
+   "type": "drip",
+   "intensity": 0.35,
+   "pan": -0.12,
+   "pitch": "mid",
+   "what": "Long goo spikes stretch and drip down (frames 258-262)"
+  },
+  {
+   "t": 8.7667,
+   "dur": 0.2,
+   "type": "drip",
+   "intensity": 0.3,
+   "pan": 0.15,
+   "pitch": "mid",
+   "what": "Last goo spikes sink to the sill and disappear (frames 263-267)"
+  },
+  {
+   "t": 8.9333,
+   "dur": 0.33,
+   "type": "crackle",
+   "intensity": 0.45,
+   "pan": 0,
+   "pitch": "high",
+   "what": "Glass crystallises in the open window, spreading down from the top (frames 268-277)"
+  },
+  {
+   "t": 9.1667,
+   "dur": 0.5,
+   "type": "riser",
+   "intensity": 0.45,
+   "pan": 0,
+   "pitch": "high",
+   "what": "Image goes soft and hazy while the storefront window builds itself (frames 274-289), rising to the snap"
+  },
+  {
+   "t": 9.3,
+   "dur": 0.1,
+   "type": "click",
+   "intensity": 0.3,
+   "pan": 0.05,
+   "pitch": "mid",
+   "what": "Window mullions appear (frames 279-281)"
+  },
+  {
+   "t": 9.3667,
+   "dur": 0.3,
+   "type": "creak",
+   "intensity": 0.2,
+   "pan": -0.28,
+   "pitch": "mid",
+   "what": "Open sash or door on the left takes shape (frames 282-289)"
+  },
+  {
+   "t": 9.6667,
+   "dur": 0.12,
+   "type": "snap",
+   "intensity": 0.65,
+   "pan": -0.02,
+   "pitch": "mid",
+   "what": "Storefront frame snaps sharp into place with bright corner glints (frame 290)"
+  },
+  {
+   "t": 9.6667,
+   "dur": 0.5,
+   "type": "glass_shine",
+   "intensity": 0.55,
+   "pan": 0,
+   "pitch": "high",
+   "what": "Glint sweeps across the newly formed glass (frame 290 onward)"
+  },
+  {
+   "t": 9.7333,
+   "dur": 0.3,
+   "type": "twinkle",
+   "intensity": 0.3,
+   "pan": 0.2,
+   "pitch": "high",
+   "what": "Small sparkles twinkle on the glass and on the green pane on the right (frames 292-300+)"
+  },
+  {
+   "t": 10,
+   "dur": 0.567,
+   "type": "shimmer",
+   "intensity": 0.2,
+   "pan": -0.05,
+   "pitch": "high",
+   "what": "Shot A holds on the newly revealed shop window. Faint glints and sparkle dots still twinkle in the glass."
+  },
+  {
+   "t": 10.6,
+   "dur": 0.2,
+   "type": "whoosh_fast",
+   "intensity": 0.65,
+   "pan": 0,
+   "pitch": "mid",
+   "what": "Squeeze transition: black side bars close in (frames 319-321) and zoom into the cut"
+  },
+  {
+   "t": 10.733,
+   "dur": 0.25,
+   "type": "thud_soft",
+   "intensity": 0.35,
+   "pan": 0,
+   "pitch": "low",
+   "what": "Cut lands on the zoom-blurred shop entrance (frame 322), which settles back to wide by frame 324"
+  },
+  {
+   "t": 10.833,
+   "dur": 1.067,
+   "type": "whoosh_soft",
+   "intensity": 0.6,
+   "pan": 0.7,
+   "pitch": "mid",
+   "what": "Elf on the ice-cream cone flies in from the top right (frame 325) and slows to centre (x 0.97 to 0.53)"
+  },
+  {
+   "t": 11.1,
+   "dur": 0.8,
+   "type": "shimmer",
+   "intensity": 0.4,
+   "pan": 0.5,
+   "pitch": "high",
+   "what": "Golden dust trail streams from the cone as she flies"
+  },
+  {
+   "t": 11.9,
+   "dur": 0.3,
+   "type": "twinkle",
+   "intensity": 0.25,
+   "pan": 0.1,
+   "pitch": "high",
+   "what": "Elf settles into a hover at centre and the last flecks of the trail puff out"
+  },
+  {
+   "t": 12.267,
+   "dur": 0.933,
+   "type": "creak",
+   "intensity": 0.3,
+   "pan": 0.6,
+   "pitch": "low",
+   "what": "Green wooden ladder slides up from the bottom right (frame 368) and the helpers start climbing"
+  },
+  {
+   "t": 12.433,
+   "dur": 0.45,
+   "type": "magic_wand",
+   "intensity": 0.5,
+   "pan": -0.15,
+   "pitch": "high",
+   "what": "Elf whips out her wand, the star sparks to the left (frame 373) and she raises it overhead with the star lit (frame 375)"
+  },
+  {
+   "t": 12.833,
+   "dur": 0.3,
+   "type": "whoosh_soft",
+   "intensity": 0.6,
+   "pan": -0.15,
+   "pitch": "mid",
+   "what": "Elf turns and swoops left as the camera pushes in fast (frames 385-389)"
+  },
+  {
+   "t": 13,
+   "dur": 0.5,
+   "type": "magic_wand",
+   "intensity": 0.85,
+   "pan": -0.6,
+   "pitch": "high",
+   "what": "Wand conjures the D in a burst of gold glitter (frame 390)"
+  },
+  {
+   "t": 13.033,
+   "dur": 0.8,
+   "type": "chime",
+   "intensity": 0.65,
+   "pan": -0.6,
+   "pitch": "low",
+   "what": "D fully formed in gold, the first note of the rising letter motif"
+  },
+  {
+   "t": 13.067,
+   "dur": 2.367,
+   "type": "shimmer",
+   "intensity": 0.3,
+   "pan": 0.15,
+   "pitch": "high",
+   "what": "Gold glitter lingers and drifts around the sign letters while the camera tracks right"
+  },
+  {
+   "t": 13.167,
+   "dur": 0.1,
+   "type": "swish",
+   "intensity": 0.35,
+   "pan": -0.35,
+   "pitch": "mid",
+   "what": "A helper leaps up from the bottom holding a sheet (frame 395)"
+  },
+  {
+   "t": 13.267,
+   "dur": 0.15,
+   "type": "snap",
+   "intensity": 0.6,
+   "pan": -0.55,
+   "pitch": "mid",
+   "what": "Helper slaps the sheet onto the D (frame 398)"
+  },
+  {
+   "t": 13.267,
+   "dur": 0.2,
+   "type": "thud_soft",
+   "intensity": 0.45,
+   "pan": -0.55,
+   "pitch": "low",
+   "what": "Helper's body hits the D and the wall"
+  },
+  {
+   "t": 13.3,
+   "dur": 0.4,
+   "type": "rustle",
+   "intensity": 0.2,
+   "pan": -0.6,
+   "pitch": "mid",
+   "what": "Helper smooths the sheet over the D"
+  },
+  {
+   "t": 13.633,
+   "dur": 0.45,
+   "type": "magic_wand",
+   "intensity": 0.75,
+   "pan": -0.15,
+   "pitch": "high",
+   "what": "Wand flick with an arc trail (frames 409-410), then the O appears as a glowing gold ring (frame 411)"
+  },
+  {
+   "t": 13.7,
+   "dur": 0.7,
+   "type": "chime",
+   "intensity": 0.6,
+   "pan": -0.2,
+   "pitch": "mid",
+   "what": "O formed, the second note of the motif"
+  },
+  {
+   "t": 13.9,
+   "dur": 0.15,
+   "type": "snap",
+   "intensity": 0.5,
+   "pan": -0.15,
+   "pitch": "mid",
+   "what": "Helper presses the O into place with the sheet (frame 417)"
+  },
+  {
+   "t": 14.167,
+   "dur": 0.45,
+   "type": "magic_wand",
+   "intensity": 0.75,
+   "pan": 0.2,
+   "pitch": "high",
+   "what": "Wand flick (frame 425), and the N appears in gold (frame 427)"
+  },
+  {
+   "t": 14.233,
+   "dur": 0.7,
+   "type": "chime",
+   "intensity": 0.6,
+   "pan": 0.15,
+   "pitch": "mid",
+   "what": "N formed, the third note of the motif"
+  },
+  {
+   "t": 14.433,
+   "dur": 0.15,
+   "type": "snap",
+   "intensity": 0.5,
+   "pan": 0.24,
+   "pitch": "mid",
+   "what": "A second helper presses the N into place (frame 433)"
+  },
+  {
+   "t": 14.467,
+   "dur": 0.35,
+   "type": "rustle",
+   "intensity": 0.2,
+   "pan": 0.2,
+   "pitch": "mid",
+   "what": "Sheet rubbed against the N"
+  },
+  {
+   "t": 14.6,
+   "dur": 0.3,
+   "type": "twinkle",
+   "intensity": 0.35,
+   "pan": 0.72,
+   "pitch": "high",
+   "what": "Elf raises her wand high and the star flashes (frames 438-442)"
+  },
+  {
+   "t": 14.733,
+   "dur": 0.3,
+   "type": "magic_wand",
+   "intensity": 0.6,
+   "pan": 0.45,
+   "pitch": "high",
+   "what": "Quick downward flick toward the spot for the apostrophe (frame 442)"
+  },
+  {
+   "t": 14.767,
+   "dur": 0.2,
+   "type": "bloop",
+   "intensity": 0.5,
+   "pan": 0.34,
+   "pitch": "mid",
+   "what": "Apostrophe bubbles into existence as a dark round blob (frame 443)"
+  },
+  {
+   "t": 14.867,
+   "dur": 0.6,
+   "type": "chime",
+   "intensity": 0.6,
+   "pan": 0.3,
+   "pitch": "high",
+   "what": "Apostrophe snaps into its comma shape, the fourth note (frame 446)"
+  },
+  {
+   "t": 15.033,
+   "dur": 0.45,
+   "type": "magic_wand",
+   "intensity": 0.85,
+   "pan": 0.5,
+   "pitch": "high",
+   "what": "Final wand flick conjures the S (frame 451)"
+  },
+  {
+   "t": 15.1,
+   "dur": 0.9,
+   "type": "chime",
+   "intensity": 0.75,
+   "pan": 0.47,
+   "pitch": "high",
+   "what": "S formed and DON'S is complete, the top note of the motif (frame 453)"
+  },
+  {
+   "t": 15.1,
+   "dur": 0.333,
+   "type": "sparkle",
+   "intensity": 0.6,
+   "pan": 0.47,
+   "pitch": "high",
+   "what": "Big gold glitter cloud swirls up around the S"
+  },
+  {
+   "t": 15.333,
+   "dur": 0.15,
+   "type": "snap",
+   "intensity": 0.55,
+   "pan": 0.46,
+   "pitch": "mid",
+   "what": "Helper presses the sheet onto the S (sheet comes up at frame 459 and touches the S at frame 460)"
+  },
+  {
+   "t": 15.367,
+   "dur": 0.167,
+   "type": "whoosh_fast",
+   "intensity": 0.55,
+   "pan": 0,
+   "pitch": "mid",
+   "what": "Whip into the cut to the gelato display counter (cut at frame 463)"
+  },
+  {
+   "t": 15.5,
+   "dur": 0.233,
+   "type": "riser",
+   "intensity": 0.4,
+   "pan": 0.15,
+   "pitch": "mid",
+   "what": "slow push-in on the frosty gelato counter builds into the jump-zoom"
+  },
+  {
+   "t": 15.733,
+   "dur": 0.55,
+   "type": "whoosh_fast",
+   "intensity": 0.9,
+   "pan": 0.22,
+   "pitch": "low",
+   "what": "hard jump-zoom into the gelato, camera rushes into the flying ingredients"
+  },
+  {
+   "t": 15.8,
+   "dur": 0.6,
+   "type": "crumble",
+   "intensity": 0.45,
+   "pan": 0.2,
+   "pitch": "mid",
+   "what": "white-chocolate and brownie pieces and pistachio crumbs burst outward as the zoom continues"
+  },
+  {
+   "t": 15.933,
+   "dur": 0.37,
+   "type": "swish",
+   "intensity": 0.4,
+   "pan": 0.45,
+   "pitch": "high",
+   "what": "lemon slice flies out past the bottom-right corner"
+  },
+  {
+   "t": 16.167,
+   "dur": 0.15,
+   "type": "pop",
+   "intensity": 0.3,
+   "pan": 0.25,
+   "pitch": "high",
+   "what": "hero raspberry snaps into sharp focus (frame 485), raspberries rush past"
+  },
+  {
+   "t": 16.333,
+   "dur": 1.067,
+   "type": "shimmer",
+   "intensity": 0.3,
+   "pan": 0.25,
+   "pitch": "high",
+   "what": "slow-motion float: crumbs and berry pearls drift while the hero raspberry grows"
+  },
+  {
+   "t": 17.433,
+   "dur": 0.7,
+   "type": "whoosh_soft",
+   "intensity": 0.6,
+   "pan": -0.35,
+   "pitch": "low",
+   "what": "fast pan, the giant raspberry slides out to the left (pan runs until about 18.1)"
+  },
+  {
+   "t": 17.733,
+   "dur": 0.7,
+   "type": "glass_shine",
+   "intensity": 0.6,
+   "pan": 0,
+   "pitch": "high",
+   "what": "glass bubble rises into frame from the bottom centre and its contents turn (lemon slice and logo rotate into view)"
+  },
+  {
+   "t": 17.967,
+   "dur": 0.3,
+   "type": "swish",
+   "intensity": 0.35,
+   "pan": -0.75,
+   "pitch": "mid",
+   "what": "large blurry lemon slice sweeps in from the left foreground"
+  },
+  {
+   "t": 18.433,
+   "dur": 0.8,
+   "type": "chime",
+   "intensity": 0.6,
+   "pan": 0,
+   "pitch": "high",
+   "what": "mirrored DON'S eisdiele logo settles, readable inside the bubble"
+  },
+  {
+   "t": 19,
+   "dur": 0.2,
+   "type": "whoosh_fast",
+   "intensity": 0.7,
+   "pan": 0,
+   "pitch": "high",
+   "what": "frame tilts and shrinks away into a small cube on black"
+  },
+  {
+   "t": 19.167,
+   "dur": 0.233,
+   "type": "swirl",
+   "intensity": 0.5,
+   "pan": 0,
+   "pitch": "mid",
+   "what": "small cube spins on black"
+  },
+  {
+   "t": 19.233,
+   "dur": 0.05,
+   "type": "click",
+   "intensity": 0.35,
+   "pan": 0,
+   "pitch": "mid",
+   "what": "cube face flips to the bubble face"
+  },
+  {
+   "t": 19.367,
+   "dur": 0.15,
+   "type": "whoosh_fast",
+   "intensity": 0.75,
+   "pan": 0,
+   "pitch": "low",
+   "what": "lemon face rushes toward camera and expands to full frame"
+  },
+  {
+   "t": 19.5,
+   "dur": 0.25,
+   "type": "thud_soft",
+   "intensity": 0.6,
+   "pan": -0.15,
+   "pitch": "low",
+   "what": "lemon face snaps to full frame, end of the box-spin"
+  },
+  {
+   "t": 19.533,
+   "dur": 1.3,
+   "type": "whoosh_soft",
+   "intensity": 0.45,
+   "pan": -0.1,
+   "pitch": "mid",
+   "what": "continuous right-to-left whip pan over lemon, cream swirl, mango and chocolate"
+  },
+  {
+   "t": 20,
+   "dur": 0.3,
+   "type": "swish",
+   "intensity": 0.55,
+   "pan": 0.1,
+   "pitch": "high",
+   "what": "mango cube streaks across the centre (1630 to 310 px)"
+  },
+  {
+   "t": 20.233,
+   "dur": 0.35,
+   "type": "whoosh_fast",
+   "intensity": 0.6,
+   "pan": 0.05,
+   "pitch": "low",
+   "what": "big dark chocolate bar sweeps through the frame"
+  },
+  {
+   "t": 20.567,
+   "dur": 0.3,
+   "type": "crumble",
+   "intensity": 0.3,
+   "pan": 0.5,
+   "pitch": "mid",
+   "what": "chocolate chips and crumbs fly across the green background, right side"
+  },
+  {
+   "t": 20.767,
+   "dur": 0.8,
+   "type": "whoosh_soft",
+   "intensity": 0.6,
+   "pan": 0.65,
+   "pitch": "mid",
+   "what": "chocolate egg glides in from the right and slows down"
+  },
+  {
+   "t": 21.067,
+   "dur": 0.5,
+   "type": "shimmer",
+   "intensity": 0.35,
+   "pan": 0.4,
+   "pitch": "high",
+   "what": "gloss highlights glide over the slowing chocolate egg"
+  },
+  {
+   "t": 21.567,
+   "dur": 0.4,
+   "type": "twinkle",
+   "intensity": 0.5,
+   "pan": 0.08,
+   "pitch": "high",
+   "what": "egg comes to rest near the centre (frame 647), green DON'S lettering gleams during the brand hold"
+  },
+  {
+   "t": 21.933,
+   "dur": 0.433,
+   "type": "whoosh_fast",
+   "intensity": 0.7,
+   "pan": -0.4,
+   "pitch": "mid",
+   "what": "egg speeds up and rushes out to the left (gone by 22.33)"
+  },
+  {
+   "t": 22.2667,
+   "dur": 0.12,
+   "type": "crack",
+   "intensity": 0.5,
+   "pan": -0.2,
+   "pitch": "mid",
+   "what": "Frame mirrors and splits into a chocolate kaleidoscope (f668-670)"
+  },
+  {
+   "t": 22.3667,
+   "dur": 0.25,
+   "type": "whoosh_soft",
+   "intensity": 0.45,
+   "pan": 0,
+   "pitch": "low",
+   "what": "Hard cut to the rolled crepe, fast zoom-out reveal f671-673"
+  },
+  {
+   "t": 22.3667,
+   "dur": 0.9,
+   "type": "shimmer",
+   "intensity": 0.25,
+   "pan": 0.45,
+   "pitch": "high",
+   "what": "Gold dust glittering in the dark background, mostly centre-right (f671-~698)"
+  },
+  {
+   "t": 22.4333,
+   "dur": 0.8,
+   "type": "swirl",
+   "intensity": 0.5,
+   "pan": -0.7,
+   "pitch": "mid",
+   "what": "White sauce stream tip enters top-left (f673) and loops down and to the right around the crepe"
+  },
+  {
+   "t": 22.5333,
+   "dur": 0.95,
+   "type": "swirl",
+   "intensity": 0.5,
+   "pan": 0.75,
+   "pitch": "low",
+   "what": "Chocolate stream tip peeks in at the top right (f676, x about 1700), clearly in by f678, spirals down to the left"
+  },
+  {
+   "t": 22.7667,
+   "dur": 0.25,
+   "type": "goo",
+   "intensity": 0.3,
+   "pan": -0.75,
+   "pitch": "high",
+   "what": "White sauce first touches the crepe's left end (f682-683)"
+  },
+  {
+   "t": 22.9333,
+   "dur": 0.9,
+   "type": "pour",
+   "intensity": 0.4,
+   "pan": 0,
+   "pitch": "mid",
+   "what": "Both streams wrap around the crepe, white loop drapes over the front then the right end (f688-714)"
+  },
+  {
+   "t": 23.1667,
+   "dur": 0.3,
+   "type": "goo",
+   "intensity": 0.35,
+   "pan": -0.6,
+   "pitch": "low",
+   "what": "Chocolate stream lands across the left and top of the crepe (f693-695)"
+  },
+  {
+   "t": 23.4,
+   "dur": 0.3,
+   "type": "goo",
+   "intensity": 0.35,
+   "pan": 0.55,
+   "pitch": "low",
+   "what": "Chocolate wraps the right open end, first drips form there (f702-706)"
+  },
+  {
+   "t": 23.6667,
+   "dur": 0.25,
+   "type": "squirt",
+   "intensity": 0.3,
+   "pan": 0.55,
+   "pitch": "high",
+   "what": "White zigzag drizzle pipes itself over the right end (f708-716)"
+  },
+  {
+   "t": 23.8,
+   "dur": 0.35,
+   "type": "goo",
+   "intensity": 0.4,
+   "pan": -0.15,
+   "pitch": "low",
+   "what": "Thick chocolate coat oozes over the crepe and settles into a drizzle (f714-722)"
+  },
+  {
+   "t": 23.9667,
+   "dur": 0.15,
+   "type": "drip",
+   "intensity": 0.35,
+   "pan": -0.1,
+   "pitch": "mid",
+   "what": "Last chocolate coil plops onto the top centre (f719-720)"
+  },
+  {
+   "t": 24.1,
+   "dur": 0.35,
+   "type": "whoosh_fast",
+   "intensity": 0.7,
+   "pan": 0.4,
+   "pitch": "mid",
+   "what": "Horizontal motion-blur strip wipes in from the right and sweeps left (f723-733), morph toward the plated crepe"
+  },
+  {
+   "t": 24.2333,
+   "dur": 0.15,
+   "type": "drip",
+   "intensity": 0.3,
+   "pan": -0.45,
+   "pitch": "high",
+   "what": "Long chocolate drips stretch and fall below the crepe's left-centre (f724-733)"
+  },
+  {
+   "t": 24.4,
+   "dur": 0.3,
+   "type": "crackle",
+   "intensity": 0.2,
+   "pan": -0.65,
+   "pitch": "high",
+   "what": "Chocolate sprinkles appear on the crepe's left end inside the morph strips (f729-735)"
+  },
+  {
+   "t": 24.5,
+   "dur": 0.43,
+   "type": "glitch",
+   "intensity": 0.3,
+   "pan": -0.15,
+   "pitch": "high",
+   "what": "Vertical seam strips and a moving wipe edge break up the frame until the angled plate shot is clean (f734-746)"
+  },
+  {
+   "t": 24.5667,
+   "dur": 0.6,
+   "type": "whoosh_soft",
+   "intensity": 0.45,
+   "pan": -0.2,
+   "pitch": "mid",
+   "what": "Big chocolate curls tumble down from the top, close to the lens (f736-760)"
+  },
+  {
+   "t": 25.0333,
+   "dur": 0.08,
+   "type": "click",
+   "intensity": 0.35,
+   "pan": 0.1,
+   "pitch": "high",
+   "what": "First curls hit the front edge of the plate, bottom centre (f751-753)"
+  },
+  {
+   "t": 25.1333,
+   "dur": 0.33,
+   "type": "crumble",
+   "intensity": 0.45,
+   "pan": 0.4,
+   "pitch": "mid",
+   "what": "Curls clatter into a pile at the lower right (x about 1000-1630, f754-758, settled by f763)"
+  },
+  {
+   "t": 25.2,
+   "dur": 0.1,
+   "type": "click",
+   "intensity": 0.3,
+   "pan": -0.45,
+   "pitch": "high",
+   "what": "Two curls land at the back left of the plate (x about 480-770, f755-756)"
+  },
+  {
+   "t": 25.4667,
+   "dur": 0.08,
+   "type": "click",
+   "intensity": 0.2,
+   "pan": -0.3,
+   "pitch": "high",
+   "what": "The last two falling curls settle at the upper left (f763-764)"
+  },
+  {
+   "t": 25.6667,
+   "dur": 0.2,
+   "type": "whoosh_fast",
+   "intensity": 0.55,
+   "pan": -0.45,
+   "pitch": "mid",
+   "what": "Hard cut, chocolate squirrel dashes in low from the left with a blurred tail (f770-772)"
+  },
+  {
+   "t": 25.6667,
+   "dur": 0.3,
+   "type": "rustle",
+   "intensity": 0.3,
+   "pan": -0.3,
+   "pitch": "high",
+   "what": "Squirrel's quick scurrying paws"
+  },
+  {
+   "t": 25.7667,
+   "dur": 0.15,
+   "type": "thud_soft",
+   "intensity": 0.3,
+   "pan": -0.1,
+   "pitch": "mid",
+   "what": "Squirrel stops crouched beside the crepe, left of centre (f773)"
+  },
+  {
+   "t": 25.8333,
+   "dur": 0.2,
+   "type": "swish",
+   "intensity": 0.35,
+   "pan": 0.05,
+   "pitch": "high",
+   "what": "Squirrel rears up and scrambles up the crepe (f775-779)"
+  },
+  {
+   "t": 26,
+   "dur": 0.15,
+   "type": "bounce",
+   "intensity": 0.35,
+   "pan": 0.07,
+   "pitch": "high",
+   "what": "Squirrel hops onto the top of the crepe (f780)"
+  },
+  {
+   "t": 26.2,
+   "dur": 0.2,
+   "type": "chirp",
+   "intensity": 0.45,
+   "pan": 0.1,
+   "pitch": "high",
+   "what": "Squirrel finishes turning and faces left with its tail curled (f786)"
+  },
+  {
+   "t": 26.3,
+   "dur": 0.15,
+   "type": "swish",
+   "intensity": 0.2,
+   "pan": 0.1,
+   "pitch": "high",
+   "what": "Tail flicks up into a tall S (f789-791)"
+  },
+  {
+   "t": 26.4667,
+   "dur": 0.3,
+   "type": "magic_wand",
+   "intensity": 0.6,
+   "pan": 0.05,
+   "pitch": "high",
+   "what": "Squirrel melts into a blob and morphs into a Bueno bar (f794-796)"
+  },
+  {
+   "t": 26.5667,
+   "dur": 0.1,
+   "type": "snap",
+   "intensity": 0.45,
+   "pan": 0.1,
+   "pitch": "mid",
+   "what": "Bueno bar firms up with its segments and rests on top (f797)"
+  },
+  {
+   "t": 26.6333,
+   "dur": 0.3,
+   "type": "shimmer",
+   "intensity": 0.25,
+   "pan": 0,
+   "pitch": "high",
+   "what": "Topping morphs into a creamy layer with hazelnut rings (f799-804)"
+  },
+  {
+   "t": 26.9667,
+   "dur": 0.35,
+   "type": "splash",
+   "intensity": 0.65,
+   "pan": 0.5,
+   "pitch": "low",
+   "what": "Cut, whipped cream splats in at the bottom right (x about 865-1920, f809)"
+  },
+  {
+   "t": 27.1,
+   "dur": 0.7,
+   "type": "goo",
+   "intensity": 0.3,
+   "pan": 0.55,
+   "pitch": "low",
+   "what": "Glossy cream splat spreads, then turns into a fluffy whipped dollop (f813-830, fluffy from f824)"
+  },
+  {
+   "t": 27.3,
+   "dur": 0.25,
+   "type": "sparkle",
+   "intensity": 0.2,
+   "pan": -0.1,
+   "pitch": "high",
+   "what": "Topping morphs back to the drizzle with chocolate sprinkles (f819-821)"
+  },
+  {
+   "t": 27.7667,
+   "dur": 0.4,
+   "type": "creak",
+   "intensity": 0.4,
+   "pan": 0.53,
+   "pitch": "low",
+   "what": "Chocolate twig tree sprouts out of the cream at x about 1460 (tip at f833, clear twig f835+, keeps growing into film6)"
+  },
+  {
+   "t": 27.7667,
+   "dur": 0.3,
+   "type": "twinkle",
+   "intensity": 0.3,
+   "pan": 0.53,
+   "pitch": "high",
+   "what": "Magic accent on the tree sprouting"
+  },
+  {
+   "t": 28,
+   "dur": 0.267,
+   "type": "creak",
+   "intensity": 0.3,
+   "pan": 0.53,
+   "pitch": "low",
+   "what": "Chocolate twig branches keep spreading out of the cream (tail of the tree sprout that starts at 27.8 in film5), frames 840-846"
+  },
+  {
+   "t": 28.167,
+   "dur": 0.2,
+   "type": "twinkle",
+   "intensity": 0.25,
+   "pan": 0.55,
+   "pitch": "high",
+   "what": "Tiny red buds appear on the branch tips (845-849)"
+  },
+  {
+   "t": 28.333,
+   "dur": 0.12,
+   "type": "pop",
+   "intensity": 0.6,
+   "pan": 0.55,
+   "pitch": "mid",
+   "what": "Glossy cherry pops into the middle of the tree (frame 850, x~1485)"
+  },
+  {
+   "t": 28.333,
+   "dur": 0.4,
+   "type": "flutter",
+   "intensity": 0.5,
+   "pan": 0.53,
+   "pitch": "high",
+   "what": "Cherry blossoms burst open across the crown (850-855, x 1056-1876)"
+  },
+  {
+   "t": 28.533,
+   "dur": 0.467,
+   "type": "whoosh_soft",
+   "intensity": 0.25,
+   "pan": -0.6,
+   "pitch": "low",
+   "what": "Blurred white ice-cream scoop glides in from the left edge in the background and stops at x~600 (856-870)"
+  },
+  {
+   "t": 28.567,
+   "dur": 0.1,
+   "type": "swish",
+   "intensity": 0.25,
+   "pan": 0.54,
+   "pitch": "high",
+   "what": "Cherry slips down the trunk (857-859)"
+  },
+  {
+   "t": 28.667,
+   "dur": 0.15,
+   "type": "thud_soft",
+   "intensity": 0.55,
+   "pan": 0.54,
+   "pitch": "mid",
+   "what": "Cherry lands on top of the whipped cream (frame 860, x~1475)"
+  },
+  {
+   "t": 28.667,
+   "dur": 0.233,
+   "type": "goo",
+   "intensity": 0.3,
+   "pan": 0.54,
+   "pitch": "mid",
+   "what": "Cherry sinks into the cream and settles (860-867)"
+  },
+  {
+   "t": 28.933,
+   "dur": 0.367,
+   "type": "sparkle",
+   "intensity": 0.55,
+   "pan": 0.53,
+   "pitch": "high",
+   "what": "Blossoms dissolve into pink glitter that drifts upward while the tree fades (868-878)"
+  },
+  {
+   "t": 29.3,
+   "dur": 0.167,
+   "type": "glitch",
+   "intensity": 0.8,
+   "pan": 0,
+   "pitch": "mid",
+   "what": "RGB-split glitch jolt, frame zooms and skews (879-883)"
+  },
+  {
+   "t": 29.367,
+   "dur": 0.25,
+   "type": "impact",
+   "intensity": 0.55,
+   "pan": 0,
+   "pitch": "low",
+   "what": "Peak of the white flash (frame 881), the frame shakes; tighter new framing settles at 29.467"
+  },
+  {
+   "t": 29.4,
+   "dur": 0.967,
+   "type": "twinkle",
+   "intensity": 0.4,
+   "pan": 0.65,
+   "pitch": "high",
+   "what": "Golden star sparkles twinkle in the upper right above the crepe, fading by 30.37 (882-911)"
+  },
+  {
+   "t": 29.533,
+   "dur": 0.267,
+   "type": "shimmer",
+   "intensity": 0.25,
+   "pan": -0.38,
+   "pitch": "mid",
+   "what": "Background scoop magically turns from vanilla to chocolate (886-894, x~590)"
+  },
+  {
+   "t": 30.433,
+   "dur": 0.1,
+   "type": "swish",
+   "intensity": 0.55,
+   "pan": 0,
+   "pitch": "mid",
+   "what": "Frame shrinks behind a white border and splits into tiles (913)"
+  },
+  {
+   "t": 30.433,
+   "dur": 0.533,
+   "type": "shake",
+   "intensity": 0.6,
+   "pan": 0,
+   "pitch": "mid",
+   "what": "Tiled split-frame shake, tiles jitter and rotate every frame (913-928)"
+  },
+  {
+   "t": 30.967,
+   "dur": 0.08,
+   "type": "snap",
+   "intensity": 0.55,
+   "pan": 0,
+   "pitch": "mid",
+   "what": "Picture snaps back to full frame with slightly tighter framing (929)"
+  },
+  {
+   "t": 31.667,
+   "dur": 0.1,
+   "type": "goo",
+   "intensity": 0.5,
+   "pan": 0.54,
+   "pitch": "mid",
+   "what": "Whipped cream stretches up into a peak as the cherry lifts (950-952)"
+  },
+  {
+   "t": 31.767,
+   "dur": 0.1,
+   "type": "pop",
+   "intensity": 0.6,
+   "pan": 0.53,
+   "pitch": "mid",
+   "what": "Cherry pulls free of the cream peak (953)"
+  },
+  {
+   "t": 31.767,
+   "dur": 0.567,
+   "type": "firework_launch",
+   "intensity": 0.75,
+   "pan": 0.3,
+   "pitch": "high",
+   "what": "Cherry rockets upward with a pink sparkle beam (x 1480->1270), carries across the cut into the sky up to the burst at 32.333"
+  },
+  {
+   "t": 31.8,
+   "dur": 0.167,
+   "type": "whoosh_fast",
+   "intensity": 0.6,
+   "pan": 0.15,
+   "pitch": "low",
+   "what": "Camera whip-tilts after the cherry and the crepe drops out of frame (954-958)"
+  },
+  {
+   "t": 31.967,
+   "dur": 0.367,
+   "type": "sparkle",
+   "intensity": 0.35,
+   "pan": 0,
+   "pitch": "high",
+   "what": "Hard cut to the pastel sunset sky; cherry flies away from camera trailing pink sparkles (959-969, x~965)"
+  },
+  {
+   "t": 32.333,
+   "dur": 1.2,
+   "type": "firework_burst",
+   "intensity": 1,
+   "pan": 0,
+   "pitch": "mid",
+   "what": "Cherry detonates in a bright white-pink flash at centre (frame 970, x~965 y~425), opening into a pink and green firework"
+  },
+  {
+   "t": 32.333,
+   "dur": 0.8,
+   "type": "boom",
+   "intensity": 0.6,
+   "pan": 0,
+   "pitch": "low",
+   "what": "Low body under the firework burst"
+  },
+  {
+   "t": 32.467,
+   "dur": 1,
+   "type": "crackle",
+   "intensity": 0.5,
+   "pan": 0,
+   "pitch": "high",
+   "what": "Firework rays spread out and crackle, fading by about 33.3 (974-1000)"
+  },
+  {
+   "t": 32.6,
+   "dur": 0.6,
+   "type": "splash",
+   "intensity": 0.7,
+   "pan": 0,
+   "pitch": "mid",
+   "what": "Pink and green watercolour splash blooms over the whole frame (978-990)"
+  },
+  {
+   "t": 32.933,
+   "dur": 0.9,
+   "type": "flutter",
+   "intensity": 0.35,
+   "pan": 0.76,
+   "pitch": "high",
+   "what": "Ice-cream doodles cascade down and form the right-edge column (x 1600-1760)"
+  },
+  {
+   "t": 33.033,
+   "dur": 0.867,
+   "type": "flutter",
+   "intensity": 0.35,
+   "pan": -0.76,
+   "pitch": "high",
+   "what": "Ice-cream doodles cascade down and form the left-edge column (x 150-310)"
+  },
+  {
+   "t": 33.267,
+   "dur": 0.3,
+   "type": "heart_ping",
+   "intensity": 0.4,
+   "pan": 0,
+   "pitch": "high",
+   "what": "Two pink hearts drop in together at x~580 and x~1320 and fall to the bottom by 34.0 (998-1020)"
+  },
+  {
+   "t": 33.9,
+   "dur": 0.5,
+   "type": "squirt",
+   "intensity": 0.6,
+   "pan": 0,
+   "pitch": "mid",
+   "what": "Whipped cream is piped clockwise into a ring at centre (first cream bead 1017, ring grows to 1032)"
+  },
+  {
+   "t": 34.067,
+   "dur": 0.333,
+   "type": "goo",
+   "intensity": 0.3,
+   "pan": 0.05,
+   "pitch": "low",
+   "what": "Creamy texture of the piping swirl as the ring grows around (1022-1031)"
+  },
+  {
+   "t": 34.4,
+   "dur": 0.12,
+   "type": "bloop",
+   "intensity": 0.35,
+   "pan": -0.17,
+   "pitch": "mid",
+   "what": "The cream ring closes (1032, gap at upper left)"
+  },
+  {
+   "t": 34.567,
+   "dur": 0.2,
+   "type": "swirl",
+   "intensity": 0.4,
+   "pan": 0,
+   "pitch": "mid",
+   "what": "Green paint swirls into the middle of the ring (1037-1041)"
+  },
+  {
+   "t": 34.7,
+   "dur": 0.8,
+   "type": "magic_wand",
+   "intensity": 0.75,
+   "pan": 0,
+   "pitch": "high",
+   "what": "Cream ring dissolves into the green logo circle (1041-1043)"
+  },
+  {
+   "t": 34.8,
+   "dur": 0.4,
+   "type": "swish",
+   "intensity": 0.45,
+   "pan": 0,
+   "pitch": "mid",
+   "what": "Diagonal brush strokes reveal the bulldog while the pink outline ring draws around the circle (1044-1056)"
+  },
+  {
+   "t": 35.033,
+   "dur": 0.1,
+   "type": "pop",
+   "intensity": 0.4,
+   "pan": -0.18,
+   "pitch": "low",
+   "what": "Letter 'D' is drawn (1048-1054, x~770)"
+  },
+  {
+   "t": 35.133,
+   "dur": 0.12,
+   "type": "bloop",
+   "intensity": 0.3,
+   "pan": 0,
+   "pitch": "mid",
+   "what": "Pink ice-cream cone appears in the bulldog's mouth (1054-1057); kept low so it sits under the letter pops"
+  },
+  {
+   "t": 35.2,
+   "dur": 0.1,
+   "type": "pop",
+   "intensity": 0.4,
+   "pan": -0.08,
+   "pitch": "mid",
+   "what": "Letter 'O' is drawn (1055-1057, x~885)"
+  },
+  {
+   "t": 35.3,
+   "dur": 0.6,
+   "type": "twinkle",
+   "intensity": 0.3,
+   "pan": -0.1,
+   "pitch": "high",
+   "what": "White star twinkles appear across the background (1059-1078)"
+  },
+  {
+   "t": 35.467,
+   "dur": 0.06,
+   "type": "click",
+   "intensity": 0.3,
+   "pan": 0.1,
+   "pitch": "high",
+   "what": "Apostrophe appears (1063-1064, x~1060)"
+  },
+  {
+   "t": 35.567,
+   "dur": 0.12,
+   "type": "pop",
+   "intensity": 0.45,
+   "pan": 0.19,
+   "pitch": "high",
+   "what": "Letter 'S' is drawn and completes DON'S (1066-1069, x~1130)"
+  },
+  {
+   "t": 35.767,
+   "dur": 0.933,
+   "type": "rustle",
+   "intensity": 0.25,
+   "pan": 0,
+   "pitch": "high",
+   "what": "'eisdiele' is handwritten in pink script, left to right (1073-1101)"
+  },
+  {
+   "t": 35.9,
+   "dur": 0.633,
+   "type": "glass_shine",
+   "intensity": 0.5,
+   "pan": 0,
+   "pitch": "high",
+   "what": "Golden lens flare sweeps left to right across the whole logo, from the left edge to the right edge (1077-1096)"
+  },
+  {
+   "t": 36.733,
+   "dur": 0.633,
+   "type": "chime",
+   "intensity": 0.6,
+   "pan": 0,
+   "pitch": "high",
+   "what": "Logo completes with the flourish dashes around 'eisdiele' and holds to the end (1102-1120)"
+  }
+ ]
+}

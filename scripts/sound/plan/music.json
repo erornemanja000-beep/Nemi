@@ -1,0 +1,1258 @@
+{
+ "key": "F major",
+ "bpm": 138,
+ "concept": "\"Don's Theme\": a lilting music-box waltz in F major at 138 bpm (one bar = 1.30 s). The celesta sings a short, catchy theme (A-C | D-C | A-Bb-C | G) over a warm pad, harp 'pah-pah' plucks and a soft round bass; a few two-beat bars realign the downbeats so harmony changes land on the facade (6.09), the punch-in (15.65), the cream splash (26.96), the burst (32.17) and the logo (36.5). The DON'S letters are mickey-moused by a rising F-A-C-D-E line that resolves to F on the punch-in; the build climbs (bass Bb-C-D-C, melody up to G6) into a C7sus4 swell, falls to near-silence for the fireworks, and returns through Bbmaj7-Am7-Bb/C to a final F major bell chord on the logo.",
+ "sections": [
+  {
+   "start": 0.0,
+   "end": 6.087,
+   "mood": "tender, curious music-box waltz: the scoop becomes a rose, a petal flies off",
+   "dynamics": 0.35,
+   "instruments": [
+    "music box",
+    "pad",
+    "harp"
+   ]
+  },
+  {
+   "start": 6.087,
+   "end": 10.733,
+   "mood": "gentle wonder: facade, rippling wall, melting, the shop window builds itself",
+   "dynamics": 0.45,
+   "instruments": [
+    "music box",
+    "pad",
+    "harp",
+    "bass"
+   ]
+  },
+  {
+   "start": 10.733,
+   "end": 15.652,
+   "mood": "welcoming and playful: the elf flies in, DON'S letters are placed note by note",
+   "dynamics": 0.5,
+   "instruments": [
+    "music box",
+    "pad",
+    "harp",
+    "bass"
+   ]
+  },
+  {
+   "start": 15.652,
+   "end": 22.174,
+   "mood": "bright, building: full theme with flying ingredients",
+   "dynamics": 0.6,
+   "instruments": [
+    "music box",
+    "pad",
+    "harp",
+    "bass",
+    "shaker"
+   ]
+  },
+  {
+   "start": 22.174,
+   "end": 26.957,
+   "mood": "playful and bouncy: crepe rolls, curls fall, the squirrel scampers",
+   "dynamics": 0.62,
+   "instruments": [
+    "music box",
+    "pad",
+    "harp",
+    "bass",
+    "shaker"
+   ]
+  },
+  {
+   "start": 26.957,
+   "end": 32.3,
+   "mood": "rising, sparkling build: tree and cherry, climbing riser into the burst",
+   "dynamics": 0.7,
+   "instruments": [
+    "music box",
+    "pad",
+    "harp",
+    "bass",
+    "shaker"
+   ]
+  },
+  {
+   "start": 32.3,
+   "end": 34.75,
+   "mood": "breath after the burst, then a dreamy afterglow with falling hearts",
+   "dynamics": 0.48,
+   "instruments": [
+    "music box",
+    "pad",
+    "harp",
+    "bass"
+   ]
+  },
+  {
+   "start": 34.75,
+   "end": 37.37,
+   "mood": "warm resolution: the DON'S logo builds, final bell chord",
+   "dynamics": 0.55,
+   "instruments": [
+    "music box",
+    "pad",
+    "harp",
+    "bass",
+    "bell"
+   ]
+  }
+ ],
+ "chords": [
+  {
+   "t": 0.0,
+   "dur": 1.304,
+   "notes": [
+    65,
+    69,
+    72
+   ],
+   "bass": 41
+  },
+  {
+   "t": 1.304,
+   "dur": 1.305,
+   "notes": [
+    65,
+    70,
+    74
+   ],
+   "bass": 46
+  },
+  {
+   "t": 2.609,
+   "dur": 1.304,
+   "notes": [
+    65,
+    69,
+    72
+   ],
+   "bass": 38
+  },
+  {
+   "t": 3.913,
+   "dur": 1.304,
+   "notes": [
+    65,
+    70,
+    74
+   ],
+   "bass": 43
+  },
+  {
+   "t": 5.217,
+   "dur": 0.87,
+   "notes": [
+    65,
+    67,
+    70
+   ],
+   "bass": 36
+  },
+  {
+   "t": 6.087,
+   "dur": 1.304,
+   "notes": [
+    65,
+    69,
+    72
+   ],
+   "bass": 41
+  },
+  {
+   "t": 7.391,
+   "dur": 1.305,
+   "notes": [
+    64,
+    67,
+    72
+   ],
+   "bass": 45
+  },
+  {
+   "t": 8.696,
+   "dur": 1.304,
+   "notes": [
+    65,
+    69,
+    74
+   ],
+   "bass": 46
+  },
+  {
+   "t": 10.0,
+   "dur": 0.87,
+   "notes": [
+    64,
+    67,
+    70
+   ],
+   "bass": 36
+  },
+  {
+   "t": 10.87,
+   "dur": 1.304,
+   "notes": [
+    65,
+    69,
+    72
+   ],
+   "bass": 41
+  },
+  {
+   "t": 12.174,
+   "dur": 1.304,
+   "notes": [
+    65,
+    69,
+    72
+   ],
+   "bass": 38
+  },
+  {
+   "t": 13.478,
+   "dur": 1.305,
+   "notes": [
+    65,
+    69,
+    74
+   ],
+   "bass": 46
+  },
+  {
+   "t": 14.783,
+   "dur": 0.869,
+   "notes": [
+    64,
+    67,
+    70
+   ],
+   "bass": 36
+  },
+  {
+   "t": 15.652,
+   "dur": 1.305,
+   "notes": [
+    65,
+    69,
+    72
+   ],
+   "bass": 41
+  },
+  {
+   "t": 16.957,
+   "dur": 1.304,
+   "notes": [
+    65,
+    70,
+    74
+   ],
+   "bass": 46
+  },
+  {
+   "t": 18.261,
+   "dur": 1.304,
+   "notes": [
+    65,
+    69,
+    72
+   ],
+   "bass": 38
+  },
+  {
+   "t": 19.565,
+   "dur": 1.305,
+   "notes": [
+    64,
+    67,
+    72
+   ],
+   "bass": 36
+  },
+  {
+   "t": 20.87,
+   "dur": 1.304,
+   "notes": [
+    65,
+    69,
+    72
+   ],
+   "bass": 41
+  },
+  {
+   "t": 22.174,
+   "dur": 1.304,
+   "notes": [
+    65,
+    70,
+    74
+   ],
+   "bass": 46
+  },
+  {
+   "t": 23.478,
+   "dur": 1.305,
+   "notes": [
+    65,
+    70,
+    74
+   ],
+   "bass": 43
+  },
+  {
+   "t": 24.783,
+   "dur": 0.869,
+   "notes": [
+    64,
+    67,
+    70
+   ],
+   "bass": 36
+  },
+  {
+   "t": 25.652,
+   "dur": 1.305,
+   "notes": [
+    65,
+    69,
+    72
+   ],
+   "bass": 38
+  },
+  {
+   "t": 26.957,
+   "dur": 1.304,
+   "notes": [
+    65,
+    70,
+    74
+   ],
+   "bass": 46
+  },
+  {
+   "t": 28.261,
+   "dur": 1.304,
+   "notes": [
+    64,
+    67,
+    72
+   ],
+   "bass": 48
+  },
+  {
+   "t": 29.565,
+   "dur": 1.305,
+   "notes": [
+    65,
+    69,
+    72
+   ],
+   "bass": 50
+  },
+  {
+   "t": 30.87,
+   "dur": 1.43,
+   "notes": [
+    65,
+    67,
+    70
+   ],
+   "bass": 48
+  },
+  {
+   "t": 32.609,
+   "dur": 1.304,
+   "notes": [
+    65,
+    69,
+    74
+   ],
+   "bass": 46
+  },
+  {
+   "t": 33.913,
+   "dur": 1.304,
+   "notes": [
+    64,
+    67,
+    72
+   ],
+   "bass": 45
+  },
+  {
+   "t": 35.217,
+   "dur": 1.283,
+   "notes": [
+    65,
+    70,
+    74
+   ],
+   "bass": 36
+  },
+  {
+   "t": 36.5,
+   "dur": 0.87,
+   "notes": [
+    60,
+    65,
+    69,
+    72
+   ],
+   "bass": 41
+  }
+ ],
+ "melody": [
+  {
+   "t": 0.0,
+   "dur": 0.84,
+   "note": 81,
+   "vel": 0.45
+  },
+  {
+   "t": 0.87,
+   "dur": 0.405,
+   "note": 84,
+   "vel": 0.42
+  },
+  {
+   "t": 1.304,
+   "dur": 0.84,
+   "note": 86,
+   "vel": 0.5
+  },
+  {
+   "t": 2.174,
+   "dur": 0.405,
+   "note": 84,
+   "vel": 0.42
+  },
+  {
+   "t": 2.609,
+   "dur": 0.405,
+   "note": 81,
+   "vel": 0.45
+  },
+  {
+   "t": 3.043,
+   "dur": 0.405,
+   "note": 82,
+   "vel": 0.42
+  },
+  {
+   "t": 3.478,
+   "dur": 0.405,
+   "note": 84,
+   "vel": 0.46
+  },
+  {
+   "t": 3.913,
+   "dur": 0.84,
+   "note": 89,
+   "vel": 0.55
+  },
+  {
+   "t": 4.783,
+   "dur": 0.405,
+   "note": 86,
+   "vel": 0.46
+  },
+  {
+   "t": 5.217,
+   "dur": 0.405,
+   "note": 84,
+   "vel": 0.45
+  },
+  {
+   "t": 5.652,
+   "dur": 0.405,
+   "note": 82,
+   "vel": 0.44
+  },
+  {
+   "t": 6.087,
+   "dur": 0.84,
+   "note": 81,
+   "vel": 0.55
+  },
+  {
+   "t": 6.957,
+   "dur": 0.405,
+   "note": 84,
+   "vel": 0.5
+  },
+  {
+   "t": 7.391,
+   "dur": 0.84,
+   "note": 88,
+   "vel": 0.56
+  },
+  {
+   "t": 8.261,
+   "dur": 0.405,
+   "note": 86,
+   "vel": 0.5
+  },
+  {
+   "t": 8.696,
+   "dur": 1.274,
+   "note": 84,
+   "vel": 0.52
+  },
+  {
+   "t": 10.0,
+   "dur": 0.405,
+   "note": 79,
+   "vel": 0.48
+  },
+  {
+   "t": 10.435,
+   "dur": 0.405,
+   "note": 84,
+   "vel": 0.5
+  },
+  {
+   "t": 10.87,
+   "dur": 0.405,
+   "note": 84,
+   "vel": 0.58
+  },
+  {
+   "t": 11.304,
+   "dur": 0.187,
+   "note": 81,
+   "vel": 0.52
+  },
+  {
+   "t": 11.522,
+   "dur": 0.187,
+   "note": 82,
+   "vel": 0.52
+  },
+  {
+   "t": 11.739,
+   "dur": 0.405,
+   "note": 84,
+   "vel": 0.55
+  },
+  {
+   "t": 12.174,
+   "dur": 0.84,
+   "note": 86,
+   "vel": 0.58
+  },
+  {
+   "t": 13.2,
+   "dur": 0.45,
+   "note": 77,
+   "vel": 0.58
+  },
+  {
+   "t": 13.7,
+   "dur": 0.5,
+   "note": 81,
+   "vel": 0.6
+  },
+  {
+   "t": 14.25,
+   "dur": 0.5,
+   "note": 84,
+   "vel": 0.62
+  },
+  {
+   "t": 14.8,
+   "dur": 0.18,
+   "note": 86,
+   "vel": 0.55
+  },
+  {
+   "t": 15.0,
+   "dur": 0.6,
+   "note": 88,
+   "vel": 0.66
+  },
+  {
+   "t": 15.652,
+   "dur": 0.405,
+   "note": 89,
+   "vel": 0.68
+  },
+  {
+   "t": 16.087,
+   "dur": 0.405,
+   "note": 81,
+   "vel": 0.58
+  },
+  {
+   "t": 16.522,
+   "dur": 0.405,
+   "note": 84,
+   "vel": 0.6
+  },
+  {
+   "t": 16.957,
+   "dur": 0.84,
+   "note": 86,
+   "vel": 0.66
+  },
+  {
+   "t": 17.826,
+   "dur": 0.405,
+   "note": 84,
+   "vel": 0.58
+  },
+  {
+   "t": 18.261,
+   "dur": 0.405,
+   "note": 81,
+   "vel": 0.6
+  },
+  {
+   "t": 18.696,
+   "dur": 0.405,
+   "note": 82,
+   "vel": 0.58
+  },
+  {
+   "t": 19.13,
+   "dur": 0.405,
+   "note": 84,
+   "vel": 0.6
+  },
+  {
+   "t": 19.565,
+   "dur": 0.84,
+   "note": 79,
+   "vel": 0.62
+  },
+  {
+   "t": 20.435,
+   "dur": 0.405,
+   "note": 84,
+   "vel": 0.58
+  },
+  {
+   "t": 20.87,
+   "dur": 0.84,
+   "note": 81,
+   "vel": 0.64
+  },
+  {
+   "t": 21.739,
+   "dur": 0.405,
+   "note": 84,
+   "vel": 0.56
+  },
+  {
+   "t": 22.609,
+   "dur": 0.187,
+   "note": 77,
+   "vel": 0.58
+  },
+  {
+   "t": 22.826,
+   "dur": 0.187,
+   "note": 81,
+   "vel": 0.56
+  },
+  {
+   "t": 23.043,
+   "dur": 0.405,
+   "note": 84,
+   "vel": 0.6
+  },
+  {
+   "t": 23.478,
+   "dur": 0.187,
+   "note": 82,
+   "vel": 0.58
+  },
+  {
+   "t": 23.696,
+   "dur": 0.187,
+   "note": 81,
+   "vel": 0.56
+  },
+  {
+   "t": 23.913,
+   "dur": 0.405,
+   "note": 79,
+   "vel": 0.58
+  },
+  {
+   "t": 24.348,
+   "dur": 0.405,
+   "note": 86,
+   "vel": 0.62
+  },
+  {
+   "t": 24.783,
+   "dur": 0.187,
+   "note": 88,
+   "vel": 0.64
+  },
+  {
+   "t": 25.0,
+   "dur": 0.187,
+   "note": 86,
+   "vel": 0.58
+  },
+  {
+   "t": 25.217,
+   "dur": 0.405,
+   "note": 84,
+   "vel": 0.58
+  },
+  {
+   "t": 25.652,
+   "dur": 0.405,
+   "note": 81,
+   "vel": 0.6
+  },
+  {
+   "t": 26.087,
+   "dur": 0.187,
+   "note": 86,
+   "vel": 0.6
+  },
+  {
+   "t": 26.304,
+   "dur": 0.622,
+   "note": 89,
+   "vel": 0.66
+  },
+  {
+   "t": 27.391,
+   "dur": 0.405,
+   "note": 86,
+   "vel": 0.62
+  },
+  {
+   "t": 27.826,
+   "dur": 0.405,
+   "note": 89,
+   "vel": 0.64
+  },
+  {
+   "t": 28.261,
+   "dur": 0.622,
+   "note": 88,
+   "vel": 0.64
+  },
+  {
+   "t": 28.913,
+   "dur": 0.187,
+   "note": 84,
+   "vel": 0.55
+  },
+  {
+   "t": 29.565,
+   "dur": 0.405,
+   "note": 81,
+   "vel": 0.64
+  },
+  {
+   "t": 30.0,
+   "dur": 0.405,
+   "note": 84,
+   "vel": 0.66
+  },
+  {
+   "t": 30.435,
+   "dur": 0.405,
+   "note": 86,
+   "vel": 0.68
+  },
+  {
+   "t": 30.87,
+   "dur": 0.405,
+   "note": 84,
+   "vel": 0.68
+  },
+  {
+   "t": 31.304,
+   "dur": 0.187,
+   "note": 86,
+   "vel": 0.72
+  },
+  {
+   "t": 31.522,
+   "dur": 0.187,
+   "note": 89,
+   "vel": 0.76
+  },
+  {
+   "t": 31.739,
+   "dur": 0.405,
+   "note": 91,
+   "vel": 0.82
+  },
+  {
+   "t": 33.043,
+   "dur": 0.405,
+   "note": 86,
+   "vel": 0.5
+  },
+  {
+   "t": 33.478,
+   "dur": 0.405,
+   "note": 84,
+   "vel": 0.5
+  },
+  {
+   "t": 33.913,
+   "dur": 0.84,
+   "note": 88,
+   "vel": 0.6
+  },
+  {
+   "t": 34.783,
+   "dur": 0.405,
+   "note": 86,
+   "vel": 0.56
+  },
+  {
+   "t": 35.217,
+   "dur": 0.84,
+   "note": 84,
+   "vel": 0.58
+  },
+  {
+   "t": 36.087,
+   "dur": 0.383,
+   "note": 79,
+   "vel": 0.52
+  },
+  {
+   "t": 36.5,
+   "dur": 0.87,
+   "note": 81,
+   "vel": 0.55
+  }
+ ],
+ "counter": [
+  {
+   "t": 1.739,
+   "dur": 0.405,
+   "note": 74,
+   "vel": 0.28
+  },
+  {
+   "t": 2.174,
+   "dur": 0.405,
+   "note": 77,
+   "vel": 0.28
+  },
+  {
+   "t": 3.043,
+   "dur": 0.405,
+   "note": 69,
+   "vel": 0.28
+  },
+  {
+   "t": 3.478,
+   "dur": 0.405,
+   "note": 72,
+   "vel": 0.28
+  },
+  {
+   "t": 4.348,
+   "dur": 0.405,
+   "note": 70,
+   "vel": 0.3
+  },
+  {
+   "t": 4.565,
+   "dur": 0.187,
+   "note": 74,
+   "vel": 0.32
+  },
+  {
+   "t": 4.783,
+   "dur": 0.405,
+   "note": 77,
+   "vel": 0.34
+  },
+  {
+   "t": 5.0,
+   "dur": 0.187,
+   "note": 81,
+   "vel": 0.36
+  },
+  {
+   "t": 5.652,
+   "dur": 0.405,
+   "note": 67,
+   "vel": 0.28
+  },
+  {
+   "t": 6.522,
+   "dur": 0.405,
+   "note": 69,
+   "vel": 0.34
+  },
+  {
+   "t": 6.957,
+   "dur": 0.405,
+   "note": 72,
+   "vel": 0.34
+  },
+  {
+   "t": 7.826,
+   "dur": 0.405,
+   "note": 72,
+   "vel": 0.34
+  },
+  {
+   "t": 8.261,
+   "dur": 0.405,
+   "note": 76,
+   "vel": 0.34
+  },
+  {
+   "t": 8.913,
+   "dur": 0.187,
+   "note": 70,
+   "vel": 0.36
+  },
+  {
+   "t": 9.13,
+   "dur": 0.405,
+   "note": 74,
+   "vel": 0.38
+  },
+  {
+   "t": 9.348,
+   "dur": 0.187,
+   "note": 77,
+   "vel": 0.4
+  },
+  {
+   "t": 9.565,
+   "dur": 0.405,
+   "note": 81,
+   "vel": 0.42
+  },
+  {
+   "t": 9.783,
+   "dur": 0.187,
+   "note": 84,
+   "vel": 0.44
+  },
+  {
+   "t": 10.435,
+   "dur": 0.405,
+   "note": 70,
+   "vel": 0.3
+  },
+  {
+   "t": 11.304,
+   "dur": 0.405,
+   "note": 69,
+   "vel": 0.36
+  },
+  {
+   "t": 11.739,
+   "dur": 0.405,
+   "note": 72,
+   "vel": 0.36
+  },
+  {
+   "t": 12.609,
+   "dur": 0.405,
+   "note": 69,
+   "vel": 0.34
+  },
+  {
+   "t": 13.2,
+   "dur": 0.45,
+   "note": 65,
+   "vel": 0.4
+  },
+  {
+   "t": 13.7,
+   "dur": 0.5,
+   "note": 69,
+   "vel": 0.4
+  },
+  {
+   "t": 14.25,
+   "dur": 0.5,
+   "note": 72,
+   "vel": 0.4
+  },
+  {
+   "t": 14.8,
+   "dur": 0.18,
+   "note": 74,
+   "vel": 0.4
+  },
+  {
+   "t": 15.0,
+   "dur": 0.6,
+   "note": 76,
+   "vel": 0.4
+  },
+  {
+   "t": 16.087,
+   "dur": 0.405,
+   "note": 69,
+   "vel": 0.4
+  },
+  {
+   "t": 16.522,
+   "dur": 0.405,
+   "note": 72,
+   "vel": 0.4
+  },
+  {
+   "t": 17.391,
+   "dur": 0.405,
+   "note": 74,
+   "vel": 0.4
+  },
+  {
+   "t": 17.826,
+   "dur": 0.405,
+   "note": 77,
+   "vel": 0.44
+  },
+  {
+   "t": 18.696,
+   "dur": 0.405,
+   "note": 69,
+   "vel": 0.4
+  },
+  {
+   "t": 19.13,
+   "dur": 0.405,
+   "note": 72,
+   "vel": 0.4
+  },
+  {
+   "t": 20.0,
+   "dur": 0.405,
+   "note": 76,
+   "vel": 0.4
+  },
+  {
+   "t": 20.435,
+   "dur": 0.405,
+   "note": 79,
+   "vel": 0.4
+  },
+  {
+   "t": 21.304,
+   "dur": 0.405,
+   "note": 72,
+   "vel": 0.4
+  },
+  {
+   "t": 21.739,
+   "dur": 0.405,
+   "note": 77,
+   "vel": 0.4
+  },
+  {
+   "t": 22.609,
+   "dur": 0.405,
+   "note": 74,
+   "vel": 0.42
+  },
+  {
+   "t": 23.043,
+   "dur": 0.405,
+   "note": 77,
+   "vel": 0.42
+  },
+  {
+   "t": 23.913,
+   "dur": 0.405,
+   "note": 70,
+   "vel": 0.42
+  },
+  {
+   "t": 24.348,
+   "dur": 0.405,
+   "note": 74,
+   "vel": 0.42
+  },
+  {
+   "t": 25.217,
+   "dur": 0.405,
+   "note": 76,
+   "vel": 0.42
+  },
+  {
+   "t": 26.087,
+   "dur": 0.405,
+   "note": 69,
+   "vel": 0.42
+  },
+  {
+   "t": 26.522,
+   "dur": 0.405,
+   "note": 72,
+   "vel": 0.44
+  },
+  {
+   "t": 27.391,
+   "dur": 0.405,
+   "note": 74,
+   "vel": 0.44
+  },
+  {
+   "t": 27.826,
+   "dur": 0.405,
+   "note": 77,
+   "vel": 0.44
+  },
+  {
+   "t": 28.696,
+   "dur": 0.405,
+   "note": 76,
+   "vel": 0.44
+  },
+  {
+   "t": 29.13,
+   "dur": 0.405,
+   "note": 79,
+   "vel": 0.4
+  },
+  {
+   "t": 30.0,
+   "dur": 0.405,
+   "note": 77,
+   "vel": 0.46
+  },
+  {
+   "t": 30.217,
+   "dur": 0.187,
+   "note": 81,
+   "vel": 0.46
+  },
+  {
+   "t": 30.435,
+   "dur": 0.405,
+   "note": 74,
+   "vel": 0.46
+  },
+  {
+   "t": 30.652,
+   "dur": 0.187,
+   "note": 77,
+   "vel": 0.48
+  },
+  {
+   "t": 31.087,
+   "dur": 0.187,
+   "note": 67,
+   "vel": 0.48
+  },
+  {
+   "t": 31.304,
+   "dur": 0.405,
+   "note": 70,
+   "vel": 0.5
+  },
+  {
+   "t": 31.522,
+   "dur": 0.187,
+   "note": 72,
+   "vel": 0.52
+  },
+  {
+   "t": 31.739,
+   "dur": 0.405,
+   "note": 77,
+   "vel": 0.56
+  },
+  {
+   "t": 31.957,
+   "dur": 0.187,
+   "note": 79,
+   "vel": 0.6
+  },
+  {
+   "t": 33.043,
+   "dur": 0.405,
+   "note": 74,
+   "vel": 0.34
+  },
+  {
+   "t": 33.478,
+   "dur": 0.405,
+   "note": 77,
+   "vel": 0.34
+  },
+  {
+   "t": 34.348,
+   "dur": 0.405,
+   "note": 72,
+   "vel": 0.36
+  },
+  {
+   "t": 34.783,
+   "dur": 0.405,
+   "note": 76,
+   "vel": 0.36
+  },
+  {
+   "t": 35.652,
+   "dur": 0.405,
+   "note": 74,
+   "vel": 0.38
+  },
+  {
+   "t": 36.087,
+   "dur": 0.405,
+   "note": 77,
+   "vel": 0.38
+  },
+  {
+   "t": 36.5,
+   "dur": 0.8,
+   "note": 65,
+   "vel": 0.46
+  },
+  {
+   "t": 36.56,
+   "dur": 0.8,
+   "note": 69,
+   "vel": 0.43000000000000005
+  },
+  {
+   "t": 36.62,
+   "dur": 0.8,
+   "note": 72,
+   "vel": 0.4
+  },
+  {
+   "t": 36.68,
+   "dur": 0.8,
+   "note": 77,
+   "vel": 0.37
+  }
+ ],
+ "accents": [
+  {
+   "t": 31.8,
+   "kind": "swell",
+   "note": "music swells as the cherry shoots up and the sky opens (peak just before the 32.25 burst)"
+  },
+  {
+   "t": 32.3,
+   "kind": "drop_out",
+   "note": "near-silence right after the firework burst; fireworks SFX take the space, music returns with the watercolour"
+  },
+  {
+   "t": 36.5,
+   "kind": "final_chord",
+   "note": "bell + pad F major chord when the logo lettering completes; rings to 37.37"
+  }
+ ]
+}

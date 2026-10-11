@@ -121,7 +121,7 @@ def main():
     ap.add_argument('--dur', type=float, default=37.367)
     ap.add_argument('--lufs', type=float, default=-16.0)
     ap.add_argument('--music-gain', type=float, default=1.0)
-    ap.add_argument('--sfx-gain', type=float, default=1.0)
+    ap.add_argument('--sfx-gain', type=float, default=0.62)
     ap.add_argument('--stems', action='store_true')
     a = ap.parse_args()
     cues = json.load(open(a.cues))
@@ -133,8 +133,13 @@ def main():
     mus = mus[:n]
     sfx = np.zeros((n + SR * 4, 2), np.float32)
     for e in events:
-        y = S.render_event(e, root) * (0.55 + 0.45 * e['intensity'])
-        S.place(sfx, y, e['t'])
+        y = S.render_event(e, root)
+        # izjednačavanje: jačina zavisi samo od važnosti događaja (intensity), ne od vrste zvuka
+        act = y[:max(int(0.05 * SR), int(min(max(e['dur'], 0.1), 1.0) * SR))]
+        rms = float(np.sqrt(np.mean(act ** 2))) + 1e-9
+        target = 10 ** ((-31 + 17 * e['intensity']) / 20)
+        g = min(target / rms, 0.9 / (float(np.max(np.abs(y))) + 1e-9))
+        S.place(sfx, y * g, e['t'])
     sfx = sfx[:n]
 
     ir_long = S.make_ir(2.6, 0.75, 0.025, 6000, seed=5)
@@ -152,18 +157,20 @@ def main():
 
     import pyloudnorm as pyln
     meter = pyln.Meter(SR)
+    total = 1.0
     for _ in range(3):
         lufs = meter.integrated_loudness(mix.astype(np.float64))
-        mix = mix * 10 ** ((a.lufs - lufs) / 20)
-        mix = limiter(mix)
+        k = 10 ** ((a.lufs - lufs) / 20)
+        total *= k
+        mix = limiter(mix * k)
     lufs = meter.integrated_loudness(mix.astype(np.float64))
     pcm = (np.clip(mix, -1, 1) * 32767).astype('<i2')
     with wave.open(a.out, 'wb') as w:
         w.setnchannels(2); w.setsampwidth(2); w.setframerate(SR); w.writeframes(pcm.tobytes())
     if a.stems:
-        for name, x in (('music', mus), ('sfx', sfx)):
+        for name, x in (('music', mus * 0.9 * a.music_gain), ('sfx', sfx * a.sfx_gain)):
             p = a.out.replace('.wav', f'_{name}.wav')
-            x = x / (np.max(np.abs(x)) + 1e-9) * 0.8
+            x = np.clip(x * total, -1, 1)
             with wave.open(p, 'wb') as w:
                 w.setnchannels(2); w.setsampwidth(2); w.setframerate(SR); w.writeframes((x * 32767).astype('<i2').tobytes())
     print(json.dumps({'lufs': round(lufs, 1), 'peak': round(float(np.max(np.abs(mix))), 3), 'events': len(events), 'key_root': root}))

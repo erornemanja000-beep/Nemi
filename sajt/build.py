@@ -13,4 +13,8 @@ dist = root / 'dist'
 if dist.exists(): shutil.rmtree(dist)
 shutil.copytree(root / 'src' / 'assets', dist / 'assets')
 (dist / 'index.html').write_text(html, encoding='utf-8')
+# ostale stranice (npr. datenschutz.html) su već pune HTML stranice
+for extra in (root / 'src').glob('*.html'):
+    if extra.name != 'index.html':
+        shutil.copy(extra, dist / extra.name)
 print('dist/index.html', len(html), 'bytes')

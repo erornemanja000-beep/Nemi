@@ -1,8 +1,7 @@
 <title>DON'S Eisdiele</title>
 <meta name="description" content="DON'S Eisdiele in Wien-Simmering: hausgemachtes Eis, Crêpes, Pinsa Romana und frischer Kaffee. Geiselbergstraße 24, 1110 Wien.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..800,100;1,9..144,300..800,100&family=Figtree:wght@400;500;600;700&family=Caveat:wght@500;700&display=swap">
+<link rel="preload" href="assets/fonts/fraunces-latin-full-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="assets/fonts/fonts.css">
 <style>
 /* Layout: ein Gelato-Atelier in Pastell. Video als Schaufenster, darunter Kapitel auf Waffelpapier,
    getrennt von schmelzenden Eis-Kanten; Kreidetafel-Schildchen wie in Dons Vitrine. */
@@ -650,12 +649,16 @@ footer{background:var(--chalk);color:#E9DCD5;padding-block:56px calc(36px + env(
           <li data-i18n="foot.owner">Inhaberin: Vesna Stamenović</li>
           <li>Geiselbergstraße 24, 1110 Wien</li>
           <li>Tel. +43 690 105 397 35</li>
-          <!-- TODO: E-Mail-Adresse und UID ergänzen -->
+          <!-- TODO: E-Mail-Adresse ergänzen (Pflichtangabe nach § 5 ECG) -->
+          <li data-i18n="foot.trade">Unternehmensgegenstand: Eissalon und Café</li>
+          <li data-i18n="foot.chamber">Mitglied der Wirtschaftskammer Wien</li>
+          <li data-i18n="foot.authority">Gewerbebehörde: Magistratisches Bezirksamt für den 11. Bezirk</li>
+          <li><a href="datenschutz.html" data-i18n="foot.privacy">Datenschutzerklärung</a></li>
         </ul>
       </div>
     </div>
     <div class="bigmark" aria-hidden="true">DON<span>’</span>S</div>
-    <div class="legal"><span>© <span id="year">2026</span> DON'S Eisdiele</span><span data-i18n="foot.made">Mit Liebe gemacht in Wien</span></div>
+    <div class="legal"><span>© <span id="year">2026</span> DON'S Eisdiele · <a href="datenschutz.html" data-i18n="foot.privacy2">Datenschutz</a></span><span data-i18n="foot.made">Mit Liebe gemacht in Wien</span></div>
   </div>
 </footer>
 
@@ -737,6 +740,8 @@ document.documentElement.classList.add('js');
     'visit.find':['hier findest du uns','find us here'],'visit.near':['Wien-Simmering, nahe Geiselbergstraße und Werkstättenweg.','Vienna-Simmering, near Geiselbergstraße and Werkstättenweg.'],'visit.open':['Route öffnen →','Get directions →'],
     'days.wk':['Mo – Fr','Mon – Fri'],'days.we':['Sa – So','Sat – Sun'],
     'foot.p':['Hausgemachtes Eis, Crêpes, Pinsa und Kaffee in Wien-Simmering.','Homemade ice cream, crêpes, pinsa and coffee in Vienna-Simmering.'],'foot.imprint':['Impressum','Imprint'],'foot.owner':['Inhaberin: Vesna Stamenović','Owner: Vesna Stamenović'],'foot.made':['Mit Liebe gemacht in Wien','Made with love in Vienna'],
+    'foot.trade':['Unternehmensgegenstand: Eissalon und Café','Business: ice cream parlour and café'],'foot.chamber':['Mitglied der Wirtschaftskammer Wien','Member of the Vienna Chamber of Commerce'],
+    'foot.authority':['Gewerbebehörde: Magistratisches Bezirksamt für den 11. Bezirk','Trade authority: Municipal District Office for the 11th district'],'foot.privacy':['Datenschutzerklärung','Privacy policy'],'foot.privacy2':['Datenschutz','Privacy'],
     'open.now':['Jetzt geöffnet · bis {t}','Open now · until {t}'],'open.later':['Heute ab {t} geöffnet','Opens today at {t}'],'open.closed':['Geschlossen · morgen ab {t}','Closed · opens tomorrow at {t}']
   };
   let lang = 'de';

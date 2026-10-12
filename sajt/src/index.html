@@ -188,6 +188,8 @@ html.intro-on .hero .fade{opacity:0;transform:translateY(20px)}
 .intro-art .photo{position:absolute;inset:0 6% 6% 0;border-radius:240px 240px 28px 28px;overflow:hidden;box-shadow:0 30px 60px -30px rgba(59,42,39,.5)}
 .intro-art .photo img{position:absolute;left:0;top:-10%;width:100%;height:120%;object-fit:cover}
 .intro-art .label{position:absolute;right:0;bottom:12%;transform:rotate(4deg)}
+.intro-art .inset{position:absolute;left:-6%;bottom:2%;width:36%;aspect-ratio:1;border-radius:50%;overflow:hidden;border:6px solid var(--cream);box-shadow:0 20px 40px -22px rgba(59,42,39,.6)}
+.intro-art .inset img{width:100%;height:100%;object-fit:cover;object-position:50% 60%}
 .intro-art .label .tag{font-size:1.7rem;padding:12px 20px 14px}
 .intro-art .label small{display:block;font:600 .78rem var(--body);letter-spacing:.12em;text-transform:uppercase;color:#E7B9A4;margin-bottom:4px}
 .intro-art .ring2{position:absolute;left:-5%;top:-4%;width:32%;aspect-ratio:1;border-radius:50%;border:2px dashed color-mix(in srgb,var(--pistachio) 45%,transparent);animation:spin 50s linear infinite}
@@ -362,7 +364,10 @@ details.allergens summary{cursor:pointer;font-weight:700;color:var(--pistachio)}
 .phone output{font-weight:600;user-select:all}
 .copybtn{border:1px solid var(--line);background:var(--cream);border-radius:999px;padding:6px 12px;font:700 .8rem var(--body);cursor:pointer;color:var(--cocoa)}
 .shopcard{position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;gap:14px;min-height:460px;padding:clamp(22px,3.5vw,40px);color:var(--paper);text-decoration:none;isolation:isolate}
-.shopcard img{position:absolute;left:0;top:-10%;width:100%;height:120%;object-fit:cover;object-position:50% 30%;z-index:-2}
+.shopcard img{position:absolute;left:0;top:-10%;width:100%;height:120%;object-fit:cover;object-position:52% 45%;z-index:-2}
+/* Tag und Nacht: das Abendfoto blendet langsam über und wieder weg */
+.shopcard img.night{opacity:0;animation:dayNight 14s ease-in-out 2s infinite}
+@keyframes dayNight{0%,38%{opacity:0}50%,88%{opacity:1}100%{opacity:0}}
 .shopcard::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,transparent 40%,rgba(46,37,35,.78))}
 .shopcard h3{color:var(--paper);font-size:var(--step-3)}
 .shopcard .hand{color:#F6C9D1}
@@ -463,13 +468,14 @@ footer{background:var(--chalk);color:#E9DCD5;padding-block:56px calc(36px + env(
     <div class="wrap intro-grid">
       <div class="intro-art rise">
         <span class="ring2" aria-hidden="true"></span>
-        <div class="photo"><img class="parallax" data-speed="-0.06" src="assets/img/w-vitrine.jpg" alt="Eisvitrine mit dem Logo von DON'S im rosa Lokal" loading="lazy"></div>
-        <div class="label"><span class="tag" style="--r:0deg"><small data-i18n="intro.fav">bei Don</small>Geiselbergstraße 24</span></div>
+        <div class="photo"><img class="parallax" data-speed="-0.06" src="assets/img/garten.jpg" alt="Gastgarten von DON'S mit Sesseln, Tischen und Sonnenschirm im Grünen" loading="lazy"></div>
+        <div class="inset"><img src="assets/img/w-vitrine.jpg" alt="Eisvitrine mit dem Logo von DON'S im rosa Lokal" loading="lazy"></div>
+        <div class="label"><span class="tag" style="--r:0deg"><small data-i18n="intro.fav">unser</small><span data-i18n="intro.garden">Gastgarten</span></span></div>
       </div>
       <div class="rise">
         <span class="hand" data-i18n="intro.kicker">willkommen bei Don</span>
         <h2><span data-i18n="intro.h2a">Ein Ort zum</span> <em data-i18n="intro.h2b">Verweilen.</em></h2>
-        <p class="lede"><span data-i18n="intro.lede">Rosa Wände, eine volle Vitrine und der Duft von frischen Crêpes. Benannt nach unserem treuen Begleiter</span> <span class="hand">Don</span>.</p>
+        <p class="lede"><span data-i18n="intro.lede">Rosa Wände, eine volle Vitrine, der Duft von frischen Crêpes und ein Gastgarten im Grünen. Benannt nach unserem treuen Begleiter</span> <span class="hand">Don</span>.</p>
         <div class="stats">
           <div><b data-count="15">15</b><span data-i18n="intro.s1">+ Eissorten, täglich neu</span></div>
           <div><b data-count="100">100</b><span data-i18n="intro.s2">% hausgemacht</span></div>
@@ -614,7 +620,8 @@ footer{background:var(--chalk);color:#E9DCD5;padding-block:56px calc(36px + env(
           </div>
         </div>
         <a class="card shopcard rise" href="https://www.google.com/maps/search/?api=1&amp;query=Geiselbergstra%C3%9Fe+24%2C+1110+Wien" target="_blank" rel="noopener">
-          <img class="parallax" data-speed="-0.05" src="assets/img/lokal.jpg" alt="Eingang von DON'S Eisdiele mit großem DON'S-Schriftzug und Vitrine im Schaufenster" loading="lazy">
+          <img class="parallax" data-speed="-0.05" src="assets/img/lokal-tag.jpg" alt="DON'S Eisdiele in der Geiselbergstraße bei Tag, mit dem Schriftzug DON'S EISDIELE über dem Eingang" loading="lazy">
+          <img class="parallax night" data-speed="-0.05" src="assets/img/lokal-nacht.jpg" alt="Der beleuchtete Schriftzug DON'S EISDIELE am Abend" loading="lazy">
           <div><span class="hand" data-i18n="visit.find">hier findest du uns</span>
             <h3 style="margin-top:8px">Geiselbergstraße 24</h3>
             <p data-i18n="visit.near">Wien-Simmering, nahe Geiselbergstraße und Werkstättenweg.</p></div>
@@ -705,7 +712,7 @@ document.documentElement.classList.add('js');
     'intro.kicker':['willkommen bei Don','welcome to Don\'s'],'intro.h2a':['Ein Ort zum','A place to'],'intro.h2b':['Verweilen.','linger.'],
     'fav.kicker':['Don\'s Lieblinge','Don\'s favourites'],'fav.h2':['Was alle bestellen','What everyone orders'],'fav.p':['Unsere beliebtesten Kreationen, frisch gemacht und genau so serviert.','Our most loved creations, freshly made and served just like this.'],'fav.hint':['weiter scrollen','keep scrolling'],
     'intro.h1a':['Süße Momente,','Sweet moments,'],'intro.h1b':['mit Liebe gemacht.','made with love.'],
-    'intro.lede':['Rosa Wände, eine volle Vitrine und der Duft von frischen Crêpes. Benannt nach unserem treuen Begleiter','Pink walls, a full counter and the smell of fresh crêpes. Named after our loyal companion'],
+    'intro.lede':['Rosa Wände, eine volle Vitrine, der Duft von frischen Crêpes und ein Gastgarten im Grünen. Benannt nach unserem treuen Begleiter','Pink walls, a full counter, the smell of fresh crêpes and a garden terrace in the green. Named after our loyal companion'],
     'intro.menu':['Menü ansehen','See the menu'],'intro.visit':['Komm vorbei','Come by'],
     'intro.s1':['+ Eissorten, täglich neu','+ flavours, new every day'],'intro.s2':['% hausgemacht','% homemade'],'intro.s3':['Tage die Woche offen','days a week open'],
     'offer.kicker':['bei Don gibt\'s','at Don\'s you get'],'offer.h2':['Süß, herzhaft und immer frisch','Sweet, savoury and always fresh'],
@@ -714,7 +721,7 @@ document.documentElement.classList.add('js');
     'offer.crepeP':['Warm, gerollt und großzügig garniert.','Warm, rolled and generously topped.'],
     'offer.pinsaP':['Knusprig außen, luftig innen. Original italienisch, ab €7,90.','Crispy outside, airy inside. The Italian original, from €7.90.'],
     'offer.kaffee':['Kaffee','Coffee'],'offer.kaffeeP':['Wiener Klassiker von Melange bis Affogato.','Viennese classics from Melange to Affogato.'],
-    'offer.limo':['Hausgemachte Limonade','Homemade lemonade'],'offer.limoP':['Acht Sorten, frisch gemischt, mit Minze und Früchten.','Eight flavours, freshly mixed with mint and fruit.'],'intro.fav':['bei Don','at Don\'s'],'offer.toMenu':['Zur Karte','To the menu'],
+    'offer.limo':['Hausgemachte Limonade','Homemade lemonade'],'offer.limoP':['Acht Sorten, frisch gemischt, mit Minze und Früchten.','Eight flavours, freshly mixed with mint and fruit.'],'intro.fav':['unser','our'],'intro.garden':['Gastgarten','Garden terrace'],'offer.toMenu':['Zur Karte','To the menu'],
     'ice.kicker':['aus der Vitrine','from the counter'],'ice.h2':['Jeden Tag andere Sorten','Different flavours every day'],
     'ice.p':['Unsere Vitrine wechselt ständig. Komm vorbei und lass dich überraschen, was heute dabei ist.','Our counter changes all the time. Come by and see what we have today.'],
     'ice.live':['frisch aus unserer Vitrine','fresh from our counter'],'ice.note':['Die Schildchen zeigen Sorten, die zuletzt in der Vitrine waren.','The labels show flavours from our counter in recent days.'],

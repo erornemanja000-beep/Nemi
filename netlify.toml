@@ -1,0 +1,17 @@
+# Netlify: objavljuje gotov sajt iz foldera sajt/dist (statičke stranice, bez build koraka).
+# Svaki novi commit na ovoj grani automatski osvežava sajt.
+[build]
+  publish = "sajt/dist"
+  command = "echo 'Statische Seite - kein Build noetig'"
+
+# Slike, snimci i fontovi: keš 1 dan (imena fajlova se ne menjaju pri izmeni)
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"

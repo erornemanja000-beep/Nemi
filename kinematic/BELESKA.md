@@ -106,6 +106,13 @@ Kad mreža ovog okruženja dozvoli `images.unsplash.com`, slike mogu i lokalno:
   `kinematic/netlify.toml`). DON'S sajt ostaje na svom Netlify sajtu, ovo je poseban sajt.
 - Ili Netlify Drop: prevuci folder `kinematic/dist` na app.netlify.com/drop.
 
+## Figma i Canva
+- **Figma** (https://www.figma.com/design/9xU9FySRwZioFst3hkpEF8): naslovna strana sa
+  glavnim kadrom i HUD-om, storyboard svih 10 scena sa fotografijama, stil (boje, fontovi)
+  i komponente „Scene card” i „Swatch”.
+- **Canva** (https://canva.link/j1jvcj990d7y2al): uspravna Instagram objava za lansiranje,
+  „Every frame is a decision.” u istom stilu kao sajt.
+
 ## Šta je demo sadržaj
 Imena projekata, opisi, ime režisera na klapi, adresa `hello@kinematicshot.com`
 i linkovi ka mrežama su primeri. Fotografije su sa Unsplasha (besplatna licenca),

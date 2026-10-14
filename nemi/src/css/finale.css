@@ -1,0 +1,18 @@
+/* finale: end credits, then the full stop opens into the blue contact band */
+.fin{position:relative;background:var(--ink);color:var(--paper);overflow:hidden}
+.fin-roll{display:grid;justify-items:center;gap:clamp(48px,7vw,90px);padding-top:clamp(110px,14vw,200px);padding-bottom:clamp(70px,9vw,130px);text-align:center}
+.fin-title{font-family:var(--f-serif);font-size:clamp(40px,6vw,96px);line-height:1;letter-spacing:-.02em}
+.fin-title em{color:var(--blue-hi)}
+.fin-list{display:grid;gap:clamp(30px,4vw,52px);margin:0;max-width:44em}
+.fin-row{display:grid;gap:10px}
+.fin-row dt{color:var(--mute-d)}
+.fin-row dd{margin:0;font-weight:600;font-stretch:90%;font-size:clamp(20px,2.1vw,30px);line-height:1.25;letter-spacing:-.015em;text-wrap:balance}
+.fin-names{font-weight:500!important;font-size:clamp(17px,1.5vw,22px)!important;color:var(--paper)}
+.fin-names span:not(.fin-src)::after{content:" · ";color:var(--mute-d)}
+.fin-names span:nth-last-child(2)::after{content:""}
+.fin-src{color:var(--mute-d)}
+.fin-star{position:relative;display:grid;place-content:center;justify-items:center;gap:22px;min-height:100vh;min-height:100svh;padding-left:var(--gl);padding-right:var(--gr);text-align:center}
+.fin-star-l{color:var(--mute-d)}
+.fin-star-name{max-width:100%;font-weight:800;font-stretch:80%;font-size:clamp(46px,9.4vw,170px);line-height:.92;letter-spacing:-.045em;overflow-wrap:anywhere;text-wrap:balance}
+.fin-dot{display:inline-block;width:.2em;height:.2em;margin-left:.05em;border-radius:50%;background:var(--blue);vertical-align:baseline}
+.fin-iris{position:absolute;inset:0;z-index:3;background:var(--blue);clip-path:circle(0px at 50% 50%);pointer-events:none}

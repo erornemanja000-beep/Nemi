@@ -58,7 +58,8 @@ def assemble():
     images = json.loads(read(ROOT / 'images.json') or '{}')
     credits = '\n'.join('<li><a href="%s?utm_source=nemi_studio&amp;utm_medium=referral" target="_blank" rel="noopener">%s</a></li>'
                         % (im['profile'], im['photographer']) for im in images.values())
-    return page.replace('<!--CREDITS-->', credits), images
+    roll = ''.join('<span>%s</span>' % im['photographer'] for im in images.values())
+    return page.replace('<!--CREDITS-->', credits).replace('<!--CREDITS:roll-->', roll), images
 
 
 def head_body(page):

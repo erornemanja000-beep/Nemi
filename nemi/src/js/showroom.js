@@ -47,7 +47,7 @@ $('.cfg-ctrl').addEventListener('keydown', stopAuto);
 indBox.addEventListener('click', (e) => { const b = e.target.closest('.chip'); if (!b) return; stopAuto(); emit('tick'); st.i = +b.dataset.i; updateCfg(true); });
 styBox.addEventListener('click', (e) => { const b = e.target.closest('.chip'); if (!b) return; stopAuto(); emit('tick'); st.sty = b.dataset.s; updateCfg(true); });
 colBox.addEventListener('click', (e) => { const b = e.target.closest('.sw'); if (!b) return; stopAuto(); emit('tick'); st.acc = +b.dataset.c; updateCfg(false); });
-$('#cfgName').addEventListener('input', (e) => { stopAuto(); st.name = e.target.value; updateCfg(false); });
+$('#cfgName').addEventListener('input', (e) => { stopAuto(); st.name = e.target.value; updateCfg(false); emit('name', st.name); });
 $('#cfgShuffle').addEventListener('click', () => {
   stopAuto();
   st.i = Math.floor(Math.random() * IND.length);

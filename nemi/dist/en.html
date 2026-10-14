@@ -531,13 +531,32 @@ ul,ol{padding:0;list-style:none}
 .form-status.err{color:var(--c-err)}
 .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
 
+/* finale: end credits, then the full stop opens into the blue contact band */
+.fin{position:relative;background:var(--ink);color:var(--paper);overflow:hidden}
+.fin-roll{display:grid;justify-items:center;gap:clamp(48px,7vw,90px);padding-top:clamp(110px,14vw,200px);padding-bottom:clamp(70px,9vw,130px);text-align:center}
+.fin-title{font-family:var(--f-serif);font-size:clamp(40px,6vw,96px);line-height:1;letter-spacing:-.02em}
+.fin-title em{color:var(--blue-hi)}
+.fin-list{display:grid;gap:clamp(30px,4vw,52px);margin:0;max-width:44em}
+.fin-row{display:grid;gap:10px}
+.fin-row dt{color:var(--mute-d)}
+.fin-row dd{margin:0;font-weight:600;font-stretch:90%;font-size:clamp(20px,2.1vw,30px);line-height:1.25;letter-spacing:-.015em;text-wrap:balance}
+.fin-names{font-weight:500!important;font-size:clamp(17px,1.5vw,22px)!important;color:var(--paper)}
+.fin-names span:not(.fin-src)::after{content:" · ";color:var(--mute-d)}
+.fin-names span:nth-last-child(2)::after{content:""}
+.fin-src{color:var(--mute-d)}
+.fin-star{position:relative;display:grid;place-content:center;justify-items:center;gap:22px;min-height:100vh;min-height:100svh;padding-left:var(--gl);padding-right:var(--gr);text-align:center}
+.fin-star-l{color:var(--mute-d)}
+.fin-star-name{max-width:100%;font-weight:800;font-stretch:80%;font-size:clamp(46px,9.4vw,170px);line-height:.92;letter-spacing:-.045em;overflow-wrap:anywhere;text-wrap:balance}
+.fin-dot{display:inline-block;width:.2em;height:.2em;margin-left:.05em;border-radius:50%;background:var(--blue);vertical-align:baseline}
+.fin-iris{position:absolute;inset:0;z-index:3;background:var(--blue);clip-path:circle(0px at 50% 50%);pointer-events:none}
+
 /* footer */
 .foot{background:var(--ink);color:var(--paper);padding-top:clamp(80px,10vw,150px);padding-bottom:calc(28px + env(safe-area-inset-bottom,0px));overflow:hidden}
 .foot-top{display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between;gap:24px}
 .foot-claim{font-weight:700;font-stretch:84%;font-size:clamp(30px,3.6vw,56px);line-height:1;letter-spacing:-.03em;max-width:14em}
 .foot-claim em{font-family:var(--f-serif);font-style:italic;font-weight:400;font-stretch:100%;color:var(--blue-hi)}
-.word{display:flex;justify-content:space-between;margin:clamp(40px,6vw,90px) 0 clamp(26px,3vw,40px);font-weight:700;font-stretch:88%;font-size:35vw;line-height:.74;letter-spacing:-.06em;user-select:none}
-.word span{display:block;transition:font-weight .5s var(--ease),font-stretch .5s var(--ease)}
+.word{margin:clamp(40px,6vw,90px) 0 clamp(26px,3vw,40px);font-weight:700;font-stretch:88%;font-size:41vw;line-height:.74;letter-spacing:-.06em;text-align:center;white-space:nowrap;user-select:none}
+.word span{display:inline-block;transition:font-weight .5s var(--ease),font-stretch .5s var(--ease)}
 .word .li i{top:.03em}
 .foot-bot{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px 28px;padding-top:22px;border-top:1px solid var(--line-d);color:var(--mute-d)}
 .foot-bot nav{display:flex;flex-wrap:wrap;gap:6px 22px}
@@ -589,7 +608,7 @@ ul,ol{padding:0;list-style:none}
 
 <div class="opening" id="opening" aria-hidden="true" hidden></div>
 <header class="nav wrap" id="nav">
-  <a class="logo" href="#top" aria-label="Nemi Studio">nem<span class="li">ı<i></i></span><small>studio</small></a>
+  <a class="logo" href="#top" aria-label="Nemi Studio"><span class="logo-w">nem<span class="li">ı<i></i></span></span><small>studio</small></a>
   <nav class="nav-links" aria-label="Main navigation">
     <a href="#showroom">Showroom</a><a href="#leistungen">Services</a><a href="#ablauf">Process</a><a href="#faq">FAQ</a>
   </nav>
@@ -770,6 +789,25 @@ ul,ol{padding:0;list-style:none}
       <li><h3><button class="qa-q" id="q5" type="button" aria-expanded="false" aria-controls="a5">Can I have content changed later?<i aria-hidden="true"></i></button></h3><div class="qa-a" id="a5" role="region" aria-labelledby="q5"><div><p>Yes. We update opening hours, prices or new images quickly, on request as part of a monthly care plan.</p></div></div></li>
       <li><h3><button class="qa-q" id="q6" type="button" aria-expanded="false" aria-controls="a6">Does the website work on phones?<i aria-hidden="true"></i></button></h3><div class="qa-a" id="a6" role="region" aria-labelledby="q6"><div><p>Yes. We design for phones first and test on all common devices. Animations adapt and respect the reduced-motion setting.</p></div></div></li>
     </ul>
+  </div>
+</section>
+
+<section class="fin" id="abspann" data-band="dark" aria-labelledby="finTitle">
+  <div class="fin-roll wrap">
+    <p class="fin-title" id="finTitle">A <em>Nemi</em> film</p>
+    <dl class="fin-list">
+      <div class="fin-row"><dt class="lbl">Direction</dt><dd>Nemi Studio</dd></div>
+      <div class="fin-row"><dt class="lbl">Design &amp; code</dt><dd>Nemi Studio</dd></div>
+      <div class="fin-row"><dt class="lbl">Typefaces</dt><dd>Bricolage Grotesque · Instrument Serif · Fraunces · Geist Mono</dd></div>
+      <div class="fin-row"><dt class="lbl">Motion</dt><dd>GSAP · Lenis</dd></div>
+      <div class="fin-row"><dt class="lbl">Photos in the concepts</dt><dd class="fin-names"><span>Kate K</span><span>Sung Jin Cho</span><span>Giorgio Trovato</span><span>Mark Owen Wilkinson Hughes</span><span>Eduardo Cano Photo Co.</span><span>Lori Payne</span><span>Kari Bjorn Photography</span><span>Bailey Alexander</span><span>Brusk Dede</span><span>Farida Tania</span><span>Mehmet Talha Onuk</span><span>Bruno Ngarukiye</span> <span class="fin-src">on Unsplash</span></dd></div>
+      <div class="fin-row"><dt class="lbl">Sound</dt><dd>Generated live in your browser</dd></div>
+    </dl>
+  </div>
+  <div class="fin-star">
+    <p class="lbl fin-star-l">Starring</p>
+    <p class="fin-star-name"><span id="finName">your business</span><span class="fin-dot" aria-hidden="true"></span></p>
+    <div class="fin-iris" aria-hidden="true"></div>
   </div>
 </section>
 
@@ -1316,7 +1354,7 @@ $('.cfg-ctrl').addEventListener('keydown', stopAuto);
 indBox.addEventListener('click', (e) => { const b = e.target.closest('.chip'); if (!b) return; stopAuto(); emit('tick'); st.i = +b.dataset.i; updateCfg(true); });
 styBox.addEventListener('click', (e) => { const b = e.target.closest('.chip'); if (!b) return; stopAuto(); emit('tick'); st.sty = b.dataset.s; updateCfg(true); });
 colBox.addEventListener('click', (e) => { const b = e.target.closest('.sw'); if (!b) return; stopAuto(); emit('tick'); st.acc = +b.dataset.c; updateCfg(false); });
-$('#cfgName').addEventListener('input', (e) => { stopAuto(); st.name = e.target.value; updateCfg(false); });
+$('#cfgName').addEventListener('input', (e) => { stopAuto(); st.name = e.target.value; updateCfg(false); emit('name', st.name); });
 $('#cfgShuffle').addEventListener('click', () => {
   stopAuto();
   st.i = Math.floor(Math.random() * IND.length);
@@ -1333,6 +1371,10 @@ $('#cfgAsk').addEventListener('click', () => {
   goTo('#kontakt');
   setTimeout(() => $('#fName').focus({ preventScroll: true }), 1400);
 });
+
+// the dark band opens like a screen: rounded inset frame -> full width
+if (hasG && !RM) G.fromTo('.show', { clipPath: 'inset(0% 3.5% 0% 3.5% round 44px)' }, { clipPath: 'inset(0% 0% 0% 0% round 0px)', ease: 'none',
+  scrollTrigger: { trigger: '.show', start: 'top bottom', end: 'top 15%', scrub: true } });
 }
 { /* services */
 /* ---------- services demos ---------- */
@@ -1367,6 +1409,10 @@ if (hasG && !RM) {
     G.to(card, { scale: .93, ease: 'none', scrollTrigger: { trigger: cards[i + 1], start: 'top bottom', end: 'top 30%', scrub: true } });
   });
 }
+
+// the dark band opens like a screen: rounded inset frame -> full width
+if (hasG && !RM) G.fromTo('.proc', { clipPath: 'inset(0% 3.5% 0% 3.5% round 44px)' }, { clipPath: 'inset(0% 0% 0% 0% round 0px)', ease: 'none',
+  scrollTrigger: { trigger: '.proc', start: 'top bottom', end: 'top 15%', scrub: true } });
 }
 { /* faq */
 /* ---------- faq ---------- */
@@ -1414,6 +1460,32 @@ form.addEventListener('submit', async (e) => {
     say2('That didn’t work. Please email us directly at hallo@nemistudio.at.', 'err');
   } finally { btn.disabled = false; }
 });
+}
+{ /* finale */
+/* ---------- finale: credits, starring line, iris into the contact band ---------- */
+const finName = $('#finName');
+const DEFAULT_STAR = finName.textContent;
+on('name', (name) => { finName.textContent = (name || '').trim() || DEFAULT_STAR; });
+if (hasG && !RM) {
+  $$('.fin-row, .fin-title').forEach((el) => {
+    G.fromTo(el, { y: 40, opacity: .15 }, { y: 0, opacity: 1, ease: 'none', scrollTrigger: { trigger: el, start: 'top 95%', end: 'top 60%', scrub: true } });
+  });
+  const dot = $('.fin-dot'), star = $('.fin-star'), iris = $('.fin-iris');
+  // a crisp circle (clip-path) opens from the full stop until it covers the screen; the contact band below is the same blue
+  const at = () => {
+    const d = dot.getBoundingClientRect(), s = star.getBoundingClientRect();
+    return { x: d.left + d.width / 2 - s.left, y: d.top + d.height / 2 - s.top, r: d.width / 2 };
+  };
+  const circle = (big) => () => {
+    const p = at();
+    const r = big ? Math.hypot(Math.max(p.x, star.clientWidth - p.x), Math.max(p.y, star.clientHeight - p.y)) + 2 : p.r;
+    return 'circle(' + r.toFixed(1) + 'px at ' + p.x.toFixed(1) + 'px ' + p.y.toFixed(1) + 'px)';
+  };
+  G.timeline({ scrollTrigger: { id: 'finale', trigger: star, start: 'top top', end: '+=85%', pin: true, scrub: .5, invalidateOnRefresh: true,
+    onEnter: () => emit('cut', { kind: 'iris' }) } })
+    .fromTo('.fin-star-l', { autoAlpha: 1 }, { autoAlpha: 0, duration: .2 }, .25)
+    .fromTo(iris, { clipPath: circle(false) }, { clipPath: circle(true), duration: .75, ease: 'power2.in' }, .25);
+}
 }
 { /* footer */
 /* ---------- footer wordmark ---------- */

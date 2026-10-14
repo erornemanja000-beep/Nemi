@@ -64,3 +64,7 @@ $('#cfgAsk').addEventListener('click', () => {
   goTo('#kontakt');
   setTimeout(() => $('#fName').focus({ preventScroll: true }), 1400);
 });
+
+// the dark band opens like a screen: rounded inset frame -> full width
+if (hasG && !RM) G.fromTo('.show', { clipPath: 'inset(0% 3.5% 0% 3.5% round 44px)' }, { clipPath: 'inset(0% 0% 0% 0% round 0px)', ease: 'none',
+  scrollTrigger: { trigger: '.show', start: 'top bottom', end: 'top 15%', scrub: true } });

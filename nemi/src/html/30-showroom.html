@@ -1,0 +1,33 @@
+<section class="show sec" id="showroom" data-band="dark">
+  <div class="wrap">
+    <header class="show-head">
+      <p class="lbl">Showroom</p>
+      <h2 class="h2">{{Wie sieht <em>deine</em> Website aus?||What would <em>your</em> website look like?}}</h2>
+      <p class="lead">{{Wähl deine Branche und einen Stil und tipp den Namen deines Unternehmens ein. Die Vorschau baut sich sofort um.||Choose your industry and a style, then type your business name. The preview rebuilds instantly.}}</p>
+    </header>
+    <div class="cfg" id="cfg">
+      <div class="cfg-ctrl">
+        <label class="cfg-l" for="cfgName">{{Name deines Unternehmens||Your business name}}</label>
+        <input class="cfg-in" id="cfgName" type="text" maxlength="28" autocomplete="organization" placeholder="{{z. B. Café Mila||e.g. Café Mila}}">
+        <p class="cfg-l" id="lblInd">{{Branche||Industry}}</p>
+        <div class="chips" id="cfgInd" role="group" aria-labelledby="lblInd"></div>
+        <p class="cfg-l" id="lblSty">{{Stil||Style}}</p>
+        <div class="chips" id="cfgSty" role="group" aria-labelledby="lblSty"></div>
+        <p class="cfg-l" id="lblCol">{{Akzentfarbe||Accent colour}}</p>
+        <div class="swatches" id="cfgCol" role="group" aria-labelledby="lblCol"></div>
+        <div class="cfg-act">
+          <button class="btn btn--light" id="cfgAsk" type="button">{{Dieses Konzept anfragen||Request this concept}}</button>
+          <button class="btn btn--ghostl btn--sm" id="cfgShuffle" type="button">{{Zufall||Surprise me}}</button>
+        </div>
+        <p class="cfg-note">{{Konzeptvorschau mit Beispielinhalten. Deine echte Website gestalten wir individuell für dich.||Concept preview with sample content. We design your real website around your business.}}</p>
+      </div>
+      <div class="cfg-view" aria-live="polite">
+        <div class="dev dev--browser cfg-desk">
+          <div class="dev-bar"><i></i><i></i><i></i><span class="dev-url"><span class="url-text">{{deine-website.at||your-website.com}}</span></span></div>
+          <div class="dev-scr" data-mini="desk" id="cfgDesk"></div>
+        </div>
+        <div class="dev dev--phone cfg-phone"><div class="dev-scr" data-mini="phone" id="cfgPhone"></div></div>
+      </div>
+    </div>
+  </div>
+</section>

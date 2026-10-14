@@ -1,0 +1,12 @@
+/* footer */
+.foot{background:var(--ink);color:var(--paper);padding-top:clamp(80px,10vw,150px);padding-bottom:calc(28px + env(safe-area-inset-bottom,0px));overflow:hidden}
+.foot-top{display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between;gap:24px}
+.foot-claim{font-weight:700;font-stretch:84%;font-size:clamp(30px,3.6vw,56px);line-height:1;letter-spacing:-.03em;max-width:14em}
+.foot-claim em{font-family:var(--f-serif);font-style:italic;font-weight:400;font-stretch:100%;color:var(--blue-hi)}
+.word{display:flex;justify-content:space-between;margin:clamp(40px,6vw,90px) 0 clamp(26px,3vw,40px);font-weight:700;font-stretch:88%;font-size:35vw;line-height:.74;letter-spacing:-.06em;user-select:none}
+.word span{display:block;transition:font-weight .5s var(--ease),font-stretch .5s var(--ease)}
+.word .li i{top:.03em}
+.foot-bot{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px 28px;padding-top:22px;border-top:1px solid var(--line-d);color:var(--mute-d)}
+.foot-bot nav{display:flex;flex-wrap:wrap;gap:6px 22px}
+.foot-bot button,.foot-bot a{padding:6px 0;border:0;background:none;color:inherit;font:inherit;letter-spacing:inherit;text-transform:inherit;text-decoration:none}
+.foot-bot button:hover,.foot-bot a:hover{color:var(--paper)}

@@ -1,0 +1,25 @@
+/* contact */
+.contact{background:var(--blue);color:var(--white)}
+.contact .lbl{opacity:.75}
+.contact-grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:clamp(40px,6vw,100px);align-items:start}
+.contact-copy{display:grid;gap:26px}
+.h-xl{font-weight:800;font-stretch:80%;font-size:clamp(44px,6.6vw,112px);line-height:.9;letter-spacing:-.04em;text-wrap:balance}
+.contact .lead{color:rgba(255,255,255,.82)}
+.mail{display:grid;gap:12px;margin-top:10px}
+.mail-row{display:flex;flex-wrap:wrap;align-items:center;gap:12px}
+.mail-addr{font-weight:600;font-size:clamp(20px,2vw,28px);letter-spacing:-.015em;user-select:all}
+.mail-copy{min-height:36px;padding:0 14px;border:1px solid rgba(255,255,255,.4);border-radius:999px;background:transparent;color:var(--white);font:500 12px/1 var(--f-mono);letter-spacing:.1em;text-transform:uppercase}
+.mail-copy:hover{border-color:var(--white)}
+.form{display:grid;gap:16px;padding:clamp(22px,3vw,36px);border-radius:24px;background:var(--paper);color:var(--ink);box-shadow:0 40px 80px -40px rgba(12,12,20,.5)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.fld{display:grid;gap:7px;min-width:0}
+.fld label{font:500 12px/1.2 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
+.fld input,.fld select,.fld textarea{width:100%;min-height:50px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--white);color:var(--ink);font-size:16px;outline:none;transition:border-color .2s,box-shadow .2s}
+.fld textarea{resize:vertical;min-height:130px;line-height:1.5}
+.fld input:focus,.fld select:focus,.fld textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px color-mix(in srgb,var(--blue) 18%,transparent)}
+.fld .bad{border-color:var(--c-err)}
+.form .btn{justify-self:start}
+.form-status{min-height:1.5em;font-size:15px}
+.form-status.ok{color:var(--c-ok)}
+.form-status.err{color:var(--c-err)}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}

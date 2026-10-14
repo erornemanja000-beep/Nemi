@@ -1,0 +1,26 @@
+/* hero */
+.hero{position:relative;min-height:100vh;min-height:100svh;overflow:hidden;background:var(--paper)}
+.hero-bg{position:absolute;inset:0;background-image:radial-gradient(circle,var(--line) 1.1px,transparent 1.4px);background-size:26px 26px;-webkit-mask-image:linear-gradient(180deg,#000 55%,transparent);mask-image:linear-gradient(180deg,#000 55%,transparent)}
+.hero-copy{position:relative;z-index:3;display:grid;gap:26px;align-content:start;max-width:min(46vw,780px);padding-top:calc(clamp(112px,17vh,190px) + env(safe-area-inset-top,0px));padding-bottom:40px}
+.hero-h{font-weight:800;font-stretch:78%;font-size:clamp(60px,8.4vw,164px);line-height:.86;letter-spacing:-.045em}
+.hero-h .ln{display:block;overflow:hidden;padding-bottom:.08em;margin-bottom:-.08em}
+.hero-h em{font-family:var(--f-serif);font-style:italic;font-weight:400;font-stretch:100%;letter-spacing:-.02em;color:var(--hush);transition:color 1.2s var(--ease)}
+.spoke .hero-h em{color:var(--blue)}
+.hero-sub{font-size:clamp(17px,1.35vw,20px);line-height:1.5;color:var(--mute);max-width:40ch;text-wrap:pretty}
+.hero-cta{display:flex;flex-wrap:wrap;gap:12px}
+.js .hero-h{visibility:hidden;animation:bail 0s 3.2s forwards}
+.ready .hero-h{visibility:visible;animation:none}
+@keyframes bail{to{visibility:visible}}
+.ch{display:inline-block}
+.hero-stage{position:absolute;inset:0;z-index:2;perspective:1700px;perspective-origin:50% 40%;pointer-events:none}
+.hero-dev{position:absolute;left:50%;will-change:transform}
+.hero-stage .dev--browser{top:54%;width:min(78vw,calc((100svh - 250px)*1.6),1240px);transform:translate(-50%,-50%) translateX(23vw) rotateY(-26deg) rotateX(9deg) rotate(1.5deg) scale(.72)}
+.hero-stage .dev--phone{display:none}
+.steps{position:absolute;z-index:4;left:50%;bottom:max(16px,2.6svh);translate:-50% 0;display:flex;gap:4px;color:var(--mute);white-space:nowrap}
+.steps li{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;transition:color .3s,background .3s,box-shadow .3s}
+.steps li::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--hush);transition:background .3s}
+.steps li.on{color:var(--ink);background:var(--white);box-shadow:0 0 0 1px var(--line)}
+.steps li.on::before{background:var(--blue)}
+.hint{position:absolute;z-index:4;left:var(--gl);bottom:max(24px,3.6svh);display:flex;align-items:center;gap:12px;color:var(--mute)}
+.hint i{width:40px;height:1px;background:currentColor;transform-origin:left;animation:hint 2.4s var(--ease) infinite}
+@keyframes hint{0%{transform:scaleX(.15)}50%{transform:scaleX(1)}100%{transform:scaleX(.15)}}

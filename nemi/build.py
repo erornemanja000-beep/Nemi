@@ -72,7 +72,7 @@ def unsplash(im, w=1600):
     return '%s?w=%d&h=%d&fit=crop&fm=webp&q=78' % (im['raw'], w, h)
 
 
-def build_dist(page, images, form, site_url):
+def build_dist(page, images, form, site_url, DIST=DIST):
     local = {p.stem for p in (SRC / 'assets' / 'img').glob('*.webp')}
     missing = [s for s in images if s not in local]
     for slot in missing:
@@ -104,7 +104,7 @@ def build_dist(page, images, form, site_url):
                 '<meta name="twitter:card" content="summary_large_image">\n' % (base, lang, 'de_AT' if lang == 'de' else 'en_GB'))
         html = '<!doctype html>\n<html lang="%s">\n<head>\n%s%s\n</head>\n<body>\n%s\n</body>\n</html>\n' % (lang, meta, head, body)
         (DIST / fname).write_text(html, encoding='utf-8')
-        print('dist/%s %d KB' % (fname, len(html.encode()) // 1024))
+        print('%s/%s %d KB' % (DIST.name, fname, len(html.encode()) // 1024))
     if missing:
         print('NOTE: %d photos are not in src/assets/img, dist loads them from images.unsplash.com '
               '(run fetch_images.py on an open network to self-host them).' % len(missing))
@@ -132,8 +132,9 @@ if __name__ == '__main__':
     ap.add_argument('--form', default='netlify', help='netlify | web3forms:KEY | none')
     ap.add_argument('--site-url', default='', help='e.g. https://nemistudio.at (absolute og:image and hreflang URLs)')
     ap.add_argument('--artifact', help='folder for the artifact preview files')
+    ap.add_argument('--out', default=str(DIST), help='output folder (default dist/)')
     a = ap.parse_args()
     page, images = assemble()
-    build_dist(page, images, a.form, a.site_url)
+    build_dist(page, images, a.form, a.site_url, pathlib.Path(a.out))
     if a.artifact:
         build_artifact(page, a.artifact)

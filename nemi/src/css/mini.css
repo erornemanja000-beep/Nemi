@@ -85,33 +85,33 @@
 .ms[data-style=clear] .ms-feats{display:grid;grid-template-columns:repeat(3,200px);gap:28px;padding:0 60px 46px}
 .ms[data-style=clear] .ms-feats li{display:grid;gap:6px;padding:16px 0 0;background:none;border-radius:0;border-top:1px solid var(--m-line);font-size:15px;white-space:normal}
 .ms[data-style=clear] .ms-feats b{display:block;font-family:var(--f-mono);font-size:12px;font-weight:500;color:var(--m-acc)}
-.ms--phone .ms-nav{gap:12px;padding:58px 22px 14px}
-.ms--phone .ms-logo{font-size:19px}
-.ms--phone[data-style=elegant] .ms-logo{font-size:25px}
-.ms--phone .ms-burger{display:grid;gap:5px;margin-left:auto}
-.ms--phone .ms-burger i{display:block;width:22px;height:2px;background:currentColor}
-.ms--phone .ms-media{top:110px;left:16px;right:16px;bottom:auto;width:auto;height:300px}
-.ms--phone .ms-copy{align-self:start;max-width:none;padding:318px 22px 0}
-.ms--phone .ms-eye{font-size:11px}
-.ms--phone .ms-title{margin:10px 0 12px;font-size:40px}
-.ms--phone .ms-sub{font-size:14.5px}
-.ms--phone .ms-btns{gap:16px;margin-top:18px}
-.ms--phone .ms-btn{padding:14px 20px;font-size:14px}
-.ms--phone .ms-more{display:none}
-.ms--phone .ms-feats{flex-wrap:wrap;gap:6px;padding:0 22px 26px}
-.ms--phone .ms-feats li{padding:8px 12px;font-size:11.5px}
-.ms--phone[data-style=elegant] .ms-media{inset:0;height:auto}
-.ms--phone[data-style=elegant] .ms-copy{align-self:end;padding:0 22px 8px}
-.ms--phone[data-style=elegant] .ms-title{font-size:48px}
-.ms--phone[data-style=elegant] .ms-feats{flex-wrap:nowrap;gap:10px;margin:0 22px 26px;padding:14px 0 0}
-.ms--phone[data-style=elegant] .ms-feats li{gap:6px;font-size:9.5px;letter-spacing:.06em}
-.ms--phone[data-style=bold] .ms-media{box-shadow:-12px 12px 0 var(--m-acc);left:28px}
-.ms--phone[data-style=bold] .ms-title{font-size:50px}
-.ms--phone[data-style=bold] .ms-feats{display:flex;flex-wrap:wrap;gap:8px 16px;padding:16px 22px}
-.ms--phone[data-style=bold] .ms-feats li{font-size:12px}
-.ms--phone[data-style=warm] .ms-media{left:50%;right:auto;width:250px;margin-left:-125px;border-radius:125px 125px 18px 18px}
-.ms--phone[data-style=warm] .ms-eye{font-size:16px}
-.ms--phone[data-style=clear] .ms-nav{padding-bottom:16px}
-.ms--phone[data-style=clear] .ms-title{font-size:38px}
-.ms--phone[data-style=clear] .ms-feats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.ms--phone[data-style=clear] .ms-feats li{padding-top:10px;font-size:11px}
+.ms.ms--phone .ms-nav{gap:12px;padding:58px 22px 14px}
+.ms.ms--phone .ms-logo{font-size:19px}
+.ms.ms--phone[data-style=elegant] .ms-logo{font-size:25px}
+.ms.ms--phone .ms-burger{display:grid;gap:5px;margin-left:auto}
+.ms.ms--phone .ms-burger i{display:block;width:22px;height:2px;background:currentColor}
+.ms.ms--phone .ms-media{top:110px;left:16px;right:16px;bottom:auto;width:auto;height:300px}
+.ms.ms--phone .ms-copy{align-self:start;max-width:none;padding:318px 22px 0}
+.ms.ms--phone .ms-eye{font-size:11px}
+.ms.ms--phone .ms-title{margin:10px 0 12px;font-size:40px}
+.ms.ms--phone .ms-sub{font-size:14.5px}
+.ms.ms--phone .ms-btns{gap:16px;margin-top:18px}
+.ms.ms--phone .ms-btn{padding:14px 20px;font-size:14px}
+.ms.ms--phone .ms-more{display:none}
+.ms.ms--phone .ms-feats{flex-wrap:wrap;gap:6px;padding:0 22px 26px}
+.ms.ms--phone .ms-feats li{padding:8px 12px;font-size:11.5px}
+.ms.ms--phone[data-style=elegant] .ms-media{inset:0;height:auto}
+.ms.ms--phone[data-style=elegant] .ms-copy{align-self:end;padding:0 22px 8px}
+.ms.ms--phone[data-style=elegant] .ms-title{font-size:48px}
+.ms.ms--phone[data-style=elegant] .ms-feats{flex-wrap:nowrap;gap:10px;margin:0 22px 26px;padding:14px 0 0}
+.ms.ms--phone[data-style=elegant] .ms-feats li{gap:6px;font-size:9.5px;letter-spacing:.06em}
+.ms.ms--phone[data-style=bold] .ms-media{box-shadow:-12px 12px 0 var(--m-acc);left:28px}
+.ms.ms--phone[data-style=bold] .ms-title{font-size:50px}
+.ms.ms--phone[data-style=bold] .ms-feats{display:flex;flex-wrap:wrap;gap:8px 16px;padding:16px 22px}
+.ms.ms--phone[data-style=bold] .ms-feats li{font-size:12px}
+.ms.ms--phone[data-style=warm] .ms-media{left:50%;right:auto;width:250px;margin-left:-125px;border-radius:125px 125px 18px 18px}
+.ms.ms--phone[data-style=warm] .ms-eye{font-size:16px}
+.ms.ms--phone[data-style=clear] .ms-nav{padding-bottom:16px}
+.ms.ms--phone[data-style=clear] .ms-title{font-size:38px}
+.ms.ms--phone[data-style=clear] .ms-feats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.ms.ms--phone[data-style=clear] .ms-feats li{padding-top:10px;font-size:11px}

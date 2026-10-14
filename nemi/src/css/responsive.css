@@ -12,7 +12,7 @@
   .hero-copy{max-width:none;gap:20px;padding-top:calc(102px + env(safe-area-inset-top,0px))}
   .hero-h{font-size:clamp(54px,15vw,100px)}
   .hero-stage .dev--browser{display:none}
-  .hero-stage .dev--phone{display:block;top:58%;width:min(62vw,calc((100svh - 170px)*.4756),300px);transform:translate(-50%,-50%) translateY(34svh) rotateX(16deg) scale(.92)}
+  .hero-stage .dev--phone{display:block;top:58%;width:min(62vw,calc((100svh - 170px)*.4756),300px);transform:translate(-50%,-50%) translateY(50svh) rotateX(16deg) scale(.92)}
   .hint{display:none}
   .steps li:not(.on){display:none}
   .cfg{grid-template-columns:minmax(0,1fr)}

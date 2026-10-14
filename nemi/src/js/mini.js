@@ -7,11 +7,20 @@ const miniHTML = (phone) => '<div class="ms' + (phone ? ' ms--phone' : '') + '" 
   '<p class="ms-sub"><span class="t"></span></p><div class="ms-btns"><span class="ms-btn"><span class="t"></span></span><span class="ms-more"><span class="t"></span></span></div></div>' +
   '<ul class="ms-feats"><li><b>01</b><span class="t"></span></li><li><b>02</b><span class="t"></span></li><li><b>03</b><span class="t"></span></li></ul></div>';
 
+// data-mini: desk (1280x800 in a browser frame), phone (390x820 in a phone frame),
+// full (covers its box: desktop or phone layout depending on the screen, height follows the box)
 const minis = $$('[data-mini]').map((scr) => {
-  scr.insertAdjacentHTML('afterbegin', miniHTML(scr.dataset.mini === 'phone'));
+  const kind = scr.dataset.mini;
+  const phone = kind === 'phone' || (kind === 'full' && innerWidth < 821);
+  scr.insertAdjacentHTML('afterbegin', miniHTML(phone));
   const ms = scr.querySelector('.ms');
-  const w = scr.dataset.mini === 'phone' ? 390 : 1280;
-  const fit = () => scr.style.setProperty('--s', (scr.clientWidth / w).toFixed(4));
+  const w = phone ? 390 : 1280;
+  const fit = () => {
+    const s = scr.clientWidth / w;
+    if (!s) return;
+    scr.style.setProperty('--s', s.toFixed(4));
+    if (kind === 'full') ms.style.height = Math.ceil(scr.clientHeight / s) + 'px';
+  };
   fit();
   if (window.ResizeObserver) new ResizeObserver(fit).observe(scr);
   return ms;

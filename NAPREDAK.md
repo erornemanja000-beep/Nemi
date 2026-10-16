@@ -62,7 +62,9 @@ Fotomontaže i skica za Magistrat (sve oznake na nemačkom), u folderu `magistra
 Raspored (zid 265 cm, trotoar 300 cm): žardinjera – sto sa stolicom ispred – stolica – stolica –
 sto sa stolicom ispred – žardinjera. Stočić: krak 29, stub 46, ploča Ø 50, visina 75 cm.
 Stolica 46 × 46, sedište 46 cm. Žardinjera 75 × 20 × 60 cm (Sandbraun).
-Najveće izbočenje od zida ~80 cm → slobodno ~2,20 m trotoara.
+Najveće izbočenje od zida ~83 cm → slobodno ~2,17 m trotoara. Stolice ispred stolova
+su okrenute kao srednje (bočno), žardinjere su 10 cm od krajeva zida; `modeli.provera_sudara()`
+proverava da se predmeti ne dodiruju (svuda bar ~5 cm, osim dve srednje stolice 6 cm).
 
 Ponovno pravljenje (mere i raspored su u `scripts/magistrat/modeli.py`):
 ```

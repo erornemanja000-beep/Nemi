@@ -7,7 +7,7 @@ Izlaz: magistrat/*.jpg
 import os
 import sys
 import numpy as np
-from PIL import Image
+from PIL import Image, ImageDraw
 import scipy.ndimage as nd
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -30,8 +30,10 @@ def roi_za(kam, meshes, W, H, margina=40):
     return x0, y0, x1, y1
 
 
-def renderuj(foto, kam, zid_srgb, zaklon=None, ss=3, seme=1):
-    """Vraca fotografiju sa senkama (linearno) i sloj objekata (premult, alfa, roi)."""
+def renderuj(foto, kam, zid_srgb, zaklon=None, zaklon_visina=10.0, bez_senke=None, ss=3, seme=1):
+    """Vraca fotografiju sa senkama (linearno) i sloj objekata (premult, alfa, roi).
+    zaklon: maska stepenika koji je blizi kameri (krije delove predmeta nize od zaklon_visina);
+    bez_senke: maska piksela na koje se ne bacaju senke."""
     slika = np.asarray(Image.open(foto).convert('RGB')).astype(float)
     H, W = slika.shape[:2]
     lin = srgb_u_lin(slika)
@@ -43,15 +45,15 @@ def renderuj(foto, kam, zid_srgb, zaklon=None, ss=3, seme=1):
 
     roi = roi_za(kam, meshes, W, H)
     # senke na zidu i trotoaru (pre objekata)
-    senke_na_fotografiji(kam, lin, senke, svetlo, (0, 0, W, H))
+    senke_na_fotografiji(kam, lin, senke, svetlo, (0, 0, W, H), bez_senke=bez_senke)
 
     dub, nbuf, pbuf, mbuf = rasterizuj(kam, meshes, roi, ss=ss)
     boja, maska = osenci(kam, svetlo, nbuf, pbuf, mbuf, ekspozicija)
     x0, y0, x1, y1 = roi
     if zaklon is not None:
-        # stepenik (visok ~12 cm) je blizi kameri: zaklanja samo najnize delove predmeta
+        # stepenik (visok ~10 cm) je blizi kameri: zaklanja samo najnize delove predmeta
         z = np.kron(zaklon[y0:y1, x0:x1], np.ones((ss, ss))) > 0.5
-        maska = maska & ~(z & (pbuf[..., 1] < 12.0))
+        maska = maska & ~(z & (pbuf[..., 1] < zaklon_visina))
     premult = smanji(boja * maska[..., None], ss)
     alfa = smanji(maska.astype(float), ss)
     # blago omeksavanje kao kod kamere telefona + sum
@@ -73,11 +75,29 @@ def sklopi(lin, sloj, podloga=None, kam=None):
     return Image.fromarray(lin_u_srgb(lin).round().astype(np.uint8))
 
 
-def montiraj(foto, kam, zid_srgb, ime, zaklon=None):
-    lin, sloj = renderuj(foto, kam, zid_srgb, zaklon=zaklon)
+def montiraj(foto, kam, zid_srgb, ime, **kw):
+    lin, sloj = renderuj(foto, kam, zid_srgb, **kw)
     out = sklopi(lin, sloj)
     out.save(os.path.join(IZLAZ, ime), quality=93)
     return out
+
+
+# metalni stepenik ispred ulaza: oblast na fotografijama (px); nije ni zid ni trotoar
+STEPENIK_S1 = [(1662, 1178), (2000, 1178), (2000, 1348), (1668, 1348)]
+STEPENIK_S2 = [(1308, 1476), (1340, 1476), (1380, 1500), (1500, 1500), (1500, 2000), (1458, 2000),
+               (1425, 1900), (1390, 1800), (1345, 1640), (1330, 1600), (1318, 1540)]
+
+
+def maska_poligona(W, H, pts, omeksaj=1.5):
+    img = Image.new('L', (W * 2, H * 2), 0)
+    ImageDraw.Draw(img).polygon([(x * 2, y * 2) for x, y in pts], fill=255)
+    m = np.asarray(img.resize((W, H), Image.LANCZOS), float) / 255.0
+    return nd.gaussian_filter(m, omeksaj)
+
+
+def stepenik_s2():
+    m = maska_poligona(1500, 2000, STEPENIK_S2)
+    return dict(zaklon=m, bez_senke=m)
 
 
 def main(koje=('1', '2')):
@@ -85,11 +105,11 @@ def main(koje=('1', '2')):
     if '1' in koje:
         k1, _, _ = kalibrisi_sliku1()
         montiraj(os.path.join(FOTO, 'zid_frontalno.jpg'), k1, np.array([192, 186, 181]),
-                 'montaza_1_zid_frontalno.jpg')
+                 'montaza_1_zid_frontalno.jpg', bez_senke=maska_poligona(2000, 1500, STEPENIK_S1))
     if '2' in koje:
         k4, _, _ = kalibrisi_sliku4()
         montiraj(os.path.join(FOTO, 'trotoar.jpg'), k4, np.array([212, 201, 195]),
-                 'montaza_2_trotoar.jpg')
+                 'montaza_2_trotoar.jpg', **stepenik_s2())
 
 
 if __name__ == '__main__':

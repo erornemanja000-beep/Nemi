@@ -5,6 +5,7 @@ from PIL import Image, ImageDraw, ImageFont
 from kamera import ZID, TROTOAR
 from modeli import (STOLOVI_X, KRAK, STUB, PLOCA_D, PLOCA_DEB, VISINA_STOLA, CEV_R, PLOCICA,
                     SED_SIR, SED_DUB, BAZA_DUB, SED_VIS, STOLICA_ISPRED_Z, TROG_D, TROG_S, TROG_V,
+                    ZARDINJERE_X, ZARDINJERA_RAZMAK,
                     raspored, gabariti)
 
 FONT = '/usr/share/fonts/opentype/inter/Inter-%s.otf'
@@ -201,9 +202,11 @@ def grundriss(L, P):
     # zardinjera: 75 od zida, sirina 20
     L.kota(P(-45, 0), P(-45, TROG_D + 0.5), -4, '75', vel=1.9)
     L.linija(P.pts([(-45, TROG_D + 0.5), (0, TROG_D + 0.5)]), w=0.1, boja=SIVA, crtice=(0.8, 0.8))
-    L.kota(P(0, TROG_D + 0.5), P(TROG_S, TROG_D + 0.5), 4.5, '20', vel=1.8)
-    L.tekst(P(TROG_S / 2, TROG_D + 22), 'Pflanztrog', vel=2.0, sidro='mm', tezina='SemiBold')
-    L.tekst(P(TROG_S / 2, TROG_D + 30), '75/20/60', vel=1.9, sidro='mm')
+    xz0 = ZARDINJERE_X[0] - TROG_S / 2
+    L.kota(P(0, TROG_D + 0.5), P(xz0, TROG_D + 0.5), 4.5, '%d' % ZARDINJERA_RAZMAK, vel=1.8)
+    L.kota(P(xz0, TROG_D + 0.5), P(xz0 + TROG_S, TROG_D + 0.5), 4.5, '20', vel=1.8, produzi=False)
+    L.tekst(P(ZARDINJERE_X[0], TROG_D + 22), 'Pflanztrog', vel=2.0, sidro='mm', tezina='SemiBold')
+    L.tekst(P(ZARDINJERE_X[0], TROG_D + 30), '75/20/60', vel=1.9, sidro='mm')
     # presek
     xp = STOLOVI_X[0]
     for zz, oz in ((-40, 'A'), (TROTOAR + 24, 'A')):
@@ -236,14 +239,14 @@ def stolica_bocno(L, P, a, _, boja=CRNA, napred=1):
     L.linija(P.pts([(a - SED_DUB / 2, SED_VIS), (a + SED_DUB / 2, SED_VIS)]), w=0.5, boja=boja)
 
 
-def stolica_spreda(L, P, a, _):
+def stolica_spreda(L, P, a, _, boja=CRNA):
     """Stolica gledana spreda (sirina 46, noge sa obe strane, ulegnuto sediste)."""
     w2 = SED_SIR / 2 - 0.2
     xs = np.linspace(-w2, w2, 15)
     sag = 1.6 * (1 - (xs / (SED_SIR / 2)) ** 2)
-    L.linija(P.pts(list(zip(a + xs, SED_VIS - sag))), w=0.5)
+    L.linija(P.pts(list(zip(a + xs, SED_VIS - sag))), w=0.5, boja=boja)
     for dx in (-w2, w2):
-        L.linija(P.pts([(a + dx, SED_VIS - 0.3), (a + dx, 0.3)]), w=0.35)
+        L.linija(P.pts([(a + dx, SED_VIS - 0.3), (a + dx, 0.3)]), w=0.35, boja=boja)
 
 
 def srafura(L, pts_mm):
@@ -318,11 +321,10 @@ def ansicht(L, P):
     L.tekst(P(-22, 63), 'fassade', vel=2.0, sidro='mm', boja=(80, 80, 80))
     L.tekst(P(288, 70), 'Eingang', vel=2.0, sidro='mm', boja=(80, 80, 80))
     L.linija(P.pts([(x_l, 0), (x_d, 0)]), w=0.5)
-    # stolice iza stolova (bocni pogled na sanke)
-    stolovi_tek = []
+    # stolice uz zid (bocni pogled na sanke), iza stolova
     for vrsta, x, z, napred in raspored():
-        if vrsta == 'stolica' and abs(napred[0]) > 0.5:
-            stolica_bocno(L, P, x, (0.0, SED_VIS))
+        if vrsta == 'stolica' and z < 40:
+            stolica_bocno(L, P, x, None, napred=np.sign(napred[0]))
     # stolovi
     for xt in STOLOVI_X:
         yk = VISINA_STOLA - PLOCA_DEB - STUB
@@ -335,10 +337,10 @@ def ansicht(L, P):
         L.poligon(P.pts([(xt - PLOCA_D / 2, VISINA_STOLA - PLOCA_DEB), (xt + PLOCA_D / 2, VISINA_STOLA - PLOCA_DEB),
                          (xt + PLOCA_D / 2, VISINA_STOLA), (xt - PLOCA_D / 2, VISINA_STOLA)]),
                   ispuna=CRNA, obod=CRNA, w=0.1)
-    # stolice ispred stolova (pogled spreda) i zardinjere (najblize posmatracu)
+    # stolice ispred stolova i zardinjere (najblize posmatracu)
     for vrsta, x, z, napred in raspored():
-        if vrsta == 'stolica' and abs(napred[2]) > 0.5:
-            stolica_spreda(L, P, x, 0.0)
+        if vrsta == 'stolica' and z >= 40:
+            stolica_bocno(L, P, x, None, napred=np.sign(napred[0]))
         elif vrsta == 'zardinjera':
             L.poligon(P.pts([(x - TROG_S / 2, 0), (x + TROG_S / 2, 0), (x + TROG_S / 2, TROG_V),
                              (x - TROG_S / 2, TROG_V)]), ispuna=PESAK, obod=CRNA, w=0.35)
@@ -353,8 +355,10 @@ def ansicht(L, P):
     L.kota(P(ZID, 0), P(ZID, TROG_V), 13, '60')
     L.kota(P(ZID, 0), P(ZID, SED_VIS), 20, '46')
     L.linija(P.pts([(xt + SED_SIR / 2, SED_VIS), (ZID + 2, SED_VIS)]), w=0.1, boja=SIVA, crtice=(0.8, 0.8))
-    L.kota(P(0, 0), P(TROG_S, 0), 3.5, '20', vel=1.8, produzi=False)
-    L.tekst(P(TROG_S / 2, TROG_V + 6), 'Pflanztrog', vel=1.9, sidro='mm', tezina='SemiBold')
+    xz0 = ZARDINJERE_X[0] - TROG_S / 2
+    L.kota(P(0, 0), P(xz0, 0), 3.5, '%d' % ZARDINJERA_RAZMAK, vel=1.8, produzi=False)
+    L.kota(P(xz0, 0), P(xz0 + TROG_S, 0), 3.5, '20', vel=1.8, produzi=False)
+    L.tekst(P(ZARDINJERE_X[0], TROG_V + 6), 'Pflanztrog', vel=1.9, sidro='mm', tezina='SemiBold')
 
 
 def schnitt(L, P):
@@ -376,7 +380,7 @@ def schnitt(L, P):
     L.poligon(P.pts([(0, 0), (izb, -0.7), (izb, 2.5), (0, 2.5)]), ispuna=NAR_SVETLA, obod=None)
     L.poligon(P.pts([(izb, -0.7), (TROTOAR, -4), (TROTOAR, -1), (izb, 2.5)]), ispuna=ZEL_SVETLA, obod=None)
     # stolica ispred stola (bocni pogled na sanke, lice ka zidu)
-    stolica_bocno(L, P, STOLICA_ISPRED_Z, (0.0, SED_VIS), boja=(70, 70, 70), napred=-1)
+    stolica_spreda(L, P, STOLICA_ISPRED_Z, None, boja=(70, 70, 70))
     # sto u preseku
     yk = VISINA_STOLA - PLOCA_DEB - STUB
     L.poligon(P.pts([(0, yk - PLOCICA / 2), (0.8, yk - PLOCICA / 2), (0.8, yk + PLOCICA / 2), (0, yk + PLOCICA / 2)]),
@@ -401,7 +405,7 @@ def schnitt(L, P):
     L.kota(P(95, 0), P(95, VISINA_STOLA), 0, 'Tisch 75', vel=1.9, produzi=False)
     L.kota(P(105, yk), P(105, VISINA_STOLA - PLOCA_DEB), 0, 'Stütze 46', vel=1.9, produzi=False)
     L.tekst(P(125, 66), 'Wandtisch: Platte Ø 50, Arm 29, Stütze 46', vel=2.2)
-    L.tekst(P(125, 56), 'Hocker vor dem Tisch: Tiefe 46, Sitzhöhe 46', vel=2.2, boja=(70, 70, 70))
+    L.tekst(P(125, 56), 'Hocker vor dem Tisch: Breite 46, Sitzhöhe 46', vel=2.2, boja=(70, 70, 70))
     L.tekst(P(125, 46), 'Pflanztrog dahinter: 75 × 20 × 60', vel=2.2, boja=PESAK_TAMNO)
 
 

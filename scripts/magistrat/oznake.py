@@ -3,7 +3,7 @@ import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 
 from kamera import ZID, TROTOAR
-from modeli import (STOLOVI_X, KRAK, PLOCA_D, VISINA_STOLA, SED_VIS, SED_SIR, ZARDINJERE_X,
+from modeli import (STOLOVI_X, STOLICA_RAZMAK, KRAK, PLOCA_D, VISINA_STOLA, SED_VIS, SED_SIR, ZARDINJERE_X,
                     TROG_S, TROG_V, gabariti)
 from render import srgb_u_lin
 
@@ -37,11 +37,13 @@ def _boji(lin, maska, boja, alfa):
     lin[:] = lin * (1 - a) + boja * a
 
 
-def podloga_trotoar(x_kota=100.0, x_od=-5.0, x_do=ZID + 5):
+def podloga_trotoar(x_kota=100.0, x_od=-5.0, x_do=ZID + 5, bez=None):
     """Zone i kota na trotoaru (crtaju se pre objekata, pa ih objekti prekrivaju)."""
     def crtaj(lin, kam):
         H, W = lin.shape[:2]
         X, Z, ok = tlo_koordinate(kam, W, H)
+        if bez is not None:          # stepenik nije trotoar
+            ok = ok & (bez < 0.5)
         e = izbocina()
         uX = ok & (X >= x_od) & (X <= x_do)
         _boji(lin, uX & (Z <= e), NAR, 0.30)
@@ -124,7 +126,7 @@ def oznake_fasada(img, kam):
     t, _ = kam.projektuj(np.array([[xt + PLOCA_D / 2 - 3, VISINA_STOLA, KRAK + 8]]))
     _pokazivac(d, (1500, 870), tuple(t[0]))
     _oznaka(d, (1500, 870), 'Wandtisch Ø 50 cm, Höhe 75 cm', font(36, 'SemiBold'), sidro='mm')
-    s, _ = kam.projektuj(np.array([[STOLOVI_X[0] + 42 - 8, SED_VIS - 1, SED_SIR / 2 + 3]]))
+    s, _ = kam.projektuj(np.array([[STOLOVI_X[0] + STOLICA_RAZMAK - 8, SED_VIS - 1, SED_SIR / 2 + 3]]))
     _pokazivac(d, (975, 1010), tuple(s[0]))
     _oznaka(d, (975, 1010), 'Hocker, Sitzhöhe 46 cm', font(34, 'SemiBold'), sidro='mm')
     z, _ = kam.projektuj(np.array([[ZARDINJERE_X[0] + TROG_S / 2 - 2, TROG_V, 30]]))

@@ -284,10 +284,12 @@ def zardinjera(xc, z0=0.5):
 # ---- raspored (265 cm): zardinjera | sto sa stolicom ispred | stolica | stolica |
 #      sto sa stolicom ispred | zardinjera
 STOLOVI_X = [66.25, 198.75]
-STOLICA_RAZMAK = 42.0            # od centra stola do centra bocne stolice
+STOLICA_RAZMAK = 40.0            # od centra stola do centra bocne stolice
 STOLICA_Z = SED_SIR / 2 + 3.0    # centar bocne stolice od zida
-STOLICA_ISPRED_Z = 56.0          # centar stolice ispred stola (sediste 16 cm ispod ploce)
-ZARDINJERE_X = [TROG_S / 2, 265.0 - TROG_S / 2]
+STOLICA_ISPRED_Z = 59.0          # centar stolice ispred stola (okrenuta kao srednje stolice)
+STOLICA_ISPRED_DX = 8.25         # pomak od centra stola ka krajevima zida (da ne dodiruje srednje)
+ZARDINJERA_RAZMAK = 10.0         # zardinjera je 10 cm od kraja belog zida
+ZARDINJERE_X = [ZARDINJERA_RAZMAK + TROG_S / 2, 265.0 - ZARDINJERA_RAZMAK - TROG_S / 2]
 
 
 def raspored():
@@ -296,11 +298,11 @@ def raspored():
     return [
         ('zardinjera', ZARDINJERE_X[0], 0.5, None),
         ('sto', t1, 0, None),
-        ('stolica', t1, STOLICA_ISPRED_Z, (0, 0, -1)),
+        ('stolica', t1 - STOLICA_ISPRED_DX, STOLICA_ISPRED_Z, (1, 0, 0)),
         ('stolica', t1 + STOLICA_RAZMAK, STOLICA_Z, (-1, 0, 0)),
         ('stolica', t2 - STOLICA_RAZMAK, STOLICA_Z, (1, 0, 0)),
         ('sto', t2, 0, None),
-        ('stolica', t2, STOLICA_ISPRED_Z, (0, 0, -1)),
+        ('stolica', t2 + STOLICA_ISPRED_DX, STOLICA_ISPRED_Z, (-1, 0, 0)),
         ('zardinjera', ZARDINJERE_X[1], 0.5, None),
     ]
 
@@ -332,3 +334,31 @@ def gabariti():
         out[vrsta] = max(out.get(vrsta, 0), zmax)
     out['ukupno'] = max(out.values())
     return out
+
+
+def _delovi(vrsta, x, z, napred):
+    if vrsta == 'sto':
+        m, _ = stocic(x)
+    elif vrsta == 'stolica':
+        m, _ = stolica(x, z, napred)
+    else:
+        m, _ = zardinjera(x, z)
+    return [(mm.V.min(0), mm.V.max(0)) for mm in m]
+
+
+def provera_sudara(razmak=1.0):
+    """Proverava da se delovi razlicitih predmeta ne preklapaju (osno poravnati kvadri
+    oko svake cevi/ploce, uvecani za razmak). Vraca listu sudara i najmanji razmak."""
+    pred = [(i, r) for i, r in enumerate(raspored())]
+    sudari, najmanji = [], np.inf
+    for a in range(len(pred)):
+        for b in range(a + 1, len(pred)):
+            for (amin, amax) in _delovi(*pred[a][1]):
+                for (bmin, bmax) in _delovi(*pred[b][1]):
+                    # razmak po osi; negativno = preklapanje
+                    d = np.maximum(bmin - amax, amin - bmax)
+                    raz = d.max()
+                    najmanji = min(najmanji, raz)
+                    if raz < razmak:
+                        sudari.append((pred[a][1][:2], pred[b][1][:2], round(float(raz), 1)))
+    return sudari, najmanji

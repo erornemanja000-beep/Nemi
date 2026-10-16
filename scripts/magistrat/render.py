@@ -247,8 +247,11 @@ class Ravan:
         return nd.map_coordinates(mapa, [px[..., 1], px[..., 0]], order=1, mode='constant', cval=0.0)
 
 
-def senke_na_fotografiji(kam, slika_lin, senke, svetlo, roi, jacina=1.0, tlo_z_max=300.0):
-    """Zatamnjuje zid i trotoar na fotografiji tamo gde objekti zaklanjaju svetlo."""
+def senke_na_fotografiji(kam, slika_lin, senke, svetlo, roi, jacina=1.0, tlo_z_max=300.0,
+                         zid_x_max=265.0, bez_senke=None):
+    """Zatamnjuje zid i trotoar na fotografiji tamo gde objekti zaklanjaju svetlo.
+    Zid postoji samo do ugla kod ulaza (zid_x_max); bez_senke je maska piksela
+    (npr. stepenik) koji nisu ni zid ni trotoar."""
     x0, y0, x1, y1 = roi
     zid = Ravan('zid', (-60, 330), (0, 140))
     tlo = Ravan('tlo', (-60, 330), (0, 140))
@@ -270,13 +273,15 @@ def senke_na_fotografiji(kam, slika_lin, senke, svetlo, roi, jacina=1.0, tlo_z_m
         t_tlo = -C[1] / d[..., 1]
     P_zid = C + t_zid[..., None] * d
     P_tlo = C + t_tlo[..., None] * d
-    ok_zid = (t_zid > 0) & (P_zid[..., 1] >= 0)
+    ok_zid = (t_zid > 0) & (P_zid[..., 1] >= 0) & (P_zid[..., 0] <= zid_x_max)
     ok_tlo = (t_tlo > 0) & (P_tlo[..., 2] >= 0) & (P_tlo[..., 2] <= tlo_z_max)
     uz = np.where(ok_zid & (~ok_tlo | (t_zid < t_tlo)), 1, 0)
     ut = np.where(ok_tlo & (uz == 0), 1, 0)
     o = np.zeros(X.shape)
     o += uz * zid.uzorkuj(okl_zid, P_zid)
     o += ut * tlo.uzorkuj(okl_tlo, P_tlo)
+    if bez_senke is not None:
+        o *= 1 - bez_senke[y0:y1, x0:x1]
     f = 1 - jacina * np.clip(o, 0, 1)
     slika_lin[y0:y1, x0:x1] *= f[..., None]
     return o

@@ -9,7 +9,7 @@ from PIL import Image
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from kamera import kalibrisi_sliku1, kalibrisi_sliku4  # noqa: E402
-from montaza import FOTO, IZLAZ, renderuj, sklopi  # noqa: E402
+from montaza import FOTO, IZLAZ, STEPENIK_S1, maska_poligona, renderuj, sklopi, stepenik_s2  # noqa: E402
 from oznake import (oznake_fasada, oznake_trotoar, podloga_trotoar, sa_natpisom,  # noqa: E402
                     legenda_boje, izbocina)
 from plan import list_grundriss, list_ansicht_schnitt  # noqa: E402
@@ -33,7 +33,8 @@ def main():
 
     # ---- fotografija 1: frontalno
     k1, _, _ = kalibrisi_sliku1()
-    lin, sloj = renderuj(os.path.join(FOTO, 'zid_frontalno.jpg'), k1, [192, 186, 181])
+    lin, sloj = renderuj(os.path.join(FOTO, 'zid_frontalno.jpg'), k1, [192, 186, 181],
+                         bez_senke=maska_poligona(2000, 1500, STEPENIK_S1))
     cista1 = sklopi(lin, sloj)
     cista1.save(os.path.join(IZLAZ, 'montaza_1_zid_frontalno.jpg'), quality=93)
     kote1 = sa_natpisom(
@@ -47,12 +48,12 @@ def main():
 
     # ---- fotografija 2: duz trotoara
     k4, _, _ = kalibrisi_sliku4()
-    lin, sloj = renderuj(os.path.join(FOTO, 'trotoar.jpg'), k4, [212, 201, 195])
+    lin, sloj = renderuj(os.path.join(FOTO, 'trotoar.jpg'), k4, [212, 201, 195], **stepenik_s2())
     cista2 = sklopi(lin, sloj)
     cista2.save(os.path.join(IZLAZ, 'montaza_2_trotoar.jpg'), quality=93)
     nar, zel = legenda_boje()
     kote2 = sa_natpisom(
-        oznake_trotoar(sklopi(lin, sloj, podloga=podloga_trotoar(), kam=k4), k4),
+        oznake_trotoar(sklopi(lin, sloj, podloga=podloga_trotoar(bez=stepenik_s2()['zaklon']), kam=k4), k4),
         'Fotomontage 2 – Blick entlang des Gehsteigs',
         ['Gehsteig Hauswand – Randstein: 3,00 m · Möblierung inkl. Pflanztröge',
          'max. %d cm ab Hauswand · verbleibende freie Gehsteigbreite ca. %s m.' % (round(e), slobodno)],

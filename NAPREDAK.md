@@ -48,3 +48,24 @@ vremena, redosled i vrste pokreta.
 - Spojiti AI klipove (ruža, latica) sa gradnjom u CapCut-u
 - Po želji: uspravna 9:16 verzija za Instagram
 - Napraviti sam sajt (video kao početna animacija, pa sekcije o ukusima, lokalu, kontaktu)
+
+## Magistrat: stolovi uz zid (oktobar 2026)
+Fotomontaže i skica za Magistrat (sve oznake na nemačkom), u folderu `magistrat/`:
+
+| Fajl | Šta je |
+|---|---|
+| `magistrat/Magistrat_Moeblierung_Fassade.pdf` | **za slanje**: 2 fotomontaže sa kotama + tlocrt + pogled/presek (A4) |
+| `magistrat/montaza_1_zid_frontalno(_kote).jpg` | beli zid spreda, čisto / sa merama |
+| `magistrat/montaza_2_trotoar(_kote).jpg` | pogled duž trotoara, čisto / sa zonama i merama |
+| `magistrat/plan_1_grundriss.png`, `plan_2_ansicht_schnitt.png` | skica u razmeri |
+
+Raspored (zid 265 cm, trotoar 300 cm): žardinjera – sto sa stolicom ispred – stolica – stolica –
+sto sa stolicom ispred – žardinjera. Stočić: krak 29, stub 46, ploča Ø 50, visina 75 cm.
+Stolica 46 × 46, sedište 46 cm. Žardinjera 75 × 20 × 60 cm (Sandbraun).
+Najveće izbočenje od zida ~80 cm → slobodno ~2,20 m trotoara.
+
+Ponovno pravljenje (mere i raspored su u `scripts/magistrat/modeli.py`):
+```
+python3 scripts/magistrat/napravi_sve.py
+```
+Treba `numpy`, `scipy`, `Pillow`. Kamera je kalibrisana iz fotografija (`kamera.py`).

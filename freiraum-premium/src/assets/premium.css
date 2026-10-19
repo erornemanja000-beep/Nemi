@@ -398,6 +398,12 @@ main{position:relative;z-index:2}
   .foot .cols{grid-template-columns:1fr 1fr}
   .hours div{grid-template-columns:90px 1fr auto;font-size:14px;padding:9px 0}
   .pola{width:30%;padding:4px 4px 0}
+  /* Telefon: leichtere Effekte, damit der Skroll flüssig bleibt */
+  .grain{inset:0;animation:none}
+  .disc em{box-shadow:0 0 14px 2px var(--glow), inset 0 0 14px 2px var(--glow)}
+  .nav.solid{-webkit-backdrop-filter:none;backdrop-filter:none;background:color-mix(in srgb,var(--bg1) 93%,transparent)}
+  #dan .stage::after{content:'';position:absolute;left:20%;right:20%;bottom:13%;height:9%;border-radius:50%;z-index:-1;pointer-events:none;
+    background:radial-gradient(closest-side,rgba(90,60,30,.2),rgba(90,60,30,0))}
   .pola::before{width:44px;height:14px;top:-7px}
   .pola figcaption{font-size:11px;padding:5px 1px 7px;white-space:normal;text-align:left}
   .pola .cr{display:none}

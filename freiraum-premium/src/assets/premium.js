@@ -148,7 +148,7 @@
     load(i) {
       if (this.imgs[i]) return this.imgs[i].p;
       const im = new Image(); im.decoding = 'async';
-      im.p = new Promise((res) => { im.onload = () => { this.loaded[i] = true; res(im); }; im.onerror = () => res(null); });
+      im.p = new Promise((res) => { im.onload = () => (im.decode ? im.decode().catch(() => {}) : Promise.resolve()).then(() => { this.loaded[i] = true; res(im); }); im.onerror = () => res(null); });
       im.src = this.src(i); this.imgs[i] = im; return im.p;
     }
     nearest(i) {
@@ -162,9 +162,15 @@
   function enqueue(seq, from, to, step = 1) { for (let i = from; i <= to; i += step) Q.push([seq, i]); pump(); }
   function pump() { while (active < 6 && Q.length) { const [s, i] = Q.shift(); if (s.imgs[i]) continue; active++; s.load(i).then(() => { active--; pump(); }); } }
   function loadSeq(seq) { enqueue(seq, 0, seq.count - 1, 6); enqueue(seq, 0, seq.count - 1, 2); enqueue(seq, 1, seq.count - 1, 2); }
+  let sizeGen = 0;   // steigt bei jedem measure(); Canvas-Maße werden nur dann neu gelesen (kein Layout pro Bild)
+  let lastY = -1, skyTick = false;    // letzte Skrollposition, bei der der Himmel gemischt wurde
+  // Skrollposition und Seitenhöhe einmal pro Bild lesen: jedes Lesen nach einer Stiländerung erzwingt sonst eine Neuberechnung
+  let SY = scrollY, DOC_H = 0;
   function fitCanvas(cv) {
-    const r = cv.getBoundingClientRect(), w = Math.round(r.width * DPR), h = Math.round(r.height * DPR);
-    if (w && h && (cv.width !== w || cv.height !== h)) { cv.width = w; cv.height = h; }
+    if (cv._gen !== sizeGen) {
+      const r = cv.getBoundingClientRect(), w = Math.round(r.width * DPR), h = Math.round(r.height * DPR);
+      if (w && h) { cv._gen = sizeGen; if (cv.width !== w || cv.height !== h) { cv.width = w; cv.height = h; } }
+    }
     return cv.getContext('2d');
   }
   function drawFit(g, im, mode) {
@@ -184,7 +190,7 @@
       const key = im ? im.src : '';
       if (!force && key === this.drawn) return;
       const g = fitCanvas(this.cv); g.clearRect(0, 0, this.cv.width, this.cv.height);
-      if (this.shadow) { g.shadowColor = this.shadow; g.shadowBlur = 50 * DPR; g.shadowOffsetY = 26 * DPR; }
+      if (this.shadow && !MOBILE) { g.shadowColor = this.shadow; g.shadowBlur = 50 * DPR; g.shadowOffsetY = 26 * DPR; }
       drawFit(g, im, this.mode); g.shadowColor = 'transparent'; this.drawn = key;
     }
   }
@@ -197,9 +203,10 @@
     W = innerWidth; H = innerHeight; MOBILE = W <= 860;
     sizeGallery();
     geo = sections.map((s) => { const r = s.getBoundingClientRect(); return { el: s, top: r.top + scrollY, h: r.height }; });
+    sizeGen++; lastY = -1; DOC_H = document.documentElement.scrollHeight; SY = scrollY;
   }
   const geoOf = (el) => geo.find((x) => x.el === el);
-  const progressOf = (el) => { const g = geoOf(el); if (!g) return 0; return clamp((scrollY - g.top) / Math.max(1, g.h - H)); };
+  const progressOf = (el) => { const g = geoOf(el); if (!g) return 0; return clamp((SY - g.top) / Math.max(1, g.h - H)); };
 
   /* ---------------- Tageszeit: Farben pro Kapitel ---------------- */
   const hex = (h) => [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)];
@@ -234,8 +241,7 @@
     const L = (x, y) => x.map((v, i) => lerp(v, y[i], t));
     const o = { bg1: L(a.bg1, b.bg1), bg2: L(a.bg2, b.bg2), glow: L(a.glow, b.glow), moon: lerp(a.moon, b.moon, t), neon: lerp(a.neon, b.neon, t),
       dsc: lerp(a.dsc, b.dsc, t), dop: lerp(a.dop, b.dop, t), dy: lerp(a.dy, b.dy, t), fx: {} };
-    o.accent = a.accent || b.accent ? L(a.accent || a.glow, b.accent || b.glow) : null;
-    if (!a.accent && b.accent) o.accent = L(a.glow, b.accent); if (a.accent && !b.accent) o.accent = L(a.accent, b.glow);
+    o.accent = a.accent || b.accent ? L(a.accent || autoAccent(a), b.accent || autoAccent(b)) : null;
     if (!a.accent && !b.accent) o.accent = null;
     FX.forEach((k) => (o.fx[k] = lerp(a.fx[k], b.fx[k], t)));
     return o;
@@ -252,11 +258,13 @@
     return mix(cur, nxt[1], smooth(clamp((p - (nxt[0] - span)) / span)));
   }
   const lum = (c) => (0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]) / 255;
+  // Akzent eines Zustands ohne eigenen Akzent: wie in blendSky (tagsüber Karamell, nachts aus dem Glühen)
+  function autoAccent(s) { const t = smooth(clamp((lum(s.bg1.map((v, k) => (v + s.bg2[k]) / 2)) - 0.32) / 0.22)); return DAY_ACC.map((v, k) => lerp(s.glow[k], v, t)); }
   const NAVY = hex('#1f2741'), CREAM = hex('#efe6d6'), DAY_ACC = hex('#b0652f');
   const rgb = (c) => `rgb(${c.map((v) => Math.round(v)).join(',')})`;
   let sky = null, isNight = false;
   function blendSky() {
-    const yc = scrollY + H * 0.5, Z = H * 0.45;
+    const yc = SY + H * 0.5, Z = H * 0.45;
     let i = geo.findIndex((g) => yc >= g.top && yc < g.top + g.h);
     if (i < 0) i = yc < (geo[0] ? geo[0].top : 0) ? 0 : geo.length - 1;
     const g = geo[i]; const p = progressOf(g.el);
@@ -270,15 +278,18 @@
     isNight = t < 0.5;
     const fg = CREAM.map((v, k) => lerp(v, NAVY[k], t)), fgi = NAVY.map((v, k) => lerp(v, CREAM[k], t));
     const acc = st.accent || DAY_ACC.map((v, k) => lerp(st.glow[k], v, t));
-    const rs = document.documentElement.style;
-    rs.setProperty('--bg1', rgb(st.bg1)); rs.setProperty('--bg2', rgb(st.bg2)); rs.setProperty('--fg', rgb(fg)); rs.setProperty('--fgi', rgb(fgi));
-    rs.setProperty('--glow', rgb(st.glow)); rs.setProperty('--accent', rgb(st.accent ? st.accent : acc));
-    rs.setProperty('--moon', st.moon.toFixed(3)); rs.setProperty('--neon', st.neon.toFixed(3));
-    rs.setProperty('--dsc', st.dsc.toFixed(3)); rs.setProperty('--dop', st.dop.toFixed(3)); rs.setProperty('--dy', (st.dy * H).toFixed(1) + 'px');
-    if (themeMeta) themeMeta.content = rgb(st.bg1);
+    setVar('--bg1', rgb(st.bg1)); setVar('--bg2', rgb(st.bg2)); setVar('--fg', rgb(fg)); setVar('--fgi', rgb(fgi));
+    setVar('--glow', rgb(st.glow)); setVar('--accent', rgb(st.accent ? st.accent : acc));
+    setVar('--moon', st.moon.toFixed(2)); setVar('--neon', st.neon.toFixed(2));
+    setVar('--dsc', st.dsc.toFixed(3)); setVar('--dop', st.dop.toFixed(2)); setVar('--dy', Math.round(st.dy * H) + 'px');
+    // Browserleiste nur selten umfärben (am Telefon teuer)
+    const tc = rgb(st.bg1); if (themeMeta && tc !== lastTheme && (!MOBILE || performance.now() - themeT > 400)) { themeMeta.content = lastTheme = tc; themeT = performance.now(); }
     return i;
   }
   const themeMeta = $('meta[name="theme-color"]');
+  const varCache = {}, rootStyle = document.documentElement.style;
+  let lastTheme = '', themeT = 0;
+  function setVar(k, v) { if (varCache[k] !== v) { varCache[k] = v; rootStyle.setProperty(k, v); } }
 
   /* ---------------- Rauch (WebGL) ---------------- */
   const smoke = (function () {
@@ -326,7 +337,7 @@
   const fx = (function () {
     const cv = $('#fx'), g = cv.getContext('2d'); const P = [];
     const emitAt = { x: 0, y: 0, on: false };
-    function resize() { cv.width = W * DPR; cv.height = H * DPR; }
+    function resize() { const d = MOBILE ? 1 : DPR; cv.width = W * d; cv.height = H * d; }
     function anchor() { const s = Math.min(MOBILE ? W * 0.84 : H * 0.70, MOBILE ? H * 0.42 : W * 0.42); return { x: (MOBILE ? 0.5 : 0.63) * W, y: (MOBILE ? 0.68 : 0.53) * H, s }; }
     const R = Math.random;
     function spawn(kind) {
@@ -340,23 +351,25 @@
       if (kind === 'sparkle' && emitAt.on) P.push({ k: kind, x: emitAt.x + (R() - 0.5) * 30, y: emitAt.y + (R() - 0.5) * 30, vx: (R() - 0.5) * 0.5, vy: 0.2 + R() * 0.6, r: 0.8 + R() * 2.2, life: 1, dl: 0.012 + R() * 0.01 });
     }
     const RATE = { motes: 0.35, embers: 1.6, bubbles: 0.9, gold: 0.7, sparkle: 2.4, bokeh: 0.25, neon: 0.6 };
+    let odd = false;
     function step(t, w, night) {
       if (FR.reduced) return;
-      for (const k in RATE) { let c = (w[k] || 0) * RATE[k] * (MOBILE ? 0.6 : 1); while (c > 0) { if (R() < Math.min(1, c)) spawn(k); c -= 1; } }
-      g.setTransform(DPR, 0, 0, DPR, 0, 0); g.clearRect(0, 0, W, H);
+      if (MOBILE && (odd = !odd)) return;   // Telefon: Partikel mit 30 Bildern/s
+      for (const k in RATE) { let c = (w[k] || 0) * RATE[k] * (MOBILE ? 0.7 : 1); while (c > 0) { if (R() < Math.min(1, c)) spawn(k); c -= 1; } }
+      const d = MOBILE ? 1 : DPR; g.setTransform(d, 0, 0, d, 0, 0); g.clearRect(0, 0, W, H);
       for (let i = P.length - 1; i >= 0; i--) {
-        const p = P[i]; p.life -= p.dl; p.x += p.vx; p.y += p.vy;
+        const p = P[i], sp = MOBILE ? 2 : 1; p.life -= p.dl * sp; p.x += p.vx * sp; p.y += p.vy * sp;
         if (p.k === 'embers') p.vx += (R() - 0.5) * 0.08;
         if (p.k === 'bubbles') p.x += Math.sin(t / 400 + p.ph) * 0.25;
         if (p.life <= 0 || p.y < -60 || p.y > H + 60) { P.splice(i, 1); continue; }
         const fade = Math.min(1, p.life * 3) * Math.min(1, (1 - p.life) * 8);
         if (p.k === 'motes') { g.fillStyle = night ? `rgba(255,240,215,${0.35 * fade})` : `rgba(196,140,70,${0.32 * fade})`; g.beginPath(); g.arc(p.x, p.y, p.r, 0, 7); g.fill(); }
-        else if (p.k === 'embers') { g.fillStyle = `rgba(255,${140 + R() * 60 | 0},60,${0.9 * fade})`; g.shadowColor = '#ff7a2f'; g.shadowBlur = 8; g.beginPath(); g.arc(p.x, p.y, p.r, 0, 7); g.fill(); g.shadowBlur = 0; }
+        else if (p.k === 'embers') { g.fillStyle = `rgba(255,${140 + R() * 60 | 0},60,${0.9 * fade})`; g.shadowColor = '#ff7a2f'; g.shadowBlur = MOBILE ? 0 : 8; g.beginPath(); g.arc(p.x, p.y, p.r, 0, 7); g.fill(); g.shadowBlur = 0; }
         else if (p.k === 'bubbles') { g.strokeStyle = `rgba(255,235,210,${0.55 * fade})`; g.lineWidth = 0.8; g.beginPath(); g.arc(p.x, p.y, p.r, 0, 7); g.stroke(); }
         else if (p.k === 'gold') { p.rot += p.vr; g.fillStyle = `rgba(240,205,130,${0.8 * fade})`; g.save(); g.translate(p.x, p.y); g.rotate(p.rot); g.fillRect(-p.r, -p.r * 0.4, p.r * 2, p.r * 0.8); g.restore(); }
         else if (p.k === 'bokeh') { const c = p.hue < 0.6 ? '255,190,110' : '255,140,90'; const gr = g.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r); gr.addColorStop(0, `rgba(${c},${0.28 * fade})`); gr.addColorStop(0.7, `rgba(${c},${0.12 * fade})`); gr.addColorStop(1, `rgba(${c},0)`); g.fillStyle = gr; g.beginPath(); g.arc(p.x, p.y, p.r, 0, 7); g.fill(); }
-        else if (p.k === 'neon') { const c = p.hue < 0.5 ? '160,120,255' : '90,150,255'; g.fillStyle = `rgba(${c},${0.8 * fade})`; g.shadowColor = `rgb(${c})`; g.shadowBlur = 10; g.beginPath(); g.arc(p.x, p.y, p.r, 0, 7); g.fill(); g.shadowBlur = 0; }
-        else if (p.k === 'sparkle') { g.fillStyle = night ? `rgba(255,255,255,${fade})` : `rgba(255,214,120,${fade})`; g.shadowColor = night ? '#bfe4ff' : '#ffcf6a'; g.shadowBlur = 10; g.beginPath(); g.arc(p.x, p.y, p.r, 0, 7); g.fill(); g.shadowBlur = 0; }
+        else if (p.k === 'neon') { const c = p.hue < 0.5 ? '160,120,255' : '90,150,255'; g.fillStyle = `rgba(${c},${0.8 * fade})`; g.shadowColor = `rgb(${c})`; g.shadowBlur = MOBILE ? 0 : 10; g.beginPath(); g.arc(p.x, p.y, p.r, 0, 7); g.fill(); g.shadowBlur = 0; }
+        else if (p.k === 'sparkle') { g.fillStyle = night ? `rgba(255,255,255,${fade})` : `rgba(255,214,120,${fade})`; g.shadowColor = night ? '#bfe4ff' : '#ffcf6a'; g.shadowBlur = MOBILE ? 0 : 10; g.beginPath(); g.arc(p.x, p.y, p.r, 0, 7); g.fill(); g.shadowBlur = 0; }
       }
     }
     return { resize, step, emitAt };
@@ -386,7 +399,7 @@
   function renderSeqSection(S, t) {
     if (!S) return;
     const g = geoOf(S.el); if (!g) return;
-    if (scrollY + H < g.top - H || scrollY > g.top + g.h + H) return;
+    if (SY + H < g.top - H || SY > g.top + g.h + H) return;
     const p = progressOf(S.el);
     if (started) layers(S.el, p);
     S.player.target = S.target(p); S.player.tick();
@@ -407,7 +420,7 @@
     $('#flipTitle').classList.toggle('in', on); $('#flipLead').classList.toggle('in', on);
   }
   function renderFlip() {
-    const g = geoOf(flipSec); if (!g || scrollY + H < g.top || scrollY > g.top + g.h) return;
+    const g = geoOf(flipSec); if (!g || SY + H < g.top || SY > g.top + g.h) return;
     setFlip(progressOf(flipSec) > 0.46);
   }
 
@@ -415,7 +428,7 @@
   const marqs = $$('.marq'), manifest = $('#manifest');
   function renderManifest() {
     const g = geoOf(manifest); if (!g) return;
-    const rel = scrollY + H - g.top; if (rel < -200 || rel > g.h + H + 200) return;
+    const rel = SY + H - g.top; if (rel < -200 || rel > g.h + H + 200) return;
     marqs.forEach((m) => { const sp = +m.dataset.speed; m.style.transform = `translate3d(${(sp > 0 ? -40 : 0) + sp * rel * 0.035}vw,0,0)`; });
   }
   function countUp(el) {
@@ -425,14 +438,21 @@
 
   /* ---------------- Küche (horizontal) ---------------- */
   const hz = $('#kueche'), track = $('#track'), cards = $$('.card', track);
-  function sizeGallery() { const dist = Math.max(0, track.scrollWidth - innerWidth); hz.style.height = innerHeight + dist + 'px'; hz.dataset.dist = dist; }
+  // Kartenmitten relativ zur Spur, einmal pro measure() – kein getBoundingClientRect pro Bild
+  let cardMid = [], trackTx = 0, trackLeft0 = 0;
+  function sizeGallery() {
+    const dist = Math.max(0, track.scrollWidth - innerWidth); hz.style.height = innerHeight + dist + 'px'; hz.dataset.dist = dist;
+    const tr = track.getBoundingClientRect(); trackLeft0 = tr.left - trackTx;
+    cardMid = cards.map((c) => { const r = c.getBoundingClientRect(); return r.left - tr.left + r.width / 2; });
+  }
   function renderGallery() {
-    const g = geoOf(hz); if (!g || scrollY + H < g.top || scrollY > g.top + g.h) return;
+    const g = geoOf(hz); if (!g || SY + H < g.top || SY > g.top + g.h) return;
     const p = clamp((progressOf(hz) - 0.06) / 0.9), dist = +hz.dataset.dist || 0;
-    track.style.transform = `translate3d(${-p * dist}px,0,0)`;
+    trackTx = -p * dist; track.style.transform = `translate3d(${trackTx}px,0,0)`;
     let best = 0, bd = 1e9;
+    const tx = trackLeft0 + trackTx;
     cards.forEach((c, i) => {
-      const r = c.getBoundingClientRect(), cx = r.left + r.width / 2, rel = (cx - W / 2) / W;
+      const cx = cardMid[i] + tx, rel = (cx - W / 2) / W;
       c.querySelector('img').style.transform = `translate3d(${rel * -40}px,0,0) scale(1.06)`;
       const d = Math.abs(cx - W / 2); if (d < bd) { bd = d; best = i; }
     });
@@ -444,7 +464,7 @@
   function bez(p0, p1, p2, p3, t) { const u = 1 - t; return u * u * u * p0 + 3 * u * u * t * p1 + 3 * u * t * t * p2 + t * t * t * p3; }
   function renderSpiel() {
     const g = geoOf(spiel); if (!g) return;
-    const vis = scrollY + H > g.top && scrollY < g.top + g.h;
+    const vis = SY + H > g.top && SY < g.top + g.h;
     const p = progressOf(spiel);
     const a = { x: (MOBILE ? 0.5 : 0.63) * W, y: (MOBILE ? 0.68 : 0.53) * H, s: Math.min(MOBILE ? W * 0.84 : H * 0.70, MOBILE ? H * 0.42 : W * 0.42) };
     const t = clamp((p - 0.02) / 0.96);
@@ -492,7 +512,7 @@
     }).join('');
   }
   function renderPizza() {
-    const g = geoOf(pizzaSec); if (!g || scrollY + H < g.top - H || scrollY > g.top + g.h + H) return;
+    const g = geoOf(pizzaSec); if (!g || SY + H < g.top - H || SY > g.top + g.h + H) return;
     const p = progressOf(pizzaSec), { i, lp } = pizzaLocal(p), st = PIZZA.steps[i];
     if (pizzaPlayer) { pizzaPlayer.target = st.from + clamp(lp * 1.1) * (st.to - st.from); pizzaPlayer.tick(); }
     $('#dialBar').style.strokeDashoffset = (100 - clamp(p * 1.04 - 0.02) * 100).toFixed(2);
@@ -533,13 +553,13 @@
   const feiern = $('#feiern'), besuch = $('#besuch');
   let salaPlayer, fasadaPlayer;
   function renderFeiern() {
-    const g = geoOf(feiern); if (!g || scrollY + H < g.top || scrollY > g.top + g.h) return;
+    const g = geoOf(feiern); if (!g || SY + H < g.top || SY > g.top + g.h) return;
     const p = progressOf(feiern);
     if (salaPlayer) { salaPlayer.target = clamp(p * 1.08) * 79; salaPlayer.tick(); }
     $('#n350').textContent = Math.round(ease(clamp(p / 0.55)) * 350);
   }
   function renderBesuch() {
-    const g = geoOf(besuch); if (!g || scrollY + H < g.top || scrollY > g.top + g.h) return;
+    const g = geoOf(besuch); if (!g || SY + H < g.top || SY > g.top + g.h) return;
     if (fasadaPlayer) { fasadaPlayer.target = clamp(progressOf(besuch) * 1.1) * 79; fasadaPlayer.tick(); }
   }
   function buildHours() {
@@ -557,14 +577,14 @@
   }
   function renderJahre() {
     const g = geoOf(jahre); if (!g) return;
-    n18.style.backgroundPosition = `0 ${(clamp((scrollY + H * 0.85 - g.top) / (g.h * 0.75)) * 100).toFixed(1)}%`;
+    n18.style.backgroundPosition = `0 ${(clamp((SY + H * 0.85 - g.top) / (g.h * 0.75)) * 100).toFixed(1)}%`;
   }
 
   /* ---------------- Uhr, Navigation, Index ---------------- */
   const nav = $('#nav'), bar = $('#progress'), nextBtn = $('#next'), clockEl = $('#clock span');
   const hhmm = (x) => { x = ((x % 24) + 24) % 24; const h = Math.floor(x), m = Math.floor((x - h) * 60); return String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0'); };
   function dayTime() {
-    const yc = scrollY + H * 0.5;
+    const yc = SY + H * 0.5;
     let i = geo.findIndex((g) => yc >= g.top && yc < g.top + g.h); if (i < 0) i = yc < geo[0].top ? 0 : geo.length - 1;
     const g = geo[i], d = g.el.dataset, t0 = +(d.t0 || 0), t1 = +(d.t1 || t0);
     if (g.el === flipSec) return progressOf(flipSec) > 0.46 ? 17 : 16 + 59 / 60;
@@ -580,12 +600,12 @@
   }
   let curCh = -1, lastClock = '';
   function renderNav() {
-    nav.classList.toggle('solid', scrollY > 40);
-    const max = document.documentElement.scrollHeight - H, pr = clamp(scrollY / Math.max(1, max));
+    nav.classList.toggle('solid', SY > 40);
+    const max = DOC_H - H, pr = clamp(SY / Math.max(1, max));
     bar.style.transform = `scaleX(${pr})`;
     nextBtn.style.setProperty('--p', pr.toFixed(3));
     const c = hhmm(dayTime()); if (c !== lastClock) { clockEl.textContent = c; lastClock = c; }
-    const yc = scrollY + H * 0.5; let ci = 0;
+    const yc = SY + H * 0.5; let ci = 0;
     chapters.forEach((ch, i) => { const g = geoOf(ch); if (g && yc >= g.top) ci = i; });
     if (ci !== curCh) {
       curCh = ci; const id = chapters[ci].id;
@@ -593,7 +613,7 @@
       $$('.nav ul a').forEach((a) => a.classList.toggle('on', a.getAttribute('href') === '#' + id));
     }
     nextBtn.classList.toggle('up', pr > 0.985);
-    const meta = $('#dan .meta'); if (meta) meta.style.opacity = scrollY > H * 0.6 ? 0 : 1;
+    const meta = $('#dan .meta'); if (meta) meta.style.opacity = SY > H * 0.6 ? 0 : 1;
   }
   nextBtn.addEventListener('click', () => {
     if (nextBtn.classList.contains('up')) { scrollTo({ top: 0, behavior: 'smooth' }); return; }
@@ -762,7 +782,9 @@
 
   (function loop(t) {
     glide && glide.step();
-    blendSky();
+    SY = scrollY;
+    // Himmel/Farben nur bei Bewegung neu mischen, am Telefon mit 30 Hz (jede Änderung malt Himmel und Scheibe neu)
+    if (SY !== lastY && (!MOBILE || (skyTick = !skyTick))) { lastY = SY; blendSky(); }
     renderNav();
     renderSeqSection(DAN, t); renderSeqSection(NACHT, t);
     renderManifest(); renderGallery(); renderSpiel(); renderFlip(); renderPizza(); renderFeiern(); renderBesuch(); renderJahre();

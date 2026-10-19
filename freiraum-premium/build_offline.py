@@ -90,7 +90,8 @@ for page in site.glob('*.html'):
 (site / 'PROCITAJ.txt').write_text(
     'Freiraum Premium – nacrt sajta (nemistudio)\n\n'
     '1. Raspakuj ZIP i dva puta klikni na index.html (najbolje Chrome ili Safari).\n'
-    '2. Skroluj polako – pica nastaje od testa do vatre dok skroluješ.\n'
+    '2. Skroluj polako: jutro (kafa iz Röstraum šoljice, doručak), podne, Spielraum,\n'
+    '   16:59 → 17:00 i sajt prelazi u noć (kokteli, Sprizz, vatra i pica), pa bar, proslave, 18 godina.\n'
     '3. Prikaz telefona: Chrome → Cmd+Option+I → ikonica telefona → iPhone.\n', encoding='utf-8')
 
 zip_path = shutil.make_archive(str(out / 'Freiraum-Premium'), 'zip', out, 'Freiraum-Premium')

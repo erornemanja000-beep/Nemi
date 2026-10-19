@@ -4,7 +4,7 @@
     python3 build_offline.py <izlazni-folder>
 
 Pregledači ne dozvoljavaju fetch() sa file://, pa se JSON podaci i SVG maske
-ugrađuju direktno (assets/data.js, data: URI), a zvuk ide preko <audio> (site.js).
+ugrađuju direktno (assets/data.js, data: URI).
 """
 import base64
 import json
@@ -56,9 +56,10 @@ for page in site.glob('*.html'):
 (site / 'PROCITAJ.txt').write_text(
     'Freiraum – nacrt sajta (nemistudio)\n\n'
     '1. Dva puta klikni na index.html (najbolje u Chrome-u ili Safariju).\n'
-    '2. Klikni „Mit Ton erleben“ i skroluj.\n\n'
+    '2. Klikni „Eintreten“ i skroluj.\n'
+    '3. Prikaz telefona: Chrome → Cmd+Option+I → ikonica telefona → iPhone.\n\n'
     'Za prezentaciju: dodaj ?demo=1 na kraj adrese u pregledaču za panel\n'
-    '(doba dana, Božić, jezik, zvuk).\n', encoding='utf-8')
+    '(doba dana, Božić, jezik).\n', encoding='utf-8')
 
 zip_path = shutil.make_archive(str(out / 'Freiraum-Entwurf'), 'zip', out, 'Freiraum-Entwurf')
 size = pathlib.Path(zip_path).stat().st_size / 1e6

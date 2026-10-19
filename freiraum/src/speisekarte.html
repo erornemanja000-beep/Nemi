@@ -344,7 +344,6 @@ button.al:active{transform:scale(.92)}
         <p class="sk-live rv rv-d2"><span class="chip" id="live"><span class="dot"></span><span class="t">&nbsp;</span></span></p>
         <div class="hero-cta rv rv-d2">
           <a class="btn" href="index.html#besuch" data-i18n="sk.reserve">Tisch reservieren</a>
-          <a class="btn btn-ghost" href="assets/pdf/speisekarte-2026.pdf" target="_blank" rel="noopener"><svg class="ic" aria-hidden="true"><use href="#i-doc"/></svg><span data-i18n="sk.pdf">Original-PDF</span><span class="sr-only" data-i18n="sk.newtab">(PDF, öffnet in neuem Tab)</span></a>
         </div>
         <p class="hero-stats rv rv-d3" id="stats">&nbsp;</p>
       </div>
@@ -432,7 +431,7 @@ button.al:active{transform:scale(.92)}
       'sk.eyebrow': 'Speisekarte 2026',
       'sk.title': 'Die ganze <b>Welt</b> auf einer Karte.',
       'sk.lede': 'Von der Wiener Box am Morgen bis zum Freiraum Sour um Mitternacht – Weltküche, Wiener Klassiker und Pizza aus dem Ofen, frisch in der Mariahilfer Straße.',
-      'sk.pdf': 'Original-PDF', 'sk.newtab': '(PDF, öffnet in neuem Tab)', 'sk.reserve': 'Tisch reservieren',
+      'sk.reserve': 'Tisch reservieren',
       'sk.live.breakfast': 'Frühstück bis 17:00 · jetzt verfügbar', 'sk.live.bar': 'Ab 17 Uhr: Cocktails & Bar', 'sk.live.closed': 'Gerade geschlossen · Frühstück ab {t}',
       'sk.stats': '<b>{g}</b> Kapitel · <b>{n}</b> Positionen · seit 2008',
       'sk.bento.day': 'Gerade gefragt', 'sk.bento.eve': 'Ab 17 Uhr an der Bar', 'sk.bento.all': 'Alle Kapitel ↓',
@@ -474,7 +473,7 @@ button.al:active{transform:scale(.92)}
       'sk.eyebrow': 'Menu 2026',
       'sk.title': 'The whole <b>world</b> on one menu.',
       'sk.lede': 'From the Wiener Box in the morning to a Freiraum Sour at midnight – world kitchen, Viennese classics and oven-fresh pizza on Mariahilfer Straße.',
-      'sk.pdf': 'Original PDF', 'sk.newtab': '(PDF, opens in a new tab)', 'sk.reserve': 'Book a table',
+      'sk.reserve': 'Book a table',
       'sk.live.breakfast': 'Breakfast until 5 pm · available now', 'sk.live.bar': 'From 5 pm: cocktails & bar', 'sk.live.closed': 'Closed right now · breakfast from {t}',
       'sk.stats': '<b>{g}</b> chapters · <b>{n}</b> items · since 2008',
       'sk.bento.day': 'Popular right now', 'sk.bento.eve': 'From 5 pm at the bar', 'sk.bento.all': 'All chapters ↓',
@@ -989,7 +988,7 @@ button.al:active{transform:scale(.92)}
     spy();
   }).catch(function (err) {
     menuEl.removeAttribute('aria-busy');
-    menuEl.innerHTML = '<div class="wrap empty"><p>Die Karte konnte nicht geladen werden. <a href="assets/pdf/speisekarte-2026.pdf">PDF öffnen</a></p></div>';
+    menuEl.innerHTML = '<div class="wrap empty"><p>Die Karte konnte nicht geladen werden. Bitte Seite neu laden.</p></div>';
     if (window.console) console.warn(err);
   });
 })();

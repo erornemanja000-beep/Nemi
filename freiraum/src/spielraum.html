@@ -109,6 +109,9 @@ body:has(.demo-panel) .sr-clock{bottom:250px}
   box-shadow:0 34px 60px -30px rgba(15,50,80,.6),0 8px 18px -10px rgba(15,50,80,.3);transition:transform .8s var(--ease)}
 .polaroid:hover{transform:rotate(calc(var(--rot,-2.5deg) * .4)) translateY(-4px)}
 .polaroid img{width:100%;height:auto;aspect-ratio:4/5;object-fit:cover;border-radius:2px;background:#d9f2fb}
+.polaroid .pv{position:relative;cursor:pointer}
+.polaroid video{display:block;width:100%;height:auto;aspect-ratio:4/5;object-fit:cover;border-radius:2px;background:#d9f2fb}
+.pv-snd{position:absolute;left:10px;bottom:10px;border:0;border-radius:999px;padding:7px 12px;font:600 11px/1 var(--font);letter-spacing:.1em;text-transform:uppercase;color:#fff;background:rgba(0,0,0,.45);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);cursor:pointer}
 .polaroid figcaption{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:13px 6px 17px;font-family:var(--fred);font-weight:500;font-size:clamp(17px,1.4vw,21px);color:var(--ink)}
 .polaroid::before{content:"";position:absolute;z-index:2;top:-15px;left:50%;width:118px;height:32px;transform:translateX(-50%) rotate(-4deg);border-radius:3px;
   background:repeating-linear-gradient(45deg,rgba(255,255,255,.4) 0 6px,transparent 6px 12px),var(--tape,rgba(255,210,63,.88));box-shadow:0 2px 6px rgba(0,0,0,.08)}
@@ -462,8 +465,8 @@ body:has(.demo-panel) .sr-clock{bottom:250px}
       <div class="perch perch-slide" data-perch><img class="rio-static" src="assets/img/rio-s.webp" alt="" loading="lazy"></div>
       <div class="rv">
         <figure class="polaroid" style="--rot:-3deg">
-          <img src="assets/img/spielraum-heute-s.webp" srcset="assets/img/spielraum-heute-s.webp 720w, assets/img/spielraum-heute.webp 1080w" sizes="(max-width: 899px) 86vw, 470px" width="720" height="1280" style="object-position:50% 4%" loading="lazy" decoding="async" alt="Die große gelbe Spiralrutsche im Spielraum" data-i18n-alt="sr.slide.alt">
-          <figcaption><span data-i18n="sr.slide.cap">Die große gelbe Rutsche</span><span class="photo-credit" data-i18n="sr.photo">Foto: heute.at</span></figcaption>
+          <div class="pv"><video src="assets/video/spiel-heute.mp4" poster="assets/video/spiel-heute.jpg" width="544" height="680" muted loop playsinline preload="metadata" aria-label="heute.at-Reporterin rutscht die große gelbe Rutsche hinunter" data-i18n-aria="sr.slide.alt"></video><button class="pv-snd" type="button" data-i18n="sr.tap">Tippen für Ton</button></div>
+          <figcaption><span data-i18n="sr.slide.cap">Die große gelbe Rutsche</span><span class="photo-credit">Video: heute.at</span></figcaption>
         </figure>
       </div>
     </div>
@@ -758,7 +761,7 @@ FR.i18n.add({
     'sr.f1': 'ca. 100 m² Indoor-Spielplatz', 'sr.f2': 'täglich 09–18 Uhr', 'sr.f3': 'Glaswand zum Restaurant', 'sr.cue': 'Flieg mit RIO durch den Tag',
     'sr.slide.h1': 'Rutschen', 'sr.slide.say': 'Wuuusch! Einmal ganz nach oben – und dann die große gelbe Rutsche hinunter, mitten ins Bällebad.',
     'sr.slide.p': 'Rund 100 m² Indoor-Spielplatz mitten im Freiraum: klettern, rutschen, hüpfen – bei jedem Wetter.',
-    'sr.slide.cap': 'Die große gelbe Rutsche', 'sr.slide.alt': 'Die große gelbe Spiralrutsche im Spielraum', 'sr.photo': 'Foto: heute.at',
+    'sr.slide.cap': 'Die große gelbe Rutsche', 'sr.slide.alt': 'Die große gelbe Spiralrutsche im Spielraum', 'sr.photo': 'Foto: heute.at', 'sr.tap': 'Tippen für Ton', 'sr.on': 'Ton an',
     'sr.chip.slide': 'Rutsche', 'sr.chip.balls': 'Bällebad', 'sr.chip.tramp': 'Trampolin', 'sr.chip.m2': 'ca. 100 m²',
     'sr.balls.h1': 'Bällebad', 'sr.balls.say': 'Platsch! Bunte Bälle, so weit ich schauen kann – Pink, Mint, Gelb und Himmelblau wie ich.',
     'sr.balls.p': 'Abtauchen, verstecken, Bälle werfen: Im Bällebad wird gelacht, gekreischt und gemeinsam gespielt.',
@@ -809,7 +812,7 @@ FR.i18n.add({
     'sr.f1': 'approx. 100 m² indoor playground', 'sr.f2': 'daily 9 am – 6 pm', 'sr.f3': 'Glass wall to the restaurant', 'sr.cue': 'Fly through the day with RIO',
     'sr.slide.h1': 'Slide', 'sr.slide.say': 'Whoosh! All the way up – then down the big yellow slide, right into the ball pit.',
     'sr.slide.p': 'About 100 m² of indoor playground right inside Freiraum: climb, slide, bounce – whatever the weather.',
-    'sr.slide.cap': 'The big yellow slide', 'sr.slide.alt': 'The big yellow spiral slide in the Spielraum', 'sr.photo': 'Photo: heute.at',
+    'sr.slide.cap': 'The big yellow slide', 'sr.slide.alt': 'The big yellow spiral slide in the Spielraum', 'sr.photo': 'Photo: heute.at', 'sr.tap': 'Tap for sound', 'sr.on': 'Sound on',
     'sr.chip.slide': 'Slide', 'sr.chip.balls': 'Ball pit', 'sr.chip.tramp': 'Trampoline', 'sr.chip.m2': 'approx. 100 m²',
     'sr.balls.h1': 'Ball pit', 'sr.balls.say': 'Splash! Colourful balls as far as I can see – pink, mint, yellow and sky blue like me.',
     'sr.balls.p': 'Dive in, hide, throw balls: the ball pit is all about laughing, squealing and playing together.',
@@ -1088,6 +1091,13 @@ FR.mountChrome({ active: 'spiel' });
     if (el.id === 'baellebad') setTimeout(burst, 500);
   }), { threshold: [0, 0.3] });
   SEC.forEach((s) => io.observe(s.el));
+  /* heute.at-Video: läuft nur im Bild, Ton auf Tippen */
+  const pv = $('.pv video'), pvb = $('.pv-snd');
+  if (pv) {
+    const lbl = () => { pvb.textContent = FR.t(pv.muted ? 'sr.tap' : 'sr.on'); };
+    new IntersectionObserver(([e]) => { if (e.isIntersecting) pv.play().catch(() => {}); else { pv.pause(); pv.muted = true; lbl(); } }, { threshold: 0.3 }).observe(pv);
+    pv.parentElement.addEventListener('click', () => { pv.muted = !pv.muted; if (!pv.muted) pv.play().catch(() => {}); lbl(); });
+  }
   const inv = new IntersectionObserver((es) => es.forEach((e) => e.isIntersecting && (e.target.classList.add('in'), inv.unobserve(e.target))), { threshold: 0.4 });
   $$('.pop-in').forEach((el) => inv.observe(el));
 

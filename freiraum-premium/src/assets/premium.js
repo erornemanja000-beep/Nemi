@@ -26,7 +26,9 @@
       'b2.lead': 'Signature Boxes, Pancakes, Bowls – und Eier, wie du sie magst.',
       'c.b1': 'Schinken, Emmentaler, weiches Ei, Kornspitz', 'c.b2': 'Mini Rösti, Spiegelei, Speck, Avocado', 'c.b3': 'Falafel, Hummus, Ajvar, Oliven',
       'm.s1': 'Mitten auf der Mahü', 'm.s2': 'Gäste bei Feiern', 'm.s3': 'Tage die Woche geöffnet', 'm.s4': 'Gerichte & Drinks auf der Karte',
-      'k.eyebrow': 'Mittag · Küche bis <b>21:45</b>', 'k.title': 'One World <em>Kitchen.</em>',
+      'k.eyebrow': 'Mehr aus der Küche · <b>bis 21:45</b>', 'k.title': 'One World <em>Kitchen.</em>',
+      'l.eyebrow': 'Mittag · <b>Küche bis 21:45</b>', 'l.title': 'Mittags auf <em>Weltreise.</em>',
+      'l.lead': 'Pasta mit Garnelen, Ente sous vide, Steak vom Grill – unsere Küche kocht einmal quer durch die Welt.',
       'k.lead': 'Wir bringen die ganze Welt nach Wien – von Wiener Schnitzel bis Falafel-Bowl, von Sous-vide-Ente bis Tacos zum Teilen.',
       'k.d1': 'mit Grillgemüse und Salsa-Dip', 'k.d2': 'San-Marzano-Tomaten, knusprige Garnelen', 'k.d3': 'Kirschsauce, knusprige Polenta',
       'k.d4': 'Stracciatella di bufala, Rucola, Rinderschinken', 'k.n5': 'Tapas zum Teilen', 'k.d5': 'Tacos, Patatas Bravas, Garnelen-Tempura', 'k.p5': 'ab 4,9',
@@ -34,6 +36,7 @@
       's.eyebrow': 'Spielraum im Freiraum · <b>täglich 9–18 Uhr</b>', 's.title': 'Ihr genießt. <em>die Kinder</em> toben.',
       's.lead': 'Rutsche, Bällebad und Trampolin – direkt hinter der Glaswand. Ihr esst in Ruhe, die Kleinen sind in Sichtweite. RIO passt auf.',
       's.cta': 'Spielraum entdecken', 's.party': 'Kindergeburtstag',
+      's.p1': 'heute.at war da', 's.p2': 'Der Chef testet selbst', 's.p3': 'Bällebad!', 's.p4': 'Kindergeburtstag',
       'fl.eyebrow': 'Golden Hour · <b>Mariahilfer Straße</b>', 'fl.title': 'Ab jetzt wird\'s <em>Bar.</em>', 'fl.lead': 'Lichter an, Musik lauter – der Freiraum wechselt in den Abend.',
       'n1.eyebrow': 'Golden Hour · <b>ab 17 Uhr</b>', 'n1.title': 'Zeit für <em>Drinks.</em>', 'n1.lead': 'Signature Cocktails, hausgemachte Sirups und Sprizz in allen Farben.',
       'd.p1': 'Rose Secco, Pfirsich, Gurke, Rosmarin', 'd.p2': 'Gin, Aperol, Maracuja, Ananas', 'd.p3': 'Gin, Erdbeer-Bitter, Feige', 'd.p4': 'alkoholfrei · Ananas, Maracuja, Ginger Ale',
@@ -83,7 +86,9 @@
       'b2.lead': 'Signature boxes, pancakes, bowls – and eggs the way you like them.',
       'c.b1': 'ham, Emmental, soft egg, Kornspitz', 'c.b2': 'mini rösti, fried egg, bacon, avocado', 'c.b3': 'falafel, hummus, ajvar, olives',
       'm.s1': 'Right on the Mahü', 'm.s2': 'guests at parties', 'm.s3': 'days a week', 'm.s4': 'dishes & drinks on the menu',
-      'k.eyebrow': 'Lunch · kitchen until <b>9:45 pm</b>', 'k.title': 'One World <em>Kitchen.</em>',
+      'k.eyebrow': 'More from the kitchen · <b>until 9:45 pm</b>', 'k.title': 'One World <em>Kitchen.</em>',
+      'l.eyebrow': 'Lunch · <b>kitchen until 9:45 pm</b>', 'l.title': 'Lunch is a <em>world tour.</em>',
+      'l.lead': 'Pasta with prawns, sous-vide duck, steak from the grill – our kitchen cooks its way around the world.',
       'k.lead': 'We bring the whole world to Vienna – from Wiener Schnitzel to falafel bowls, from sous-vide duck to tacos for sharing.',
       'k.d1': 'with grilled vegetables and salsa dip', 'k.d2': 'San Marzano tomatoes, crispy prawns', 'k.d3': 'cherry sauce, crispy polenta',
       'k.d4': 'stracciatella di bufala, rocket, bresaola', 'k.n5': 'Tapas for sharing', 'k.d5': 'tacos, patatas bravas, prawn tempura', 'k.p5': 'from 4.9',
@@ -91,6 +96,7 @@
       's.eyebrow': 'Spielraum at Freiraum · <b>daily 9 am–6 pm</b>', 's.title': 'You relax. <em>the kids</em> play.',
       's.lead': 'Slide, ball pit and trampoline – right behind the glass wall. You eat in peace, the little ones stay in sight. RIO keeps watch.',
       's.cta': 'Discover the Spielraum', 's.party': 'Kids\' birthday',
+      's.p1': 'As seen on heute.at', 's.p2': 'The boss tested it first', 's.p3': 'Ball pit!', 's.p4': 'Birthday parties',
       'fl.eyebrow': 'Golden hour · <b>Mariahilfer Straße</b>', 'fl.title': 'From now on it\'s <em>bar time.</em>', 'fl.lead': 'Lights on, music up – Freiraum switches into the evening.',
       'n1.eyebrow': 'Golden hour · <b>from 5 pm</b>', 'n1.title': 'Time for <em>drinks.</em>', 'n1.lead': 'Signature cocktails, homemade syrups and sprizz in every colour.',
       'd.p1': 'rosé secco, peach, cucumber, rosemary', 'd.p2': 'gin, Aperol, passion fruit, pineapple', 'd.p3': 'gin, strawberry bitter, fig', 'd.p4': 'alcohol-free · pineapple, passion fruit, ginger ale',
@@ -203,8 +209,9 @@
   // Unterzustände nach Fortschritt im Kapitel: [ab, Zustand]
   const THEME = {
     dan: [[0, T('#f8f1e7', '#f3dcc5', '#ffd08a', { dop: .95, fx: { motes: .7 } })],
-          [.14, T('#f7efe4', '#f2d6bd', '#ffc977', { dop: 1, fx: { motes: .5 } })],
-          [.58, T('#f8f3ea', '#f5e4c9', '#ffe2a0', { dop: 1, dsc: 1.06, fx: { motes: .5 } })]],
+          [.07, T('#f7efe4', '#f2d6bd', '#ffc977', { dop: 1, fx: { motes: .5 } })],
+          [.36, T('#f8f3ea', '#f5e4c9', '#ffe2a0', { dop: 1, dsc: 1.06, fx: { motes: .5 } })],
+          [.62, T('#f3f6ee', '#dbeadb', '#fff3cc', { dop: .95, dsc: 1.08, accent: '#3d7a5c', fx: { motes: .35 } })]],
     manifest: [[0, T('#f5f3ec', '#e9efe5', '#fff0c8', { dop: 0, dsc: .8 })]],
     kueche: [[0, T('#f2f6f1', '#dcebe1', '#fff1c9', { dop: 0, dsc: .8, accent: '#3d7a5c' })]],
     spielraum: [[0, T('#eaf4fb', '#bcdcf2', '#fff6d6', { accent: '#2f74b0', fx: { sparkle: 1 } })]],
@@ -359,10 +366,12 @@
   function seqSection(el, cv, base, segs, shadow) {
     const count = +el.dataset.count, steps = el.dataset.steps.split(',').map((s) => s.split('-').map(Number));
     const seq = new Seq(base, count), player = new Player(cv, seq, { mode: 'contain', shadow });
-    // segs: [[p0, p1, Schritt], …] – Bildfolge eines Klips läuft zwischen p0 und p1, dazwischen steht sie
+    // segs: [[p0, p1, Schritt, Rampe?], …] – Bildfolge eines Klips läuft zwischen p0 und p1, dazwischen steht sie.
+    // Rampe: [[Skroll, Klip], …] – verweilt bei schönen Momenten und eilt über unruhige Stellen
+    const ramp = (u, k) => { if (!k) return u; let i = 1; while (i < k.length - 1 && u > k[i][0]) i++; const [u0, v0] = k[i - 1], [u1, v1] = k[i]; return v0 + (v1 - v0) * clamp((u - u0) / (u1 - u0)); };
     const target = (p) => {
       let f = steps[segs[0][2]][0];
-      for (const [p0, p1, s] of segs) { const [a, b] = steps[s]; if (p >= p0) f = a + clamp((p - p0) / (p1 - p0)) * (b - a); }
+      for (const [p0, p1, s, k] of segs) { const [a, b] = steps[s]; if (p >= p0) f = a + ramp(clamp((p - p0) / (p1 - p0)), k) * (b - a); }
       return f;
     };
     return { el, seq, player, target };
@@ -446,9 +455,20 @@
     rio.style.transform = `translate3d(${x - rw / 2}px,${y - rw * 0.65}px,0) rotate(${clamp(ang * 0.35, -25, 25)}deg)`;
     fx.emitAt.on = vis && t > 0 && t < 1; fx.emitAt.x = x; fx.emitAt.y = y + rw * 0.1;
     if (!vis) return;
-    $$('.pola', spiel).forEach((el, i) => { el.style.translate = `0 ${(p - 0.5) * (i ? -60 : 60)}px`; });
+    const PAR = [70, -50, -85, 55];
+    $$('.pola', spiel).forEach((el, i) => { el.style.translate = `0 ${(p - 0.5) * PAR[i]}px`; });
     $$('#clouds i').forEach((el, i) => { el.style.transform = `translate3d(${(p - 0.3) * (i % 2 ? -1 : 1) * (40 + i * 25)}%,0,0)`; });
   }
+  // Polaroid-Videos laufen nur im Bild; die heute.at-Reporterin bekommt Ton auf Tippen
+  const sPola = $('.snd-pola', spiel), sVid = sPola && sPola.querySelector('video'), sBtn = sPola && sPola.querySelector('.snd');
+  function sLabel() { if (sBtn) sBtn.textContent = FR.t(sVid.muted ? 'r.tap' : 'r.on'); }
+  $$('.pola video', spiel).forEach((v) => {
+    new IntersectionObserver((es) => es.forEach((e) => {
+      if (e.isIntersecting) v.play().catch(() => {});
+      else { v.pause(); if (v === sVid && !v.muted) { v.muted = true; sLabel(); } }
+    }), { threshold: 0.25 }).observe(v);
+  });
+  if (sPola) sPola.addEventListener('click', () => { sVid.muted = !sVid.muted; if (!sVid.muted) sVid.play().catch(() => {}); sLabel(); });
 
   /* ---------------- Vom Teig zum Feuer (echte Clips) ---------------- */
   const pizzaSec = $('#pizza');
@@ -555,6 +575,7 @@
   }
   function go(el, extra = 0) {
     const g = geoOf(el); if (!g) return;
+    glide && glide.stop();
     scrollTo({ top: g.top + 2 + extra, behavior: FR.reduced ? 'auto' : 'smooth' });
   }
   let curCh = -1, lastClock = '';
@@ -588,8 +609,10 @@
   function jetztTarget() {
     const v = FR.vienna(), h = v.hf;
     if (h >= 2 && h < 8) return [besuch, 0];
-    if (h < 11) return [$('#dan'), 0.3];
-    if (h < 14) return [hz, 0];
+    if (h < 9.5) return [$('#dan'), 0.18];
+    if (h < 11) return [$('#dan'), 0.47];
+    if (h < 13) return [$('#dan'), 0.72];
+    if (h < 14.3) return [hz, 0];
     if (h < 17) return [spiel, 0];
     if (h < 19) return [$('#nacht'), 0.1];
     if (h < 22) return [pizzaSec, 0];
@@ -597,6 +620,7 @@
   }
   $('#jetztBtn').addEventListener('click', () => {
     const [el, f] = jetztTarget(), g = geoOf(el); if (!g) return;
+    glide && glide.stop();
     scrollTo({ top: g.top + Math.max(0, g.h - H) * f + 2, behavior: 'smooth' });
   });
   function updateJetztT() { const v = FR.vienna(); $('#jetztT').textContent = String(v.h).padStart(2, '0') + ':' + String(v.m).padStart(2, '0'); }
@@ -616,6 +640,42 @@
   $('#zenClose').onclick = () => zen.classList.remove('open');
   zen.addEventListener('click', (e) => { if (e.target === zen) zen.classList.remove('open'); });
   addEventListener('keydown', (e) => { if (e.key === 'Escape') { zen.classList.remove('open'); closeMenu(); } });
+
+  /* Weicher Skroll mit dem Mausrad (nur Desktop): das Ziel sammelt die Raddrehung, die Seite gleitet nach */
+  const glide = (function () {
+    if (FR.touch || FR.reduced) return null;
+    let target = 0, cur = 0, active = false;
+    addEventListener('wheel', (e) => {
+      if (e.ctrlKey || Math.abs(e.deltaX) > Math.abs(e.deltaY) || zen.classList.contains('open') || menu.classList.contains('open')) return;
+      if (e.target.closest('textarea, select, iframe')) return;
+      e.preventDefault();
+      const dy = e.deltaMode === 1 ? e.deltaY * 40 : e.deltaMode === 2 ? e.deltaY * H : e.deltaY;
+      if (!active) target = cur = scrollY;
+      target = clamp(target + dy, 0, document.documentElement.scrollHeight - H); active = true;
+    }, { passive: false });
+    return {
+      step() { if (!active) return; cur = lerp(cur, target, 0.11); if (Math.abs(target - cur) < 0.6) { cur = target; active = false; } scrollTo(0, cur); },
+      stop() { active = false; },
+    };
+  })();
+  // Tastatur und Scrollbalken übernehmen sofort
+  addEventListener('keydown', (e) => { if (/^(Arrow|Page|Home|End| )/.test(e.key)) glide && glide.stop(); });
+  addEventListener('pointerdown', (e) => { if (e.clientX > document.documentElement.clientWidth - 2) glide && glide.stop(); });
+
+  // Entwurf-Hinweis weicht dem Formular
+  const draft = $('.draft');
+  if (draft) new IntersectionObserver((es) => es.forEach((e) => draft.classList.toggle('off', e.isIntersecting)), { threshold: 0.02 }).observe($('#anfrage'));
+
+  /* Seitenwechsel: Himmel blendet mit Logo über, dann kommt die neue Seite */
+  const veil = document.createElement('div');
+  veil.className = 'veil'; veil.innerHTML = FR.logo(); document.body.appendChild(veil);
+  document.addEventListener('click', (e) => {
+    const a = e.target.closest('a[href$=".html"], a[href*=".html#"]');
+    if (!a || a.target === '_blank' || e.metaKey || e.ctrlKey || e.shiftKey || FR.reduced) return;
+    e.preventDefault(); document.documentElement.classList.add('leaving');
+    setTimeout(() => { location.href = a.href; }, 480);
+  });
+  addEventListener('pageshow', () => document.documentElement.classList.remove('leaving'));
 
   /* Cursor und leichte Maus-Parallaxe */
   if (!FR.touch) {
@@ -681,7 +741,7 @@
   countdown(); setInterval(countdown, 1000);
   $$('#dan .layer').forEach((l) => l.classList.remove('on'));
 
-  DAN = seqSection($('#dan'), $('#danCv'), 'assets/seq/dan', [[0.12, 0.53, 0], [0.6, 0.94, 1]], 'rgba(90,60,30,.22)');
+  DAN = seqSection($('#dan'), $('#danCv'), 'assets/seq/dan', [[0.08, 0.31, 0], [0.37, 0.58, 1], [0.63, 0.8, 2, [[0, 0], [0.62, 0.575], [0.72, 0.8], [1, 1]]], [0.83, 0.97, 3]], 'rgba(90,60,30,.22)');
   NACHT = seqSection($('#nacht'), $('#nachtCv'), 'assets/seq/noc', [[0.05, 0.40, 0], [0.48, 0.9, 1]], null);
   pizzaSeq = new Seq('assets/seq/pizza', PIZZA.count);
   pizzaPlayer = new Player($('#pizzaCv'), pizzaSeq);
@@ -701,6 +761,7 @@
   if (document.fonts) document.fonts.ready.then(measure);
 
   (function loop(t) {
+    glide && glide.step();
     blendSky();
     renderNav();
     renderSeqSection(DAN, t); renderSeqSection(NACHT, t);

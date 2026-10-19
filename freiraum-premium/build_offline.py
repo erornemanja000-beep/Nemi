@@ -32,6 +32,8 @@ for name in SUBPAGES:
     html = re.sub(r'''(["'`(])assets/''', r'\1shared/', html)
     if 'name="fr-assets"' not in html:
         html = html.replace('<meta charset="utf-8">', '<meta charset="utf-8">\n<meta name="fr-assets" content="shared/">', 1)
+    if name != 'spielraum.html':   # Spielraum behält seine eigene bunte Welt
+        html = html.replace('</head>', '<link rel="stylesheet" href="assets/menu-premium.css">\n</head>', 1)
     (site / name).write_text(html, encoding='utf-8')
 
 pages = list(site.glob('*.html')) + [site / 'assets/premium.js']
@@ -39,12 +41,12 @@ text = '\n'.join(p.read_text(encoding='utf-8') for p in pages)
 
 # zajednički fajlovi: fontovi, slike, SVG, runtime, PDF jelovnika, korišćeni reelsi i dve AI sekvence
 shared = site / 'shared'
-for d in ('fonts', 'img', 'svg', 'pdf'):
+for d in ('fonts', 'img', 'svg'):
     shutil.copytree(shared_src / d, shared / d)
 for f in ('site.js', 'site.css'):
     shutil.copy2(shared_src / f, shared / f)
 (shared / 'video').mkdir(parents=True)
-for v in sorted(set(re.findall(r'(?:video/|v: *[\'"])(reel-[a-z0-9-]+|feuer)', text))):
+for v in sorted(set(re.findall(r'(?:video/|v: *[\'"])(reel-[a-z0-9-]+|spiel-[a-z]+|feuer)', text))):
     for ext in ('.mp4', '.jpg'):
         if (shared_src / 'video' / (v + ext)).exists():
             shutil.copy2(shared_src / 'video' / (v + ext), shared / 'video' / (v + ext))
@@ -76,6 +78,7 @@ def embed(css_path, prefix):
 
 
 embed(site / 'assets/premium.css', '../shared/fonts/')
+embed(site / 'assets/menu-premium.css', '../shared/fonts/')
 embed(shared / 'site.css', 'fonts/')
 
 tagline = data_uri(shared_src / 'svg/tagline.svg')

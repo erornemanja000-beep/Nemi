@@ -20,7 +20,7 @@ out = pathlib.Path(sys.argv[1]).resolve()
 site = out / 'Freiraum-Entwurf'
 if site.exists():
     shutil.rmtree(site)
-shutil.copytree(src, site)
+shutil.copytree(src, site, ignore=shutil.ignore_patterns('pdf'))   # PDF-Karte gehört nicht auf die Seite
 
 
 def data_uri(path):

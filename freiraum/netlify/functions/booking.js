@@ -10,7 +10,7 @@ const TYPE_LABEL = { kindergeburtstag: 'Kindergeburtstag', event: 'Event', tisch
 const LABELS = {
   date: 'Datum', time: 'Uhrzeit', child: 'Geburtstagskind', age: 'Alter wird', kids: 'Kinder', adults: 'Erwachsene',
   guests: 'Gäste', occasion: 'Anlass', motto: 'Motto / Deko', cake: 'Torte', food: 'Essen & Getränke',
-  allergies: 'Allergien', message: 'Wünsche / Nachricht', company: 'Firma', name: 'Name', phone: 'Telefon', email: 'E-Mail', consent: 'Datenschutz akzeptiert',
+  allergies: 'Allergien', message: 'Wünsche / Nachricht', company: 'Firma', area: 'Bereich', music: 'Musik', name: 'Name', phone: 'Telefon', email: 'E-Mail', consent: 'Datenschutz akzeptiert',
 };
 
 const json = (data, status = 200) => Response.json(data, { status });

@@ -28,6 +28,7 @@
 html{-webkit-text-size-adjust:100%;scroll-behavior:auto}
 body{margin:0;font-family:var(--font);font-weight:400;font-size:clamp(16px,1.05vw,18px);line-height:1.55;color:var(--fg);background:var(--bg);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:hidden;transition:background-color .8s var(--ease),color .8s var(--ease)}
 img,video,canvas,svg{display:block;max-width:100%}
+img{height:auto}
 a{color:inherit}
 button{font:inherit;color:inherit;cursor:pointer}
 :focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:6px}

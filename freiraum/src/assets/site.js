@@ -412,11 +412,11 @@
   /* ---------------- Formulare / Buchungen ---------------- */
   FR.submit = async function (type, data) {
     const body = JSON.stringify({ type, ...data, lang: FR.lang, sentAt: new Date().toISOString() });
-    try {
-      const r = await fetch('/.netlify/functions/booking', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body });
-      if (!r.ok) throw new Error(r.status);
-      return await r.json();
-    } catch (e) {
+    let r = null;
+    try { r = await fetch('/.netlify/functions/booking', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body }); } catch (e) { r = null; }
+    if (r && r.ok) return r.json();
+    if (r && ![404, 405, 501].includes(r.status)) return { ok: false };   // Server lehnt ab → Fehlermeldung zeigen
+    {
       // Demo ohne Server: lokal speichern, damit /team es trotzdem zeigt
       const list = JSON.parse(store.get('fr-demo-bookings', '[]'));
       const item = { id: 'local-' + Date.now(), status: 'neu', ...JSON.parse(body) };

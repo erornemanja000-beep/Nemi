@@ -1,0 +1,1155 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Spielraum im Freiraum · Indoor-Spielplatz</title>
+<meta name="description" content="Spielraum im Freiraum: rund 100 m² Indoor-Spielplatz mit Rutsche, Bällebad und Trampolin – Mariahilfer Straße 117, 1060 Wien. Täglich 09–18 Uhr, Kindergeburtstage auf Anfrage.">
+<meta name="theme-color" content="#8fdcf5">
+<link rel="preload" href="assets/fonts/fredoka-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/img/rio-s.webp" as="image" type="image/webp">
+<link rel="stylesheet" href="assets/site.css">
+<style>
+:root{
+  --bg:#e4f6fd; --fg:#1f2741; --muted:rgba(31,39,65,.68); --accent:#e8507f; --line:rgba(31,39,65,.12);
+  --ink:#1f2741; --fred:Fredoka,var(--font); --paper:#fffdf8;
+  --sr-peach:#ffab6b; --sr-blue:#6fcdf2; --sr-lilac:#c4b0ff;
+  --pop:cubic-bezier(.34,1.56,.64,1);
+  --lift:0 18px 40px -22px rgba(18,70,110,.55),0 4px 12px -6px rgba(18,70,110,.2);
+}
+body{background:#cdf0fb}
+main{position:relative;overflow-x:clip}
+.fred{font-family:var(--fred)}
+
+/* ---------- Himmel (fix im Hintergrund, Farbe folgt der Uhr) ---------- */
+.sky{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
+.sky-l{position:absolute;inset:0}
+.sky-m{background:linear-gradient(180deg,#86d8f4 0%,#bdecfa 52%,#ecfaff 100%)}
+.sky-d{background:linear-gradient(180deg,#3fc4e8 0%,#86d9f2 48%,#dcf5fd 100%);opacity:0}
+.sky-e{background:linear-gradient(180deg,#7f7cc9 0%,#d99ccc 42%,#ffc9a8 78%,#ffe2c2 100%);opacity:0}
+.stars{position:absolute;inset:0;opacity:0;background-image:
+  radial-gradient(1.6px 1.6px at 12% 14%,#fff 98%,transparent),radial-gradient(1.2px 1.2px at 28% 8%,#fff 98%,transparent),
+  radial-gradient(2px 2px at 44% 18%,#fff 98%,transparent),radial-gradient(1.3px 1.3px at 63% 6%,#fff 98%,transparent),
+  radial-gradient(1.8px 1.8px at 78% 15%,#fff 98%,transparent),radial-gradient(1.2px 1.2px at 90% 28%,#fff 98%,transparent),
+  radial-gradient(1.5px 1.5px at 6% 34%,#fff 98%,transparent),radial-gradient(1.2px 1.2px at 54% 30%,#fff 98%,transparent),
+  radial-gradient(1.6px 1.6px at 36% 40%,#fff 98%,transparent),radial-gradient(1.2px 1.2px at 84% 44%,#fff 98%,transparent)}
+.stars::after{content:"";position:absolute;inset:0;background-image:radial-gradient(2.4px 2.4px at 20% 24%,#fff 98%,transparent),radial-gradient(2.2px 2.2px at 70% 22%,#fff 98%,transparent),radial-gradient(2px 2px at 48% 10%,#fff 98%,transparent);animation:twinkle 3.2s ease-in-out infinite alternate}
+@keyframes twinkle{from{opacity:.2}to{opacity:1}}
+.sun{position:absolute;left:0;top:0;width:clamp(64px,6.5vw,100px);aspect-ratio:1;border-radius:50%;margin:calc(clamp(64px,6.5vw,100px)/-2) 0 0 calc(clamp(64px,6.5vw,100px)/-2);
+  background:radial-gradient(circle at 38% 36%,#fffbe0 0 16%,#ffe46e 46%,#ffd23f 72%);
+  box-shadow:0 0 0 10px rgba(255,240,170,.3),0 0 0 24px rgba(255,240,170,.13),0 0 70px 26px rgba(255,226,120,.26);will-change:transform,opacity}
+.moon{position:absolute;right:12%;top:12%;width:clamp(46px,5vw,72px);aspect-ratio:1;border-radius:50%;opacity:0;
+  background:radial-gradient(circle at 70% 40%,transparent 0 46%,#fff7dc 47%);filter:drop-shadow(0 0 18px rgba(255,247,220,.7))}
+.cloud{position:absolute;color:#fff;width:var(--w,220px);animation:drift var(--dur,46s) ease-in-out infinite alternate;opacity:.95}
+.cloud svg{width:100%;height:auto;filter:drop-shadow(0 10px 14px rgba(40,120,170,.10))}
+@media (max-width:640px){.sun{display:none}}
+@keyframes drift{to{transform:translate3d(var(--dx,70px),0,0)}}
+
+/* ---------- RIO (fliegt fix über der Seite) + Funken ---------- */
+#sparkles{position:fixed;inset:0;width:100%;height:100%;z-index:49;pointer-events:none}
+#rio{position:fixed;left:0;top:0;width:300px;height:409px;z-index:50;pointer-events:none;transform:translate3d(-400px,120vh,0);transform-origin:50% 50%;will-change:transform;transition:opacity .5s}
+#rio .rio-body{width:100%;height:100%;will-change:transform}
+#rio img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 22px 22px rgba(20,80,120,.22))}
+#rio .zzz{position:absolute;right:-6%;top:-4%;font-family:var(--fred);font-weight:700;color:#fff;font-size:64px;line-height:1;opacity:0;transition:opacity .6s;text-shadow:0 4px 14px rgba(70,60,140,.35)}
+#rio .zzz span{position:absolute;right:0;top:0;opacity:0}
+#rio.sleep .zzz{opacity:1}
+#rio.sleep .zzz span{animation:zz 3s ease-out infinite}
+#rio .zzz span:nth-child(2){animation-delay:1s!important;font-size:.75em}
+#rio .zzz span:nth-child(3){animation-delay:2s!important;font-size:.55em}
+@keyframes zz{0%{opacity:0;transform:translate(0,0) rotate(-8deg)}20%{opacity:1}100%{opacity:0;transform:translate(60px,-120px) rotate(12deg)}}
+.rm #rio,.rm #sparkles{display:none}
+@media (max-width:899px){body.typing #rio,body.typing .sr-clock{opacity:0}}
+
+/* Sitzplätze für RIO (unsichtbar; bei reduzierter Bewegung steht RIO dort still) */
+.perch{position:absolute;width:var(--pw,150px);aspect-ratio:1192/1624;pointer-events:none;z-index:4}
+.perch .rio-static{display:none;width:100%;height:auto}
+.rm .perch .rio-static{display:block;animation:fadein 1.2s var(--ease) both}
+@keyframes fadein{from{opacity:0}}
+
+/* ---------- Uhr ---------- */
+.sr-clock{position:fixed;right:max(14px,env(safe-area-inset-right));bottom:max(14px,env(safe-area-inset-bottom));z-index:56;display:flex;align-items:center;gap:10px;
+  padding:6px 16px 6px 6px;border-radius:999px;background:#fff;border:3px solid var(--sr-yellow);box-shadow:0 14px 30px -14px rgba(18,70,110,.55);
+  font-family:var(--fred);color:var(--ink);transition:opacity .45s var(--ease),transform .6s var(--ease)}
+.sr-clock svg{width:48px;height:48px;flex:none}
+.sr-clock .hh,.sr-clock .mh{transform-origin:32px 32px}
+.sr-clock b{display:block;font-size:20px;font-weight:600;line-height:1;letter-spacing:.02em}
+.sr-clock span{display:block;font-size:12.5px;line-height:1.2;color:var(--muted);margin-top:2px;white-space:nowrap}
+.sr-clock.off{opacity:0;transform:translateY(24px) scale(.9);pointer-events:none}
+body:has(.demo-panel) .sr-clock{bottom:250px}
+@media (max-width:640px){.sr-clock{padding:3px 12px 3px 3px;gap:7px;border-width:2.5px}.sr-clock svg{width:36px;height:36px}.sr-clock b{font-size:16px}.sr-clock span{display:none}}
+
+/* ---------- Bausteine ---------- */
+.time-tag{display:inline-flex;align-items:center;gap:.45em;font-family:var(--fred);font-weight:600;font-size:15px;letter-spacing:.02em;color:var(--ink);
+  background:var(--sr-yellow);padding:.42em .9em .42em .6em;border-radius:999px;border:3px solid #fff;box-shadow:var(--lift);rotate:-3deg}
+.time-tag svg{width:18px;height:18px}
+.sr-h{font-family:var(--fred);font-weight:700;font-size:clamp(48px,6.6vw,98px);line-height:.95;letter-spacing:-.01em;margin:.32em 0 .1em;color:var(--ink);text-wrap:balance}
+.sr-h .x{color:var(--hc,var(--sr-pink))}
+.squiggle{display:block;width:min(220px,58%);height:18px;color:var(--hc,var(--sr-pink));margin:6px 0 22px}
+.say{position:relative;font-family:var(--fred);font-weight:500;font-size:clamp(18px,1.45vw,22px);line-height:1.38;color:var(--ink);background:#fff;
+  padding:16px 22px;border-radius:24px;box-shadow:var(--lift);max-width:36ch;margin:0 0 22px}
+.say::after{content:"";position:absolute;left:30px;bottom:-9px;width:20px;height:20px;background:#fff;border-radius:3px;transform:rotate(45deg)}
+.say b{color:#e8507f}
+.copy p.body{font-size:clamp(16px,1.15vw,18.5px);color:var(--muted);max-width:44ch;margin:0 0 20px}
+.stks{display:flex;flex-wrap:wrap;gap:10px;margin:0;padding:0;list-style:none}
+.stk{display:inline-flex;align-items:center;gap:.45em;font-family:var(--fred);font-weight:500;font-size:15px;line-height:1.2;color:var(--ink);padding:.5em 1em;border-radius:999px;background:#fff;border:2.5px solid var(--c,var(--sr-yellow));box-shadow:0 8px 16px -12px rgba(18,70,110,.55)}
+.stk svg{width:17px;height:17px;flex:none}
+.sr-btn{font-family:var(--fred);font-weight:600;font-size:17px;letter-spacing:.01em;min-height:54px;padding:.7em 1.5em;border:3px solid #fff;box-shadow:0 10px 0 -5px rgba(31,39,65,.16),0 18px 30px -16px rgba(18,70,110,.6)}
+.sr-btn:hover{transform:translateY(-2px)}
+.sr-btn svg{width:20px;height:20px}
+.sr-btn.pink{--b:var(--sr-pink);--c:var(--ink)}
+.sr-btn.white{--b:#fff;--c:var(--ink);border-color:rgba(255,255,255,.6)}
+.sr-btn.navy{--b:var(--ink);--c:#fff}
+.btns{display:flex;flex-wrap:wrap;gap:12px}
+.photo-credit{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-family:var(--font);font-weight:500}
+
+/* Polaroid */
+.media-wrap{position:relative}
+.polaroid{position:relative;margin:0;background:#fff;padding:12px 12px 0;border-radius:6px;transform:rotate(var(--rot,-2.5deg));
+  box-shadow:0 34px 60px -30px rgba(15,50,80,.6),0 8px 18px -10px rgba(15,50,80,.3);transition:transform .8s var(--ease)}
+.polaroid:hover{transform:rotate(calc(var(--rot,-2.5deg) * .4)) translateY(-4px)}
+.polaroid img{width:100%;height:auto;aspect-ratio:4/5;object-fit:cover;border-radius:2px;background:#d9f2fb}
+.polaroid figcaption{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:13px 6px 17px;font-family:var(--fred);font-weight:500;font-size:clamp(17px,1.4vw,21px);color:var(--ink)}
+.polaroid::before{content:"";position:absolute;z-index:2;top:-15px;left:50%;width:118px;height:32px;transform:translateX(-50%) rotate(-4deg);border-radius:3px;
+  background:repeating-linear-gradient(45deg,rgba(255,255,255,.4) 0 6px,transparent 6px 12px),var(--tape,rgba(255,210,63,.88));box-shadow:0 2px 6px rgba(0,0,0,.08)}
+
+/* ---------- Seiten-Layout ---------- */
+.page{position:relative;padding:clamp(84px,11vw,150px) 0}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:clamp(36px,6vw,100px);align-items:center}
+.split .media-wrap{max-width:500px;width:100%;justify-self:center}
+.split.media-left .media-wrap{order:-1}
+@media (max-width:899px){
+  .split{grid-template-columns:1fr;gap:92px}
+  .split .media-wrap,.split.media-left .media-wrap{order:2;max-width:430px}
+}
+
+/* ---------- 09:00 Hero ---------- */
+.hero{min-height:100svh;display:flex;align-items:center;padding:calc(var(--nav-h) + clamp(18px,4vh,44px)) 0 clamp(110px,14vh,150px)}
+.hero-grid{display:grid;grid-template-columns:1.12fr .88fr;grid-template-areas:"head stage" "body stage";column-gap:clamp(24px,4vw,64px);align-items:center;width:min(var(--max),100% - 2*var(--pad))}
+.hero-head{grid-area:head;align-self:end}
+.hero-body{grid-area:body;align-self:start}
+.hero-stage{grid-area:stage;position:relative;display:flex;justify-content:center;align-items:flex-end;min-height:clamp(470px,64vh,620px);padding-bottom:36px}
+.kicker{display:flex;flex-wrap:wrap;align-items:center;gap:10px 12px;margin-bottom:clamp(14px,2.4vh,26px)}
+.neu-pill{display:none;font-family:var(--fred);font-weight:600;font-size:14px;color:var(--ink);background:#fff;border:2.5px dashed var(--sr-yellow);padding:.35em .85em;border-radius:999px;transform:rotate(2deg)}
+.neu-pill i{font-style:normal;font-weight:400;color:var(--muted)}
+
+.lettering{margin:0;font-family:var(--fred);font-weight:700;font-size:clamp(78px,12.4vw,186px);line-height:.84;letter-spacing:.005em;display:flex;flex-direction:column;align-items:flex-start;user-select:none}
+.lettering .row{display:flex;padding-left:.06em}
+.lettering .row+.row{margin-top:.02em}
+.L{display:inline-block;position:relative;color:var(--c);transform:rotate(var(--r,0deg));margin-right:-.015em;transition:transform .5s var(--pop);
+  animation:lpop .9s var(--pop) backwards;animation-delay:calc(var(--i) * 70ms + .15s);
+  text-shadow:0.060em 0.000em 0 #fff,0.055em 0.023em 0 #fff,0.042em 0.042em 0 #fff,0.023em 0.055em 0 #fff,0.000em 0.060em 0 #fff,-0.023em 0.055em 0 #fff,-0.042em 0.042em 0 #fff,-0.055em 0.023em 0 #fff,-0.060em 0.000em 0 #fff,-0.055em -0.023em 0 #fff,-0.042em -0.042em 0 #fff,-0.023em -0.055em 0 #fff,0 -0.060em 0 #fff,0.023em -0.055em 0 #fff,0.042em -0.042em 0 #fff,0.055em -0.023em 0 #fff,
+  0.105em 0.03em 0 var(--d),0.101em 0.057em 0 var(--d),0.091em 0.082em 0 var(--d),0.074em 0.104em 0 var(--d),0.053em 0.121em 0 var(--d),0.027em 0.131em 0 var(--d),0 0.135em 0 var(--d),-0.027em 0.131em 0 var(--d),-0.052em 0.121em 0 var(--d),-0.074em 0.104em 0 var(--d),-0.091em 0.082em 0 var(--d),-0.101em 0.057em 0 var(--d),-0.105em 0.03em 0 var(--d),-0.101em 0.003em 0 var(--d),-0.091em -0.022em 0 var(--d),-0.074em -0.044em 0 var(--d),-0.053em -0.061em 0 var(--d),-0.027em -0.071em 0 var(--d),0 -0.075em 0 var(--d),0.027em -0.071em 0 var(--d),0.053em -0.061em 0 var(--d),0.074em -0.044em 0 var(--d),0.091em -0.023em 0 var(--d),0.101em 0.003em 0 var(--d),
+  0 .2em .16em rgba(20,80,130,.22)}
+.L:hover{transform:rotate(calc(var(--r,0deg) * -1)) translateY(-.06em) scale(1.06)}
+@keyframes lpop{from{opacity:0;transform:translateY(.5em) scale(.3) rotate(-14deg)}}
+.im-frei{display:flex;align-items:center;gap:.35em;margin:clamp(14px,2.2vh,22px) 0 0 .25em;color:var(--ink);font-family:var(--fred);font-weight:400;font-size:clamp(26px,2.6vw,40px);line-height:1}
+.im-frei .im{font-style:italic;transform:translateY(-.06em)}
+.im-frei .logo-mask{height:clamp(30px,3vw,46px)}
+.slogan{font-family:var(--fred);font-weight:500;font-size:clamp(20px,1.75vw,27px);line-height:1.3;color:var(--ink);max-width:28ch;margin:clamp(20px,3vh,32px) 0 clamp(20px,3vh,30px);text-wrap:balance}
+.hero .stks{margin-top:clamp(20px,3vh,30px)}
+
+.perch-hero{position:relative;--pw:clamp(200px,19vw,290px);z-index:2}
+.rio-hit{position:absolute;inset:8% 14%;border-radius:40%;background:none;border:0;z-index:6;cursor:pointer;pointer-events:auto}
+.cloud-bed{position:absolute;left:50%;bottom:0;width:min(440px,100%);transform:translateX(-50%);color:#fff;z-index:1}
+.cloud-bed svg{width:100%;height:auto;filter:drop-shadow(0 16px 20px rgba(40,120,170,.16))}
+.say-hero{position:absolute;left:50%;top:0;z-index:5;width:max-content;max-width:min(300px,100%);rotate:-2deg;translate:-64% 14px;opacity:0;transition:opacity .8s var(--ease),translate .8s var(--pop)}
+.say-hero::after{left:auto;right:40px}
+.arrived .say-hero,.rm .say-hero{opacity:1;translate:-64% 0}
+.neu{position:absolute;left:-5%;top:34%;width:clamp(120px,10vw,150px);aspect-ratio:1;display:grid;place-items:center;text-align:center;z-index:5;
+  font-family:var(--fred);font-weight:700;color:var(--ink);line-height:.95;font-size:clamp(26px,2.2vw,32px);
+  background:var(--sr-yellow);border-radius:50% 50% 50% 14%;border:5px solid #fff;box-shadow:0 0 0 4px #8fd3f0,var(--lift);transform:rotate(8deg);animation:neu 4s ease-in-out infinite}
+.neu::before{content:"";position:absolute;inset:7px;border:2.5px dashed rgba(255,255,255,.95);border-radius:inherit}
+.neu small{display:block;font-size:.5em;font-weight:500;margin-top:.35em;line-height:1.1}
+@keyframes neu{50%{transform:rotate(3deg) scale(1.05)}}
+.scroll-cue{position:absolute;left:50%;bottom:clamp(22px,4vh,38px);transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;text-decoration:none;font-family:var(--fred);font-weight:500;font-size:15px;color:var(--ink);white-space:nowrap}
+.scroll-cue i{width:44px;height:44px;border-radius:50%;background:#fff;display:grid;place-items:center;box-shadow:var(--lift);animation:cue 2.2s var(--ease) infinite}
+.scroll-cue svg{width:20px;height:20px}
+@keyframes cue{0%,100%{transform:translateY(0)}50%{transform:translateY(7px)}}
+
+@media (max-width:899px){
+  .hero{min-height:0;padding-bottom:120px}
+  .hero-grid{grid-template-columns:1fr;grid-template-areas:"head" "stage" "body"}
+  .hero-stage{min-height:0;justify-content:flex-start;align-items:center;padding:6px 0 18px;margin-top:10px}
+  .perch-hero{--pw:clamp(118px,33vw,190px);order:-1;flex:none}
+  .hero-stage .cloud-bed{left:calc(clamp(118px,33vw,190px) / 2);width:clamp(170px,48vw,260px);bottom:2px}
+  .say-hero{position:relative;left:auto;top:auto;margin:0 0 0 14px;width:auto;max-width:none;flex:1;font-size:17px;padding:14px 16px;rotate:0deg;translate:0 10px}
+  .arrived .say-hero,.rm .say-hero{translate:0 0}
+  .say-hero::after{left:-6px;right:auto;bottom:auto;top:44%}
+  .neu{display:none}
+  .neu-pill{display:inline-block}
+  .lettering{font-size:clamp(70px,24.5vw,150px)}
+  .slogan{margin-top:6px}
+}
+
+/* ---------- Bällebad ---------- */
+.pit{position:relative;height:clamp(150px,15vw,200px);margin:30px 0 12px;border-radius:30px;background:linear-gradient(180deg,#d4f4fd 0%,#9fe0f5 100%);
+  border:4px solid #fff;box-shadow:inset 0 -20px 30px -20px rgba(20,90,140,.35),var(--lift);touch-action:manipulation;max-width:520px}
+.pit-in{position:absolute;inset:0;clip-path:inset(-600px 0 0 0 round 0 0 26px 26px)}
+.ball{position:absolute;left:var(--x);bottom:var(--y);width:var(--s);height:var(--s);margin-left:calc(var(--s) / -2);border-radius:50%;cursor:pointer;
+  background:radial-gradient(circle at 32% 28%,rgba(255,255,255,.95) 0 9%,var(--c) 40%,var(--d) 100%);box-shadow:inset -3px -5px 8px rgba(0,0,0,.07),0 3px 6px -3px rgba(20,60,90,.35);transition:transform .35s var(--pop)}
+.ball:hover{transform:translateY(-8px)}
+.ball.pop{animation:pop .3s ease-out forwards;pointer-events:none}
+.ball.back{animation:back .6s var(--pop)}
+.ball.jump{animation:jump var(--jd,1s) var(--jdelay,0s) both}
+@keyframes pop{to{transform:scale(1.5);opacity:0}}
+@keyframes back{from{transform:scale(0)}}
+@keyframes jump{0%{transform:none;animation-timing-function:cubic-bezier(.2,.75,.4,1)}45%{transform:translate(var(--jx),var(--jy)) rotate(var(--jr));animation-timing-function:cubic-bezier(.6,0,.85,.5)}82%{transform:translate(calc(var(--jx) * 1.1),0) rotate(calc(var(--jr) * 1.4))}91%{transform:translate(calc(var(--jx) * 1.1),-10px)}100%{transform:none}}
+.pit-row{display:flex;align-items:center;justify-content:space-between;gap:12px;max-width:520px;flex-wrap:wrap}
+.pit-row>span{font-family:var(--fred);font-size:15px;color:var(--muted)}
+.btn-ball{font-family:var(--fred);font-weight:600;font-size:15px;border:0;border-radius:999px;padding:.6em 1.1em;background:var(--ink);color:#fff;display:inline-flex;align-items:center;gap:.5em;min-height:44px}
+.btn-ball i{width:12px;height:12px;border-radius:50%;background:var(--sr-pink);box-shadow:8px 0 0 var(--sr-yellow),16px 0 0 var(--sr-mint);margin-right:16px}
+
+/* ---------- Trampolin ---------- */
+.tramp-wrap{position:relative;max-width:440px;width:100%;justify-self:center;padding-top:clamp(150px,16vw,210px)}
+.tramp{width:100%;height:auto;overflow:visible}
+.tramp #mat{transform-box:fill-box;transform-origin:50% 50%}
+.tramp-box{position:relative}
+.perch-tramp{left:50%;margin-left:calc(var(--pw) / -2);bottom:50%;--pw:clamp(92px,10vw,138px)}
+.hops{position:absolute;font-family:var(--fred);font-weight:700;color:#fff;font-size:clamp(26px,2.4vw,34px);text-shadow:0 3px 0 var(--sr-pink),0 8px 18px rgba(20,60,90,.25);transform:rotate(var(--r));animation:hops 2.4s ease-in-out infinite;animation-delay:var(--dl,0s)}
+@keyframes hops{0%,100%{transform:rotate(var(--r)) translateY(0)}50%{transform:rotate(var(--r)) translateY(-10px)}}
+.paused .hops,.paused .neu{animation-play-state:paused}
+
+/* ---------- Eltern / Glaswand ---------- */
+.glass{position:relative;border-radius:30px;overflow:hidden;border:10px solid rgba(255,255,255,.82);box-shadow:0 40px 70px -36px rgba(15,50,80,.65);background:#d9f2fb;isolation:isolate}
+.glass img{width:100%;height:auto;aspect-ratio:4/5;object-fit:cover}
+.glass::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,rgba(255,255,255,.34) 0 14%,transparent 14% 22%,rgba(255,255,255,.18) 22% 26%,transparent 26%);pointer-events:none}
+.glass .shine{position:absolute;inset:-20% auto -20% 0;width:38%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent);transform:translateX(-160%) skewX(-18deg);pointer-events:none}
+.in .glass .shine{animation:shine 2.4s .5s var(--ease) both}
+@keyframes shine{to{transform:translateX(380%) skewX(-18deg)}}
+.glass-label{position:absolute;left:16px;bottom:16px;z-index:2;display:inline-flex;align-items:center;gap:.5em;font-family:var(--fred);font-weight:600;font-size:15px;color:var(--ink);background:rgba(255,255,255,.88);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);padding:.5em .95em;border-radius:999px}
+.glass-label svg{width:18px;height:18px}
+.ticks{list-style:none;padding:0;margin:0 0 26px;display:grid;gap:12px}
+.ticks li{display:flex;align-items:center;gap:12px;font-size:clamp(16px,1.15vw,18px);color:var(--ink)}
+.ticks i{flex:none;width:40px;height:40px;border-radius:14px;display:grid;place-items:center;background:var(--c,#fff);box-shadow:0 8px 16px -12px rgba(18,70,110,.6)}
+.ticks svg{width:21px;height:21px}
+.perch-parents{left:-58px;top:30%;--pw:clamp(96px,10.5vw,150px)}
+
+/* ---------- Party ---------- */
+.seen{margin:0 0 22px}
+.seen h3,.ideas h3{font-family:var(--fred);font-weight:600;font-size:17px;margin:0 0 10px;color:var(--ink);display:flex;align-items:center;gap:10px}
+.ideas h3 em{font-style:normal;font-family:var(--font);font-weight:600;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#b2386a;background:#ffe1ea;padding:3px 8px;border-radius:999px}
+.ideas{margin:0 0 24px}
+.motto{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;list-style:none;padding:0;margin:0}
+.motto li{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;font-family:var(--fred);font-weight:500;font-size:14.5px;line-height:1.15;color:var(--ink);background:#fff;border-radius:22px;padding:14px 8px 12px;box-shadow:0 10px 20px -14px rgba(18,70,110,.55);transform:rotate(var(--r));transition:transform .5s var(--pop)}
+.motto li:hover{transform:rotate(0) translateY(-4px) scale(1.04)}
+.motto i{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:var(--c);border:3px solid #fff;box-shadow:0 0 0 2px var(--c)}
+.motto svg{width:22px;height:22px}
+.price-note{display:inline-flex;align-items:center;gap:.5em;font-family:var(--fred);font-weight:500;font-size:15px;color:var(--ink);background:rgba(255,255,255,.65);border:2px dashed rgba(31,39,65,.25);padding:.45em .9em;border-radius:999px;margin:0 0 22px}
+.perch-party{right:-34px;top:-64px;--pw:clamp(96px,10.5vw,150px)}
+.perch-slide{right:-36px;top:-70px;--pw:clamp(96px,10.5vw,150px)}
+.perch-balls{left:-40px;top:-62px;--pw:clamp(96px,10.5vw,150px)}
+@media (max-width:640px){.motto{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:899px){
+  .perch-slide{right:-6px;top:-74px}
+  .perch-balls{left:-4px;top:-70px}
+  .perch-party{right:-6px;top:-70px}
+  .perch-parents{left:auto;right:-6px;top:-74px}
+}
+
+/* ---------- Einladung (Formular) ---------- */
+.invite-sec .head{text-align:center;max-width:720px;margin:0 auto}
+.invite-sec .head .squiggle{margin-inline:auto}
+.invite-sec .say{margin-inline:auto;text-align:left}
+.invite-wrap{position:relative;max-width:880px;margin:44px auto 0}
+.invite{position:relative;border-radius:34px;padding:10px;color:var(--ink);
+  background:repeating-linear-gradient(-45deg,var(--sr-pink) 0 14px,#fff 14px 22px,var(--sr-cyan) 22px 36px,#fff 36px 44px);
+  box-shadow:0 50px 90px -40px rgba(15,50,80,.65),0 10px 24px -14px rgba(15,50,80,.35)}
+.invite-in{position:relative;background:var(--paper);border-radius:26px;padding:clamp(22px,4.4vw,52px)}
+.invite-in::before{content:"";position:absolute;inset:12px;border:2.5px dashed rgba(63,196,232,.45);border-radius:18px;pointer-events:none}
+.inv-head{position:relative;display:grid;grid-template-columns:1fr auto;gap:18px;align-items:start;margin-bottom:26px}
+.inv-kicker{font-family:var(--fred);font-weight:600;font-size:13px;letter-spacing:.28em;text-transform:uppercase;color:#e8507f}
+.inv-h{font-family:var(--fred);font-weight:700;font-size:clamp(28px,3.2vw,42px);line-height:1.05;margin:6px 0 10px}
+.inv-p{margin:0;color:var(--muted);max-width:46ch;font-size:16px}
+.stamp{position:relative;width:104px;padding:7px;rotate:6deg;filter:drop-shadow(0 6px 10px rgba(18,70,110,.25));
+  background:radial-gradient(circle at 50% 50%,transparent 3.2px,#fff 3.7px) -5px -5px/10px 10px}
+.stamp-in{background:linear-gradient(160deg,#bff0ff,#8fdcf5);display:flex;flex-direction:column;align-items:center;padding:6px 4px 5px}
+.stamp-in img{width:70px;height:auto}
+.stamp-in b{font-family:var(--fred);font-weight:600;font-size:11px;letter-spacing:.14em;text-transform:uppercase;margin-top:2px}
+.postmark{position:absolute;right:62px;top:42px;width:112px;color:rgba(31,39,65,.32);transform:rotate(-14deg);pointer-events:none}
+.g{display:flex;align-items:center;gap:10px;font-family:var(--fred);font-weight:600;font-size:19px;margin:12px 0 0;color:var(--ink)}
+.g .n{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:var(--c);font-size:15px;border:2.5px solid #fff;box-shadow:0 0 0 2px var(--c)}
+.invite .form{gap:16px}
+.invite .field>label,.invite .lbl{font-family:var(--fred);font-size:15px;font-weight:500;color:var(--ink)}
+.invite .field>label small,.invite .lbl small{font-family:var(--font);font-weight:400;font-size:12px;color:var(--muted);margin-left:4px}
+.invite .field input,.invite .field select,.invite .field textarea{border:2px solid #cfeefa;border-radius:16px;background:#fff}
+.invite .field textarea{min-height:92px}
+.invite .field input:focus,.invite .field select:focus,.invite .field textarea:focus{border-color:var(--sr-cyan);box-shadow:0 0 0 4px rgba(63,196,232,.2)}
+.invite .field select{appearance:none;-webkit-appearance:none;padding-right:40px;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231f2741' stroke-width='2.2' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 14px center/18px}
+.hint{font-size:12.5px;color:var(--muted);display:flex;align-items:center;gap:6px}
+.hint svg{width:14px;height:14px;flex:none}
+.seg{display:flex;gap:8px}
+.seg label{flex:1;position:relative;cursor:pointer}
+.seg input{position:absolute;opacity:0;inset:0;width:100%;height:100%;margin:0;cursor:pointer}
+.seg span{display:flex;align-items:center;justify-content:center;min-height:48px;border-radius:16px;border:2px solid #cfeefa;background:#fff;font-family:var(--fred);font-weight:500;font-size:16px;transition:background .2s,border-color .2s,transform .3s var(--pop)}
+.seg input:checked+span{background:var(--sr-yellow);border-color:#f2bf1d;transform:scale(1.03)}
+.seg input:focus-visible+span{outline:2px solid var(--sr-cyan);outline-offset:2px}
+.invite .check{font-size:14px;color:var(--muted);margin-top:4px}
+.invite .check a{color:var(--ink)}
+.invite .check input{accent-color:#e8507f}
+.send-row{display:flex;flex-wrap:wrap;align-items:center;gap:14px 20px;margin-top:6px}
+.send-row .sr-btn{font-size:18px;min-height:58px}
+.send-row small{color:var(--muted);font-size:13px;max-width:34ch}
+.hp{position:absolute!important;left:-9999px;width:1px;height:1px;opacity:0}
+.perch-form{left:-170px;top:60px;--pw:clamp(110px,11vw,160px)}
+@media (max-width:1279px){.perch-form{left:-4px;top:-118px;--pw:96px}.invite-wrap{margin-top:120px}}
+@media (max-width:640px){.inv-head{grid-template-columns:1fr 78px}.stamp{width:80px;padding:6px}.stamp-in img{width:52px}.stamp-in b{font-size:9px}.postmark{right:-2px;top:118px;width:76px}}
+.rio-ok{position:relative;text-align:center;background:linear-gradient(180deg,#e9fbf2,#d4f5e6);color:var(--ink);border-radius:26px;padding:30px 22px 32px}
+.rio-ok .ok-perch{position:relative;width:120px;aspect-ratio:1192/1624;margin:-4px auto 8px}
+.rio-ok .ok-perch img{width:100%;height:auto;animation:okfly 2.4s ease-in-out infinite}
+.rio-ok h3{font-family:var(--fred);font-weight:700;font-size:clamp(24px,2.6vw,32px);margin:0 0 8px}
+.rio-ok p{margin:0 auto 6px;max-width:44ch;color:#2b5a44}
+.rio-ok .demo{font-size:13px;margin-top:14px;color:#3d6b55;background:rgba(255,255,255,.6);display:inline-block;padding:6px 12px;border-radius:999px}
+@keyframes okfly{50%{transform:translateY(-10px) rotate(3deg)}}
+
+/* ---------- 18:00 Bis morgen ---------- */
+.ende{padding-bottom:clamp(90px,10vw,140px)}
+.ende .head{text-align:center;max-width:760px;margin:0 auto}
+.ende .head .squiggle{margin-inline:auto}
+.ende .say{margin-inline:auto;text-align:left}
+.ende .body{color:var(--ink);opacity:.75;margin:0 auto}
+.night-stage{position:relative;height:clamp(200px,22vw,280px);max-width:520px;margin:10px auto 0}
+.night-stage .cloud-bed{width:min(420px,92%)}
+.perch-end{left:50%;bottom:44px;margin-left:calc(var(--pw) / -2);--pw:clamp(120px,12vw,170px)}
+.perch-end .rio-static{transform:rotate(-12deg)}
+.end-grid{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.6fr);gap:clamp(28px,4vw,56px);align-items:start;margin-top:clamp(40px,5vw,64px)}
+.end-grid .polaroid{--rot:-3deg;--tape:rgba(255,143,177,.85);max-width:360px;justify-self:center}
+.info{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.tile{background:rgba(255,255,255,.9);border-radius:24px;padding:20px 20px 18px;box-shadow:var(--lift);color:var(--ink);display:flex;flex-direction:column;gap:6px}
+.tile h3{display:flex;align-items:center;gap:10px;font-family:var(--fred);font-weight:600;font-size:17px;margin:0}
+.tile h3 i{width:36px;height:36px;border-radius:12px;display:grid;place-items:center;background:var(--c,#fff);flex:none}
+.tile h3 svg{width:19px;height:19px}
+.tile p{margin:0;color:var(--muted);font-size:15px}
+.tile .big{font-family:var(--fred);font-weight:600;font-size:22px;color:var(--ink)}
+.tile a{color:var(--ink);font-weight:500;text-decoration:none;border-bottom:1.5px solid rgba(31,39,65,.25)}
+.tile a:hover{border-color:currentColor}
+.tile .chip{align-self:flex-start;margin-top:4px;background:#f1fbf6}
+.tile .chip.closed{background:#fdf0f0}
+.tile.wide{grid-column:1 / -1}
+.tile.press q{font-family:var(--fred);font-weight:500;font-size:17px;line-height:1.3;color:var(--ink);quotes:none}
+.contact-row{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:4px;font-size:15.5px}
+.contact-row span{display:inline-flex;align-items:center;gap:8px}
+.contact-row svg{width:17px;height:17px;opacity:.7}
+.faq{max-width:860px;margin:clamp(48px,6vw,80px) auto 0;background:rgba(255,255,255,.88);border-radius:30px;padding:clamp(22px,3.4vw,40px);box-shadow:var(--lift)}
+.faq h2{font-family:var(--fred);font-weight:700;font-size:clamp(28px,3vw,40px);margin:0 0 12px;color:var(--ink)}
+.faq details{border-top:1.5px solid rgba(31,39,65,.1)}
+.faq summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:16px 2px;font-family:var(--fred);font-weight:500;font-size:clamp(17px,1.3vw,19px);color:var(--ink)}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary i{flex:none;width:30px;height:30px;border-radius:50%;background:var(--sr-yellow);display:grid;place-items:center;transition:transform .4s var(--pop),background .3s}
+.faq summary i::before{content:"+";font-style:normal;font-weight:600;font-size:20px;line-height:1}
+.faq details[open] summary i{transform:rotate(45deg);background:var(--sr-pink)}
+.faq details p{margin:0 0 18px;color:var(--muted);max-width:62ch}
+.end-cta{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin-top:clamp(40px,5vw,60px)}
+@media (max-width:899px){.end-grid{grid-template-columns:1fr}.end-grid .polaroid{order:2;max-width:300px}}
+@media (max-width:560px){.info{grid-template-columns:1fr}}
+
+/* Bühne: Abschnitts-Einblendungen */
+.pop-in{opacity:0;transform:scale(.6) rotate(-6deg);transition:opacity .6s var(--ease),transform .8s var(--pop)}
+.in .pop-in,.pop-in.in{opacity:1;transform:none}
+.rm .pop-in{opacity:1;transform:none}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="cg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#e6f6fd"/></linearGradient>
+    <symbol id="cloud" viewBox="0 0 220 110"><g fill="url(#cg)"><circle cx="70" cy="62" r="34"/><circle cx="112" cy="46" r="42"/><circle cx="156" cy="64" r="30"/><rect x="26" y="62" width="172" height="44" rx="22"/></g></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></g></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-back" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-cake" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21h16v-8H4z"/><path d="M4 16.5c2 1.4 4 1.4 6 0s4-1.4 6 0 3 1.4 4 0"/><path d="M12 13V9.5"/><path d="M12 6.8c.9-.9.9-1.8 0-2.8-.9 1-.9 1.9 0 2.8z"/></g></symbol>
+    <symbol id="i-spark" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5L18 18M6 18l2.5-2.5M15.5 8.5L18 6"/></g></symbol>
+    <symbol id="i-fruit" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3L6 20h12z"/><path d="M8.5 13h7M7.4 16.5h9.2M10 9.5h4"/></g></symbol>
+    <symbol id="i-crown" viewBox="0 0 24 24"><path d="M3 8l4.5 4L12 5l4.5 7L21 8l-2 11H5z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/></symbol>
+    <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 2L4.5 14H11l-1 8 8.5-12H12z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/></symbol>
+    <symbol id="i-leaf" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 19C5 10 11 4 20 4c0 9-6 15-15 15z"/><path d="M5 19l9-9"/></g></symbol>
+    <symbol id="i-rainbow" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M3 18a9 9 0 0 1 18 0"/><path d="M6.5 18a5.5 5.5 0 0 1 11 0"/><path d="M10 18a2 2 0 0 1 4 0"/></g></symbol>
+    <symbol id="i-eye" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.9"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></g></symbol>
+    <symbol id="i-cup" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M17 11h1.5a2.5 2.5 0 0 1 0 5H17"/><path d="M8 3c-.8 1 .8 2 0 3M12 3c-.8 1 .8 2 0 3"/></g></symbol>
+    <symbol id="i-home" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5.5 9.5V20h13V9.5"/><path d="M10 20v-5h4v5"/></g></symbol>
+    <symbol id="i-sock" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3h7v9.5l3.4 3.2a3 3 0 0 1-4.1 4.4L9 15.6A3 3 0 0 1 8 13.4z"/><path d="M8 7h7"/></g></symbol>
+    <symbol id="i-news" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="M7 8.5h10M7 12h10M7 15.5h6"/></g></symbol>
+    <symbol id="i-ig" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.9"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/></g><circle cx="17.3" cy="6.7" r="1.2" fill="currentColor"/></symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/></symbol>
+    <symbol id="i-mail" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M3.5 7l8.5 6 8.5-6"/></g></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.9"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></g></symbol>
+    <symbol id="i-send" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M21 3L3 10.5l7 2.5 2.5 7z"/><path d="M21 3L10 13"/></g></symbol>
+    <symbol id="i-squiggle" viewBox="0 0 220 18"><path d="M3 11c12-8 22-8 34 0s22 8 34 0 22-8 34 0 22 8 34 0 22-8 34 0 22 8 34 0" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/></symbol>
+  </defs>
+</svg>
+
+<div class="sky" aria-hidden="true">
+  <div class="sky-l sky-m"></div><div class="sky-l sky-d"></div><div class="sky-l sky-e"></div>
+  <div class="stars"></div><div class="moon"></div><div class="sun"></div>
+  <div class="cloud" style="--w:clamp(150px,18vw,280px);left:-4%;top:16%;--dur:52s;--dx:90px"><svg><use href="#cloud"/></svg></div>
+  <div class="cloud" style="--w:clamp(110px,12vw,190px);right:-3%;top:38%;--dur:44s;--dx:-70px"><svg><use href="#cloud"/></svg></div>
+  <div class="cloud" style="--w:clamp(120px,14vw,220px);left:30%;top:70%;--dur:60s;--dx:80px;opacity:.75"><svg><use href="#cloud"/></svg></div>
+  <div class="cloud" style="--w:clamp(90px,10vw,160px);right:22%;top:6%;--dur:38s;--dx:-50px;opacity:.85"><svg><use href="#cloud"/></svg></div>
+</div>
+
+<canvas id="sparkles" aria-hidden="true"></canvas>
+<div id="rio" aria-hidden="true"><div class="rio-body"><img src="assets/img/rio-s.webp" alt="" width="720" height="981" decoding="async"></div><div class="zzz"><span>Z</span><span>z</span><span>z</span></div></div>
+
+<div class="sr-clock" id="clock" aria-hidden="true">
+  <svg viewBox="0 0 64 64">
+    <circle cx="32" cy="32" r="29" fill="#fff" stroke="#3fc4e8" stroke-width="4"/>
+    <g fill="rgba(31,39,65,.28)"><circle cx="43" cy="12.95" r="1.5"/><circle cx="51.05" cy="21" r="1.5"/><circle cx="51.05" cy="43" r="1.5"/><circle cx="43" cy="51.05" r="1.5"/><circle cx="21" cy="51.05" r="1.5"/><circle cx="12.95" cy="43" r="1.5"/><circle cx="12.95" cy="21" r="1.5"/><circle cx="21" cy="12.95" r="1.5"/></g>
+    <circle cx="32" cy="10" r="2.8" fill="#ff8fb1"/><circle cx="54" cy="32" r="2.8" fill="#7ed9b0"/><circle cx="32" cy="54" r="2.8" fill="#ffd23f"/><circle cx="10" cy="32" r="2.8" fill="#3fc4e8"/>
+    <line class="hh" x1="32" y1="32" x2="32" y2="19" stroke="#1f2741" stroke-width="4.5" stroke-linecap="round"/>
+    <line class="mh" x1="32" y1="32" x2="32" y2="12.5" stroke="#ff6f9c" stroke-width="3.2" stroke-linecap="round"/>
+    <circle cx="32" cy="32" r="3.6" fill="#ffd23f" stroke="#1f2741" stroke-width="1.5"/>
+  </svg>
+  <div><b class="tnum" id="clockT">09:00</b><span id="clockL">Guten Morgen</span></div>
+</div>
+
+<main id="top">
+
+<!-- 09:00 · Aufwachen -->
+<section class="hero page" id="start" data-time="9" data-label="sr.c.hero">
+  <div class="hero-grid" style="margin-inline:auto">
+    <div class="hero-head">
+      <div class="kicker">
+        <span class="time-tag"><svg><use href="#i-clock"/></svg><span data-i18n="sr.t9">09:00 Uhr</span></span>
+        <span class="neu-pill"><span data-i18n="sr.neu">NEU bei uns</span> <i data-i18n="sr.since">· seit 5.12.2025</i></span>
+      </div>
+      <h1 class="lettering" aria-label="Spielraum im Freiraum">
+        <span class="row" aria-hidden="true"><span class="L" style="--c:#ff8fb1;--d:#e4588a;--r:-5deg;--i:0">S</span><span class="L" style="--c:#7ed9b0;--d:#35a874;--r:3deg;--i:1">P</span><span class="L" style="--c:#ffd23f;--d:#e2a600;--r:-2deg;--i:2">I</span><span class="L" style="--c:#ffab6b;--d:#e0772c;--r:4deg;--i:3">E</span><span class="L" style="--c:#6fcdf2;--d:#2a9bcf;--r:-3deg;--i:4">L</span></span>
+        <span class="row" aria-hidden="true"><span class="L" style="--c:#ff7fa6;--d:#d8456f;--r:3deg;--i:5">R</span><span class="L" style="--c:#ffc53d;--d:#df9a00;--r:-4deg;--i:6">A</span><span class="L" style="--c:#8fc6ec;--d:#3f8fcc;--r:2deg;--i:7">U</span><span class="L" style="--c:#8bdc8f;--d:#43a948;--r:-3deg;--i:8">M</span></span>
+      </h1>
+      <div class="im-frei"><span class="im">im</span><span class="logo-slot"></span></div>
+    </div>
+
+    <div class="hero-stage">
+      <div class="say say-hero" data-i18n-html="sr.hello">Hallo, ich bin <b>RIO</b>! Komm mit – ich zeig dir den Spielraum.</div>
+      <div class="neu"><div><span data-i18n="sr.neu1">NEU</span><br><span data-i18n="sr.neu2">bei uns</span><small data-i18n="sr.since2">seit 5.12.2025</small></div></div>
+      <div class="cloud-bed" aria-hidden="true"><svg viewBox="0 0 220 110"><use href="#cloud"/></svg></div>
+      <div class="perch perch-hero" data-perch><img class="rio-static" src="assets/img/rio-s.webp" alt="" loading="lazy"><button class="rio-hit" type="button" data-i18n-aria="sr.wave" aria-label="RIO winken"></button></div>
+    </div>
+
+    <div class="hero-body">
+      <p class="slogan" data-i18n="sr.slogan">Ab jetzt können Kinder spielen &amp; toben, während die Eltern entspannt genießen.</p>
+      <div class="btns">
+        <a class="btn sr-btn pink" href="#party-form"><svg><use href="#i-cake"/></svg><span data-i18n="sr.cta.party">Kindergeburtstag anfragen</span></a>
+        <a class="btn sr-btn white" href="index.html"><svg><use href="#i-back"/></svg><span data-i18n="sr.cta.back">Zurück zum Freiraum</span></a>
+      </div>
+      <ul class="stks">
+        <li class="stk" style="--c:var(--sr-pink)" data-i18n="sr.f1">ca. 100 m² Indoor-Spielplatz</li>
+        <li class="stk" style="--c:var(--sr-mint)" data-i18n="sr.f2">täglich 09–18 Uhr</li>
+        <li class="stk" style="--c:var(--sr-yellow)" data-i18n="sr.f3">Glaswand zum Restaurant</li>
+      </ul>
+    </div>
+  </div>
+  <a class="scroll-cue" href="#rutschen"><span data-i18n="sr.cue">Flieg mit RIO durch den Tag</span><i><svg><use href="#i-arrow"/></svg></i></a>
+</section>
+
+<!-- 10:00 · Rutschen -->
+<section class="page" id="rutschen" data-time="10" data-label="sr.c.slide" data-chime style="--hc:#f2b400">
+  <div class="wrap split media-left">
+    <div class="copy">
+      <span class="time-tag rv"><svg><use href="#i-clock"/></svg><span data-i18n="sr.t10">10:00 Uhr</span></span>
+      <h2 class="sr-h rv"><span data-i18n="sr.slide.h1">Rutschen</span><span class="x">!</span></h2>
+      <svg class="squiggle rv" aria-hidden="true"><use href="#i-squiggle"/></svg>
+      <p class="say rv" data-i18n="sr.slide.say">Wuuusch! Einmal ganz nach oben – und dann die große gelbe Rutsche hinunter, mitten ins Bällebad.</p>
+      <p class="body rv" data-i18n="sr.slide.p">Rund 100 m² Indoor-Spielplatz mitten im Freiraum: klettern, rutschen, hüpfen – bei jedem Wetter.</p>
+      <ul class="stks rv">
+        <li class="stk" style="--c:var(--sr-yellow)" data-i18n="sr.chip.slide">Rutsche</li>
+        <li class="stk" style="--c:var(--sr-pink)" data-i18n="sr.chip.balls">Bällebad</li>
+        <li class="stk" style="--c:var(--sr-mint)" data-i18n="sr.chip.tramp">Trampolin</li>
+        <li class="stk" style="--c:var(--sr-cyan)" data-i18n="sr.chip.m2">ca. 100 m²</li>
+      </ul>
+    </div>
+    <div class="media-wrap">
+      <div class="perch perch-slide" data-perch><img class="rio-static" src="assets/img/rio-s.webp" alt="" loading="lazy"></div>
+      <div class="rv">
+        <figure class="polaroid" style="--rot:-3deg">
+          <img src="assets/img/spielraum-heute-s.webp" srcset="assets/img/spielraum-heute-s.webp 720w, assets/img/spielraum-heute.webp 1080w" sizes="(max-width: 899px) 86vw, 470px" width="720" height="1280" style="object-position:50% 4%" loading="lazy" decoding="async" alt="Die große gelbe Spiralrutsche im Spielraum" data-i18n-alt="sr.slide.alt">
+          <figcaption><span data-i18n="sr.slide.cap">Die große gelbe Rutsche</span><span class="photo-credit" data-i18n="sr.photo">Foto: heute.at</span></figcaption>
+        </figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 11:30 · Bällebad -->
+<section class="page" id="baellebad" data-time="11.5" data-label="sr.c.balls" data-chime style="--hc:var(--sr-pink)">
+  <div class="wrap split">
+    <div class="copy">
+      <span class="time-tag rv"><svg><use href="#i-clock"/></svg><span data-i18n="sr.t1130">11:30 Uhr</span></span>
+      <h2 class="sr-h rv"><span data-i18n="sr.balls.h1">Bällebad</span><span class="x">!</span></h2>
+      <svg class="squiggle rv" aria-hidden="true"><use href="#i-squiggle"/></svg>
+      <p class="say rv" data-i18n="sr.balls.say">Platsch! Bunte Bälle, so weit ich schauen kann – Pink, Mint, Gelb und Himmelblau wie ich.</p>
+      <p class="body rv" data-i18n="sr.balls.p">Abtauchen, verstecken, Bälle werfen: Im Bällebad wird gelacht, gekreischt und gemeinsam gespielt.</p>
+      <div class="rv">
+        <div class="pit" aria-hidden="true"><div class="pit-in" id="pit"></div></div>
+        <div class="pit-row"><span data-i18n="sr.balls.tap">Tipp auf die Bälle!</span><button class="btn-ball" type="button" id="ballBtn"><i></i><span data-i18n="sr.balls.btn">Bälle-Alarm!</span></button></div>
+      </div>
+    </div>
+    <div class="media-wrap">
+      <div class="perch perch-balls" data-perch><img class="rio-static" src="assets/img/rio-s.webp" alt="" loading="lazy"></div>
+      <div class="rv">
+        <figure class="polaroid" style="--rot:2.5deg;--tape:rgba(255,143,177,.85)">
+          <img src="assets/img/spielraum-rutsche-s.webp" srcset="assets/img/spielraum-rutsche-s.webp 720w, assets/img/spielraum-rutsche.webp 1080w" sizes="(max-width: 899px) 86vw, 470px" width="720" height="900" loading="lazy" decoding="async" alt="Bällebad mit fliegenden bunten Bällen vor der gelben Rutsche" data-i18n-alt="sr.balls.alt">
+          <figcaption><span data-i18n="sr.balls.cap">Bälle, Bälle, Bälle!</span><span class="photo-credit" data-i18n="sr.photo">Foto: heute.at</span></figcaption>
+        </figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 13:00 · Trampolin -->
+<section class="page" id="trampolin" data-time="13" data-label="sr.c.tramp" data-chime style="--hc:#35b981">
+  <div class="wrap split media-left">
+    <div class="copy">
+      <span class="time-tag rv"><svg><use href="#i-clock"/></svg><span data-i18n="sr.t13">13:00 Uhr</span></span>
+      <h2 class="sr-h rv"><span data-i18n="sr.tramp.h1">Trampolin</span><span class="x">!</span></h2>
+      <svg class="squiggle rv" aria-hidden="true"><use href="#i-squiggle"/></svg>
+      <p class="say rv" data-i18n="sr.tramp.say">Hops, hops, hops – noch höher! Fast so hoch, wie ich fliegen kann.</p>
+      <p class="body rv" data-i18n="sr.tramp.p">Springen, lachen, Energie loswerden – auf dem Trampolin wird jeder Hüpfer zum kleinen Abenteuer.</p>
+    </div>
+    <div class="tramp-wrap media-wrap" id="trampWrap">
+      <span class="hops" style="left:4%;top:34%;--r:-12deg" aria-hidden="true">Hops!</span>
+      <span class="hops" style="right:2%;top:22%;--r:10deg;--dl:.8s;text-shadow:0 3px 0 #35b981,0 8px 18px rgba(20,60,90,.25)" aria-hidden="true">Hops!</span>
+      <div class="tramp-box">
+      <div class="perch perch-tramp" data-perch data-bounce><img class="rio-static" src="assets/img/rio-s.webp" alt="" loading="lazy"></div>
+      <svg class="tramp" viewBox="0 0 360 170" aria-hidden="true">
+        <ellipse cx="180" cy="158" rx="150" ry="10" fill="rgba(20,80,120,.14)"/>
+        <g stroke="#2a3557" stroke-width="9" stroke-linecap="round"><path d="M62 80 L48 156"/><path d="M298 80 L312 156"/><path d="M128 96 L122 162"/><path d="M232 96 L238 162"/></g>
+        <ellipse cx="180" cy="72" rx="164" ry="44" fill="none" stroke="#ffd23f" stroke-width="20"/>
+        <ellipse cx="180" cy="72" rx="164" ry="44" fill="none" stroke="#ff8fb1" stroke-width="20" stroke-dasharray="38 38"/>
+        <ellipse cx="180" cy="72" rx="152" ry="36" fill="#e9f8fd"/>
+        <g stroke="#9fb4c8" stroke-width="2.4" stroke-linecap="round"><path d="M52 72h12M296 72h12M180 37v7M180 100v7M90 46l6 5M270 46l-6 5M90 98l6-5M270 98l-6-5M128 39l3 6M232 39l-3 6M128 105l3-6M232 105l-3-6"/></g>
+        <g id="mat"><ellipse cx="180" cy="72" rx="128" ry="27" fill="#26304f"/><ellipse cx="180" cy="66" rx="104" ry="16" fill="#323e66"/></g>
+      </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 14:00 · Mama & Papa genießen -->
+<section class="page" id="eltern" data-time="14" data-label="sr.c.parents" data-chime style="--hc:var(--sr-cyan)">
+  <div class="wrap split">
+    <div class="copy">
+      <span class="time-tag rv"><svg><use href="#i-clock"/></svg><span data-i18n="sr.t14">14:00 Uhr</span></span>
+      <h2 class="sr-h rv" data-i18n="sr.parents.h">Mama &amp; Papa genießen</h2>
+      <svg class="squiggle rv" aria-hidden="true"><use href="#i-squiggle"/></svg>
+      <p class="say rv" data-i18n="sr.parents.say">Psst … während wir spielen, gönnen sich die Großen eine Pause.</p>
+      <p class="body rv" data-i18n="sr.parents.p">Durch die Glaswand habt ihr eure Kinder immer im Blick – und genießt in Ruhe Kaffee, Frühstück oder ein gutes Essen aus der Freiraum-Küche.</p>
+      <ul class="ticks rv">
+        <li><i style="--c:#d6f3ff"><svg><use href="#i-eye"/></svg></i><span data-i18n="sr.parents.l1">Kinder im Blick – dank Glaswand</span></li>
+        <li><i style="--c:#fff1c2"><svg><use href="#i-cup"/></svg></i><span data-i18n="sr.parents.l2">Frühstück bis 17 Uhr, Küche bis 21:45</span></li>
+        <li><i style="--c:#ffe1ea"><svg><use href="#i-home"/></svg></i><span data-i18n="sr.parents.l3">Alles unter einem Dach: Mariahilfer Straße 117</span></li>
+      </ul>
+      <div class="rv"><a class="btn sr-btn navy" href="speisekarte.html"><span data-i18n="sr.parents.menu">Speisekarte ansehen</span></a></div>
+    </div>
+    <div class="media-wrap">
+      <div class="perch perch-parents" data-perch><img class="rio-static" src="assets/img/rio-s.webp" alt="" loading="lazy"></div>
+      <div class="rv">
+        <div class="glass">
+          <img src="assets/img/saal-s.webp" srcset="assets/img/saal-s.webp 720w, assets/img/saal.webp 1440w" sizes="(max-width: 899px) 86vw, 500px" width="720" height="900" loading="lazy" decoding="async" alt="Heller Restaurantsaal im Freiraum mit großen Fenstern" data-i18n-alt="sr.parents.alt">
+          <span class="shine"></span>
+          <span class="glass-label"><svg><use href="#i-eye"/></svg><span data-i18n="sr.parents.tag">Kinder spielen · Eltern genießen</span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 15:30 · Party-Zeit -->
+<section class="page" id="party" data-time="15.5" data-label="sr.c.party" data-chime style="--hc:#e8507f">
+  <div class="wrap split media-left">
+    <div class="copy">
+      <span class="time-tag rv"><svg><use href="#i-clock"/></svg><span data-i18n="sr.t1530">15:30 Uhr</span></span>
+      <h2 class="sr-h rv"><span data-i18n="sr.party.h1">Party-Zeit</span><span class="x">!</span></h2>
+      <svg class="squiggle rv" aria-hidden="true"><use href="#i-squiggle"/></svg>
+      <p class="say rv" data-i18n="sr.party.say">Mein Lieblingsmoment: wenn die Torte mit den Wunderkerzen kommt!</p>
+      <p class="body rv" data-i18n="sr.party.p">Kindergeburtstag feiern, wo gespielt wird: Deko, Torte, Essen &amp; Getränke stimmen wir gemeinsam mit euch ab – ganz nach euren Wünschen.</p>
+      <div class="seen rv">
+        <h3 data-i18n="sr.party.seen">Schon bei uns gesehen</h3>
+        <ul class="ticks" style="margin:0">
+          <li><i style="--c:#ffe1ea"><svg><use href="#i-crown"/></svg></i><span data-i18n="sr.party.s1">Feen-Deko mit rosa Ballons</span></li>
+          <li><i style="--c:#fff1c2"><svg><use href="#i-spark"/></svg></i><span data-i18n="sr.party.s2">Torte mit Wunderkerzen</span></li>
+          <li><i style="--c:#ddf6ea"><svg><use href="#i-fruit"/></svg></i><span data-i18n="sr.party.s3">Obstturm</span></li>
+        </ul>
+      </div>
+      <div class="ideas rv">
+        <h3><span data-i18n="sr.party.ideas">Motto-Ideen</span><em data-i18n="sr.party.ex">Beispiele</em></h3>
+        <ul class="motto">
+          <li style="--c:#ffd6e4;--r:-2deg"><i><svg><use href="#i-crown"/></svg></i><span data-i18n="sr.m1">Feen &amp; Prinzessinnen</span></li>
+          <li style="--c:#d6ecff;--r:2deg"><i><svg><use href="#i-bolt"/></svg></i><span data-i18n="sr.m2">Superhelden</span></li>
+          <li style="--c:#d3f3e3;--r:-1.5deg"><i><svg><use href="#i-leaf"/></svg></i><span data-i18n="sr.m3">Dschungel</span></li>
+          <li style="--c:#e9e0ff;--r:2.5deg"><i><svg><use href="#i-rainbow"/></svg></i><span data-i18n="sr.m4">Einhorn</span></li>
+        </ul>
+      </div>
+      <div class="rv"><span class="price-note"><svg width="17" height="17"><use href="#i-spark"/></svg><span data-i18n="sr.party.price">Preise &amp; Pakete auf Anfrage</span></span></div>
+      <div class="rv"><a class="btn sr-btn pink" href="#party-form"><svg><use href="#i-cake"/></svg><span data-i18n="sr.party.cta">Jetzt Party anfragen</span></a></div>
+    </div>
+    <div class="media-wrap">
+      <div class="perch perch-party" data-perch><img class="rio-static" src="assets/img/rio-s.webp" alt="" loading="lazy"></div>
+      <div class="rv">
+        <figure class="polaroid" style="--rot:-2deg;--tape:rgba(126,217,176,.88)">
+          <img src="assets/img/spielraum-party-s.webp" srcset="assets/img/spielraum-party-s.webp 720w, assets/img/spielraum-party.webp 1215w" sizes="(max-width: 899px) 86vw, 470px" width="720" height="1280" style="object-position:40% 52%" loading="lazy" decoding="async" alt="Gedeckte Geburtstagstafel mit rosa Ballons und Feen-Deko im Spielraum" data-i18n-alt="sr.party.alt">
+          <figcaption><span data-i18n="sr.party.cap">Feen-Party im Spielraum</span></figcaption>
+        </figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 16:30 · Deine Party (Einladung) -->
+<section class="page invite-sec" id="party-form" data-time="16.5" data-label="sr.c.form" data-chime style="--hc:var(--sr-yellow)">
+  <div class="wrap">
+    <div class="head">
+      <span class="time-tag rv"><svg><use href="#i-clock"/></svg><span data-i18n="sr.t1630">16:30 Uhr</span></span>
+      <h2 class="sr-h rv" data-i18n="sr.form.h">Deine Party</h2>
+      <svg class="squiggle rv" aria-hidden="true"><use href="#i-squiggle"/></svg>
+      <p class="say rv" data-i18n="sr.form.say">Erzähl mir von deiner Party – ich bring die Einladung persönlich zum Team!</p>
+    </div>
+    <div class="invite-wrap">
+      <div class="perch perch-form" data-perch><img class="rio-static" src="assets/img/rio-s.webp" alt="" loading="lazy"></div>
+      <div class="invite rv">
+        <div class="invite-in">
+          <div class="inv-head">
+            <div>
+              <div class="inv-kicker" data-i18n="sr.inv.kicker">Einladung</div>
+              <h3 class="inv-h" data-i18n="sr.inv.h">Kindergeburtstag im Spielraum</h3>
+              <p class="inv-p" data-i18n="sr.inv.p">Unverbindlich anfragen – das Team meldet sich mit allen Details, Preisen und freien Terminen.</p>
+            </div>
+            <div class="stamp pop-in" aria-hidden="true"><div class="stamp-in"><img src="assets/img/rio-s.webp" alt="" loading="lazy"><b data-i18n="sr.inv.stamp">RIO-Post</b></div></div>
+            <svg class="postmark" viewBox="0 0 120 120" aria-hidden="true">
+              <defs><path id="pmc" d="M60,60 m-37,0 a37,37 0 1,1 74,0 a37,37 0 1,1 -74,0"/></defs>
+              <circle cx="60" cy="60" r="46" fill="none" stroke="currentColor" stroke-width="2.4"/>
+              <circle cx="60" cy="60" r="29" fill="none" stroke="currentColor" stroke-width="1.2"/>
+              <text font-family="Fredoka, sans-serif" font-size="8.6" font-weight="600" letter-spacing="1.6" fill="currentColor"><textPath href="#pmc">SPIELRAUM · MARIAHILFER STR. 117 ·</textPath></text>
+              <text x="60" y="58" text-anchor="middle" font-family="Fredoka, sans-serif" font-size="12" font-weight="700" fill="currentColor">WIEN</text>
+              <text x="60" y="72" text-anchor="middle" font-family="Fredoka, sans-serif" font-size="10" fill="currentColor">1060</text>
+            </svg>
+          </div>
+
+          <form class="form" id="partyForm" novalidate autocomplete="on">
+            <h4 class="g"><span class="n" style="--c:var(--sr-yellow)">1</span><span data-i18n="sr.g1">Wann?</span></h4>
+            <div class="row">
+              <div class="field"><label for="f-date" data-i18n="sr.l.date">Wunschdatum</label><input id="f-date" name="date" type="date" required></div>
+              <div class="field"><label for="f-time" data-i18n="sr.l.time">Uhrzeit</label>
+                <select id="f-time" name="time" required><option value="" data-i18n="sr.l.choose">Bitte wählen</option><option>10:00</option><option>13:00</option><option>15:30</option></select>
+                <span class="hint"><svg><use href="#i-clock"/></svg><span data-i18n="sr.l.timeNote">Zeiten bestätigt das Team</span></span>
+              </div>
+            </div>
+
+            <h4 class="g"><span class="n" style="--c:var(--sr-pink)">2</span><span data-i18n="sr.g2">Wer feiert?</span></h4>
+            <div class="row">
+              <div class="field"><label for="f-child" data-i18n="sr.l.child">Name des Geburtstagskindes</label><input id="f-child" name="child" type="text" maxlength="80" required></div>
+              <div class="field"><label for="f-age" data-i18n="sr.l.age">Alter wird</label><input id="f-age" name="age" type="number" inputmode="numeric" min="1" max="18" required></div>
+            </div>
+            <div class="row">
+              <div class="field"><label for="f-kids" data-i18n="sr.l.kids">Anzahl Kinder</label><input id="f-kids" name="kids" type="number" inputmode="numeric" min="1" max="99" required></div>
+              <div class="field"><label for="f-adults"><span data-i18n="sr.l.adults">Anzahl Erwachsene</span><small data-i18n="sr.opt">(optional)</small></label><input id="f-adults" name="adults" type="number" inputmode="numeric" min="0" max="99"></div>
+            </div>
+
+            <h4 class="g"><span class="n" style="--c:var(--sr-mint)">3</span><span data-i18n="sr.g3">Wie feiern wir?</span></h4>
+            <div class="row">
+              <div class="field"><label for="f-motto"><span data-i18n="sr.l.motto">Motto / Deko</span><small data-i18n="sr.opt">(optional)</small></label>
+                <select id="f-motto" name="motto"><option value="" data-i18n="sr.l.choose">Bitte wählen</option><option value="Feen & Prinzessinnen" data-i18n="sr.m1">Feen &amp; Prinzessinnen</option><option value="Superhelden" data-i18n="sr.m2">Superhelden</option><option value="Dschungel" data-i18n="sr.m3">Dschungel</option><option value="Einhorn" data-i18n="sr.m4">Einhorn</option><option value="Eigene Idee" data-i18n="sr.l.own">Eigene Idee</option></select>
+              </div>
+              <div class="field"><span class="lbl" id="cake-l"><span data-i18n="sr.l.cake">Torte</span><small data-i18n="sr.opt">(optional)</small></span>
+                <div class="seg" role="radiogroup" aria-labelledby="cake-l"><label><input type="radio" name="cake" value="ja"><span data-i18n="sr.l.yes">Ja</span></label><label><input type="radio" name="cake" value="nein"><span data-i18n="sr.l.no">Nein</span></label></div>
+              </div>
+            </div>
+            <div class="field"><label for="f-food"><span data-i18n="sr.l.food">Essen &amp; Getränke</span><small data-i18n="sr.opt">(optional)</small></label><textarea id="f-food" name="food" maxlength="2000" data-i18n-ph="sr.ph.food" placeholder="z. B. Pizza, Obstturm, Saft …"></textarea></div>
+            <div class="field"><label for="f-allergies"><span data-i18n="sr.l.allergies">Allergien</span><small data-i18n="sr.opt">(optional)</small></label><input id="f-allergies" name="allergies" type="text" maxlength="300" data-i18n-ph="sr.ph.allergies" placeholder="z. B. Nüsse, Laktose"></div>
+            <div class="field"><label for="f-message"><span data-i18n="sr.l.wishes">Wünsche</span><small data-i18n="sr.opt">(optional)</small></label><textarea id="f-message" name="message" maxlength="2000" data-i18n-ph="sr.ph.wishes" placeholder="Was wünscht sich das Geburtstagskind?"></textarea></div>
+
+            <h4 class="g"><span class="n" style="--c:var(--sr-cyan)">4</span><span data-i18n="sr.g4">Kontakt</span></h4>
+            <div class="field"><label for="f-name" data-i18n="sr.l.name">Name der Eltern</label><input id="f-name" name="name" type="text" autocomplete="name" maxlength="120" required></div>
+            <div class="row">
+              <div class="field"><label for="f-phone" data-i18n="sr.l.phone">Telefon</label><input id="f-phone" name="phone" type="tel" autocomplete="tel" maxlength="30" pattern="[0-9 +\(\)\/.\-]{6,30}" required></div>
+              <div class="field"><label for="f-email" data-i18n="sr.l.email">E-Mail</label><input id="f-email" name="email" type="email" autocomplete="email" maxlength="160" required></div>
+            </div>
+            <label class="hp" aria-hidden="true">Website<input type="text" name="website" tabindex="-1" autocomplete="off"></label>
+            <label class="check"><input type="checkbox" name="privacy" required><span data-i18n-html="sr.l.privacy">Ich bin einverstanden, dass meine Angaben zur Bearbeitung der Anfrage gespeichert werden. <a href="datenschutz.html">Datenschutz</a></span></label>
+            <div class="send-row">
+              <button class="btn sr-btn pink" type="submit"><svg><use href="#i-send"/></svg><span data-i18n="sr.l.send">Einladung abschicken</span></button>
+              <small data-i18n="sr.l.fine">Unverbindliche Anfrage · Preise &amp; Pakete auf Anfrage</small>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 18:00 · Bis morgen -->
+<section class="page ende" id="bis-morgen" data-time="18" data-label="sr.c.end" data-chime style="--hc:#8f7fe0">
+  <div class="wrap">
+    <div class="head">
+      <span class="time-tag rv" style="background:#e9e0ff"><svg><use href="#i-clock"/></svg><span data-i18n="sr.t18">18:00 Uhr</span></span>
+      <h2 class="sr-h rv"><span data-i18n="sr.end.h1">Bis morgen</span><span class="x">!</span></h2>
+      <svg class="squiggle rv" aria-hidden="true"><use href="#i-squiggle"/></svg>
+      <p class="say rv" data-i18n="sr.end.say">Gääähn … war das ein Tag! Der Spielraum macht jetzt Pause – morgen ab 9 Uhr fliegen wir weiter.</p>
+    </div>
+    <div class="night-stage">
+      <div class="cloud-bed" aria-hidden="true"><svg viewBox="0 0 220 110"><use href="#cloud"/></svg></div>
+      <div class="perch perch-end" data-perch data-sleep><img class="rio-static" src="assets/img/rio-s.webp" alt="" loading="lazy"></div>
+    </div>
+    <p class="body rv" style="text-align:center" data-i18n="sr.end.p">Im Restaurant geht der Abend natürlich weiter.</p>
+
+    <div class="end-grid">
+      <figure class="polaroid rv">
+        <img src="assets/img/spielraum-poster-s.webp" srcset="assets/img/spielraum-poster-s.webp 720w, assets/img/spielraum-poster.webp 1080w" sizes="(max-width: 899px) 300px, 360px" width="720" height="900" loading="lazy" decoding="async" alt="Offizielles Spielraum-Plakat mit RIO: Neu bei uns" data-i18n-alt="sr.poster.alt">
+        <figcaption><span data-i18n="sr.poster.cap">Unser Plakat</span><span class="photo-credit" data-i18n="sr.since3">seit 5.12.2025</span></figcaption>
+      </figure>
+      <div class="info">
+        <div class="tile rv">
+          <h3><i style="--c:#fff1c2"><svg><use href="#i-clock"/></svg></i><span data-i18n="sr.i.hours">Öffnungszeiten Spielraum</span></h3>
+          <p class="big" data-i18n="sr.i.hoursv">Mo–So · 09:00–18:00</p>
+          <span class="chip" id="live"><span class="dot"></span><span class="t">Live</span></span>
+        </div>
+        <div class="tile rv rv-d1">
+          <h3><i style="--c:#ffe1ea"><svg><use href="#i-sock"/></svg></i><span data-i18n="sr.i.socks">Bitte mit Socken</span></h3>
+          <p data-i18n="sr.i.socksp">Im Spielraum wird in Socken gespielt.</p>
+        </div>
+        <div class="tile press rv">
+          <h3><i style="--c:#d6f3ff"><svg><use href="#i-news"/></svg></i><span data-i18n="sr.i.press">Bekannt aus heute.at</span></h3>
+          <q data-i18n="sr.i.quote">„Alle staunen über Indoor-Spielplatz in Wiener Restaurant“</q>
+        </div>
+        <div class="tile rv rv-d1">
+          <h3><i style="--c:#e9e0ff"><svg><use href="#i-ig"/></svg></i><span>Instagram</span></h3>
+          <p data-i18n="sr.i.igp">Neues vom Spielraum, Party-Fotos &amp; mehr</p>
+          <p><a href="https://www.instagram.com/spielraumimfreiraum/" target="_blank" rel="noopener">@spielraumimfreiraum ↗</a></p>
+        </div>
+        <div class="tile wide rv">
+          <h3><i style="--c:#ddf6ea"><svg><use href="#i-phone"/></svg></i><span data-i18n="sr.i.contact">Kontakt &amp; Anfragen</span></h3>
+          <div class="contact-row">
+            <span><svg><use href="#i-phone"/></svg><a href="tel:+4315969600">+43 1 596 96 00</a></span>
+            <span><svg><use href="#i-mail"/></svg><a href="mailto:info@freiraum117.at">info@freiraum117.at</a></span>
+            <span><svg><use href="#i-pin"/></svg><span>Mariahilfer Straße 117, 1060 Wien</span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="faq rv" id="faq">
+      <h2 data-i18n="sr.faq.h">Gut zu wissen</h2>
+      <details><summary><span data-i18n="sr.q1">Wie alt dürfen Kinder sein?</span><i aria-hidden="true"></i></summary><p data-i18n="sr.a1">Frag uns gern – das Team berät dich, ob der Spielraum zu deinem Kind passt.</p></details>
+      <details><summary><span data-i18n="sr.q2">Was kostet der Spielraum?</span><i aria-hidden="true"></i></summary><p data-i18n-html="sr.a2">Aktuelle Preise erfährst du direkt bei uns vor Ort oder telefonisch unter <a href="tel:+4315969600">+43 1 596 96 00</a>.</p></details>
+      <details><summary><span data-i18n="sr.q3">Muss ich vorher reservieren?</span><i aria-hidden="true"></i></summary><p data-i18n="sr.a3">Für einen Kindergeburtstag schick uns bitte vorab eine Anfrage. Für einen spontanen Besuch ruf am besten kurz an.</p></details>
+      <details><summary><span data-i18n="sr.q4">Wo sind die Eltern, während die Kinder spielen?</span><i aria-hidden="true"></i></summary><p data-i18n="sr.a4">Gleich nebenan im Restaurant – durch die Glaswand habt ihr eure Kinder im Blick. Alles Weitere erklärt euch das Team gern vor Ort.</p></details>
+      <details><summary><span data-i18n="sr.q5">Was ist beim Kindergeburtstag dabei?</span><i aria-hidden="true"></i></summary><p data-i18n="sr.a5">Das stimmen wir individuell mit dir ab – von Deko über Torte bis Essen &amp; Getränke. Preise und Pakete auf Anfrage.</p></details>
+      <details><summary><span data-i18n="sr.q6">Brauchen Kinder Socken?</span><i aria-hidden="true"></i></summary><p data-i18n="sr.a6">Ja, bitte – im Spielraum wird in Socken gespielt.</p></details>
+    </div>
+
+    <div class="end-cta">
+      <a class="btn sr-btn pink" href="#party-form"><svg><use href="#i-cake"/></svg><span data-i18n="sr.cta.party">Kindergeburtstag anfragen</span></a>
+      <a class="btn sr-btn white" href="index.html"><svg><use href="#i-back"/></svg><span data-i18n="sr.cta.back">Zurück zum Freiraum</span></a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<script src="assets/site.js"></script>
+<script>
+FR.i18n.add({
+  de: {
+    'sr.t9': '09:00 Uhr', 'sr.t10': '10:00 Uhr', 'sr.t1130': '11:30 Uhr', 'sr.t13': '13:00 Uhr', 'sr.t14': '14:00 Uhr', 'sr.t1530': '15:30 Uhr', 'sr.t1630': '16:30 Uhr', 'sr.t18': '18:00 Uhr',
+    'sr.neu': 'NEU bei uns', 'sr.neu1': 'NEU', 'sr.neu2': 'bei uns', 'sr.since': '· seit 5.12.2025', 'sr.since2': 'seit 5.12.2025', 'sr.since3': 'seit 5.12.2025',
+    'sr.hello': 'Hallo, ich bin <b>RIO</b>! Komm mit – ich zeig dir den Spielraum.', 'sr.wave': 'RIO winken',
+    'sr.slogan': 'Ab jetzt können Kinder spielen & toben, während die Eltern entspannt genießen.',
+    'sr.cta.party': 'Kindergeburtstag anfragen', 'sr.cta.back': 'Zurück zum Freiraum',
+    'sr.f1': 'ca. 100 m² Indoor-Spielplatz', 'sr.f2': 'täglich 09–18 Uhr', 'sr.f3': 'Glaswand zum Restaurant', 'sr.cue': 'Flieg mit RIO durch den Tag',
+    'sr.slide.h1': 'Rutschen', 'sr.slide.say': 'Wuuusch! Einmal ganz nach oben – und dann die große gelbe Rutsche hinunter, mitten ins Bällebad.',
+    'sr.slide.p': 'Rund 100 m² Indoor-Spielplatz mitten im Freiraum: klettern, rutschen, hüpfen – bei jedem Wetter.',
+    'sr.slide.cap': 'Die große gelbe Rutsche', 'sr.slide.alt': 'Die große gelbe Spiralrutsche im Spielraum', 'sr.photo': 'Foto: heute.at',
+    'sr.chip.slide': 'Rutsche', 'sr.chip.balls': 'Bällebad', 'sr.chip.tramp': 'Trampolin', 'sr.chip.m2': 'ca. 100 m²',
+    'sr.balls.h1': 'Bällebad', 'sr.balls.say': 'Platsch! Bunte Bälle, so weit ich schauen kann – Pink, Mint, Gelb und Himmelblau wie ich.',
+    'sr.balls.p': 'Abtauchen, verstecken, Bälle werfen: Im Bällebad wird gelacht, gekreischt und gemeinsam gespielt.',
+    'sr.balls.tap': 'Tipp auf die Bälle!', 'sr.balls.btn': 'Bälle-Alarm!', 'sr.balls.cap': 'Bälle, Bälle, Bälle!', 'sr.balls.alt': 'Bällebad mit fliegenden bunten Bällen vor der gelben Rutsche',
+    'sr.tramp.h1': 'Trampolin', 'sr.tramp.say': 'Hops, hops, hops – noch höher! Fast so hoch, wie ich fliegen kann.',
+    'sr.tramp.p': 'Springen, lachen, Energie loswerden – auf dem Trampolin wird jeder Hüpfer zum kleinen Abenteuer.',
+    'sr.parents.h': 'Mama & Papa genießen', 'sr.parents.say': 'Psst … während wir spielen, gönnen sich die Großen eine Pause.',
+    'sr.parents.p': 'Durch die Glaswand habt ihr eure Kinder immer im Blick – und genießt in Ruhe Kaffee, Frühstück oder ein gutes Essen aus der Freiraum-Küche.',
+    'sr.parents.l1': 'Kinder im Blick – dank Glaswand', 'sr.parents.l2': 'Frühstück bis 17 Uhr, Küche bis 21:45', 'sr.parents.l3': 'Alles unter einem Dach: Mariahilfer Straße 117',
+    'sr.parents.menu': 'Speisekarte ansehen', 'sr.parents.tag': 'Kinder spielen · Eltern genießen', 'sr.parents.alt': 'Heller Restaurantsaal im Freiraum mit großen Fenstern',
+    'sr.party.h1': 'Party-Zeit', 'sr.party.say': 'Mein Lieblingsmoment: wenn die Torte mit den Wunderkerzen kommt!',
+    'sr.party.p': 'Kindergeburtstag feiern, wo gespielt wird: Deko, Torte, Essen & Getränke stimmen wir gemeinsam mit euch ab – ganz nach euren Wünschen.',
+    'sr.party.seen': 'Schon bei uns gesehen', 'sr.party.s1': 'Feen-Deko mit rosa Ballons', 'sr.party.s2': 'Torte mit Wunderkerzen', 'sr.party.s3': 'Obstturm',
+    'sr.party.ideas': 'Motto-Ideen', 'sr.party.ex': 'Beispiele', 'sr.m1': 'Feen & Prinzessinnen', 'sr.m2': 'Superhelden', 'sr.m3': 'Dschungel', 'sr.m4': 'Einhorn',
+    'sr.party.price': 'Preise & Pakete auf Anfrage', 'sr.party.cta': 'Jetzt Party anfragen', 'sr.party.cap': 'Feen-Party im Spielraum', 'sr.party.alt': 'Gedeckte Geburtstagstafel mit rosa Ballons und Feen-Deko im Spielraum',
+    'sr.form.h': 'Deine Party', 'sr.form.say': 'Erzähl mir von deiner Party – ich bring die Einladung persönlich zum Team!',
+    'sr.inv.kicker': 'Einladung', 'sr.inv.h': 'Kindergeburtstag im Spielraum', 'sr.inv.p': 'Unverbindlich anfragen – das Team meldet sich mit allen Details, Preisen und freien Terminen.', 'sr.inv.stamp': 'RIO-Post',
+    'sr.g1': 'Wann?', 'sr.g2': 'Wer feiert?', 'sr.g3': 'Wie feiern wir?', 'sr.g4': 'Kontakt', 'sr.opt': '(optional)',
+    'sr.l.date': 'Wunschdatum', 'sr.l.time': 'Uhrzeit', 'sr.l.choose': 'Bitte wählen', 'sr.l.timeNote': 'Zeiten bestätigt das Team',
+    'sr.l.child': 'Name des Geburtstagskindes', 'sr.l.age': 'Alter wird', 'sr.l.kids': 'Anzahl Kinder', 'sr.l.adults': 'Anzahl Erwachsene',
+    'sr.l.motto': 'Motto / Deko', 'sr.l.own': 'Eigene Idee', 'sr.l.cake': 'Torte', 'sr.l.yes': 'Ja', 'sr.l.no': 'Nein',
+    'sr.l.food': 'Essen & Getränke', 'sr.ph.food': 'z. B. Pizza, Obstturm, Saft …', 'sr.l.allergies': 'Allergien', 'sr.ph.allergies': 'z. B. Nüsse, Laktose',
+    'sr.l.wishes': 'Wünsche', 'sr.ph.wishes': 'Was wünscht sich das Geburtstagskind?', 'sr.l.name': 'Name der Eltern', 'sr.l.phone': 'Telefon', 'sr.l.email': 'E-Mail',
+    'sr.l.privacy': 'Ich bin einverstanden, dass meine Angaben zur Bearbeitung der Anfrage gespeichert werden. <a href="datenschutz.html">Datenschutz</a>',
+    'sr.l.send': 'Einladung abschicken', 'sr.l.fine': 'Unverbindliche Anfrage · Preise & Pakete auf Anfrage',
+    'sr.ok.h': 'Juhu! Deine Einladung ist unterwegs.', 'sr.ok.demo': 'Demo-Modus: Die Anfrage wurde im Browser gespeichert und ist im <a href="team.html">Team-Bereich</a> sichtbar.',
+    'sr.end.h1': 'Bis morgen', 'sr.end.say': 'Gääähn … war das ein Tag! Der Spielraum macht jetzt Pause – morgen ab 9 Uhr fliegen wir weiter.',
+    'sr.end.p': 'Im Restaurant geht der Abend natürlich weiter.',
+    'sr.i.hours': 'Öffnungszeiten Spielraum', 'sr.i.hoursv': 'Mo–So · 09:00–18:00', 'sr.live.open': 'Live: jetzt geöffnet', 'sr.live.closed': 'Live: geschlossen · ab 09:00',
+    'sr.i.socks': 'Bitte mit Socken', 'sr.i.socksp': 'Im Spielraum wird in Socken gespielt.', 'sr.i.press': 'Bekannt aus heute.at',
+    'sr.i.quote': '„Alle staunen über Indoor-Spielplatz in Wiener Restaurant“', 'sr.i.igp': 'Neues vom Spielraum, Party-Fotos & mehr', 'sr.i.contact': 'Kontakt & Anfragen',
+    'sr.poster.cap': 'Unser Plakat', 'sr.poster.alt': 'Offizielles Spielraum-Plakat mit RIO: Neu bei uns',
+    'sr.faq.h': 'Gut zu wissen',
+    'sr.q1': 'Wie alt dürfen Kinder sein?', 'sr.a1': 'Frag uns gern – das Team berät dich, ob der Spielraum zu deinem Kind passt.',
+    'sr.q2': 'Was kostet der Spielraum?', 'sr.a2': 'Aktuelle Preise erfährst du direkt bei uns vor Ort oder telefonisch unter <a href="tel:+4315969600">+43 1 596 96 00</a>.',
+    'sr.q3': 'Muss ich vorher reservieren?', 'sr.a3': 'Für einen Kindergeburtstag schick uns bitte vorab eine Anfrage. Für einen spontanen Besuch ruf am besten kurz an.',
+    'sr.q4': 'Wo sind die Eltern, während die Kinder spielen?', 'sr.a4': 'Gleich nebenan im Restaurant – durch die Glaswand habt ihr eure Kinder im Blick. Alles Weitere erklärt euch das Team gern vor Ort.',
+    'sr.q5': 'Was ist beim Kindergeburtstag dabei?', 'sr.a5': 'Das stimmen wir individuell mit dir ab – von Deko über Torte bis Essen & Getränke. Preise und Pakete auf Anfrage.',
+    'sr.q6': 'Brauchen Kinder Socken?', 'sr.a6': 'Ja, bitte – im Spielraum wird in Socken gespielt.',
+    'sr.c.hero': 'Guten Morgen', 'sr.c.slide': 'Rutschen', 'sr.c.balls': 'Bällebad', 'sr.c.tramp': 'Trampolin', 'sr.c.parents': 'Pause für Eltern', 'sr.c.party': 'Party-Zeit', 'sr.c.form': 'Einladung', 'sr.c.end': 'Gute Nacht',
+  },
+  en: {
+    'sr.t9': '09:00', 'sr.t10': '10:00', 'sr.t1130': '11:30', 'sr.t13': '13:00', 'sr.t14': '14:00', 'sr.t1530': '15:30', 'sr.t1630': '16:30', 'sr.t18': '18:00',
+    'sr.neu': 'NEW here', 'sr.neu1': 'NEW', 'sr.neu2': 'here', 'sr.since': '· since 5 Dec 2025', 'sr.since2': 'since 5 Dec 2025', 'sr.since3': 'since 5 Dec 2025',
+    'sr.hello': 'Hi, I’m <b>RIO</b>! Come along – I’ll show you the Spielraum.', 'sr.wave': 'Wave to RIO',
+    'sr.slogan': 'Now kids can play and romp around while their parents sit back and enjoy.',
+    'sr.cta.party': 'Request a kids’ party', 'sr.cta.back': 'Back to Freiraum',
+    'sr.f1': 'approx. 100 m² indoor playground', 'sr.f2': 'daily 9 am – 6 pm', 'sr.f3': 'Glass wall to the restaurant', 'sr.cue': 'Fly through the day with RIO',
+    'sr.slide.h1': 'Slide', 'sr.slide.say': 'Whoosh! All the way up – then down the big yellow slide, right into the ball pit.',
+    'sr.slide.p': 'About 100 m² of indoor playground right inside Freiraum: climb, slide, bounce – whatever the weather.',
+    'sr.slide.cap': 'The big yellow slide', 'sr.slide.alt': 'The big yellow spiral slide in the Spielraum', 'sr.photo': 'Photo: heute.at',
+    'sr.chip.slide': 'Slide', 'sr.chip.balls': 'Ball pit', 'sr.chip.tramp': 'Trampoline', 'sr.chip.m2': 'approx. 100 m²',
+    'sr.balls.h1': 'Ball pit', 'sr.balls.say': 'Splash! Colourful balls as far as I can see – pink, mint, yellow and sky blue like me.',
+    'sr.balls.p': 'Dive in, hide, throw balls: the ball pit is all about laughing, squealing and playing together.',
+    'sr.balls.tap': 'Tap the balls!', 'sr.balls.btn': 'Ball alarm!', 'sr.balls.cap': 'Balls, balls, balls!', 'sr.balls.alt': 'Ball pit with colourful flying balls in front of the yellow slide',
+    'sr.tramp.h1': 'Trampoline', 'sr.tramp.say': 'Bounce, bounce, bounce – higher! Almost as high as I can fly.',
+    'sr.tramp.p': 'Jump, laugh, burn off energy – on the trampoline every bounce is a little adventure.',
+    'sr.parents.h': 'Mum & Dad relax', 'sr.parents.say': 'Psst … while we play, the grown-ups take a break.',
+    'sr.parents.p': 'Thanks to the glass wall you can always see your kids – while you enjoy coffee, breakfast or a good meal from the Freiraum kitchen.',
+    'sr.parents.l1': 'Kids in sight – thanks to the glass wall', 'sr.parents.l2': 'Breakfast until 5 pm, kitchen until 9:45 pm', 'sr.parents.l3': 'All under one roof: Mariahilfer Straße 117',
+    'sr.parents.menu': 'View the menu', 'sr.parents.tag': 'Kids play · parents relax', 'sr.parents.alt': 'Bright restaurant hall at Freiraum with large windows',
+    'sr.party.h1': 'Party time', 'sr.party.say': 'My favourite moment: when the cake with sparklers arrives!',
+    'sr.party.p': 'Celebrate a kids’ birthday where the fun is: we plan decorations, cake, food & drinks together with you – just the way you like it.',
+    'sr.party.seen': 'Already seen here', 'sr.party.s1': 'Fairy decorations with pink balloons', 'sr.party.s2': 'Cake with sparklers', 'sr.party.s3': 'Fruit tower',
+    'sr.party.ideas': 'Theme ideas', 'sr.party.ex': 'Examples', 'sr.m1': 'Fairies & princesses', 'sr.m2': 'Superheroes', 'sr.m3': 'Jungle', 'sr.m4': 'Unicorn',
+    'sr.party.price': 'Prices & packages on request', 'sr.party.cta': 'Request your party', 'sr.party.cap': 'Fairy party in the Spielraum', 'sr.party.alt': 'Birthday table with pink balloons and fairy decorations in the Spielraum',
+    'sr.form.h': 'Your party', 'sr.form.say': 'Tell me about your party – I’ll deliver the invitation to the team myself!',
+    'sr.inv.kicker': 'Invitation', 'sr.inv.h': 'Kids’ birthday at the Spielraum', 'sr.inv.p': 'Send a no-obligation request – the team will get back to you with all details, prices and available dates.', 'sr.inv.stamp': 'RIO mail',
+    'sr.g1': 'When?', 'sr.g2': 'Who’s celebrating?', 'sr.g3': 'How do we celebrate?', 'sr.g4': 'Contact', 'sr.opt': '(optional)',
+    'sr.l.date': 'Preferred date', 'sr.l.time': 'Time', 'sr.l.choose': 'Please choose', 'sr.l.timeNote': 'Times are confirmed by the team',
+    'sr.l.child': 'Birthday child’s name', 'sr.l.age': 'Turning', 'sr.l.kids': 'Number of kids', 'sr.l.adults': 'Number of adults',
+    'sr.l.motto': 'Theme / decorations', 'sr.l.own': 'Own idea', 'sr.l.cake': 'Cake', 'sr.l.yes': 'Yes', 'sr.l.no': 'No',
+    'sr.l.food': 'Food & drinks', 'sr.ph.food': 'e.g. pizza, fruit tower, juice …', 'sr.l.allergies': 'Allergies', 'sr.ph.allergies': 'e.g. nuts, lactose',
+    'sr.l.wishes': 'Wishes', 'sr.ph.wishes': 'What would the birthday child love?', 'sr.l.name': 'Parent’s name', 'sr.l.phone': 'Phone', 'sr.l.email': 'Email',
+    'sr.l.privacy': 'I agree that my details are stored to process this request. <a href="datenschutz.html">Privacy policy</a>',
+    'sr.l.send': 'Send invitation', 'sr.l.fine': 'No-obligation request · prices & packages on request',
+    'sr.ok.h': 'Hooray! Your invitation is on its way.', 'sr.ok.demo': 'Demo mode: the request was saved in this browser and is visible in the <a href="team.html">team area</a>.',
+    'sr.end.h1': 'See you tomorrow', 'sr.end.say': 'Yaaawn … what a day! The Spielraum is taking a break now – tomorrow from 9 am we fly again.',
+    'sr.end.p': 'In the restaurant, of course, the evening goes on.',
+    'sr.i.hours': 'Spielraum opening hours', 'sr.i.hoursv': 'Mon–Sun · 9 am – 6 pm', 'sr.live.open': 'Live: open now', 'sr.live.closed': 'Live: closed · opens 9 am',
+    'sr.i.socks': 'Socks please', 'sr.i.socksp': 'In the Spielraum we play in socks.', 'sr.i.press': 'As seen on heute.at',
+    'sr.i.quote': '“Everyone is amazed by the indoor playground in a Viennese restaurant”', 'sr.i.igp': 'Spielraum news, party photos & more', 'sr.i.contact': 'Contact & requests',
+    'sr.poster.cap': 'Our poster', 'sr.poster.alt': 'Official Spielraum poster with RIO: new here',
+    'sr.faq.h': 'Good to know',
+    'sr.q1': 'What ages is the Spielraum for?', 'sr.a1': 'Just ask us – the team will happily advise whether the Spielraum suits your child.',
+    'sr.q2': 'How much does it cost?', 'sr.a2': 'Ask us on site or call <a href="tel:+4315969600">+43 1 596 96 00</a> for current prices.',
+    'sr.q3': 'Do I need to book?', 'sr.a3': 'For a birthday party please send us a request in advance. For a spontaneous visit, just give us a quick call.',
+    'sr.q4': 'Where are parents while the kids play?', 'sr.a4': 'Right next door in the restaurant – the glass wall keeps your kids in sight. The team will gladly explain everything else on site.',
+    'sr.q5': 'What’s included in a birthday party?', 'sr.a5': 'We tailor it with you – from decorations to cake to food & drinks. Prices and packages on request.',
+    'sr.q6': 'Do kids need socks?', 'sr.a6': 'Yes please – in the Spielraum we play in socks.',
+    'sr.c.hero': 'Good morning', 'sr.c.slide': 'Slide', 'sr.c.balls': 'Ball pit', 'sr.c.tramp': 'Trampoline', 'sr.c.parents': 'Parents’ break', 'sr.c.party': 'Party time', 'sr.c.form': 'Invitation', 'sr.c.end': 'Good night',
+  },
+});
+document.querySelector('.logo-slot').outerHTML = FR.logo();
+FR.mountChrome({ active: 'spiel' });
+
+(function () {
+  'use strict';
+  const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+  const lerp = (a, b, t) => a + (b - a) * t;
+  const smooth = (t) => t * t * (3 - 2 * t);
+  const R = FR.reduced;
+  if (R) document.documentElement.classList.add('rm');
+  const SND = (n, v, o) => FR.sound.play(n, v, o);
+
+  /* ---------- Übersetzungen, die site.js nicht kennt ---------- */
+  function langExtras() {
+    $$('[data-i18n-alt]').forEach((el) => (el.alt = FR.t(el.dataset.i18nAlt)));
+    live(); clockLabel = '';
+  }
+
+  /* ---------- Live-Status Spielraum ---------- */
+  const liveEl = $('#live');
+  function live() {
+    const open = FR.isOpen('spielraum');
+    liveEl.classList.toggle('closed', !open);
+    $('.t', liveEl).textContent = FR.t(open ? 'sr.live.open' : 'sr.live.closed');
+  }
+  setInterval(live, 60000);
+
+  /* ---------- Geschichte: Abschnitte, Sitzplätze, Uhr ---------- */
+  const SEC = $$('main [data-time]').map((el) => ({ el, time: +el.dataset.time, label: el.dataset.label, perch: $('[data-perch]', el) }));
+  SEC.forEach((s) => { s.bounce = s.perch.hasAttribute('data-bounce'); s.sleep = s.perch.hasAttribute('data-sleep'); });
+  const BASE_W = 300, BASE_H = 300 * 1624 / 1192;
+  let vw = innerWidth, vh = innerHeight;
+
+  function measure() {
+    vw = document.documentElement.clientWidth; vh = innerHeight;
+    const sy = scrollY, max = document.documentElement.scrollHeight - vh;
+    SEC.forEach((s, i) => {
+      const r = s.perch.getBoundingClientRect();
+      s.px = r.left + r.width / 2; s.py = r.top + sy + r.height / 2; s.pw = r.width;
+      s.key = i === 0 ? 0 : Math.min(max - 2, Math.max(0, s.py - vh * 0.46));
+    });
+    for (let i = 1; i < SEC.length; i++) if (SEC[i].key <= SEC[i - 1].key) SEC[i].key = SEC[i - 1].key + 1;
+  }
+  function story(sy) {
+    for (let i = 0; i < SEC.length - 1; i++) if (sy < SEC[i + 1].key) return { i, t: clamp((sy - SEC[i].key) / (SEC[i + 1].key - SEC[i].key)) };
+    return { i: SEC.length - 1, t: 0 };
+  }
+
+  /* ---------- Himmel ---------- */
+  const sky = { d: $('.sky-d'), e: $('.sky-e'), sun: $('.sun'), moon: $('.moon'), stars: $('.stars') };
+  let skyT = -1;
+  function paintSky(T) {
+    if (Math.abs(T - skyT) < 0.004) return;
+    skyT = T;
+    const u = clamp((T - 9) / 9), th = Math.PI * u;
+    sky.d.style.opacity = smooth(clamp((T - 9.4) / 2.6)).toFixed(3);
+    sky.e.style.opacity = smooth(clamp((T - 15.4) / 2.6)).toFixed(3);
+    const night = smooth(clamp((T - 16.8) / 1.2));
+    sky.stars.style.opacity = sky.moon.style.opacity = night.toFixed(3);
+    const up = smooth(clamp(u / 0.14)) * (1 - smooth(clamp((u - 0.86) / 0.14)));
+    sky.sun.style.transform = `translate3d(${(vw * (0.5 - 0.44 * Math.cos(th))).toFixed(1)}px,${lerp(vh * 1.15, vh * (0.22 - 0.1 * Math.sin(th)), up).toFixed(1)}px,0)`;
+    sky.sun.style.opacity = (0.9 * (1 - night)).toFixed(3);
+  }
+
+  /* ---------- Uhr ---------- */
+  const clockEl = $('#clock'), hh = $('.hh', clockEl), mh = $('.mh', clockEl), clockT = $('#clockT'), clockL = $('#clockL');
+  let clockStr = '', clockLabel = '';
+  function paintClock(T, s) {
+    hh.style.transform = `rotate(${((T % 12) / 12) * 360}deg)`;
+    mh.style.transform = `rotate(${(T % 1) * 360}deg)`;
+    let h = Math.floor(T), m = Math.round(((T - h) * 60) / 5) * 5;
+    if (m === 60) { h++; m = 0; }
+    const str = String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0');
+    if (str !== clockStr) clockT.textContent = clockStr = str;
+    const lab = SEC[s.t > 0.5 && s.i < SEC.length - 1 ? s.i + 1 : s.i].label;
+    if (lab !== clockLabel) clockL.textContent = FR.t((clockLabel = lab));
+  }
+
+  /* ---------- Funken & Konfetti (Canvas) ---------- */
+  const cv = $('#sparkles'), g = cv.getContext('2d');
+  const dpr = Math.min(devicePixelRatio || 1, 1.5);
+  const COLORS = ['#ffffff', '#ffd23f', '#ff8fb1', '#7ed9b0', '#fff2a8', '#c4b0ff'];
+  const parts = [];
+  let canvasDirty = false;
+  function sizeCanvas() { cv.width = Math.round(cv.clientWidth * dpr); cv.height = Math.round(cv.clientHeight * dpr); }
+  function emit(x, y, n, o = {}) {
+    if (R) return;
+    for (let k = 0; k < n && parts.length < 420; k++) {
+      const a = o.angle ?? Math.random() * Math.PI * 2, sp = (o.speed ?? 0.05) * (0.4 + Math.random());
+      const ang = o.spread != null ? a + (Math.random() - 0.5) * o.spread : a;
+      parts.push({ x: x + (Math.random() - 0.5) * (o.jitter || 0), y: y + (Math.random() - 0.5) * (o.jitter || 0), vx: Math.cos(ang) * sp + (o.vx || 0), vy: Math.sin(ang) * sp + (o.vy || 0),
+        life: 0, max: (o.life || 1100) * (0.6 + Math.random() * 0.6), size: (o.size || 5) * (0.5 + Math.random()), c: o.color || COLORS[(Math.random() * COLORS.length) | 0],
+        kind: o.kind || (Math.random() < 0.45 ? 'star' : 'dot'), grav: o.grav ?? 0.00002, rot: Math.random() * 6, vr: (Math.random() - 0.5) * 0.02 });
+    }
+  }
+  function star(x, y, r) {
+    g.beginPath(); g.moveTo(x, y - r);
+    g.quadraticCurveTo(x, y, x + r, y); g.quadraticCurveTo(x, y, x, y + r);
+    g.quadraticCurveTo(x, y, x - r, y); g.quadraticCurveTo(x, y, x, y - r); g.fill();
+  }
+  function drawParts(dt) {
+    g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, vw, vh);
+    for (let k = parts.length - 1; k >= 0; k--) {
+      const p = parts[k];
+      p.life += dt; if (p.life >= p.max) { parts.splice(k, 1); continue; }
+      p.vy += p.grav * dt; p.x += p.vx * dt; p.y += p.vy * dt; p.rot += p.vr * dt;
+      const f = 1 - p.life / p.max;
+      g.globalAlpha = Math.min(1, f * 1.6); g.fillStyle = p.c;
+      if (p.kind === 'star') star(p.x, p.y, p.size * (0.4 + f * 0.8));
+      else if (p.kind === 'rect') { g.save(); g.translate(p.x, p.y); g.rotate(p.rot); g.fillRect(-p.size / 2, -p.size / 4, p.size, p.size / 2); g.restore(); }
+      else { g.beginPath(); g.arc(p.x, p.y, p.size * 0.42 * (0.5 + f * 0.5), 0, 6.283); g.fill(); }
+    }
+    g.globalAlpha = 1;
+    canvasDirty = parts.length > 0;
+  }
+  function confetti(x, y) {
+    emit(x, y, 140, { kind: 'rect', speed: 0.55, angle: -Math.PI / 2, spread: 2.4, grav: 0.0011, life: 2200, size: 11 });
+    emit(x, y, 40, { speed: 0.35, life: 1400, size: 8 });
+  }
+
+  /* ---------- RIO ---------- */
+  const rio = $('#rio'), body = $('.rio-body', rio), mat = $('#mat');
+  const st = { x: -200, y: vh * 0.9, s: 0.6, vx: 0, vy: 0, face: 1, flip: 1, phase: 0, rot: 0, spin: -1 };
+  let intro = null, rioReady = false, last = performance.now();
+  const bez = (p0, p1, p2, p3, t) => { const u = 1 - t; return u * u * u * p0 + 3 * u * u * t * p1 + 3 * u * t * t * p2 + t * t * t * p3; };
+  const ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+
+  function rioFrame(now, dt, s, sy) {
+    const A = SEC[s.i], B = SEC[s.i + 1] || A;
+    const w = s.i === SEC.length - 1 ? 0 : smooth(clamp((s.t - 0.1) / 0.8));
+    let tx = lerp(A.px, B.px, w), ty = lerp(A.py, B.py, w) - sy - Math.min(130, vh * 0.14) * Math.sin(Math.PI * w);
+    let ts = lerp(A.pw, B.pw, w) / BASE_W;
+    const bw = Math.pow((A.bounce ? 1 - w : 0) + (B.bounce ? w : 0), 3);
+    const sleepW = (A.sleep ? 1 - w : 0) + (B.sleep ? w : 0);
+    let bounceY = 0;
+    if (bw > 0.01) {
+      const p = (now % 820) / 820;
+      bounceY = -bw * (vw < 900 ? 46 : 74) * 4 * p * (1 - p);
+      const contact = Math.max(0, 1 - Math.min(p, 1 - p) / 0.13);
+      mat.style.transform = `translateY(${(contact * bw * 7).toFixed(2)}px) scaleY(${(1 + contact * bw * 0.25).toFixed(3)})`;
+    }
+    let k = 1 - Math.exp(-dt / 75);
+    if (intro) {
+      const u = clamp((now - intro.t0) / intro.dur), e = ease(u);
+      tx = bez(-180, vw * 0.25, vw * 0.42, tx, e);
+      ty = bez(vh * 0.95, vh * 1.15, vh * 0.02, ty, e);
+      ts = lerp(ts * 0.55, ts, e);
+      k = 1;
+      if (u >= 1) { intro = null; document.body.classList.add('arrived'); }
+    }
+    const nx = st.x + (tx - st.x) * k, ny = st.y + (ty - st.y) * k;
+    st.vx = ((nx - st.x) / dt) * 16.7; st.vy = ((ny - st.y) / dt) * 16.7;
+    st.x = nx; st.y = ny; st.s += (ts - st.s) * k;
+    const speed = Math.hypot(st.vx, st.vy), fly = clamp(speed / 12);
+    st.phase += (dt / 1000) * lerp(1.7, 7, fly) * (1 - sleepW * 0.85) * 6.283;
+    const flutter = 1 - lerp(0.07, 0.22, fly) * (1 - sleepW * 0.75) * (0.5 + 0.5 * Math.sin(st.phase));
+    if (st.vx < -0.9) st.face = -1; else if (st.vx > 0.9) st.face = 1;
+    st.flip += (st.face - st.flip) * (1 - Math.exp(-dt / 80));
+    const tilt = clamp(st.vx * 0.9, -14, 14) * (1 - sleepW) - sleepW * 12;
+    st.rot += (tilt - st.rot) * (1 - Math.exp(-dt / 140));
+    let spin = 0;
+    if (st.spin >= 0) { const u = (now - st.spin) / 1100; if (u >= 1) st.spin = -1; else spin = 360 * (1 - Math.pow(1 - u, 3)); }
+    const bob = Math.sin(now / 520) * 7 * (1 - fly) * (1 - bw) * (1 - sleepW * 0.6);
+    const breathe = 1 + Math.sin(now / 900) * 0.018 * sleepW;
+    rio.style.transform = `translate3d(${(st.x - BASE_W / 2).toFixed(1)}px,${(st.y - BASE_H / 2 + bob + bounceY).toFixed(1)}px,0) scale(${st.s.toFixed(4)})`;
+    body.style.transform = `rotate(${(st.rot + spin).toFixed(2)}deg) scale(${(st.flip * flutter).toFixed(4)},${breathe.toFixed(4)})`;
+    rio.classList.toggle('sleep', sleepW > 0.85);
+    // Funkenspur
+    const n = speed * 0.09 + (Math.random() < 0.05 * (1 - sleepW) ? 1 : 0);
+    if (n >= 1 || Math.random() < n) {
+      const W = BASE_W * st.s, H = BASE_H * st.s;
+      emit(st.x - Math.sign(st.vx || 1) * W * 0.18, st.y + H * 0.05, Math.max(1, Math.round(n)), { jitter: W * 0.55, speed: 0.02, vx: -st.vx * 0.006, vy: 0.01, life: 1200, size: 6 });
+    }
+  }
+
+  /* ---------- Hauptschleife ---------- */
+  function frame(now) {
+    const dt = Math.min(50, Math.max(1, now - last)); last = now;
+    const sy = scrollY, s = story(sy);
+    const T = s.i === SEC.length - 1 ? SEC[s.i].time : lerp(SEC[s.i].time, SEC[s.i + 1].time, s.t);
+    paintSky(T); paintClock(T, s);
+    if (!R && rioReady) rioFrame(now, dt, s, sy);
+    if (canvasDirty || parts.length) drawParts(dt);
+    requestAnimationFrame(frame);
+  }
+
+  /* ---------- Bällebad ---------- */
+  const pit = $('#pit');
+  const BALL = [['#ff8fb1', '#e45c88'], ['#ffd23f', '#e5a800'], ['#7ed9b0', '#36ab7b'], ['#3fc4e8', '#1b93bd'], ['#ffffff', '#c7dde8'], ['#c4b0ff', '#8c70e3'], ['#ffab6b', '#e27a33']];
+  (function buildPit() {
+    let seed = 11; const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
+    const html = [];
+    for (let row = 0; row < 4; row++) for (let k = 0; k < 13; k++) {
+      const c = BALL[(k * 3 + row * 2 + ((rnd() * 2) | 0)) % BALL.length];
+      const x = 4 + (k + (row % 2) * 0.5) * (92 / 12.5) + (rnd() - 0.5) * 3;
+      const s = Math.round(36 + rnd() * 12);
+      html.push(`<span class="ball" style="--x:${x.toFixed(1)}%;--y:${(row * 24 - 16 + rnd() * 8).toFixed(0)}px;--s:${s}px;--c:${c[0]};--d:${c[1]};z-index:${4 - row}"></span>`);
+    }
+    pit.innerHTML = html.join('');
+  })();
+  function popBall(b) {
+    const r = b.getBoundingClientRect();
+    b.classList.remove('jump', 'back'); b.classList.add('pop');
+    emit(r.left + r.width / 2, r.top + r.height / 2, 14, { kind: 'dot', speed: 0.22, grav: 0.0006, life: 700, size: 9, color: getComputedStyle(b).getPropertyValue('--c').trim() });
+    SND('ui_click', 0.3, { rate: 0.85 + Math.random() * 0.5 });
+    setTimeout(() => { b.classList.remove('pop'); b.classList.add('back'); setTimeout(() => b.classList.remove('back'), 650); }, 1300);
+  }
+  pit.addEventListener('pointerdown', (e) => { const b = e.target.closest('.ball'); if (b && !b.classList.contains('pop')) popBall(b); });
+  function burst() {
+    if (R) return;
+    $$('.ball', pit).forEach((b, i) => {
+      b.style.setProperty('--jx', `${Math.round((Math.random() - 0.5) * 70)}px`);
+      b.style.setProperty('--jy', `${-Math.round(60 + Math.random() * 120)}px`);
+      b.style.setProperty('--jr', `${Math.round((Math.random() - 0.5) * 220)}deg`);
+      b.style.setProperty('--jdelay', `${(i % 13) * 22 + Math.random() * 80}ms`);
+      b.style.setProperty('--jd', `${0.9 + Math.random() * 0.4}s`);
+      b.classList.remove('jump'); void b.offsetWidth; b.classList.add('jump');
+    });
+    SND('ui_click', 0.25, { rate: 1.3 });
+  }
+  $('#ballBtn').addEventListener('click', burst);
+
+  /* ---------- Abschnitte betreten: Klang + Effekte ---------- */
+  let lastChime = 0;
+  const seen = new Set();
+  const io = new IntersectionObserver((es) => es.forEach((e) => {
+    const el = e.target;
+    el.classList.toggle('paused', !e.isIntersecting);
+    if (!e.isIntersecting || seen.has(el)) return;
+    if (e.intersectionRatio < 0.3 && e.boundingClientRect.height < innerHeight) return;
+    seen.add(el);
+    if (el.hasAttribute('data-chime') && performance.now() - lastChime > 1500) { lastChime = performance.now(); SND('spielraum_chimes', 0.35); }
+    if (el.id === 'baellebad') setTimeout(burst, 500);
+  }), { threshold: [0, 0.3] });
+  SEC.forEach((s) => io.observe(s.el));
+  const inv = new IntersectionObserver((es) => es.forEach((e) => e.isIntersecting && (e.target.classList.add('in'), inv.unobserve(e.target))), { threshold: 0.4 });
+  $$('.pop-in').forEach((el) => inv.observe(el));
+
+  /* ---------- Uhr ausblenden über dem Footer ---------- */
+  const foot = $('.footer');
+  if (foot) new IntersectionObserver(([e]) => clockEl.classList.toggle('off', e.isIntersecting), { rootMargin: '0px 0px -60px 0px' }).observe(foot);
+
+  /* ---------- RIO antippen / Ton einschalten ---------- */
+  function happy() {
+    if (R) return;
+    st.spin = performance.now();
+    emit(st.x, st.y, 36, { speed: 0.18, life: 1200, size: 8 });
+    SND('wings', 0.5);
+  }
+  $('.rio-hit').addEventListener('click', happy);
+  document.addEventListener('fr:sound', (e) => e.detail && setTimeout(() => SND('wings', 0.5), 120));
+
+  /* ---------- Formular ---------- */
+  const form = $('#partyForm');
+  const v = FR.vienna(), pad = (n) => String(n).padStart(2, '0');
+  $('#f-date').min = `${v.year}-${pad(v.month)}-${pad(v.day)}`;
+  form.addEventListener('focusin', () => document.body.classList.add('typing'));
+  form.addEventListener('focusout', () => setTimeout(() => { if (!form.contains(document.activeElement)) document.body.classList.remove('typing'); }, 50));
+  FR.bindForm(form, 'kindergeburtstag', (res, ok) => {
+    document.body.classList.remove('typing');
+    ok.className = 'rio-ok';
+    ok.setAttribute('role', 'status');
+    ok.innerHTML = `<div class="ok-perch" data-perch>${R ? '<img src="assets/img/rio-s.webp" alt="">' : ''}</div><h3>${FR.t('sr.ok.h')}</h3><p>${res.ok ? FR.t('form.sent') : FR.t('form.err')}</p>${res.local ? `<span class="demo">${FR.t('sr.ok.demo')}</span>` : ''}`;
+    const sec = SEC.find((x) => x.el.id === 'party-form');
+    if (sec) sec.perch = ok.querySelector('[data-perch]');
+    measure();
+    ok.scrollIntoView({ behavior: R ? 'auto' : 'smooth', block: 'center' });
+    setTimeout(() => {
+      const r = ok.getBoundingClientRect();
+      confetti(r.left + r.width / 2, r.top + r.height * 0.35);
+      st.spin = performance.now();
+      measure();
+    }, R ? 0 : 450);
+  });
+
+  /* ---------- Start ---------- */
+  langExtras();
+  document.addEventListener('fr:lang', langExtras);
+  sizeCanvas(); measure();
+  addEventListener('resize', () => { sizeCanvas(); measure(); skyT = -1; });
+  new ResizeObserver(() => measure()).observe(document.body);
+  if (document.fonts) document.fonts.ready.then(measure);
+  requestAnimationFrame(frame);
+
+  if (!R) {
+    const img = $('img', rio);
+    const go = () => {
+      measure();
+      rioReady = true;
+      if (scrollY < 40) { intro = { t0: performance.now() + 250, dur: 2600 }; SND('wings', 0.5); }
+      else { const s = story(scrollY); st.x = SEC[s.i].px; st.y = SEC[s.i].py - scrollY; st.s = SEC[s.i].pw / BASE_W; document.body.classList.add('arrived'); rio.style.opacity = 0; requestAnimationFrame(() => (rio.style.opacity = 1)); }
+    };
+    (img.decode ? img.decode() : Promise.resolve()).then(go, go);
+  } else {
+    document.body.classList.add('arrived');
+  }
+})();
+</script>
+</body>
+</html>

@@ -428,24 +428,24 @@ section[id]{scroll-margin-top:var(--nav-h)}
         <p style="margin:0 0 6px;color:rgba(31,39,65,.6);font-size:14px" data-i18n="evf.p">Unverbindlich – wir melden uns innerhalb von 24 Stunden.</p>
         <input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
         <div class="row">
-          <div class="field"><label for="ev-anlass" data-i18n="evf.anlass">Anlass</label><select id="ev-anlass" name="anlass" required><option value="Hochzeit" data-i18n="evf.o1">Hochzeit</option><option value="Firmenfeier" data-i18n="evf.o2">Firmenfeier</option><option value="Geburtstag" data-i18n="evf.o3">Geburtstag</option><option value="Weihnachtsfeier" data-i18n="evf.o4">Weihnachtsfeier</option><option value="Andere" data-i18n="evf.o5">Etwas anderes</option></select></div>
-          <div class="field"><label for="ev-datum" data-i18n="evf.datum">Wunschdatum</label><input id="ev-datum" name="datum" type="date" required></div>
+          <div class="field"><label for="ev-anlass" data-i18n="evf.anlass">Anlass</label><select id="ev-anlass" name="occasion" required><option value="Hochzeit" data-i18n="evf.o1">Hochzeit</option><option value="Firmenfeier" data-i18n="evf.o2">Firmenfeier</option><option value="Geburtstag" data-i18n="evf.o3">Geburtstag</option><option value="Weihnachtsfeier" data-i18n="evf.o4">Weihnachtsfeier</option><option value="Andere" data-i18n="evf.o5">Etwas anderes</option></select></div>
+          <div class="field"><label for="ev-datum" data-i18n="evf.datum">Wunschdatum</label><input id="ev-datum" name="date" type="date" required></div>
         </div>
         <div class="row">
-          <div class="field"><label for="ev-gaeste" data-i18n="evf.gaeste">Gäste</label><input id="ev-gaeste" name="gaeste" type="number" min="8" max="350" value="40" required></div>
-          <div class="field"><label for="ev-bereich" data-i18n="evf.bereich">Bereich</label><select id="ev-bereich" name="bereich"><option data-i18n="evf.b1">Eigener Bereich</option><option data-i18n="evf.b2">Ganzes Lokal</option><option data-i18n="evf.b3">Weiß ich noch nicht</option></select></div>
+          <div class="field"><label for="ev-gaeste" data-i18n="evf.gaeste">Gäste</label><input id="ev-gaeste" name="guests" type="number" min="8" max="350" value="40" required></div>
+          <div class="field"><label for="ev-bereich" data-i18n="evf.bereich">Bereich</label><select id="ev-bereich" name="area"><option data-i18n="evf.b1">Eigener Bereich</option><option data-i18n="evf.b2">Ganzes Lokal</option><option data-i18n="evf.b3">Weiß ich noch nicht</option></select></div>
         </div>
         <div class="row">
-          <div class="field"><label for="ev-essen" data-i18n="evf.essen">Essen</label><select id="ev-essen" name="essen"><option data-i18n="evf.e1">Set-Menü</option><option data-i18n="evf.e2">Buffet</option><option data-i18n="evf.e3">À la carte</option><option data-i18n="evf.e4">Fingerfood & Tapas</option></select></div>
-          <div class="field"><label for="ev-dj" data-i18n="evf.dj">Musik</label><select id="ev-dj" name="musik"><option data-i18n="evf.m1">DJ</option><option data-i18n="evf.m2">Lounge Music</option><option data-i18n="evf.m3">Keine</option></select></div>
+          <div class="field"><label for="ev-essen" data-i18n="evf.essen">Essen</label><select id="ev-essen" name="food"><option data-i18n="evf.e1">Set-Menü</option><option data-i18n="evf.e2">Buffet</option><option data-i18n="evf.e3">À la carte</option><option data-i18n="evf.e4">Fingerfood & Tapas</option></select></div>
+          <div class="field"><label for="ev-dj" data-i18n="evf.dj">Musik</label><select id="ev-dj" name="music"><option data-i18n="evf.m1">DJ</option><option data-i18n="evf.m2">Lounge Music</option><option data-i18n="evf.m3">Keine</option></select></div>
         </div>
         <div class="row">
           <div class="field"><label for="ev-name" data-i18n="evf.name">Name</label><input id="ev-name" name="name" autocomplete="name" required></div>
-          <div class="field"><label for="ev-tel" data-i18n="evf.tel">Telefon</label><input id="ev-tel" name="telefon" type="tel" autocomplete="tel" required></div>
+          <div class="field"><label for="ev-tel" data-i18n="evf.tel">Telefon</label><input id="ev-tel" name="phone" type="tel" autocomplete="tel" required></div>
         </div>
         <div class="field"><label for="ev-mail" data-i18n="evf.mail">E-Mail</label><input id="ev-mail" name="email" type="email" autocomplete="email" required></div>
-        <div class="field"><label for="ev-msg" data-i18n="evf.msg">Nachricht</label><textarea id="ev-msg" name="nachricht" data-i18n-ph="evf.msgph"></textarea></div>
-        <label class="check"><input type="checkbox" required name="datenschutz"><span data-i18n-html="evf.ds">Ich bin einverstanden, dass meine Angaben zur Bearbeitung der Anfrage gespeichert werden (<a href="datenschutz.html">Datenschutz</a>).</span></label>
+        <div class="field"><label for="ev-msg" data-i18n="evf.msg">Nachricht</label><textarea id="ev-msg" name="message" data-i18n-ph="evf.msgph"></textarea></div>
+        <label class="check"><input type="checkbox" required name="consent" value="ja"><span data-i18n-html="evf.ds">Ich bin einverstanden, dass meine Angaben zur Bearbeitung der Anfrage gespeichert werden (<a href="datenschutz.html">Datenschutz</a>).</span></label>
         <button class="btn" type="submit" data-i18n="evf.send">Anfrage senden</button>
       </form>
     </div>

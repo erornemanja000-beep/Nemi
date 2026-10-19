@@ -57,8 +57,8 @@ export function emailHtml(b, links) {
     .join('');
   const btn = (href, label, bg, fg) => `<a href="${esc(href)}" style="display:inline-block;padding:16px 30px;border-radius:999px;background:${bg};color:${fg};font-weight:700;font-size:16px;text-decoration:none;margin:6px">${label}</a>`;
   const actions = links
-    ? `<div style="text-align:center;padding:8px 0 4px">${btn(links.confirm, 'Bestätigen', '#1f2741', '#ffffff')}${btn(links.decline, 'Ablehnen', '#fde2e4', '#8a2433')}</div>`
-    : `<p style="text-align:center;color:#6b7186;font-size:13px">Bestätigen oder ablehnen im Team-Bereich (team.html).</p>`;
+    ? `<div style="text-align:center;padding:0 0 14px;border-bottom:1px solid #eee9df;margin-bottom:8px">${btn(links.confirm, 'Bestätigen', '#1f2741', '#ffffff')}${btn(links.decline, 'Ablehnen', '#fde2e4', '#8a2433')}</div>`
+    : `<p style="text-align:center;color:#6b7186;font-size:13px;margin:0 0 12px">Bestätigen oder ablehnen im Team-Bereich (team.html).</p>`;
   return `<!doctype html><html lang="de"><body style="margin:0;background:#f7f4ee;font-family:Helvetica,Arial,sans-serif">
 <div style="max-width:560px;margin:0 auto;padding:28px 16px">
   <div style="background:#1f2741;color:#fff;border-radius:20px 20px 0 0;padding:26px 28px">
@@ -67,8 +67,7 @@ export function emailHtml(b, links) {
     <div style="font-size:15px;opacity:.85;margin-top:4px">${esc(b.name || '')}${b.guests ? ' · ' + esc(b.guests) + ' Gäste' : ''}</div>
   </div>
   <div style="background:#fff;border-radius:0 0 20px 20px;padding:22px 28px 26px">
-    <table style="width:100%;border-collapse:collapse">${rows}</table>
-    <div style="height:18px"></div>${actions}
+    ${actions}<table style="width:100%;border-collapse:collapse">${rows}</table>
   </div>
   <p style="text-align:center;color:#8a8f9f;font-size:12px;margin-top:18px">Freiraum · Mariahilfer Straße 117 · 1060 Wien</p>
 </div></body></html>`;

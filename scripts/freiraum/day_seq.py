@@ -64,6 +64,19 @@ def fill_holes(a, min_frac=0.004):
     return np.maximum(a, hole)
 
 
+def large_parts(t, m, min_frac=0.003):
+    """Nur große Flächen oder solche, die das Objekt berühren – kühle Flecken im Hintergrund fallen weg."""
+    h, w = t.shape
+    n, lab, stats, _ = cv2.connectedComponentsWithStats((t > 0.5).astype(np.uint8), connectivity=8)
+    near = cv2.dilate((m > 0.5).astype(np.uint8), np.ones((7, 7), np.uint8)).astype(bool)
+    touch = np.zeros(n, bool)
+    touch[np.unique(lab[near])] = True
+    keep = (stats[:, cv2.CC_STAT_AREA] >= min_frac * h * w) | touch
+    keep[0] = False
+    k = cv2.dilate(keep[lab].astype(np.uint8), np.ones((5, 5), np.uint8)).astype(np.float32)
+    return t * cv2.GaussianBlur(k, (0, 0), 1.5)
+
+
 def matte(im, sess, bg):
     rgb = np.asarray(im.convert('RGB')).astype(np.float32)
     m = np.asarray(remove(im, session=sess, only_mask=True, post_process_mask=False)).astype(np.float32) / 255
@@ -82,8 +95,11 @@ def matte(im, sess, bg):
         # weißes Porzellan (Teller, Tasse) ist neutral, der Hintergrund und seine warmen Schatten
         # sind cremig-farbig (Sättigung > 20); daran erkennt man den Teller, den die Maske verliert
         sat = rgb.max(-1) - rgb.min(-1)
-        neutral = np.clip((16 - sat) / 6, 0, 1) * np.clip((rgb.mean(-1) - 140) / 30, 0, 1)
-        m = np.maximum(m, neutral)
+        bright = np.clip((rgb.mean(-1) - 140) / 30, 0, 1)
+        neutral = np.clip((16 - sat) / 6, 0, 1) * bright
+        # hellblaue Untertasse im Übergang zum weißen Teller: kühl (B ≥ R), Hintergrund ist warm (R − B > 20)
+        cool = np.clip((12 - (rgb[..., 0] - rgb[..., 2])) / 8, 0, 1) * bright
+        m = np.maximum(m, large_parts(np.maximum(neutral, cool), m))
         bgimg = background(rgb, m)
         diff = (rgb - bgimg).mean(-1)
         sat_bg = bgimg.max(-1) - bgimg.min(-1)

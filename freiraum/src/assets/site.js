@@ -204,6 +204,37 @@
     document.querySelectorAll('[data-sound-toggle]').forEach((b) => b.setAttribute('aria-pressed', on ? 'true' : 'false'));
     document.dispatchEvent(new CustomEvent('fr:sound', { detail: on }));
   };
+  // Offline (Datei direkt geöffnet): Browser erlauben dort kein fetch → einfache <audio>-Wiedergabe
+  if (location.protocol === 'file:') {
+    const url = (n) => S.base + 'audio/' + n + '.mp3';
+    const fadeTo = (a, v, ms = 1200, done) => {
+      const from = a.volume, t0 = performance.now();
+      const step = (t) => { const k = Math.min(1, (t - t0) / ms); a.volume = Math.max(0, Math.min(1, from + (v - from) * k)); if (k < 1) requestAnimationFrame(step); else done && done(); };
+      requestAnimationFrame(step);
+    };
+    S.unlock = () => {}; S.load = () => Promise.resolve(null); S.preload = () => {};
+    S.play = (name, vol = 0.6, opts = {}) => {
+      if (!S.enabled) return;
+      const a = new Audio(url(name)); a.volume = Math.min(1, vol); a.playbackRate = opts.rate || 1;
+      setTimeout(() => a.play().catch(() => {}), (opts.delay || 0) * 1000);
+    };
+    S.ambient = (name, vol = 0.25) => {
+      if (name === S.ambName) { if (S.amb) fadeTo(S.amb, S.enabled ? vol : 0, 600); return; }
+      S.ambName = name;
+      const old = S.amb; if (old) fadeTo(old, 0, 1200, () => old.pause());
+      S.amb = null;
+      if (!name) return;
+      const a = new Audio(url(name)); a.loop = true; a.volume = 0; S.amb = a; S.ambVol = vol;
+      if (S.enabled) { a.play().catch(() => {}); fadeTo(a, vol, 1500); }
+    };
+    S.duck = (on) => { if (S.amb) fadeTo(S.amb, on ? 0.03 : S.ambVol || 0.22, 300); };
+    S.setEnabled = (on) => {
+      S.enabled = on; store.set('fr-sound', on ? '1' : '0');
+      if (S.amb) { if (on) { S.amb.play().catch(() => {}); fadeTo(S.amb, S.ambVol || 0.22, 600); } else S.amb.pause(); }
+      document.querySelectorAll('[data-sound-toggle]').forEach((b) => b.setAttribute('aria-pressed', on ? 'true' : 'false'));
+      document.dispatchEvent(new CustomEvent('fr:sound', { detail: on }));
+    };
+  }
   document.addEventListener('visibilitychange', () => { if (S.ctx) document.hidden ? S.ctx.suspend() : S.ctx.resume(); });
   // jeder erste Klick entsperrt WebAudio (Browser-Regel)
   addEventListener('pointerdown', () => S.enabled && S.unlock(), { once: true });
@@ -217,7 +248,8 @@
   FR.ICON = ICON;
   FR.logo = (cls = '') => `<span class="logo-mask ${cls}" role="img" aria-label="frei raum"></span>`;
   const style = document.createElement('style');
-  style.textContent = `.logo-mask{display:inline-block;aspect-ratio:2421/641;height:30px;background:currentColor;-webkit-mask:url(${S.base}svg/logo-freiraum.svg) center/contain no-repeat;mask:url(${S.base}svg/logo-freiraum.svg) center/contain no-repeat}
+  const LOGO = window.FR_LOGO_URI || S.base + 'svg/logo-freiraum.svg';
+  style.textContent = `.logo-mask{display:inline-block;aspect-ratio:2421/641;height:30px;background:currentColor;-webkit-mask:url("${LOGO}") center/contain no-repeat;mask:url("${LOGO}") center/contain no-repeat}
   [data-sound-toggle][aria-pressed="false"] .w1,[data-sound-toggle][aria-pressed="false"] .w2{opacity:.15}`;
   document.head.appendChild(style);
 
@@ -406,5 +438,9 @@
     });
   };
 
-  FR.json = (url) => fetch(url).then((r) => r.json());
+  FR.json = (url) => fetch(url).then((r) => r.json()).catch((e) => {
+    const d = window.FR_DATA && window.FR_DATA[url];
+    if (d) return d;
+    throw e;
+  });
 })();

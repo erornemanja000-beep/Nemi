@@ -1,0 +1,933 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Speisekarte – Freiraum Wien</title>
+<meta name="description" content="Die ganze Speisekarte des Freiraum in der Mariahilfer Straße 117: Frühstück bis 17 Uhr, Weltküche, Pizza, Cocktails ab 17 Uhr.">
+<meta name="theme-color" content="#1f2741">
+<link rel="preload" href="assets/fonts/outfit-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="assets/site.css">
+<style>
+/* ===== Speisekarte – seitenspezifisch ===== */
+:root{--bar-h:58px}
+body{background:var(--cream)}
+[hidden]{display:none!important}
+.sk-main{display:block}
+.ic{width:1em;height:1em;flex:none}
+
+/* ---------- Hero ---------- */
+.sk-hero{--h-bg:#eef0f8;--h-bg2:#c7d1ec;--h-fg:var(--navy-800);position:relative;overflow:hidden;color:var(--h-fg);
+  padding:calc(var(--nav-h) + clamp(32px,5.5vw,76px)) 0 clamp(64px,7vw,104px);
+  background:
+    radial-gradient(55% 65% at 92% 6%,color-mix(in srgb,var(--h-bg2) 88%,#fff) 0%,transparent 70%),
+    radial-gradient(60% 70% at -6% 106%,color-mix(in srgb,var(--h-bg2) 72%,transparent) 0%,transparent 72%),
+    linear-gradient(172deg,var(--h-bg) 0%,color-mix(in srgb,var(--h-bg) 55%,var(--h-bg2)) 100%);
+  transition:color .8s var(--ease)}
+.sk-hero.dark{--muted:rgba(240,238,255,.74);--line:rgba(255,255,255,.18)}
+.hero-mark{position:absolute;right:-7%;bottom:-3%;width:min(1180px,96%);opacity:.055;pointer-events:none;color:currentColor}
+.hero-mark .logo-mask{display:block;height:auto;width:100%}
+.hero-grid{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1.06fr) minmax(0,.94fr);gap:clamp(36px,5vw,84px);align-items:center}
+.sk-hero .eyebrow{display:flex;align-items:center;gap:12px}
+.sk-hero .eyebrow::before{content:"";width:28px;height:1px;background:currentColor;opacity:.5}
+.sk-hero .display{font-size:clamp(46px,7.2vw,106px);letter-spacing:-.03em;margin:18px 0 0}
+.sk-hero .lede{margin:24px 0 0;max-width:40ch}
+.live{margin:26px 0 0}
+.live .chip{font-size:13.5px;padding:.55em 1.05em;gap:.6em}
+.chip .dot{position:relative;flex:none}
+.chip .dot::after{content:"";position:absolute;inset:0;border-radius:50%;background:inherit;animation:ping 2.4s var(--ease) infinite}
+.chip.closed .dot::after{display:none}
+.chip.eve .dot{background:var(--amber);box-shadow:0 0 0 4px rgba(232,162,74,.24)}
+@keyframes ping{0%{transform:scale(1);opacity:.55}80%,100%{transform:scale(2.8);opacity:0}}
+.hero-cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+.hero-cta .ic{width:18px;height:18px}
+.sk-hero.dark .hero-cta .btn:not(.btn-ghost){--b:#fff;--c:var(--navy-800)}
+.hero-stats{margin:28px 0 0;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);font-weight:500;font-variant-numeric:tabular-nums}
+.hero-stats b{color:var(--h-fg);font-weight:600}
+.bento-cap{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 14px}
+.bento-cap .eyebrow::before{display:none}
+.bento-all{font-size:13px;font-weight:500;text-decoration:none;opacity:.78;white-space:nowrap;transition:opacity .3s}
+.bento-all:hover{opacity:1}
+.bento{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-rows:clamp(100px,12.4vw,180px);gap:clamp(8px,1vw,14px)}
+.tile{position:relative;display:block;border-radius:clamp(16px,1.6vw,24px);overflow:hidden;isolation:isolate;text-decoration:none;color:#fff;background:#2a3557;
+  box-shadow:0 22px 50px -24px rgba(15,19,32,.55),0 6px 16px -8px rgba(15,19,32,.25);transform:translateZ(0);transition:transform .7s var(--ease),box-shadow .7s var(--ease)}
+.tile.big{grid-column:span 2;grid-row:span 2}
+.tile img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform 1.4s var(--ease)}
+.tile::after{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(15,19,32,0) 38%,rgba(15,19,32,.78) 100%)}
+.tile:hover{transform:translateY(-3px)}
+.tile:hover img{transform:scale(1.06)}
+.tile .tl{position:absolute;left:clamp(10px,1.2vw,16px);right:clamp(10px,1.2vw,16px);bottom:clamp(9px,1.1vw,14px);z-index:2;display:grid;gap:2px}
+.tile small{font-size:10px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;opacity:.86;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tile b{font-weight:500;font-size:clamp(13.5px,1.15vw,16px);line-height:1.15}
+.tile.big b{font-weight:250;font-size:clamp(26px,3vw,44px);letter-spacing:-.02em;line-height:1}
+.tile.big small{font-size:11px}
+.tile .now{justify-self:start;display:inline-flex;align-items:center;gap:7px;margin-bottom:8px;padding:5px 11px 5px 9px;border-radius:999px;background:rgba(255,255,255,.18);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase}
+.tile .now i{width:7px;height:7px;border-radius:50%;background:#43d58a;box-shadow:0 0 0 3px rgba(67,213,138,.25)}
+.tile .arr{position:absolute;top:10px;right:10px;z-index:2;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.16);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);font-size:14px;opacity:0;transform:translate(-4px,4px);transition:opacity .5s var(--ease),transform .6s var(--ease)}
+.tile:hover .arr,.tile:focus-visible .arr{opacity:1;transform:none}
+@media (max-width:999px){.hero-grid{grid-template-columns:1fr}}
+@media (max-width:560px){.bento{grid-auto-rows:104px}.hero-cta .btn{flex:1 1 auto}}
+
+/* ---------- Kategorie-Leiste ---------- */
+.catbar{position:sticky;top:var(--nav-h);z-index:50;background:color-mix(in srgb,var(--cream) 86%,transparent);backdrop-filter:blur(14px) saturate(1.2);-webkit-backdrop-filter:blur(14px) saturate(1.2);border-bottom:1px solid var(--line);transition:box-shadow .5s var(--ease)}
+.catbar.stuck{box-shadow:0 14px 30px -20px rgba(15,19,32,.4)}
+.catbar-in{display:flex;align-items:center;gap:8px;height:var(--bar-h);padding:0 calc(var(--pad) - 8px) 0 calc(var(--pad) - 12px);max-width:1600px;margin:0 auto}
+.cats{position:relative;flex:1;min-width:0;display:flex;gap:2px;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none;padding:0 12px;
+  -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 14px,#000 calc(100% - 26px),transparent);mask-image:linear-gradient(90deg,transparent 0,#000 14px,#000 calc(100% - 26px),transparent)}
+.cats::-webkit-scrollbar{display:none}
+.cat{flex:none;display:inline-flex;align-items:center;gap:8px;height:38px;padding:0 13px;border-radius:999px;font-size:14px;font-weight:500;color:rgba(31,39,65,.74);text-decoration:none;white-space:nowrap;transition:background-color .4s var(--ease),color .4s var(--ease),opacity .4s}
+.cat i{width:8px;height:8px;border-radius:50%;background:var(--dot);box-shadow:inset 0 0 0 1px rgba(31,39,65,.14)}
+.cat:hover{color:var(--navy-800);background:rgba(31,39,65,.06)}
+.cat[aria-current="true"]{background:var(--navy-800);color:#fff}
+.cat[aria-current="true"] i{box-shadow:0 0 0 2px rgba(255,255,255,.35)}
+.cat.off{opacity:.32}
+.cat-search{flex:none;width:42px;height:42px;border-radius:50%;border:1px solid var(--line);background:#fff;color:var(--navy-800);display:grid;place-items:center;box-shadow:0 6px 16px -10px rgba(15,19,32,.4);transition:transform .5s var(--ease)}
+.cat-search:active{transform:scale(.94)}
+.cat-search .ic{width:18px;height:18px}
+
+/* ---------- Werkzeuge ---------- */
+.tools{position:relative;padding:30px 0 76px}
+.tools-row{display:flex;flex-wrap:wrap;align-items:center;gap:12px 14px}
+.search{position:relative;flex:1 1 340px;max-width:560px}
+.search input{width:100%;height:54px;border-radius:999px;border:1px solid rgba(31,39,65,.12);background:#fff;padding:0 52px 0 52px;font:inherit;font-size:16px;color:var(--navy-800);box-shadow:0 16px 36px -22px rgba(15,19,32,.45);-webkit-appearance:none;appearance:none;transition:border-color .3s,box-shadow .3s}
+.search input::placeholder{color:rgba(31,39,65,.45)}
+.search input:focus{outline:0;border-color:var(--peri-ink);box-shadow:0 0 0 4px rgba(98,135,205,.18),0 16px 36px -22px rgba(15,19,32,.45)}
+.search input::-webkit-search-cancel-button{-webkit-appearance:none;display:none}
+.search > .ic{position:absolute;left:19px;top:50%;width:19px;height:19px;transform:translateY(-50%);opacity:.5;pointer-events:none}
+.search .clr{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:38px;height:38px;border-radius:50%;border:0;background:rgba(31,39,65,.06);display:grid;place-items:center;color:var(--navy-800)}
+.search .clr .ic{width:16px;height:16px}
+.search kbd{position:absolute;right:16px;top:50%;transform:translateY(-50%);font:inherit;font-size:12px;font-weight:600;color:rgba(31,39,65,.5);border:1px solid rgba(31,39,65,.16);border-radius:7px;padding:1px 7px;pointer-events:none}
+@media (hover:none),(pointer:coarse){.search kbd{display:none}}
+.fchips{display:flex;flex-wrap:wrap;gap:8px}
+.fchip{display:inline-flex;align-items:center;gap:8px;height:46px;padding:0 17px 0 15px;border-radius:999px;border:1px solid rgba(31,39,65,.14);background:rgba(255,255,255,.72);font-size:14px;font-weight:500;color:var(--navy-800);transition:background-color .35s var(--ease),color .35s var(--ease),border-color .35s,transform .5s var(--ease)}
+.fchip:hover{border-color:rgba(31,39,65,.32)}
+.fchip:active{transform:scale(.96)}
+.fchip .ic{width:18px;height:18px}
+.fchip[aria-pressed="true"],.fchip[aria-expanded="true"]{background:var(--navy-800);border-color:var(--navy-800);color:#fff}
+.fchip .ic-leaf{color:#2f9a52}.fchip .ic-chili{color:#d4462a}
+.fchip[aria-pressed="true"] .ic-leaf{color:#8be3a9}.fchip[aria-pressed="true"] .ic-chili{color:#ff9f80}
+.fchip .al-ab{display:inline-grid;place-items:center;min-width:22px;height:20px;padding:0 5px;border-radius:6px;font-size:11px;font-weight:700;background:rgba(142,53,87,.1);color:#8e3557}
+.fchip[aria-expanded="true"] .al-ab{background:rgba(255,255,255,.18);color:#fff}
+.status{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;min-height:24px;margin-top:16px;font-size:14px;color:var(--muted)}
+.status b{color:var(--navy-800);font-weight:600;font-variant-numeric:tabular-nums}
+.linkbtn{border:0;background:none;padding:2px 0;font-size:14px;font-weight:500;color:var(--navy-800);text-decoration:underline;text-underline-offset:3px;text-decoration-color:rgba(31,39,65,.35)}
+.legend{margin-top:18px;padding:clamp(20px,3vw,32px);border-radius:var(--r-l);background:rgba(255,255,255,.86);box-shadow:var(--shadow);animation:drop .6s var(--ease)}
+@keyframes drop{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+.legend h2{font-size:12px;font-weight:500;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin:0 0 16px}
+.lg-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px 28px;margin:0;padding:0;list-style:none}
+.lg-grid li{display:flex;align-items:center;gap:12px;font-size:14.5px}
+.lg-grid .al{cursor:default}
+.lg-sym{display:flex;flex-wrap:wrap;gap:10px 26px;margin:20px 0 0;padding:18px 0 0;border-top:1px solid var(--line);font-size:14px;list-style:none}
+.lg-sym li{display:flex;align-items:center;gap:8px}
+.lg-sym .ic{width:20px;height:20px}
+.legend p{margin:16px 0 0;font-size:13px;line-height:1.5;color:var(--muted);max-width:80ch}
+
+/* ---------- Gruppen ---------- */
+.grp{--ink:var(--navy-800);--muted:rgba(31,39,65,.68);--leader:rgba(31,39,65,.34);--sheet:rgba(255,255,255,.5);--sheet-line:rgba(255,255,255,.72);
+  --pill:var(--navy-800);--pill-fg:#fff;--al-fg:#8e3557;--al-bg:rgba(255,255,255,.72);--al-line:rgba(142,53,87,.2);--sig-bg:var(--navy-800);--sig-fg:#fff;
+  --chip:rgba(255,255,255,.66);--leaf:#2f9a52;--chili:#d4462a;--mark:rgba(98,135,205,.28);
+  position:relative;margin-top:-32px;border-radius:32px 32px 0 0;overflow:clip;color:var(--ink);
+  padding:clamp(76px,9vw,128px) 0 clamp(84px,9vw,136px);scroll-margin-top:calc(var(--nav-h) + var(--bar-h) - 2px);
+  background:
+    radial-gradient(80% 60% at 100% 0%,var(--b) 0%,transparent 62%),
+    radial-gradient(70% 55% at 0% 100%,var(--c) 0%,transparent 66%),
+    radial-gradient(50% 40% at 18% 12%,var(--d) 0%,transparent 70%),
+    linear-gradient(165deg,var(--a),var(--a2));
+  box-shadow:0 -26px 50px -30px rgba(15,19,32,.32)}
+.grp::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.09;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:180px}
+.grp > .wrap{position:relative;z-index:1}
+/* Pastelle der Karte 2026 */
+.t-peri{--a:#c7d1ec;--a2:#dfe3ef;--b:#eef0f7;--c:#cddfeb;--d:#b9c6ea}
+.t-ice{--a:#cddfeb;--a2:#e4edf2;--b:#f4f7f8;--c:#dce6e5;--d:#bcd3e6}
+.t-mint{--a:#e2f3e9;--a2:#edf5ef;--b:#f9fbf6;--c:#d3e4e2;--d:#cbe9d8}
+.t-peach{--a:#f3d9c6;--a2:#f8efe5;--b:#fcf8f0;--c:#e7d7c6;--d:#f5c9ae}
+.t-taupe{--a:#d8cec9;--a2:#e8e0da;--b:#f3ede6;--c:#c0b5b1;--d:#e7d7c6}
+.t-lilac{--a:#c1c1e3;--a2:#dbdbef;--b:#efeff8;--c:#c7d1ec;--d:#d4c6e7}
+.t-coral{--a:#f3d9c6;--a2:#f5e1da;--b:#fbefe7;--c:#e9aeda;--d:#f2c2a4}
+.t-cream{--a:#f9f6ed;--a2:#f3e4d2;--b:#fffaf2;--c:#f3d9c6;--d:#efd3b5}
+.t-rose{--a:#eec8e2;--a2:#f2dcea;--b:#faeef5;--c:#c1c1e3;--d:#e9aeda}
+.t-latte{--a:#e7d7c6;--a2:#efe5da;--b:#f8f2eb;--c:#c0b5b1;--d:#dcc5ad}
+.t-sage{--a:#dce6e5;--a2:#e8efec;--b:#f6f9f6;--c:#e2f3e9;--d:#c8dbd7}
+.t-aqua{--a:#e2f3e9;--a2:#e3edf2;--b:#f7fbf8;--c:#cddfeb;--d:#d2eedf}
+.t-blush{--a:#e8c2df;--a2:#d5d1eb;--b:#f6e6f1;--c:#c7d1ec;--d:#e9aeda}
+.t-apricot{--a:#f7d4b2;--a2:#f5dccb;--b:#fcebdc;--c:#ecb7d9;--d:#f2b27a}
+.grp.dark{--ink:#f5f1fb;--muted:rgba(245,241,251,.7);--leader:rgba(255,255,255,.28);--sheet:rgba(255,255,255,.055);--sheet-line:rgba(255,255,255,.12);
+  --pill:#fff;--pill-fg:var(--navy-800);--al-fg:#ffd6ee;--al-bg:rgba(255,255,255,.1);--al-line:rgba(255,255,255,.2);--sig-bg:#f2b27a;--sig-fg:#2b1a14;
+  --chip:rgba(255,255,255,.1);--leaf:#7fe0a0;--chili:#ff9a76;--mark:rgba(242,178,122,.35)}
+.grp.dark::after{opacity:.12;mix-blend-mode:soft-light}
+.t-dusk{background:
+  radial-gradient(70% 45% at 92% 0%,rgba(233,174,218,.42) 0%,transparent 66%),
+  radial-gradient(60% 45% at -5% 55%,rgba(139,92,246,.26) 0%,transparent 70%),
+  radial-gradient(80% 45% at 60% 108%,rgba(242,178,122,.22) 0%,transparent 70%),
+  linear-gradient(172deg,#5b3a6e 0%,#3b2c5e 42%,#1f2741 100%)}
+.t-night{background:
+  radial-gradient(60% 40% at 88% 4%,rgba(201,164,92,.26) 0%,transparent 66%),
+  radial-gradient(60% 50% at 0% 85%,rgba(59,130,246,.14) 0%,transparent 70%),
+  linear-gradient(176deg,#1f2741 0%,#141a2b 55%,#0f1320 100%)}
+
+.gh{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:clamp(24px,4vw,72px);align-items:end;margin-bottom:clamp(30px,4vw,56px)}
+.gh-eb{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;color:var(--muted);margin:0}
+.gh-n{color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums}
+.gh-eb .ln{width:30px;height:1px;background:currentColor;opacity:.5}
+.gh-title{font-weight:200;font-size:clamp(50px,7.4vw,112px);line-height:.94;letter-spacing:-.03em;margin:16px 0 0;overflow-wrap:break-word}
+.gh-title.long{font-size:clamp(40px,5.6vw,84px)}
+.gh-title b{font-weight:650}
+.gh-intro{font-size:clamp(16.5px,1.3vw,20px);font-weight:300;line-height:1.5;color:var(--muted);max-width:42ch;margin:20px 0 0}
+.gh-badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+.tbadge{display:inline-flex;align-items:center;gap:9px;padding:7px 14px 7px 12px;border-radius:999px;background:var(--navy-800);color:#fff;font-size:13px;font-weight:500;letter-spacing:.02em;font-variant-numeric:tabular-nums}
+.tbadge .ic{width:15px;height:15px;opacity:.8}
+.tbadge .tb-now{display:none;align-items:center;gap:7px;padding-left:9px;border-left:1px solid rgba(255,255,255,.25)}
+.tbadge .tb-now i{width:7px;height:7px;border-radius:50%;background:#43d58a;box-shadow:0 0 0 3px rgba(67,213,138,.25)}
+.tbadge.live .tb-now{display:inline-flex}
+.grp.dark .tbadge{background:#fff;color:var(--navy-800)}
+.grp.dark .tbadge .tb-now{border-left-color:rgba(31,39,65,.2)}
+
+.gp{display:flex;align-items:flex-end;gap:14px}
+.gp figure{position:relative;margin:0;border-radius:var(--r-l);overflow:hidden;background:rgba(255,255,255,.3);
+  box-shadow:0 34px 64px -30px rgba(15,19,32,.6),0 8px 22px -12px rgba(15,19,32,.3)}
+.gp figure:nth-child(1){width:clamp(220px,21vw,310px);aspect-ratio:4/5}
+.gp figure:nth-child(2){width:clamp(150px,14vw,210px);aspect-ratio:4/5;margin-bottom:56px}
+.gp img{width:100%;height:100%;object-fit:cover;transform:scale(1.1);transition:transform 1.8s var(--ease)}
+.gp.in img{transform:none}
+.grp.dark .gp figure{box-shadow:0 34px 70px -30px rgba(0,0,0,.75),0 0 0 1px rgba(255,255,255,.08)}
+
+.sheet{background:var(--sheet);border:1px solid var(--sheet-line);border-radius:var(--r-l);padding:clamp(22px,3.6vw,54px);
+  box-shadow:0 44px 90px -56px rgba(15,19,32,.5),inset 0 1px 0 rgba(255,255,255,.35)}
+.secs{columns:2;column-gap:clamp(40px,5.2vw,84px)}
+.secs.one{columns:1}
+.secs.one .items{columns:2;column-gap:clamp(40px,5.2vw,84px)}
+.sec{break-inside:avoid;-webkit-column-break-inside:avoid;padding-bottom:clamp(28px,3vw,42px)}
+.sec-h{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin:0 0 14px}
+.pill{display:inline-flex;align-items:center;margin:0;padding:8px 17px 9px;border-radius:999px;background:var(--pill);color:var(--pill-fg);font-size:14.5px;font-weight:500;line-height:1.15;letter-spacing:.01em}
+.sec-note{font-size:11.5px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+.items{list-style:none;margin:0;padding:0}
+.it{break-inside:avoid;-webkit-column-break-inside:avoid;padding:9px 0 10px}
+.it-r{display:flex;align-items:baseline;align-items:last baseline;gap:10px}
+.it-t{flex:0 1 auto;min-width:0;font-size:16.5px;font-weight:600;line-height:1.32;letter-spacing:-.003em}
+.nm mark{background:var(--mark);color:inherit;border-radius:4px;padding:0 2px;margin:0 -2px}
+.ast{font-weight:400;color:var(--muted);margin-left:1px}
+.lead{flex:1 1 22px;min-width:22px;align-self:last baseline;line-height:1;font-size:16px;
+  background-image:radial-gradient(circle at 1.5px 1.5px,var(--leader) 1.1px,transparent 1.5px);background-size:6px 3px;background-repeat:repeat-x;background-position:0 80%}
+.price{flex:none;display:inline-flex;align-items:baseline;gap:14px;font-size:16px;font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+.pp{display:inline-flex;align-items:baseline}
+.sz{font-size:12px;font-weight:500;color:var(--muted);margin-right:7px;letter-spacing:.02em}
+.cur{font-weight:400;color:var(--muted);font-size:.86em}
+.it-d{margin:3px 0 0;font-size:14.2px;line-height:1.48;font-weight:400;color:var(--muted);max-width:56ch}
+.steep{display:inline-flex;align-items:center;gap:5px;margin-right:6px;padding:1px 9px 1px 7px;border-radius:999px;background:var(--chip);color:var(--ink);font-size:12px;font-weight:500;vertical-align:1px}
+.steep .ic{width:12px;height:12px}
+.fl{display:inline-block;width:18px;height:18px;margin-left:7px;vertical-align:-3px}
+.fl.leaf{color:var(--leaf)}.fl.chili{color:var(--chili)}
+.sig{display:inline-flex;align-items:center;gap:5px;margin-left:8px;padding:3px 9px 3px 7px;border-radius:999px;background:var(--sig-bg);color:var(--sig-fg);font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;vertical-align:3px;line-height:1.2}
+.sig .ic{width:10px;height:10px}
+.als{display:inline-flex;flex-wrap:wrap;gap:3px;margin-left:8px;vertical-align:2px}
+.al{position:relative;display:inline-grid;place-items:center;min-width:20px;height:20px;padding:0 5px;border-radius:6px;border:1px solid var(--al-line,rgba(142,53,87,.2));background:var(--al-bg,rgba(255,255,255,.72));color:var(--al-fg,#8e3557);font-size:10.5px;font-weight:700;line-height:1;letter-spacing:.02em;transition:background-color .25s,color .25s,transform .4s var(--ease)}
+button.al::before{content:"";position:absolute;inset:-8px -2px}
+button.al:hover,button.al.on{background:var(--navy-800);border-color:var(--navy-800);color:#fff}
+.grp.dark button.al:hover,.grp.dark button.al.on{background:#fff;border-color:#fff;color:var(--navy-800)}
+button.al:active{transform:scale(.92)}
+.ex{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:9px}
+.ex-l{font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-right:2px}
+.ex-i{display:inline-flex;align-items:baseline;gap:6px;padding:4px 11px;border-radius:999px;background:var(--chip);font-size:13px;font-weight:500}
+.ex-i b{font-weight:600;font-variant-numeric:tabular-nums}
+.fn{margin:12px 0 0;font-size:12.8px;line-height:1.5;color:var(--muted);max-width:60ch}
+.fn::before{content:"";display:inline-block;width:14px;height:1px;background:currentColor;vertical-align:4px;margin-right:8px;opacity:.6}
+.it.x,.sec.x,.grp.x{display:none}
+
+@media (max-width:999px){
+  .gh{grid-template-columns:1fr;align-items:start}
+  .gp{display:grid;grid-template-columns:1.45fr 1fr;align-items:end;gap:10px}
+  .gp figure:nth-child(1),.gp figure:nth-child(2){width:auto;margin:0}
+  .gp figure:nth-child(2){aspect-ratio:3/4;margin-bottom:28px}
+  .gp.solo{grid-template-columns:1fr}
+  .gp.solo figure:nth-child(1){aspect-ratio:16/10}
+  .secs,.secs.one .items{columns:1}
+}
+@media (max-width:699px){
+  .grp{border-radius:26px 26px 0 0;margin-top:-26px}
+  .sheet{padding:20px 18px 6px;border-radius:24px}
+  .lead{background:none}
+  .it-t{font-size:16px}
+  .price{font-size:15.5px}
+  .it.mp .it-r{flex-wrap:wrap;row-gap:4px}
+  .it.mp .lead{display:none}
+  .it.mp .price{flex-basis:100%;justify-content:flex-start}
+  .gh-intro{margin-top:16px}
+}
+
+/* Filter-Modus: kompakt */
+.filtering .gp,.filtering .gh-intro,.filtering .gh-badges{display:none}
+.filtering .gh{margin-bottom:24px}
+.filtering .gh-title{font-size:clamp(36px,4.6vw,64px)}
+.filtering .grp{padding:68px 0 76px}
+
+/* Leer-Zustand */
+.empty{padding:20px 0 100px;text-align:center}
+.empty h2{font-weight:200;font-size:clamp(40px,6vw,80px);letter-spacing:-.025em;margin:0}
+.empty h2 b{font-weight:650}
+.empty p{color:var(--muted);margin:14px auto 26px;max-width:40ch}
+
+/* Popover */
+.al-pop{position:fixed;left:0;top:0;z-index:85;max-width:min(260px,calc(100vw - 20px));padding:10px 14px 10px 10px;border-radius:14px;background:var(--navy-800);color:#fff;font-size:13.5px;line-height:1.35;font-weight:450;display:flex;align-items:center;gap:10px;
+  box-shadow:0 20px 44px -16px rgba(15,19,32,.6);pointer-events:none;visibility:hidden;opacity:0;transform:translateY(6px) scale(.97);transform-origin:var(--ax,50%) 100%;transition:opacity .25s var(--ease),transform .4s var(--ease),visibility 0s .4s}
+.al-pop.on{visibility:visible;opacity:1;transform:none;transition:opacity .25s var(--ease),transform .4s var(--ease),visibility 0s}
+.al-pop b{flex:none;display:grid;place-items:center;width:26px;height:26px;border-radius:8px;background:#fff;color:var(--navy-800);font-size:13px;font-weight:700}
+.al-pop small{display:block;font-size:10px;letter-spacing:.18em;text-transform:uppercase;opacity:.6;font-weight:500}
+.al-pop::after{content:"";position:absolute;left:var(--ax,50%);bottom:-5px;width:12px;height:12px;background:inherit;border-radius:2px;transform:translateX(-50%) rotate(45deg)}
+.al-pop.below{transform-origin:var(--ax,50%) 0}
+.al-pop.below::after{bottom:auto;top:-5px}
+
+/* CTA */
+.cta{position:relative;margin-top:-32px;border-radius:32px 32px 0 0;overflow:hidden;padding:clamp(88px,10vw,150px) 0 clamp(96px,11vw,160px);text-align:center;color:var(--navy-800);
+  background:radial-gradient(60% 70% at 15% 0%,#f9e3d3 0%,transparent 70%),radial-gradient(60% 70% at 100% 100%,#e9c3e0 0%,transparent 70%),linear-gradient(170deg,#f6dccb,#efd0e3 60%,#d9d4ee);
+  box-shadow:0 -26px 50px -30px rgba(15,19,32,.45)}
+.cta .wrap{position:relative;z-index:1}
+.cta-mark{position:absolute;left:50%;top:50%;width:min(1200px,120%);transform:translate(-50%,-50%) rotate(-4deg);opacity:.07;pointer-events:none}
+.cta-mark .logo-mask{display:block;height:auto;width:100%}
+.cta .h2{font-size:clamp(48px,7.4vw,112px);letter-spacing:-.03em}
+.cta p{margin:20px auto 0;max-width:44ch;font-size:clamp(17px,1.35vw,21px);font-weight:300;color:rgba(31,39,65,.72)}
+.cta-btns{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-top:34px}
+.cta-btns .btn-ghost{border-color:rgba(31,39,65,.3)}
+.cta small{display:block;margin-top:26px;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:rgba(31,39,65,.62);font-weight:500}
+
+@media (prefers-reduced-motion:reduce){
+  .rv{transform:none!important}
+  .gp img,.tile img{transform:none!important}
+  .chip .dot::after{display:none}
+  .tile:hover{transform:none}
+}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="i-leaf" viewBox="0 0 24 24"><path d="M2.6 13.6C5.4 7.6 12.6 5 21.4 8.4 18.6 15.6 10.4 18.6 2.6 13.6z" fill="currentColor"/><path d="M2.6 13.6c5.6-.6 11.6-2.4 18.8-5.2" fill="none" stroke="#fff" stroke-opacity=".7" stroke-width="1.2" stroke-linecap="round"/></symbol>
+  <symbol id="i-leaf-o" viewBox="0 0 24 24"><path d="M2.6 13.6C5.4 7.6 12.6 5 21.4 8.4 18.6 15.6 10.4 18.6 2.6 13.6z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M2.6 13.6c5.6-.6 11.6-2.4 18.8-5.2" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></symbol>
+  <symbol id="i-chili" viewBox="0 0 24 24"><path d="M4.4 19.6c6.2 1.2 12.6-2.6 14.3-8.7.4-1.5.1-2.6-.8-3.1-1-.6-2.1-.1-2.8 1-2.4 4-6 7.1-10.5 7.9-1.6.3-1.9 2.6-.2 2.9z" fill="currentColor"/><path d="M17.2 7.6c.1-1.7 1.1-3 2.7-3.6" fill="none" stroke="#3f9a55" stroke-width="1.7" stroke-linecap="round"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 1.5l2.4 8.1 8.1 2.4-8.1 2.4-2.4 8.1-2.4-8.1L1.5 12l8.1-2.4z" fill="currentColor"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 7v5l3 2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.6" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M16 16l4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-doc" viewBox="0 0 24 24"><path d="M7 3h7l5 5v12a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M14 3v5h5M9 13h6M9 16.5h6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+</svg>
+
+<main class="sk-main" id="main">
+  <section class="sk-hero grain" id="top" aria-labelledby="sk-h1">
+    <div class="hero-mark" id="heroMark" aria-hidden="true"></div>
+    <div class="wrap hero-grid">
+      <div class="hero-copy">
+        <p class="eyebrow rv" data-i18n="sk.eyebrow">Speisekarte 2026</p>
+        <h1 class="display words" id="sk-h1" data-i18n-html="sk.title">Die ganze <b>Welt</b> auf einer Karte.</h1>
+        <p class="lede rv rv-d1" data-i18n="sk.lede">Von der Wiener Box am Morgen bis zum Freiraum Sour um Mitternacht – Weltküche, Wiener Klassiker und Pizza aus dem Ofen, frisch in der Mariahilfer Straße.</p>
+        <p class="live rv rv-d2"><span class="chip" id="live"><span class="dot"></span><span class="t">&nbsp;</span></span></p>
+        <div class="hero-cta rv rv-d2">
+          <a class="btn" href="index.html#besuch" data-i18n="sk.reserve">Tisch reservieren</a>
+          <a class="btn btn-ghost" href="assets/pdf/speisekarte-2026.pdf" target="_blank" rel="noopener"><svg class="ic" aria-hidden="true"><use href="#i-doc"/></svg><span data-i18n="sk.pdf">Original-PDF</span><span class="sr-only" data-i18n="sk.newtab">(PDF, öffnet in neuem Tab)</span></a>
+        </div>
+        <p class="hero-stats rv rv-d3" id="stats">&nbsp;</p>
+      </div>
+      <div class="hero-side rv rv-d1">
+        <div class="bento-cap"><span class="eyebrow" id="bentoCap">&nbsp;</span><a class="bento-all" href="#tools" data-i18n="sk.bento.all">Alle Kapitel ↓</a></div>
+        <div class="bento" id="bento"></div>
+      </div>
+    </div>
+  </section>
+
+  <nav class="catbar" id="catbar" aria-label="Kategorien" data-i18n-aria="sk.cats">
+    <div class="catbar-in">
+      <div class="cats" id="cats"></div>
+      <button class="cat-search" type="button" id="toSearch" aria-label="Zur Suche" data-i18n-aria="sk.search.go"><svg class="ic" aria-hidden="true"><use href="#i-search"/></svg></button>
+    </div>
+  </nav>
+
+  <section class="tools wrap" id="tools" aria-label="Suche und Filter" data-i18n-aria="sk.tools">
+    <div class="tools-row">
+      <div class="search" role="search">
+        <label class="sr-only" for="q" data-i18n="sk.search.label">Karte durchsuchen</label>
+        <svg class="ic" aria-hidden="true"><use href="#i-search"/></svg>
+        <input id="q" type="search" autocomplete="off" spellcheck="false" enterkeyhint="search" placeholder="Suche: Pasta, Matcha, Gin …" data-i18n-ph="sk.search.ph">
+        <kbd aria-hidden="true">/</kbd>
+        <button class="clr" type="button" id="clr" hidden aria-label="Suche leeren" data-i18n-aria="sk.clear"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button>
+      </div>
+      <div class="fchips" role="group" aria-label="Filter" data-i18n-aria="sk.f.group">
+        <button class="fchip" type="button" data-f="vegan" aria-pressed="false"><svg class="ic ic-leaf" aria-hidden="true"><use href="#i-leaf"/></svg><span data-i18n="sk.f.vegan">Vegan</span></button>
+        <button class="fchip" type="button" data-f="veg" aria-pressed="false"><svg class="ic ic-leaf" aria-hidden="true"><use href="#i-leaf-o"/></svg><span data-i18n="sk.f.veg">Vegetarisch</span></button>
+        <button class="fchip" type="button" data-f="scharf" aria-pressed="false"><svg class="ic ic-chili" aria-hidden="true"><use href="#i-chili"/></svg><span data-i18n="sk.f.scharf">Scharf</span></button>
+        <button class="fchip" type="button" id="alToggle" aria-expanded="false" aria-controls="legend"><span class="al-ab" aria-hidden="true">A–R</span><span data-i18n="sk.al.btn">Allergene</span></button>
+      </div>
+    </div>
+    <div class="status" id="status" role="status" aria-live="polite"></div>
+    <div class="legend" id="legend" hidden>
+      <h2 data-i18n="sk.al.title">Allergene &amp; Symbole</h2>
+      <ul class="lg-grid" id="lgGrid"></ul>
+      <ul class="lg-sym" id="lgSym"></ul>
+      <p data-i18n="sk.al.note">Kennzeichnung der 14 Hauptallergene gemäß EU-Verordnung 1169/2011. Trotz sorgfältiger Zubereitung können Spuren anderer Stoffe enthalten sein. Tipp auf einen Buchstaben bei einem Gericht, um ihn zu erklären.</p>
+    </div>
+  </section>
+
+  <div class="empty wrap" id="empty" hidden>
+    <h2 data-i18n-html="sk.empty.t">Keine <b>Treffer</b>.</h2>
+    <p data-i18n="sk.empty.p">Probier einen anderen Begriff – oder setz die Filter zurück.</p>
+    <button class="btn" type="button" data-reset data-i18n="sk.reset">Zurücksetzen</button>
+  </div>
+
+  <div class="menu" id="menu" aria-busy="true"></div>
+
+  <section class="cta" aria-labelledby="cta-h">
+    <div class="cta-mark" id="ctaMark" aria-hidden="true"></div>
+    <div class="wrap">
+      <h2 class="h2 words" id="cta-h" data-i18n-html="sk.cta.t">Lust <b>bekommen?</b></h2>
+      <p class="rv rv-d1" data-i18n="sk.cta.p">Reservier dir einen Tisch in der Mariahilfer Straße – oder lass dir Freiraum nach Hause liefern.</p>
+      <div class="cta-btns rv rv-d2">
+        <a class="btn" href="index.html#besuch" data-i18n="sk.reserve">Tisch reservieren</a>
+        <a class="btn btn-ghost" href="https://wolt.com/de/aut/vienna/restaurant/freiraum" target="_blank" rel="noopener">Wolt ↗</a>
+        <a class="btn btn-ghost" href="https://www.foodora.at/" target="_blank" rel="noopener">foodora ↗</a>
+      </div>
+      <small class="rv rv-d3" data-i18n="sk.cta.small">Küche täglich bis 21:45 · Pizza ab 11:00</small>
+    </div>
+  </section>
+</main>
+
+<div class="al-pop" id="alPop" aria-hidden="true"></div>
+
+<script src="assets/site.js"></script>
+<script>
+(function () {
+  'use strict';
+  var FR = window.FR;
+  var $ = function (s, r) { return (r || document).querySelector(s); };
+  var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
+  var norm = function (s) { return String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/ß/g, 'ss'); };
+  var smooth = function () { return FR.reduced ? 'auto' : 'smooth'; };
+
+  /* ---------- Texte ---------- */
+  FR.i18n.add({
+    de: {
+      'sk.eyebrow': 'Speisekarte 2026',
+      'sk.title': 'Die ganze <b>Welt</b> auf einer Karte.',
+      'sk.lede': 'Von der Wiener Box am Morgen bis zum Freiraum Sour um Mitternacht – Weltküche, Wiener Klassiker und Pizza aus dem Ofen, frisch in der Mariahilfer Straße.',
+      'sk.pdf': 'Original-PDF', 'sk.newtab': '(PDF, öffnet in neuem Tab)', 'sk.reserve': 'Tisch reservieren',
+      'sk.live.breakfast': 'Frühstück bis 17:00 · jetzt verfügbar', 'sk.live.bar': 'Ab 17 Uhr: Cocktails & Bar', 'sk.live.closed': 'Gerade geschlossen · Frühstück ab {t}',
+      'sk.stats': '<b>{g}</b> Kapitel · <b>{n}</b> Positionen · seit 2008',
+      'sk.bento.day': 'Gerade gefragt', 'sk.bento.eve': 'Ab 17 Uhr an der Bar', 'sk.bento.all': 'Alle Kapitel ↓',
+      'sk.cats': 'Kategorien', 'sk.tools': 'Suche und Filter',
+      'sk.search.label': 'Karte durchsuchen', 'sk.search.ph': 'Suche: Pasta, Matcha, Gin …', 'sk.search.go': 'Zur Suche', 'sk.clear': 'Suche leeren',
+      'sk.f.group': 'Filter', 'sk.f.vegan': 'Vegan', 'sk.f.veg': 'Vegetarisch', 'sk.f.scharf': 'Scharf',
+      'sk.al.btn': 'Allergene', 'sk.al.title': 'Allergene & Symbole', 'sk.al.prefix': 'Allergen',
+      'sk.al.note': 'Kennzeichnung der 14 Hauptallergene gemäß EU-Verordnung 1169/2011. Trotz sorgfältiger Zubereitung können Spuren anderer Stoffe enthalten sein. Tipp auf einen Buchstaben bei einem Gericht, um ihn zu erklären.',
+      'sk.sym.vegan': 'Vegan', 'sk.sym.veg': 'Vegetarisch', 'sk.sym.scharf': 'Scharf', 'sk.sym.sig': 'Freiraum Signature',
+      'sk.sig': 'Signature', 'sk.add': 'dazu', 'sk.steep': 'Ziehzeit',
+      'sk.res': '<b>{n}</b> {w} in <b>{g}</b> {k}', 'sk.res.w1': 'Treffer', 'sk.res.wn': 'Treffer', 'sk.res.k1': 'Kategorie', 'sk.res.kn': 'Kategorien',
+      'sk.reset': 'Zurücksetzen', 'sk.empty.t': 'Keine <b>Treffer</b>.', 'sk.empty.p': 'Probier einen anderen Begriff – oder setz die Filter zurück.',
+      'sk.kind.food': 'Küche', 'sk.kind.cafe': 'Café', 'sk.kind.drinks': 'Getränke', 'sk.kind.bar': 'Bar',
+      'sk.cnt.food': '{n} Gerichte', 'sk.cnt.drinks': '{n} Drinks',
+      'sk.until17': 'bis 17:00', 'sk.from11': 'ab 11:00', 'sk.from17': 'ab 17:00', 'sk.now': 'jetzt',
+      'sk.cta.t': 'Lust <b>bekommen?</b>', 'sk.cta.p': 'Reservier dir einen Tisch in der Mariahilfer Straße – oder lass dir Freiraum nach Hause liefern.',
+      'sk.cta.small': 'Küche täglich bis 21:45 · Pizza ab 11:00',
+      'sk.short.fruehstueck': 'Frühstück', 'sk.short.starters': 'Starters', 'sk.short.soulfood': 'Soulfood', 'sk.short.italy': 'Italy', 'sk.short.grill': 'Grill & Burger',
+      'sk.short.klassiker': 'Klassiker', 'sk.short.tapas': 'Tapas', 'sk.short.pizza': 'Pizza', 'sk.short.desserts': 'Desserts', 'sk.short.kaffee': 'Kaffee', 'sk.short.tee': 'Tee',
+      'sk.short.hausgemacht': 'Alkoholfrei', 'sk.short.bier-wein': 'Bier & Wein', 'sk.short.spritz': 'Spritz', 'sk.short.cocktails': 'Cocktails', 'sk.short.spirits': 'Spirituosen',
+      'sk.intro.fruehstueck': 'Signature Boxes, Eier vom Landhendl, Bagels und frisch gepresste Säfte – täglich bis 17 Uhr.',
+      'sk.intro.starters': 'Kleine Teller zum Teilen: Feta aus dem Ofen, Chili-Garnelen, Calamari & Co.',
+      'sk.intro.soulfood': 'Bowls und Salate, die satt machen – und glücklich.',
+      'sk.intro.italy': 'Pasta mit Seele, von der Carbonara bis zur Marry me Pasta.',
+      'sk.intro.grill': 'Sous-vide gegart, scharf angebraten – dazu Burger aus österreichischem Beef.',
+      'sk.intro.klassiker': 'Wiener Schnitzel, Käsespätzle, Schinkenfleckerl – Wien, wie es schmeckt.',
+      'sk.intro.tapas': 'Tacos, Patatas Bravas, Pimientos – zum Teilen, Tauschen und Nachbestellen.',
+      'sk.intro.pizza': 'Aus dem Ofen – mit Caputo-Mehl, Naturhefe und 48 Stunden Reifezeit.',
+      'sk.intro.desserts': 'Choco Lava, Crème Brûlée, Strudel – und noch mehr in unserer Vitrine.',
+      'sk.intro.kaffee': 'Bohnen von der Rösterei Röstraum – als black, red oder mit Geschmack.',
+      'sk.intro.tee': 'Bio-Tees von Julius Meinl, mit Ziehzeit und einem Moment Ruhe.',
+      'sk.intro.hausgemacht': 'Hausgemachte Limonaden, Eistee, Smoothies und Shakes – ganz ohne Alkohol.',
+      'sk.intro.bier-wein': 'Fassbier, österreichische Winzer und eine Champagner-Karte für große Abende.',
+      'sk.intro.spritz': 'Vom Freiraum Sprizz bis zum Negroni – Aperitivo, wie er sein soll.',
+      'sk.intro.cocktails': 'Classics, Signatures, Mules und Mocktails – geschüttelt ab 17 Uhr.',
+      'sk.intro.spirits': 'Whisky, Rum, Gin, Grappa und Mezcal – für den letzten Schluck des Abends.'
+    },
+    en: {
+      'sk.eyebrow': 'Menu 2026',
+      'sk.title': 'The whole <b>world</b> on one menu.',
+      'sk.lede': 'From the Wiener Box in the morning to a Freiraum Sour at midnight – world kitchen, Viennese classics and oven-fresh pizza on Mariahilfer Straße.',
+      'sk.pdf': 'Original PDF', 'sk.newtab': '(PDF, opens in a new tab)', 'sk.reserve': 'Book a table',
+      'sk.live.breakfast': 'Breakfast until 5 pm · available now', 'sk.live.bar': 'From 5 pm: cocktails & bar', 'sk.live.closed': 'Closed right now · breakfast from {t}',
+      'sk.stats': '<b>{g}</b> chapters · <b>{n}</b> items · since 2008',
+      'sk.bento.day': 'Popular right now', 'sk.bento.eve': 'From 5 pm at the bar', 'sk.bento.all': 'All chapters ↓',
+      'sk.cats': 'Categories', 'sk.tools': 'Search and filter',
+      'sk.search.label': 'Search the menu', 'sk.search.ph': 'Search: pasta, matcha, gin …', 'sk.search.go': 'Go to search', 'sk.clear': 'Clear search',
+      'sk.f.group': 'Filters', 'sk.f.vegan': 'Vegan', 'sk.f.veg': 'Vegetarian', 'sk.f.scharf': 'Spicy',
+      'sk.al.btn': 'Allergens', 'sk.al.title': 'Allergens & symbols', 'sk.al.prefix': 'Allergen',
+      'sk.al.note': 'The 14 main allergens are labelled according to EU Regulation 1169/2011. Despite careful preparation, traces of other substances may be present. Tap a letter next to a dish to see what it means.',
+      'sk.sym.vegan': 'Vegan', 'sk.sym.veg': 'Vegetarian', 'sk.sym.scharf': 'Spicy', 'sk.sym.sig': 'Freiraum signature',
+      'sk.sig': 'Signature', 'sk.add': 'add', 'sk.steep': 'Steeping time',
+      'sk.res': '<b>{n}</b> {w} in <b>{g}</b> {k}', 'sk.res.w1': 'result', 'sk.res.wn': 'results', 'sk.res.k1': 'category', 'sk.res.kn': 'categories',
+      'sk.reset': 'Reset', 'sk.empty.t': 'No <b>matches</b>.', 'sk.empty.p': 'Try another word – or reset the filters.',
+      'sk.kind.food': 'Kitchen', 'sk.kind.cafe': 'Café', 'sk.kind.drinks': 'Drinks', 'sk.kind.bar': 'Bar',
+      'sk.cnt.food': '{n} dishes', 'sk.cnt.drinks': '{n} drinks',
+      'sk.until17': 'until 5 pm', 'sk.from11': 'from 11 am', 'sk.from17': 'from 5 pm', 'sk.now': 'now',
+      'sk.cta.t': 'Feeling <b>hungry?</b>', 'sk.cta.p': 'Book a table on Mariahilfer Straße – or have Freiraum delivered to your door.',
+      'sk.cta.small': 'Kitchen daily until 9:45 pm · pizza from 11 am',
+      'sk.short.fruehstueck': 'Breakfast', 'sk.short.starters': 'Starters', 'sk.short.soulfood': 'Soulfood', 'sk.short.italy': 'Italy', 'sk.short.grill': 'Grill & Burger',
+      'sk.short.klassiker': 'Classics', 'sk.short.tapas': 'Tapas', 'sk.short.pizza': 'Pizza', 'sk.short.desserts': 'Desserts', 'sk.short.kaffee': 'Coffee', 'sk.short.tee': 'Tea',
+      'sk.short.hausgemacht': 'Soft drinks', 'sk.short.bier-wein': 'Beer & Wine', 'sk.short.spritz': 'Spritz', 'sk.short.cocktails': 'Cocktails', 'sk.short.spirits': 'Spirits',
+      'sk.intro.fruehstueck': 'Signature boxes, free-range eggs, bagels and freshly pressed juices – daily until 5 pm.',
+      'sk.intro.starters': 'Small plates to share: oven-baked feta, chili prawns, calamari & more.',
+      'sk.intro.soulfood': 'Bowls and salads that fill you up – and make you happy.',
+      'sk.intro.italy': 'Pasta with soul, from carbonara to our Marry me Pasta.',
+      'sk.intro.grill': 'Cooked sous-vide, seared hot – plus burgers made with Austrian beef.',
+      'sk.intro.klassiker': 'Wiener Schnitzel, cheese spätzle, Schinkenfleckerl – Vienna on a plate.',
+      'sk.intro.tapas': 'Tacos, patatas bravas, pimientos – to share, swap and reorder.',
+      'sk.intro.pizza': 'From the oven – Caputo flour, natural yeast and 48 hours of proofing.',
+      'sk.intro.desserts': 'Choco lava, crème brûlée, strudel – and more in our display case.',
+      'sk.intro.kaffee': 'Beans from the Röstraum roastery – black, red or flavoured.',
+      'sk.intro.tee': 'Organic teas by Julius Meinl – with steeping times and a moment of calm.',
+      'sk.intro.hausgemacht': 'Homemade lemonades, iced teas, smoothies and shakes – all alcohol-free.',
+      'sk.intro.bier-wein': 'Draught beer, Austrian winemakers and a champagne list for big nights.',
+      'sk.intro.spritz': 'From the Freiraum Sprizz to the Negroni – aperitivo done right.',
+      'sk.intro.cocktails': 'Classics, signatures, mules and mocktails – shaken from 5 pm.',
+      'sk.intro.spirits': 'Whisky, rum, gin, grappa and mezcal – for the last sip of the night.'
+    }
+  });
+
+  /* ---------- Bilder & Gruppen-Atmosphäre ---------- */
+  var IMG = {
+    'breakfast-1': { w: 1080, pos: '50% 90%', de: 'Frühstückstisch mit Pancakes, Avocado-Brot und Cappuccino', en: 'Breakfast table with pancakes, avocado toast and cappuccino' },
+    'egg-toast': { w: 1440, pos: '50% 45%', de: 'Spiegelei auf knusprigem Brot mit Salat', en: 'Fried egg on crispy toast with salad' },
+    'brunch-tisch': { w: 1440, pos: '50% 50%', de: 'Gedeckter Frühstückstisch mit Säften und Kaffee', en: 'Breakfast spread with juices and coffee' },
+    'suppe': { w: 1440, pos: '50% 62%', de: 'Cremesuppe wird mit Kräutern angerichtet', en: 'Cream soup finished with fresh herbs' },
+    'tapas': { w: 1215, pos: '50% 40%', de: 'Tapas zum Teilen: Pimientos, Tacos und Dips', en: 'Tapas to share: pimientos, tacos and dips' },
+    'rote-beete': { w: 1080, pos: '50% 82%', de: 'Rote-Beete-Salat mit Schafskäse und Walnüssen', en: 'Beetroot salad with sheep cheese and walnuts' },
+    'linguine': { w: 1440, pos: '50% 62%', de: 'Pasta mit Garnelen', en: 'Pasta with prawns' },
+    'spaghetti': { w: 1440, pos: '50% 35%', de: 'Spaghetti auf der Gabel', en: 'Spaghetti twirled on a fork' },
+    'steak': { w: 1440, pos: '50% 55%', de: 'Rumpsteak mit Rosmarin', en: 'Rump steak with rosemary' },
+    'entenbrust': { w: 1080, pos: '50% 82%', de: 'Rosa gebratene Entenbrust mit Kirschsauce und Polenta', en: 'Pink duck breast with cherry sauce and polenta' },
+    'pizza-bresaola': { w: 1280, pos: '50% 50%', de: 'Pizza Bresaola mit Burrata und Rucola', en: 'Bresaola pizza with burrata and rocket' },
+    'pizza-slice': { w: 1440, pos: '50% 55%', de: 'Ein Stück Pizza mit Pistazie', en: 'A slice of pizza with pistachio' },
+    'souffle': { w: 1440, pos: '50% 50%', de: 'Schoko-Soufflé mit Erdbeeren', en: 'Chocolate soufflé with strawberries' },
+    'cheesecake': { w: 1440, pos: '50% 55%', de: 'Cheesecake mit Beeren', en: 'Cheesecake with berries' },
+    'latte-herz': { w: 1440, pos: '50% 50%', de: 'Cappuccino mit Latte-Art-Herz', en: 'Cappuccino with a latte-art heart' },
+    'latte-duo': { w: 1440, pos: '50% 50%', de: 'Zwei Tassen mit Latte Art', en: 'Two cups with latte art' },
+    'limonade': { w: 1440, pos: '50% 40%', de: 'Hausgemachte Limonade im Freiraum-Glas', en: 'Homemade lemonade in a Freiraum glass' },
+    'spritz-rose': { w: 1440, pos: '50% 45%', de: 'Rosé-Spritzer mit Beeren', en: 'Rosé spritzer with berries' },
+    'pizza-aperol': { w: 1440, pos: '50% 6%', de: 'Spritz und Pizza am Tisch', en: 'Spritz and pizza at the table' },
+    'cocktail-orange': { w: 1440, pos: '50% 50%', de: 'Sour-Cocktail mit Heidelbeeren an der Bar', en: 'Sour cocktail with blueberries at the bar' },
+    'barkeeper': { w: 1280, pos: '50% 30%', de: 'Barkeeper beim Einschenken', en: 'Bartender pouring a drink' },
+    'bar-roestraum': { w: 1440, pos: '50% 50%', de: 'Die Bar im Freiraum', en: 'The bar at Freiraum' }
+  };
+  var META = {
+    'fruehstueck': { t: 'peri', kind: 'food', dot: '#c7d1ec', img: ['egg-toast', 'brunch-tisch'], time: 'until17' },
+    'starters': { t: 'ice', kind: 'food', dot: '#cddfeb', img: ['suppe'] },
+    'soulfood': { t: 'mint', kind: 'food', dot: '#cfe9d9', img: ['rote-beete'] },
+    'italy': { t: 'peach', kind: 'food', dot: '#f3d9c6', img: ['linguine', 'spaghetti'] },
+    'grill': { t: 'taupe', kind: 'food', dot: '#c0b5b1', img: ['steak'] },
+    'klassiker': { t: 'lilac', kind: 'food', dot: '#c1c1e3', img: ['entenbrust'] },
+    'tapas': { t: 'coral', kind: 'food', dot: '#f2c2a4', img: ['tapas'] },
+    'pizza': { t: 'cream', kind: 'food', dot: '#efd3b5', img: ['pizza-bresaola', 'pizza-slice'], time: 'from11' },
+    'desserts': { t: 'rose', kind: 'food', dot: '#e9aeda', img: ['souffle', 'cheesecake'] },
+    'kaffee': { t: 'latte', kind: 'cafe', dot: '#dcc5ad', img: ['latte-herz'] },
+    'tee': { t: 'sage', kind: 'cafe', dot: '#c8dbd7', img: ['latte-duo'] },
+    'hausgemacht': { t: 'aqua', kind: 'drinks', dot: '#d2eedf', img: ['limonade'] },
+    'bier-wein': { t: 'blush', kind: 'drinks', dot: '#e3b9da', img: ['spritz-rose'] },
+    'spritz': { t: 'apricot', kind: 'bar', dot: '#f2b27a', img: ['pizza-aperol'] },
+    'cocktails': { t: 'dusk', kind: 'bar', dot: '#7a5394', img: ['cocktail-orange', 'barkeeper'], time: 'from17', dark: true },
+    'spirits': { t: 'night', kind: 'bar', dot: '#1f2741', img: ['bar-roestraum'], dark: true }
+  };
+  var BENTO = {
+    day: [['fruehstueck', 'breakfast-1'], ['kaffee', 'latte-herz'], ['pizza', 'pizza-bresaola'], ['italy', 'spaghetti'], ['soulfood', 'rote-beete'], ['desserts', 'cheesecake']],
+    eve: [['cocktails', 'cocktail-orange'], ['spritz', 'spritz-rose'], ['bier-wein', 'bar-roestraum'], ['spirits', 'barkeeper'], ['pizza', 'pizza-slice'], ['tapas', 'tapas']]
+  };
+  var AL_EN = { A: 'Cereals containing gluten', B: 'Crustaceans', C: 'Egg', D: 'Fish', E: 'Peanuts', F: 'Soy', G: 'Milk or lactose', H: 'Tree nuts', L: 'Celery', M: 'Mustard', N: 'Sesame', O: 'Sulphites', P: 'Lupins', R: 'Molluscs' };
+  var SPICY = /\bscharf|habanero|jalape[nñ]o|chiliöl|tabasco|^chili\b/i;
+  var SIZES_RE = /^\s*\d+(?:[.,]\d+)?\s*c?l(?:\s*\/\s*\d+(?:[.,]\d+)?\s*c?l)+\s*$/i;
+  var SIG_NAMES = /^(wiener box|marry me pasta)$/i;
+  var ICON = function (id, cls, label) { return '<svg class="fl ' + cls + '" role="img" aria-label="' + esc(label) + '"><title>' + esc(label) + '</title><use href="#' + id + '"/></svg>'; };
+
+  var DATA = null, AL = {}, ITEMS = [], TOTAL = 0;
+  var state = { q: '', f: {} };
+  var menuEl = $('#menu'), catsEl = $('#cats'), catbar = $('#catbar'), qEl = $('#q');
+
+  FR.mountChrome({ active: 'menu', solid: true });
+  $('#heroMark').innerHTML = FR.logo();
+  $('#ctaMark').innerHTML = FR.logo();
+
+  /* ---------- Formatierung ---------- */
+  var dec = function (s) { return FR.lang === 'de' ? s.replace('.', ',') : s.replace(',', '.'); };
+  var num = function (p) { var n = parseFloat(String(p).replace(',', '.')); return isFinite(n) ? dec(n.toFixed(2)) : esc(p); };
+  var money = function (p) {
+    var n = parseFloat(String(p).replace(',', '.'));
+    if (!isFinite(n)) return esc(p);
+    return FR.lang === 'de' ? dec(n.toFixed(2)) + '<span class="cur">&#8239;€</span>' : '<span class="cur">€</span>' + dec(n.toFixed(2));
+  };
+  var fmtSize = function (s) { return dec(String(s).trim().replace(/\s*(c?l)$/i, function (m, u) { return ' ' + u.toLowerCase(); })); };
+  var fixQuotes = function (s) { return s.replace(/„([^„“"]+)[„"“]/g, '„$1“'); };
+  var nameHTML = function (n) { return esc(n).replace(/\*/g, '<span class="ast">*</span>'); };
+  var tt = function (k, o) { var s = FR.t(k); for (var x in o) s = s.split('{' + x + '}').join(o[x]); return s; };
+  var groupTitle = function (g) { return FR.lang === 'en' ? g.en : g.de; };
+  var titleHTML = function (t) {
+    var w = t.split(' ');
+    if (w.length < 2) return esc(t);
+    var last = w.pop();
+    return esc(w.join(' ')) + ' <b>' + esc(last) + '</b>';
+  };
+
+  /* ---------- Daten aufbereiten ---------- */
+  function prepItem(it, s, g) {
+    var name = String(it.name || '').trim(), size = it.size || '';
+    var flags = {}; (it.flags || []).forEach(function (f) { flags[f] = 1; });
+    if (/\[chili[^\]]*\]/i.test(name)) flags.scharf = 1;
+    if (/\[vegan[^\]]*\]/i.test(name)) flags.vegan = 1;
+    name = name.replace(/\s*\[[^\]]*\]\s*/g, ' ').trim();
+    var m = name.match(/\s+(\d+(?:[.,]\d+)?\s*c?l)\s*(\/)?\s*$/i);
+    if (m) { name = name.slice(0, m.index).trim(); size = m[2] ? m[1] + ' / ' + size : (size || m[1]); }
+    name = fixQuotes(name);
+    var desc = fixQuotes(String(it.desc || '').replace(/\[([^\]]+)\]/g, '$1').replace(/[\s,;]+$/, '').trim());
+    var steep = '', tm = desc.match(/^(\d+\s*[-–]\s*\d+\s*min)\s*[—–-]\s*["„“]?([\s\S]*?)["“”]?\s*$/);
+    if (tm) { steep = tm[1].replace(/\s*[-–]\s*/, '–'); desc = tm[2].trim(); }
+    if (!flags.scharf && SPICY.test(name + ' ' + desc)) flags.scharf = 1;
+    var prices = String(it.price || '').split('/').map(function (p) { return p.trim(); }).filter(Boolean);
+    var sizes = size ? String(size).split('/').map(function (x) { return x.trim(); }).filter(Boolean) : [];
+    if (prices.length > 1 && sizes.length !== prices.length && s.note && SIZES_RE.test(s.note)) sizes = s.note.split('/').map(function (x) { return x.trim(); });
+    var als = []; (it.allergens || []).forEach(function (a) { a = String(a).trim().toUpperCase(); if (a && als.indexOf(a) < 0) als.push(a); }); als.sort();
+    var extras = (it.extras || []).map(function (e) { return { name: String(e.name || '').replace(/^dazu\s+/i, '').trim(), price: e.price }; });
+    var o = {
+      name: name, desc: desc, steep: steep, prices: prices, sizes: sizes, als: als, extras: extras,
+      vegan: !!flags.vegan, veg: !!(flags.veg || flags.vegan), hot: !!flags.scharf,
+      sig: !!it.signature || /freiraum/i.test(name) || SIG_NAMES.test(name)
+    };
+    o.mp = prices.length > 1;
+    o.k = norm([name, desc, s.title, g.de, g.en, extras.map(function (e) { return e.name; }).join(' '), o.vegan ? 'vegan' : '', o.veg ? 'vegetarisch vegetarian veggie' : '', o.hot ? 'scharf spicy' : '', o.sig ? 'signature' : ''].join(' '));
+    return o;
+  }
+  function prep(raw) {
+    var used = {};
+    (raw.allergenLegend || []).forEach(function (s) { var m = String(s).match(/^\s*([A-Z])\s*[-–:]\s*(.+)$/); if (m) AL[m[1]] = m[2].trim(); });
+    var groups = raw.groups.map(function (g) {
+      var seen = [], sections = [];
+      g.sections.forEach(function (s) {
+        var sig = s.title + '§' + s.items.map(function (i) { return i.name; }).join('|');
+        if (seen.indexOf(sig) >= 0) return; // doppelte Abschnitte (z. B. „Smoothies“) nur einmal
+        seen.push(sig);
+        var items = s.items.map(function (it) { var o = prepItem(it, s, g); o.als.forEach(function (a) { used[a] = 1; }); return o; });
+        var fns = (s.footnotes || []).filter(function (f) { return g.id === 'fruehstueck' || !/Frühstücksangebot/.test(f); });
+        sections.push({ title: s.title, note: s.note || '', items: items, fns: fns });
+      });
+      var n = sections.reduce(function (a, s) { return a + s.items.length; }, 0);
+      return { id: g.id, de: g.de, en: g.en, sections: sections, n: n };
+    });
+    // Österreichische Codex-Buchstaben: Sellerie = L (im PDF als „I“ gedruckt)
+    if (used.L && !AL.L && AL.I) { AL.L = AL.I; if (!used.I) delete AL.I; }
+    return groups;
+  }
+
+  /* ---------- Rendern ---------- */
+  function imgTag(n, sizes, eager) {
+    var im = IMG[n], b = 'assets/img/' + n;
+    return '<img src="' + b + '-s.webp" srcset="' + b + '-s.webp 720w, ' + b + '.webp ' + im.w + 'w" sizes="' + sizes + '" alt="' + esc(im[FR.lang] || im.de) +
+      '" ' + (eager ? 'fetchpriority="high"' : 'loading="lazy"') + ' decoding="async" style="object-position:' + (im.pos || '50% 50%') + '">';
+  }
+  function alName(a) { return FR.lang === 'en' ? (AL_EN[a] || AL[a] || a) : (AL[a] || AL_EN[a] || a); }
+  function priceHTML(it) {
+    var pair = it.sizes.length === it.prices.length;
+    var h = it.prices.map(function (p, i) { return '<span class="pp">' + (pair ? '<span class="sz">' + esc(fmtSize(it.sizes[i])) + '</span>' : '') + money(p) + '</span>'; }).join('');
+    if (!pair && it.sizes.length) h = '<span class="pp"><span class="sz">' + esc(it.sizes.map(fmtSize).join(' / ')) + '</span></span>' + h;
+    return h;
+  }
+  function itemHTML(it) {
+    var h = '<li class="it' + (it.mp ? ' mp' : '') + '"><div class="it-r"><div class="it-t"><span class="nm">' + nameHTML(it.name) + '</span>';
+    if (it.sig) h += '<span class="sig"><svg class="ic" aria-hidden="true"><use href="#i-star"/></svg>' + esc(FR.t('sk.sig')) + '</span>';
+    if (it.vegan) h += ICON('i-leaf', 'leaf', FR.t('sk.sym.vegan'));
+    else if (it.veg) h += ICON('i-leaf-o', 'leaf', FR.t('sk.sym.veg'));
+    if (it.hot) h += ICON('i-chili', 'chili', FR.t('sk.sym.scharf'));
+    if (it.als.length) h += '<span class="als">' + it.als.map(function (a) { return '<button type="button" class="al" data-a="' + a + '" aria-label="' + esc(FR.t('sk.al.prefix') + ' ' + a + ': ' + alName(a)) + '">' + a + '</button>'; }).join('') + '</span>';
+    h += '</div><span class="lead" aria-hidden="true">&nbsp;</span><span class="price">' + priceHTML(it) + '</span></div>';
+    if (it.desc || it.steep) h += '<p class="it-d">' + (it.steep ? '<span class="steep" title="' + esc(FR.t('sk.steep')) + '"><svg class="ic" aria-hidden="true"><use href="#i-clock"/></svg>' + esc(it.steep) + '</span>' : '') + esc(it.desc) + '</p>';
+    if (it.extras.length) h += '<div class="ex"><span class="ex-l">' + esc(FR.t('sk.add')) + '</span>' + it.extras.map(function (e) { return '<span class="ex-i">' + esc(e.name) + ' <b>+' + num(e.price) + '</b></span>'; }).join('') + '</div>';
+    return h + '</li>';
+  }
+  function badgeHTML(id) {
+    var m = META[id]; if (!m || !m.time) return '';
+    return '<span class="tbadge" data-tb="' + id + '"><svg class="ic" aria-hidden="true"><use href="#i-clock"/></svg>' + esc(FR.t('sk.' + m.time)) + '<span class="tb-now"><i></i>' + esc(FR.t('sk.now')) + '</span></span>';
+  }
+  function groupHTML(g, gi) {
+    var m = META[g.id] || { t: 'peri', kind: 'food', img: [] };
+    var title = groupTitle(g), longest = Math.max.apply(null, title.split(' ').map(function (w) { return w.length; }));
+    var one = g.sections.length === 1;
+    var h = '<section class="grp t-' + m.t + (m.dark ? ' dark' : '') + '" id="' + g.id + '" aria-labelledby="h-' + g.id + '"><div class="wrap">';
+    h += '<header class="gh"><div class="gh-copy rv"><p class="eyebrow gh-eb"><span class="gh-n">' + String(gi + 1).padStart(2, '0') + '</span><span class="ln"></span><span>' + esc(FR.t('sk.kind.' + m.kind)) + '</span><span aria-hidden="true">·</span><span>' + esc(tt(m.kind === 'food' ? 'sk.cnt.food' : 'sk.cnt.drinks', { n: g.n })) + '</span></p>';
+    h += '<h2 class="gh-title' + (longest >= 12 ? ' long' : '') + '" id="h-' + g.id + '">' + titleHTML(title) + '</h2>';
+    h += '<p class="gh-intro">' + esc(FR.t('sk.intro.' + g.id)) + '</p>';
+    var b = badgeHTML(g.id); if (b) h += '<div class="gh-badges">' + b + '</div>';
+    h += '</div>';
+    if (m.img && m.img.length) {
+      h += '<div class="gp rv rv-d1' + (m.img.length === 1 ? ' solo' : '') + '">' + m.img.map(function (n, i) {
+        return '<figure>' + imgTag(n, i === 0 ? '(min-width:1000px) 310px, (min-width:700px) 56vw, 92vw' : '(min-width:1000px) 210px, 40vw', false) + '</figure>';
+      }).join('') + '</div>';
+    }
+    h += '</header><div class="sheet"><div class="secs' + (one ? ' one' : '') + '">';
+    g.sections.forEach(function (s) {
+      var showTitle = !(one && norm(s.title) === norm(g.de));
+      h += '<div class="sec">';
+      if (showTitle || s.note) {
+        h += '<div class="sec-h">' + (showTitle ? '<h3 class="pill">' + esc(s.title) + '</h3>' : '<h3 class="sr-only">' + esc(title) + '</h3>') + (s.note ? '<span class="sec-note">' + esc(s.note) + '</span>' : '') + '</div>';
+      }
+      h += '<ul class="items">' + s.items.map(itemHTML).join('') + '</ul>';
+      s.fns.forEach(function (f) { h += '<p class="fn">' + esc(f) + '</p>'; });
+      h += '</div>';
+    });
+    return h + '</div></div></div></section>';
+  }
+  function renderMenu(animate) {
+    menuEl.innerHTML = DATA.map(groupHTML).join('');
+    menuEl.removeAttribute('aria-busy');
+    // Referenzen sammeln (gleiche Reihenfolge wie DATA)
+    var gEls = menuEl.querySelectorAll('.grp'), sEls = menuEl.querySelectorAll('.sec'), iEls = menuEl.querySelectorAll('.it');
+    var si = 0, ii = 0; ITEMS = [];
+    DATA.forEach(function (g, gi) {
+      g.el = gEls[gi];
+      g.sections.forEach(function (s) {
+        s.el = sEls[si++];
+        s.items.forEach(function (it) { it.el = iEls[ii++]; it.nmEl = it.el.querySelector('.nm'); it.hl = false; ITEMS.push(it); });
+      });
+    });
+    if (animate) FR.reveal(menuEl);
+    else menuEl.querySelectorAll('.rv').forEach(function (el) { el.classList.add('in'); });
+  }
+  function renderCats() {
+    catsEl.innerHTML = DATA.map(function (g) {
+      return '<a class="cat" href="#' + g.id + '" data-go="' + g.id + '" style="--dot:' + (META[g.id] || {}).dot + '"><i aria-hidden="true"></i>' + esc(FR.t('sk.short.' + g.id)) + '</a>';
+    }).join('');
+    DATA.forEach(function (g) { g.cat = catsEl.querySelector('[data-go="' + g.id + '"]'); });
+    curG = ''; spy();
+  }
+  function renderLegend() {
+    var keys = Object.keys(AL).sort();
+    $('#lgGrid').innerHTML = keys.map(function (a) { return '<li><span class="al" aria-hidden="true">' + a + '</span><span><span class="sr-only">' + a + ': </span>' + esc(alName(a)) + '</span></li>'; }).join('');
+    var sym = function (id, col, k) { return '<li><svg class="ic" aria-hidden="true" style="color:' + col + '"><use href="#' + id + '"/></svg>' + esc(FR.t(k)) + '</li>'; };
+    $('#lgSym').innerHTML = sym('i-leaf', '#2f9a52', 'sk.sym.vegan') + sym('i-leaf-o', '#2f9a52', 'sk.sym.veg') + sym('i-chili', '#d4462a', 'sk.sym.scharf') +
+      '<li><span class="sig" style="--sig-bg:#1f2741;--sig-fg:#fff;margin:0"><svg class="ic" aria-hidden="true"><use href="#i-star"/></svg>' + esc(FR.t('sk.sig')) + '</span>' + esc(FR.t('sk.sym.sig')) + '</li>';
+  }
+  function renderStats() {
+    $('#stats').innerHTML = tt('sk.stats', { g: DATA.length, n: TOTAL });
+  }
+
+  /* ---------- Zeit: Hinweis, Hero-Farbe, Schnellzugriff ---------- */
+  var mode = '';
+  function liveState() {
+    var v = FR.vienna(), open = FR.isOpen('venue', v);
+    var eve = open && (v.hf >= 17 || v.hf < 6);
+    return { v: v, open: open, eve: eve,
+      win: { fruehstueck: open && v.hf < 17 && FR.isOpen('kitchen', v), pizza: FR.isOpen('pizza', v), cocktails: eve } };
+  }
+  function countLabel(id) {
+    var g = DATA && DATA.filter(function (x) { return x.id === id; })[0], m = META[id];
+    if (!g) return FR.t('sk.kind.' + m.kind);
+    return tt(m.kind === 'food' ? 'sk.cnt.food' : 'sk.cnt.drinks', { n: g.n });
+  }
+  function renderBento(st) {
+    var set = st.eve ? BENTO.eve : BENTO.day;
+    $('#bentoCap').textContent = FR.t(st.eve ? 'sk.bento.eve' : 'sk.bento.day');
+    $('#bento').innerHTML = set.map(function (p, i) {
+      var id = p[0], n = p[1], im = IMG[n], b = 'assets/img/' + n, big = i === 0, m = META[id];
+      var sub = m.time ? FR.t('sk.' + m.time) + ' · ' + countLabel(id) : countLabel(id);
+      return '<a class="tile' + (big ? ' big' : '') + '" href="#' + id + '" data-go="' + id + '">' +
+        '<img src="' + b + '-s.webp" srcset="' + b + '-s.webp 720w, ' + b + '.webp ' + im.w + 'w" sizes="' + (big ? '(min-width:1000px) 380px, 62vw' : '(min-width:1000px) 190px, 31vw') + '" alt="" ' + (big ? 'fetchpriority="high"' : 'loading="lazy"') + ' decoding="async" style="object-position:' + im.pos + '">' +
+        '<span class="tl">' + (big && st.win[id] ? '<span class="now"><i></i>' + esc(FR.t('sk.now')) + '</span>' : '') + '<small>' + esc(sub) + '</small><b>' + esc(FR.t('sk.short.' + id)) + '</b></span><span class="arr" aria-hidden="true">→</span></a>';
+    }).join('');
+  }
+  function updateTime(force) {
+    var st = liveState(), v = st.v;
+    // Live-Hinweis
+    var chip = $('#live'), t = chip.querySelector('.t');
+    chip.classList.toggle('closed', !st.open); chip.classList.toggle('eve', st.eve);
+    if (!st.open) { var next = FR.hours.venue[v.hf < 12 ? v.dow : (v.dow + 1) % 7][0]; t.textContent = tt('sk.live.closed', { t: FR.clock(next) }); }
+    else t.textContent = FR.t(st.eve ? 'sk.live.bar' : 'sk.live.breakfast');
+    // Hero-Farben nach Wiener Tageszeit
+    var p = FR.palette(v.hf < 6 ? v.hf + 24 : v.hf), hero = $('#top');
+    hero.style.setProperty('--h-bg', p.bg); hero.style.setProperty('--h-bg2', p.bg2); hero.style.setProperty('--h-fg', p.fg);
+    hero.classList.toggle('dark', p.dark);
+    // Schnellzugriff: abends zuerst die Bar
+    var mk = (st.eve ? 'eve' : 'day') + JSON.stringify(st.win) + FR.lang + (DATA ? 1 : 0);
+    if (force || mk !== mode) { mode = mk; renderBento(st); }
+    // „jetzt“-Badges in den Gruppen
+    document.querySelectorAll('[data-tb]').forEach(function (el) { el.classList.toggle('live', !!st.win[el.dataset.tb]); });
+  }
+
+  /* ---------- Suche & Filter ---------- */
+  function hl(name, terms) {
+    var map = [], ns = '';
+    for (var i = 0; i < name.length; i++) { var c = norm(name[i]); for (var j = 0; j < c.length; j++) map.push(i); ns += c; }
+    var R = [];
+    terms.forEach(function (t) { var from = 0, k; while (t && (k = ns.indexOf(t, from)) >= 0) { R.push([map[k], map[k + t.length - 1] + 1]); from = k + t.length; } });
+    if (!R.length) return nameHTML(name);
+    R.sort(function (a, b) { return a[0] - b[0]; });
+    var M = [R[0]]; R.slice(1).forEach(function (r) { var l = M[M.length - 1]; if (r[0] <= l[1]) l[1] = Math.max(l[1], r[1]); else M.push(r); });
+    var out = '', pos = 0;
+    M.forEach(function (r) { out += nameHTML(name.slice(pos, r[0])) + '<mark>' + nameHTML(name.slice(r[0], r[1])) + '</mark>'; pos = r[1]; });
+    return out + nameHTML(name.slice(pos));
+  }
+  function applyFilter() {
+    if (!DATA) return;
+    var terms = norm(state.q).split(/\s+/).filter(Boolean);
+    var fs = Object.keys(state.f).filter(function (k) { return state.f[k]; });
+    var active = !!(terms.length || fs.length), n = 0, gN = 0;
+    DATA.forEach(function (g) {
+      var gc = 0;
+      g.sections.forEach(function (s) {
+        var sc = 0;
+        s.items.forEach(function (it) {
+          var ok = true;
+          for (var i = 0; i < fs.length && ok; i++) ok = fs[i] === 'vegan' ? it.vegan : fs[i] === 'veg' ? it.veg : fs[i] === 'scharf' ? it.hot : true;
+          for (var j = 0; j < terms.length && ok; j++) ok = it.k.indexOf(terms[j]) >= 0;
+          it.el.classList.toggle('x', !ok);
+          if (ok && terms.length) { it.nmEl.innerHTML = hl(it.name, terms); it.hl = true; }
+          else if (it.hl) { it.nmEl.innerHTML = nameHTML(it.name); it.hl = false; }
+          if (ok) sc++;
+        });
+        s.el.classList.toggle('x', !sc);
+        gc += sc;
+      });
+      g.el.classList.toggle('x', !gc);
+      if (g.cat) g.cat.classList.toggle('off', active && !gc);
+      if (gc) gN++;
+      n += gc;
+    });
+    document.body.classList.toggle('filtering', active);
+    $('#empty').hidden = !(active && !n);
+    $('#clr').hidden = !state.q;
+    var st = $('#status');
+    if (active && n) {
+      st.innerHTML = '<span>' + tt('sk.res', { n: n, g: gN, w: FR.t(n === 1 ? 'sk.res.w1' : 'sk.res.wn'), k: FR.t(gN === 1 ? 'sk.res.k1' : 'sk.res.kn') }) + '</span><button type="button" class="linkbtn" data-reset>' + esc(FR.t('sk.reset')) + '</button>';
+    } else st.innerHTML = '';
+    curG = ''; spy();
+  }
+  var qT = 0;
+  qEl.addEventListener('input', function () { clearTimeout(qT); qT = setTimeout(function () { state.q = qEl.value; applyFilter(); }, 70); });
+  qEl.addEventListener('keydown', function (e) { if (e.key === 'Escape' && qEl.value) { qEl.value = ''; state.q = ''; applyFilter(); } });
+  $('#clr').addEventListener('click', function () { qEl.value = ''; state.q = ''; applyFilter(); qEl.focus(); });
+  document.querySelectorAll('.fchip[data-f]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var f = b.dataset.f, on = !state.f[f];
+      state.f[f] = on; b.setAttribute('aria-pressed', on ? 'true' : 'false');
+      FR.sound.play('ui_click', 0.3); applyFilter();
+    });
+  });
+  function resetAll() {
+    qEl.value = ''; state.q = ''; state.f = {};
+    document.querySelectorAll('.fchip[data-f]').forEach(function (b) { b.setAttribute('aria-pressed', 'false'); });
+    applyFilter();
+  }
+  document.addEventListener('click', function (e) { if (e.target.closest('[data-reset]')) { FR.sound.play('ui_click', 0.3); resetAll(); } });
+  var alToggle = $('#alToggle'), legend = $('#legend');
+  alToggle.addEventListener('click', function () {
+    var open = legend.hidden; legend.hidden = !open; alToggle.setAttribute('aria-expanded', open ? 'true' : 'false'); FR.sound.play('ui_click', 0.3);
+  });
+
+  /* ---------- Navigation: Sprung & Scroll-Spy ---------- */
+  var curG = '', lockUntil = 0;
+  var navH = function () { var n = document.querySelector('.nav'); return n ? n.offsetHeight : 68; };
+  function setActive(id) {
+    if (id === curG) return; curG = id;
+    catsEl.querySelectorAll('.cat').forEach(function (a) { if (a.dataset.go === id) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current'); });
+    var a = id && catsEl.querySelector('[data-go="' + id + '"]');
+    if (a) catsEl.scrollTo({ left: a.offsetLeft - (catsEl.clientWidth - a.offsetWidth) / 2, behavior: smooth() });
+  }
+  function spy() {
+    if (!DATA) return;
+    var top = catbar.getBoundingClientRect().top;
+    catbar.classList.toggle('stuck', top <= navH() + 0.5);
+    if (performance.now() < lockUntil) return;
+    var off = navH() + catbar.offsetHeight + 48, cur = '';
+    for (var i = 0; i < DATA.length; i++) {
+      var el = DATA[i].el; if (!el || el.classList.contains('x')) continue;
+      if (el.getBoundingClientRect().top - off <= 0) cur = DATA[i].id; else break;
+    }
+    setActive(cur);
+  }
+  function goTo(id, anim) {
+    var el = document.getElementById(id); if (!el) return;
+    var y = el.getBoundingClientRect().top + scrollY - navH() - catbar.offsetHeight + 2;
+    var sm = anim !== false && !FR.reduced;
+    lockUntil = performance.now() + (sm ? 1600 : 60);
+    setActive(id);
+    scrollTo({ top: Math.max(0, y), behavior: sm ? 'smooth' : 'auto' });
+    try { history.replaceState(null, '', '#' + id); } catch (e) {}
+  }
+  function toTools(focus) {
+    var y = $('#tools').getBoundingClientRect().top + scrollY - navH() - catbar.offsetHeight + 6;
+    lockUntil = performance.now() + 900;
+    scrollTo({ top: Math.max(0, y), behavior: smooth() });
+    if (focus) setTimeout(function () { qEl.focus({ preventScroll: true }); }, FR.reduced ? 0 : 420);
+  }
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest('[data-go]');
+    if (a) { e.preventDefault(); FR.sound.play('ui_click', 0.3); goTo(a.dataset.go); return; }
+    if (e.target.closest('.bento-all')) { e.preventDefault(); toTools(false); }
+  });
+  $('#toSearch').addEventListener('click', function () { FR.sound.play('ui_click', 0.3); toTools(true); });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === '/' && !/^(INPUT|TEXTAREA|SELECT)$/.test((document.activeElement || {}).tagName || '') && !e.metaKey && !e.ctrlKey) { e.preventDefault(); toTools(true); }
+  });
+  var raf = 0;
+  addEventListener('scroll', function () { if (!raf) raf = requestAnimationFrame(function () { raf = 0; spy(); }); hidePopIfMoved(); }, { passive: true });
+  addEventListener('scrollend', function () { lockUntil = 0; spy(); });
+  addEventListener('resize', function () { curG = ''; spy(); hidePop(); });
+
+  /* ---------- Allergen-Popover ---------- */
+  var pop = $('#alPop'), popFor = null, popY = 0, pinned = false;
+  function showPop(btn, pin) {
+    var a = btn.dataset.a;
+    if (popFor && popFor !== btn) popFor.classList.remove('on');
+    pop.innerHTML = '<b>' + esc(a) + '</b><span><small>' + esc(FR.t('sk.al.prefix')) + '</small>' + esc(alName(a)) + '</span>';
+    var r = btn.getBoundingClientRect(), pw = pop.offsetWidth, ph = pop.offsetHeight;
+    var x = Math.max(10, Math.min(innerWidth - pw - 10, r.left + r.width / 2 - pw / 2));
+    var y = r.top - ph - 12, below = false;
+    if (y < navH() + catbar.offsetHeight + 6) { y = r.bottom + 12; below = true; }
+    pop.style.left = x + 'px'; pop.style.top = y + 'px';
+    pop.style.setProperty('--ax', Math.max(14, Math.min(pw - 14, r.left + r.width / 2 - x)) + 'px');
+    pop.classList.toggle('below', below);
+    pop.classList.add('on'); btn.classList.add('on');
+    popFor = btn; popY = scrollY; pinned = !!pin;
+  }
+  function hidePop() { if (!popFor) return; pop.classList.remove('on'); popFor.classList.remove('on'); popFor = null; pinned = false; }
+  function hidePopIfMoved() { if (popFor && Math.abs(scrollY - popY) > 12) hidePop(); }
+  menuEl.addEventListener('click', function (e) {
+    var b = e.target.closest('button.al'); if (!b) return;
+    e.stopPropagation();
+    if (popFor === b && pinned) hidePop(); else { showPop(b, true); FR.sound.play('ui_click', 0.2); }
+  });
+  if (!FR.touch) {
+    menuEl.addEventListener('mouseover', function (e) { var b = e.target.closest('button.al'); if (b && !pinned) showPop(b, false); });
+    menuEl.addEventListener('mouseout', function (e) { var b = e.target.closest('button.al'); if (b && !pinned && popFor === b) hidePop(); });
+  }
+  menuEl.addEventListener('focusin', function (e) { var b = e.target.closest('button.al'); if (b && e.target.matches(':focus-visible')) showPop(b, false); });
+  menuEl.addEventListener('focusout', function (e) { if (e.target.closest('button.al') && !pinned) hidePop(); });
+  document.addEventListener('click', function (e) { if (popFor && !e.target.closest('button.al')) hidePop(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') hidePop(); });
+
+  /* ---------- Sprache / Demo-Uhr ---------- */
+  document.addEventListener('fr:lang', function () {
+    if (!DATA) { updateTime(true); return; }
+    renderMenu(false); renderCats(); renderLegend(); renderStats(); applyFilter(); updateTime(true);
+  });
+  document.addEventListener('fr:demo', function () { updateTime(true); });
+  setInterval(function () { updateTime(false); }, 60000);
+  updateTime(true);
+
+  /* ---------- Laden ---------- */
+  FR.json('data/menu.json').then(function (raw) {
+    DATA = prep(raw);
+    TOTAL = DATA.reduce(function (a, g) { return a + g.n; }, 0);
+    renderMenu(true); renderCats(); renderLegend(); renderStats(); updateTime(true);
+    var h = decodeURIComponent(location.hash.slice(1));
+    if (h && document.getElementById(h) && DATA.some(function (g) { return g.id === h; })) {
+      requestAnimationFrame(function () { requestAnimationFrame(function () { goTo(h, false); }); });
+    }
+    spy();
+  }).catch(function (err) {
+    menuEl.removeAttribute('aria-busy');
+    menuEl.innerHTML = '<div class="wrap empty"><p>Die Karte konnte nicht geladen werden. <a href="assets/pdf/speisekarte-2026.pdf">PDF öffnen</a></p></div>';
+    if (window.console) console.warn(err);
+  });
+})();
+</script>
+</body>
+</html>

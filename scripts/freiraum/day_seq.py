@@ -50,6 +50,20 @@ def background(rgb, m):
     return cv2.resize(small, (w, h), interpolation=cv2.INTER_CUBIC)
 
 
+def fill_holes(a, min_frac=0.004):
+    """Große geschlossene Löcher (Tellerinneres) deckend machen; kleine (Henkel) bleiben offen."""
+    solid = cv2.morphologyEx((a > 0.5).astype(np.uint8), cv2.MORPH_CLOSE, np.ones((9, 9), np.uint8))
+    n, lab, stats, _ = cv2.connectedComponentsWithStats(1 - solid, connectivity=4)
+    h, w = a.shape
+    edge = set(np.unique(np.concatenate([lab[0], lab[-1], lab[:, 0], lab[:, -1]])))
+    hole = np.zeros_like(a)
+    for i in range(1, n):
+        if i not in edge and stats[i, cv2.CC_STAT_AREA] >= min_frac * h * w:
+            hole[lab == i] = 1
+    hole = cv2.GaussianBlur(cv2.dilate(hole, np.ones((5, 5), np.uint8)), (0, 0), 1.5)
+    return np.maximum(a, hole)
+
+
 def matte(im, sess, bg):
     rgb = np.asarray(im.convert('RGB')).astype(np.float32)
     m = np.asarray(remove(im, session=sess, only_mask=True, post_process_mask=False)).astype(np.float32) / 255
@@ -65,13 +79,22 @@ def matte(im, sess, bg):
     else:
         # Tag: Objekt aus der Maske; dazu nur, was heller als der Hintergrund ist (Milch, Dampf)
         # oder dunkel UND farbig (Espresso-Strahl). Graue Schlagschatten bleiben draußen.
+        # weißes Porzellan (Teller, Tasse) ist neutral, der Hintergrund und seine warmen Schatten
+        # sind cremig-farbig (Sättigung > 20); daran erkennt man den Teller, den die Maske verliert
+        sat = rgb.max(-1) - rgb.min(-1)
+        neutral = np.clip((16 - sat) / 6, 0, 1) * np.clip((rgb.mean(-1) - 140) / 30, 0, 1)
+        m = np.maximum(m, neutral)
         bgimg = background(rgb, m)
         diff = (rgb - bgimg).mean(-1)
-        sat = rgb.max(-1) - rgb.min(-1)
         sat_bg = bgimg.max(-1) - bgimg.min(-1)
-        lighter = np.clip((diff - 8) / 30, 0, 1)
+        # heller UND weißer (Milch, Dampf); nur heller in Hintergrundfarbe ist Lichtkante des Schattens
+        lighter = np.clip((diff - 8) / 30, 0, 1) * np.clip((sat_bg - sat - 2) / 8, 0, 1)
         dark_col = np.clip((-diff - 20) / 40, 0, 1) * np.clip((sat - sat_bg - 15) / 40, 0, 1)
-        a = np.maximum(m, np.maximum(lighter, dark_col))
+        # weißes Porzellan (Teller, Tasse): fast weiß und deutlich weniger farbig als der cremige Hintergrund
+        white = np.clip((rgb.min(-1) - 222) / 14, 0, 1) * np.clip((sat_bg - sat - 6) / 10, 0, 1)
+        a = np.maximum(m, np.maximum(np.maximum(lighter, dark_col), white))
+        a = cv2.morphologyEx(a.astype(np.float32), cv2.MORPH_CLOSE, np.ones((5, 5), np.uint8))
+        a = fill_holes(a)
         fg = rgb
     a = np.asarray(Image.fromarray((np.clip(a, 0, 1) * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(0.6)))
     out = np.dstack([np.clip(fg, 0, 255), a]).astype(np.uint8)

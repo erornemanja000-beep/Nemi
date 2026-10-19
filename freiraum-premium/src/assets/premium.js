@@ -261,10 +261,10 @@
     const L = lum(st.bg1.map((v, k) => (v + st.bg2[k]) / 2));
     const t = smooth(clamp((L - 0.32) / 0.22));           // 0 = dunkel, 1 = hell
     isNight = t < 0.5;
-    const fg = CREAM.map((v, k) => lerp(v, NAVY[k], t));
+    const fg = CREAM.map((v, k) => lerp(v, NAVY[k], t)), fgi = NAVY.map((v, k) => lerp(v, CREAM[k], t));
     const acc = st.accent || DAY_ACC.map((v, k) => lerp(st.glow[k], v, t));
     const rs = document.documentElement.style;
-    rs.setProperty('--bg1', rgb(st.bg1)); rs.setProperty('--bg2', rgb(st.bg2)); rs.setProperty('--fg', rgb(fg));
+    rs.setProperty('--bg1', rgb(st.bg1)); rs.setProperty('--bg2', rgb(st.bg2)); rs.setProperty('--fg', rgb(fg)); rs.setProperty('--fgi', rgb(fgi));
     rs.setProperty('--glow', rgb(st.glow)); rs.setProperty('--accent', rgb(st.accent ? st.accent : acc));
     rs.setProperty('--moon', st.moon.toFixed(3)); rs.setProperty('--neon', st.neon.toFixed(3));
     rs.setProperty('--dsc', st.dsc.toFixed(3)); rs.setProperty('--dop', st.dop.toFixed(3)); rs.setProperty('--dy', (st.dy * H).toFixed(1) + 'px');

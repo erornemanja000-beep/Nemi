@@ -102,7 +102,15 @@ button{font:inherit;color:inherit;cursor:pointer}
 /* Instagram-Telefon */
 .phone{position:relative;width:min(300px,72vw);aspect-ratio:9/19.3;border-radius:44px;padding:10px;background:#0b0d14;box-shadow:0 40px 80px -30px rgba(10,12,20,.6),inset 0 0 0 2px #2a2e3c;transform-style:preserve-3d;transition:transform .8s var(--ease)}
 .phone .screen{position:relative;width:100%;height:100%;border-radius:35px;overflow:hidden;background:#000}
-.phone video,.phone .screen>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.phone .media{position:absolute;inset:0}
+.phone video,.phone .screen>img,.phone .media img,.phone .media video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.phone .ig-top .cnt{margin-left:auto;font-size:11px;font-weight:600;padding:3px 8px;border-radius:999px;background:rgba(0,0,0,.45)}
+.phone .ig-top .cnt:empty{display:none}
+.phone .ig-side .ic{display:grid;justify-items:center;gap:3px}
+.phone .ig-side .ic b{font-size:11.5px;font-weight:700;font-variant-numeric:tabular-nums;text-shadow:0 1px 4px rgba(0,0,0,.5)}
+.phone .ig-bottom .dots{display:flex;gap:4px;justify-content:center;margin-bottom:8px}
+.phone .ig-bottom .dots i{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.45)}
+.phone .ig-bottom .dots i.on{background:#fff}
 .phone .ig-top{position:absolute;inset:0 0 auto;padding:14px 14px 30px;display:flex;align-items:center;gap:8px;color:#fff;font-size:12.5px;font-weight:600;background:linear-gradient(rgba(0,0,0,.45),transparent);z-index:2}
 .phone .ig-top .av{width:26px;height:26px;border-radius:50%;background:#fff;display:grid;place-items:center;color:var(--navy-800);overflow:hidden}
 .phone .ig-top .av svg{width:22px}

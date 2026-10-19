@@ -5,7 +5,6 @@
 
 Fotografije -> img/<ime>.webp (do 1440 px) i img/<ime>-s.webp (720 px).
 Reelsi -> video/<ime>.mp4 (H.264 720p, faststart, sa zvukom) + video/<ime>.jpg (poster).
-Zvuk -> audio/*.mp3 (iz stage/audio).
 """
 import json
 import os
@@ -37,6 +36,9 @@ PHOTOS = {
     'cover-steak-welldone': 31, 'cover-kellner': 32, 'cover-cocktails': 38, 'cover-freund': 40,
     'cover-pov-tisch': 16, 'cover-einkaufen': 14, 'cover-maenner': 45, 'cover-bar-voll': 25,
     'rio': 'stage/img/rio_2x.png',
+    # echte Kaffee-Posts (für das Instagram-Telefon mit echten Zahlen)
+    'ig-roestraum-cup': 'ig/links/BuYKhT5B1ek_0.jpg', 'ig-souffle': 'ig/links/DCOwd_7NRSZ_0.jpg',
+    'ig-roestraum-board': 'ig/links/Bu8ie7OhXkE_0.jpg', 'ig-iced-coffee': 'ig/links/C9RqdOgs7Rf_0.jpg',
 }
 
 # ime: (putanja reela, lajkovi, opis)
@@ -79,7 +81,6 @@ def main(sp, assets):
     idx = json.load(open(os.path.join(sp, 'drive/sheets/index.json')))
     os.makedirs(os.path.join(assets, 'img'), exist_ok=True)
     os.makedirs(os.path.join(assets, 'video'), exist_ok=True)
-    os.makedirs(os.path.join(assets, 'audio'), exist_ok=True)
     for name, ref in PHOTOS.items():
         src = os.path.join(sp, 'drive/img', idx[str(ref)]) if isinstance(ref, int) else os.path.join(sp, ref)
         if not os.path.exists(src):
@@ -92,9 +93,6 @@ def main(sp, assets):
             reel(src, os.path.join(assets, 'video', name))
         else:
             print('FEHLT', name, src)
-    for f in os.listdir(os.path.join(sp, 'stage/audio')):
-        if f.endswith('.mp3') and not f.startswith('_'):
-            shutil.copy(os.path.join(sp, 'stage/audio', f), os.path.join(assets, 'audio', f))
     print('ok')
 
 

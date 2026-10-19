@@ -79,7 +79,7 @@
 /* Dunkel + Feuer */
 .fire .stage-bg{background:#0b0705}
 .fire .frame{background:#0b0705}
-.fire .frame canvas{clip-path:circle(var(--r,0%) at 50% 42%)}
+.fire .frame video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;clip-path:circle(var(--r,0%) at 50% 42%);transform:scale(var(--z,1))}
 .sparks{position:absolute;inset:0;width:100%;height:100%;z-index:2;pointer-events:none}
 .fire .dark-txt{position:absolute;inset:0;display:grid;place-items:center;color:#f3e7da;z-index:3;pointer-events:none}
 .fire .dark-txt .display{font-weight:200;font-size:clamp(44px,7vw,110px)}
@@ -115,7 +115,8 @@ html.xmas .xmas-card{display:block}
 .chapter .left .display{font-size:clamp(56px,8vw,132px);margin:10px 0 18px}
 .chapter .dishes{display:grid;gap:10px;margin-top:26px;max-width:460px}
 .chapter .right{display:grid;place-items:center;perspective:1200px}
-.chapter .ctl{display:flex;gap:8px;margin-top:16px;justify-content:center}
+.chapter .ctl{display:flex;gap:10px;margin-top:16px;justify-content:center;align-items:center}
+.chapter .ctl .pos{font-size:13px;font-weight:600;font-variant-numeric:tabular-nums;min-width:44px;text-align:center;opacity:.7}
 .chapter .ctl button{width:42px;height:42px;border-radius:50%;border:1px solid var(--line);background:color-mix(in srgb,var(--bg) 60%,#fff 40%);color:var(--fg)}
 .chapter .more{margin-top:22px;display:flex;gap:10px;flex-wrap:wrap}
 @media (max-width:899px){
@@ -225,8 +226,7 @@ section[id]{scroll-margin-top:var(--nav-h)}
     <span class="logo-mask" role="img" aria-label="frei raum"></span>
     <p class="eyebrow" id="startTitle" data-i18n="start.where">Mariahilfer Straße 117 · Wien · seit 2008</p>
     <div class="btns">
-      <button class="btn btn-light" id="withSound" data-hover><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 10v4h4l5 4V6L8 10H4z"/><path d="M16 9.5a3.5 3.5 0 0 1 0 5"/><path d="M18.5 7a7 7 0 0 1 0 10"/></svg><span data-i18n="start.sound">Mit Ton erleben</span></button>
-      <button class="btn btn-ghost" id="noSound" data-i18n="start.nosound">Ohne Ton</button>
+      <button class="btn btn-light" id="enter" data-hover data-i18n="start.enter">Eintreten</button>
     </div>
     <p class="hint" data-i18n="start.hint">Ein kurzer Spaziergang durch den Freiraum – scrollen genügt.</p>
   </div>
@@ -273,7 +273,7 @@ section[id]{scroll-margin-top:var(--nav-h)}
 <section class="scrolly fire" id="fire" style="height:420vh" aria-label="Echtes Feuer">
   <div class="sticky">
     <div class="stage-bg"></div>
-    <div class="frame" id="fireFrame"><canvas id="fireCv"></canvas><div class="shade"></div></div>
+    <div class="frame" id="fireFrame"><video id="fireVid" src="assets/video/feuer.mp4" poster="assets/video/feuer.jpg" muted loop playsinline preload="metadata"></video><div class="shade"></div></div>
     <canvas class="sparks" id="sparks"></canvas>
     <div class="dark-txt" id="darkTxt"><p class="display" data-i18n="f.then">Und dann …</p></div>
     <div class="overlay" id="fireOv">
@@ -526,7 +526,7 @@ const MOBILE = innerWidth < 900;
 /* ---------------- Texte ---------------- */
 FR.i18n.add({
   de: {
-    'start.where': 'Mariahilfer Straße 117 · Wien · seit 2008', 'start.sound': 'Mit Ton erleben', 'start.nosound': 'Ohne Ton',
+    'start.where': 'Mariahilfer Straße 117 · Wien · seit 2008', 'start.enter': 'Eintreten',
     'start.hint': 'Ein kurzer Spaziergang durch den Freiraum – scrollen genügt.', 'skip': 'Überspringen', 'scroll': 'Scrollen',
     'w1.eyebrow': 'Mariahilfer Straße 117 · 1060 Wien', 'w1.h': 'Willkommen im <b>Freiraum</b>.', 'w1.p': 'World Kitchen & Social Space – seit 2008 mitten auf der Mahü.',
     'w2.h': '<b>Frühstück</b>, täglich bis 17 Uhr.', 'w2.p': 'Mit Kaffee aus unserem eigenen Röstraum.',
@@ -564,7 +564,7 @@ FR.i18n.add({
     'phone.tap': 'Tippen für Ton', 'xmas.cap': 'Die Bären sind zurück – unser Weihnachts-Selfie-Spot auf der Mahü 🧸', 'b18.today': 'Heute · 18 Jahre!', 'vegan': 'vegan', 'veg': 'veggie', 'sig': 'Signature',
   },
   en: {
-    'start.where': 'Mariahilfer Straße 117 · Vienna · since 2008', 'start.sound': 'Experience with sound', 'start.nosound': 'Without sound',
+    'start.where': 'Mariahilfer Straße 117 · Vienna · since 2008', 'start.enter': 'Enter',
     'start.hint': 'A short walk through Freiraum – just scroll.', 'skip': 'Skip', 'scroll': 'Scroll',
     'w1.eyebrow': 'Mariahilfer Straße 117 · 1060 Vienna', 'w1.h': 'Welcome to <b>Freiraum</b>.', 'w1.p': 'World Kitchen & Social Space – right on Mariahilfer Straße since 2008.',
     'w2.h': '<b>Breakfast</b>, daily until 5 pm.', 'w2.p': 'With coffee from our own roastery.',
@@ -629,57 +629,92 @@ const IGSVG = {
   chat: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 12a8 8 0 0 1-11.6 7.1L4 20l.9-4.4A8 8 0 1 1 20 12z"/></svg>',
   send: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 3 10 14M21 3l-7 18-4-7-7-4z"/></svg>',
 };
+// Echte Beiträge von @freiraumwien mit echten Zahlen (Likes · Kommentare). null = nicht öffentlich bekannt.
 const PHONES = {
-  breakfast: { imgs: ['breakfast-1', 'breakfast-2', 'breakfast-3', 'breakfast-4', 'breakfast-5'], likes: 27, cap: 'So sieht ein guter Morgen aus ☀️' },
-  kitchen: { reels: [['reel-pasta', 61, 'Von der Küche auf den Teller 🍝 Frisch, hausgemacht, einfach gut.'], ['reel-steak', 62, 'Dieses Steak ist der Grund, warum wir keine Ausreden mehr brauchen 🥩'], ['reel-pizza-machen', 22, 'Dünner Boden, frische Zutaten, viel Liebe zum Detail 🍕'], ['reel-entenbrust', 28, 'Zarte Entenbrust, samtige Kirschsauce, knusprige Polenta']] },
-  coffee: { imgs: ['latte-herz', 'souffle', 'cheesecake', 'iced-coffee', 'latte-duo'], likes: 30, cap: 'Das Glück 🍀 ist nur ein Schoko-Soufflé entfernt.' },
-  drinks: { reels: [['reel-tapas', 28, 'Feierabend heißt bei uns: kleine Teller, große Genüsse 🍢🥂'], ['reel-bacon-trueffel', 30, 'Bacon trifft Trüffel 🍕'], ['reel-kuerbis', 26, 'Der Herbst schmeckt nach Kürbis 🎃']] },
-  night: { reels: [['reel-18-jahre', 45, '🎂 18 YEARS OF FREIRAUM! Wir werden volljährig …'], ['reel-wer-zahlt', 202, 'Wer zahlt bei euch das Essen im Restaurant? 👀']] },
-  event: { reels: [['reel-eventlocation', 155, 'Die perfekte Eventlocation in Wien? Hast du gerade gefunden!']] },
+  breakfast: [{ slides: ['breakfast-1', 'breakfast-2', 'breakfast-3', 'breakfast-4', 'breakfast-5'], likes: 27, comments: 0, cap: 'So sieht ein guter Morgen aus ☀️' }],
+  kitchen: [
+    { v: 'reel-pasta', likes: 61, comments: 2, cap: 'Von der Küche auf den Teller 🍝 Frisch, hausgemacht, einfach gut.' },
+    { v: 'reel-steak', likes: 62, comments: 3, cap: 'Dieses Steak ist der Grund, warum wir keine Ausreden mehr brauchen 🥩' },
+    { v: 'reel-pizza-machen', likes: 22, comments: 2, cap: 'Dünner Boden, frische Zutaten, viel Liebe zum Detail 🍕' },
+    { v: 'reel-entenbrust', likes: 28, comments: 0, cap: 'Zarte Entenbrust, samtige Kirschsauce, knusprige Polenta' },
+  ],
+  coffee: [
+    { img: 'ig-roestraum-cup', likes: 85, comments: null, cap: 'Need fresh energy? This will do ☝🏽🖤' },
+    { img: 'ig-souffle', likes: 30, comments: 1, cap: 'Das Glück 🍀 ist nur ein Schoko-Soufflé entfernt. 🍫' },
+    { img: 'ig-roestraum-board', likes: 54, comments: null, cap: 'Did you know we\'re roasting our own coffee? ☕' },
+    { img: 'ig-iced-coffee', likes: 16, comments: null, cap: 'Cool down with our iced coffee! 🌞🧊' },
+  ],
+  drinks: [
+    { v: 'reel-tapas', likes: 28, comments: 3, cap: 'Feierabend heißt bei uns: kleine Teller, große Genüsse 🍢🥂' },
+    { v: 'reel-bacon-trueffel', likes: 30, comments: 0, cap: 'Bacon trifft Trüffel 🍕' },
+    { v: 'reel-kuerbis', likes: 26, comments: 0, cap: 'Der Herbst schmeckt nach Kürbis 🎃' },
+  ],
+  night: [
+    { v: 'reel-18-jahre', likes: 45, comments: 5, cap: '🎂 18 YEARS OF FREIRAUM! Wir werden volljährig …' },
+    { v: 'reel-wer-zahlt', likes: 202, comments: 30, cap: 'Wer zahlt bei euch das Essen im Restaurant? 👀' },
+  ],
+  event: [{ v: 'reel-eventlocation', likes: 155, comments: 10, cap: 'Die perfekte Eventlocation in Wien? Hast du gerade gefunden!' }],
 };
+const fmtCount = (n) => n == null ? '' : n >= 1000 ? (n / 1000).toFixed(1).replace('.', FR.lang === 'de' ? ',' : '.') + 'k' : String(n);
 let activePhoneVideo = null;
 function buildPhone(host) {
-  const cfg = PHONES[host.dataset.phone]; if (!cfg) return;
-  const items = cfg.reels ? cfg.reels.map(([v, l, c]) => ({ v, l, c })) : cfg.imgs.map((i) => ({ i, l: cfg.likes, c: cfg.cap }));
-  let k = 0;
+  const items = PHONES[host.dataset.phone]; if (!items) return;
+  const hasVideo = items.some((it) => it.v);
+  let k = 0, slide = 0;
   host.innerHTML = `<div class="phone" data-hover><div class="screen"><div class="notch"></div>
-      <div class="ig-top"><span class="av">${FR.logo().replace('class="logo-mask', 'style="height:9px;width:22px" class="logo-mask')}</span>freiraumwien</div>
+      <div class="ig-top"><span class="av">${FR.logo().replace('class="logo-mask', 'style="height:9px;width:22px" class="logo-mask')}</span>freiraumwien<span class="cnt"></span></div>
       <div class="media"></div>
-      <div class="ig-side">${IGSVG.heart}<span class="lk"></span>${IGSVG.chat}${IGSVG.send}</div>
-      <div class="ig-bottom"><b>freiraumwien</b> <span class="cap"></span></div>
-      ${cfg.reels ? `<span class="sound-hint" data-i18n="phone.tap">${FR.t('phone.tap')}</span><button class="tap" aria-label="Video mit Ton abspielen"></button>` : ''}
-    </div></div>${items.length > 1 ? `<div class="ctl"><button aria-label="zurück">‹</button><button aria-label="weiter">›</button></div>` : ''}`;
-  const media = host.querySelector('.media'), lk = host.querySelector('.lk'), cap = host.querySelector('.cap'), phone = host.querySelector('.phone');
+      <div class="ig-side"><span class="ic">${IGSVG.heart}<b class="lk"></b></span><span class="ic">${IGSVG.chat}<b class="cm"></b></span><span class="ic">${IGSVG.send}</span></div>
+      <div class="ig-bottom"><div class="dots"></div><b>freiraumwien</b> <span class="cap"></span></div>
+      ${hasVideo ? `<span class="sound-hint" data-i18n="phone.tap">${FR.t('phone.tap')}</span><button class="tap" aria-label="Video mit Ton abspielen"></button>` : ''}
+    </div></div>${items.length > 1 ? `<div class="ctl"><button aria-label="zurück">‹</button><span class="pos"></span><button aria-label="weiter">›</button></div>` : ''}`;
+  const $h = (q) => host.querySelector(q);
+  const media = $h('.media'), phone = $h('.phone');
+  function paintSlide() {
+    const it = items[k], n = it.slides.length;
+    media.innerHTML = `<img src="${IMG(it.slides[slide])}" alt="" loading="lazy">`;
+    $h('.cnt').textContent = `${slide + 1}/${n}`;
+    $h('.dots').innerHTML = it.slides.map((_, i) => `<i class="${i === slide ? 'on' : ''}"></i>`).join('');
+  }
   function show(i) {
-    k = (i + items.length) % items.length;
+    k = (i + items.length) % items.length; slide = 0;
     const it = items[k];
-    lk.textContent = it.l >= 1000 ? (it.l / 1000).toFixed(1).replace('.', ',') + 'k' : it.l;
-    cap.textContent = it.c;
+    $h('.lk').textContent = fmtCount(it.likes);
+    $h('.cm').textContent = fmtCount(it.comments);
+    $h('.cap').textContent = it.cap;
+    $h('.cnt').textContent = ''; $h('.dots').innerHTML = '';
+    if ($h('.pos')) $h('.pos').textContent = `${k + 1} / ${items.length}`;
+    const hint = $h('.sound-hint'); if (hint) hint.style.display = it.v ? '' : 'none';
+    const tap = $h('.tap'); if (tap) tap.style.display = it.v ? '' : 'none';
     if (it.v) {
       media.innerHTML = `<video src="assets/video/${it.v}.mp4" poster="assets/video/${it.v}.jpg" muted loop playsinline preload="none"></video>`;
-      const vid = media.querySelector('video');
-      if (phone.dataset.visible === '1') vid.play().catch(() => {});
-    } else {
-      media.innerHTML = `<img src="${IMG(it.i)}" alt="" loading="lazy">`;
-    }
+      if (hint) hint.style.opacity = 1;
+      if (phone.dataset.visible === '1') media.querySelector('video').play().catch(() => {});
+    } else if (it.slides) paintSlide();
+    else media.innerHTML = `<img src="${IMG(it.img)}" alt="" loading="lazy">`;
   }
   show(0);
   const btns = host.querySelectorAll('.ctl button');
-  if (btns.length) { btns[0].onclick = () => { show(k - 1); FR.sound.play('ui_click', 0.3); }; btns[1].onclick = () => { show(k + 1); FR.sound.play('ui_click', 0.3); }; }
-  if (!cfg.reels) setInterval(() => phone.dataset.visible === '1' && show(k + 1), 2600);
-  const tap = host.querySelector('.tap');
+  if (btns.length) { btns[0].onclick = () => show(k - 1); btns[1].onclick = () => show(k + 1); }
+  // Karussell blättert selbst, Fotos wechseln selbst; Reels wechselt man mit ‹ ›
+  setInterval(() => {
+    if (phone.dataset.visible !== '1') return;
+    const it = items[k];
+    if (it.slides) { slide = (slide + 1) % it.slides.length; paintSlide(); }
+    else if (it.img) show(k + 1);
+  }, 2800);
+  const tap = $h('.tap');
   if (tap) tap.onclick = () => {
     const vid = media.querySelector('video'); if (!vid) return;
     if (activePhoneVideo && activePhoneVideo !== vid) activePhoneVideo.muted = true;
     vid.muted = !vid.muted; activePhoneVideo = vid;
     if (vid.paused) vid.play().catch(() => {});
-    host.querySelector('.sound-hint').style.opacity = vid.muted ? 1 : 0;
-    FR.sound.duck(!vid.muted);
+    $h('.sound-hint').style.opacity = vid.muted ? 1 : 0;
   };
   new IntersectionObserver(([e]) => {
     phone.dataset.visible = e.isIntersecting ? '1' : '0';
     const vid = media.querySelector('video');
-    if (vid) { if (e.isIntersecting) vid.play().catch(() => {}); else { vid.pause(); if (!vid.muted) { vid.muted = true; FR.sound.duck(false); host.querySelector('.sound-hint').style.opacity = 1; } } }
+    if (vid) { if (e.isIntersecting) vid.play().catch(() => {}); else { vid.pause(); if (!vid.muted) { vid.muted = true; $h('.sound-hint').style.opacity = 1; } } }
   }, { threshold: 0.35 }).observe(phone);
   if (!FR.touch) {
     phone.addEventListener('pointermove', (e) => { const r = phone.getBoundingClientRect(); const x = (e.clientX - r.left) / r.width - 0.5, y = (e.clientY - r.top) / r.height - 0.5; phone.style.transform = `rotateY(${x * 10}deg) rotateX(${-y * 8}deg)`; });
@@ -725,10 +760,10 @@ function drawCover(g, im, alpha = 1, scale = 1, oy = 0.5) {
 
 /* ---------------- Walk-in ---------------- */
 const SCENES = [
-  { seq: new Seq('fasada', 80), poster: 'assets/seq/fasada/poster.jpg', amb: 'amb_street', bg: '#cfd8df' },
-  { seq: new Seq('bar', 80), poster: 'assets/seq/bar/poster.jpg', amb: 'amb_cafe', bg: '#e9d2b8', sfx: ['door', 0.5], sfx2: ['espresso', 0.35] },
-  { seq: new Seq('sala', 80), poster: 'assets/seq/sala/poster.jpg', amb: 'amb_cafe', bg: '#dfe9e4', sfx: ['cup', 0.45] },
-  { seq: new Seq('lounge', 80), poster: 'assets/seq/lounge/poster.jpg', amb: 'amb_lounge', bg: '#f0c9a8', sfx: ['ice', 0.45] },
+  { seq: new Seq('fasada', 80), poster: 'assets/seq/fasada/poster.jpg', bg: '#cfd8df' },
+  { seq: new Seq('bar', 80), poster: 'assets/seq/bar/poster.jpg', bg: '#e9d2b8' },
+  { seq: new Seq('sala', 80), poster: 'assets/seq/sala/poster.jpg', bg: '#dfe9e4' },
+  { seq: new Seq('lounge', 80), poster: 'assets/seq/lounge/poster.jpg', bg: '#f0c9a8' },
 ];
 const walk = $('#walk'), walkCv = $('#walkCv'), walkG = walkCv.getContext('2d'), walkBg = $('#walkBg'), walkBlur = $('#walkBlur'), walkFlash = $('#walkFlash');
 const walkScenes = $$('#walkOv .scene');
@@ -755,9 +790,6 @@ function renderWalk() {
     walkScene = si;
     walkBg.style.setProperty('--sbg', cur.bg);
     walkBlur.style.backgroundImage = `url(${cur.poster})`;
-    if (cur.sfx) FR.sound.play(cur.sfx[0], cur.sfx[1]);
-    if (cur.sfx2) FR.sound.play(cur.sfx2[0], cur.sfx2[1], { delay: 1.2 });
-    if (inWalk) FR.sound.ambient(cur.amb, 0.22);
     if (nxt) loadSeq(nxt.seq);
   }
   walkScenes.forEach((s) => {
@@ -770,25 +802,21 @@ function renderWalk() {
 }
 
 /* ---------------- Dunkel & Feuer ---------------- */
-const fire = $('#fire'), fireCv = $('#fireCv'), fireG = fireCv.getContext('2d'), sparksCv = $('#sparks'), sg = sparksCv.getContext('2d');
-const PEC = new Seq('pec', 80);
+const fire = $('#fire'), fireVid = $('#fireVid'), sparksCv = $('#sparks'), sg = sparksCv.getContext('2d');
 const sparks = [];
-let lastDark = false, fireLit = false;
+let fireLit = false;
 function renderFire() {
   const p = sectionProgress(fire);
-  fitCanvas(fireCv);
-  // 0–.18 Dunkel + Text, .18–.32 Kreis öffnet sich, danach Feuer-Sequenz
+  // 0–.18 Dunkel + Text, .16–.34 Kreis öffnet sich, danach läuft das echte Video aus ihrem Reel
   const r = clamp((p - 0.16) / 0.18);
-  fireCv.style.setProperty('--r', (ease(r) * 85).toFixed(2) + '%');
-  fireG.clearRect(0, 0, fireCv.width, fireCv.height);
-  drawCover(fireG, PEC.nearest(clamp((p - 0.16) / 0.8) * (PEC.count - 1)), 1, 1.02 + 0.06 * p, 0.45);
+  fireVid.style.setProperty('--r', (ease(r) * 85).toFixed(2) + '%');
+  fireVid.style.setProperty('--z', (1.02 + 0.06 * p).toFixed(3));
   const dt = $('#darkTxt'); const da = clamp(p / 0.05) * clamp((0.2 - p) / 0.05);
   dt.style.opacity = da.toFixed(3); dt.style.transform = `scale(${1 + p * 0.3})`;
-  const dark = p > 0.01 && p < 0.25;
-  if (dark && !lastDark && inFire) FR.sound.play('switch', 0.5);
-  lastDark = dark;
-  if (r > 0.05 && !fireLit && inFire) { fireLit = true; FR.sound.play('fire_whoosh', 0.55); FR.sound.ambient('amb_fire', 0.2); }
-  if (r < 0.02) fireLit = false;
+  const lit = r > 0.02 && inFire;
+  if (lit && !fireLit) { fireVid.play().catch(() => {}); }
+  if (!lit && fireLit) fireVid.pause();
+  fireLit = lit;
   $$('#fireOv .scene').forEach((s) => { const a = sceneAlpha(p, +s.dataset.from, +s.dataset.to); s.style.opacity = a; s.style.visibility = a > 0.01 ? 'visible' : 'hidden'; s.style.transform = `translateY(${(1 - a) * 24}px)`; });
   sparkDensity = p < 0.6 ? 1 : 0.4;
 }
@@ -831,7 +859,6 @@ function renderDay() {
   if (s !== lastShown) { dayTime.textContent = s; lastShown = s; }
   $('#hHand').setAttribute('transform', `rotate(${(h % 12) * 30} 20 20)`);
   $('#mHand').setAttribute('transform', `rotate(${(h % 1) * 360} 20 20)`);
-  if (on && hh !== lastTickHour) { if (lastTickHour !== -1) FR.sound.play('clock_tick', 0.35); lastTickHour = hh; }
   // Flip 16:59 -> 17:00
   const fr = $('#flip').getBoundingClientRect(); const fp = clamp((innerHeight * 0.5 - fr.top) / fr.height);
   const after = fp > 0.3;
@@ -839,9 +866,7 @@ function renderDay() {
     flipDone = after;
     $('#dh').textContent = after ? '7' : '6'; $('#dm1').textContent = after ? '0' : '5'; $('#dm2').textContent = after ? '0' : '9';
     ['dh', 'dm1', 'dm2'].forEach((id) => { const e = $('#' + id); e.classList.remove('tick'); void e.offsetWidth; e.classList.add('tick'); });
-    if (after) { FR.sound.play('chime_17', 0.5); FR.sound.ambient('amb_lounge', 0.18); } else FR.sound.ambient('amb_cafe', 0.16);
   }
-  if (h >= 21 && FR.sound.ambName !== 'amb_night' && on) FR.sound.ambient('amb_night', 0.16);
 }
 
 /* ---------------- Willkommen: „Es ist 21:14 …“ ---------------- */
@@ -895,9 +920,9 @@ function renderReels() {
     const v = el.querySelector('video');
     el.querySelector('.play').onclick = () => {
       $$('#reels video').forEach((o) => { if (o !== v) { o.pause(); o.closest('.reel').classList.remove('playing'); } });
-      if (v.paused) { v.muted = false; v.play().catch(() => {}); el.classList.add('playing'); FR.sound.duck(true); } else { v.pause(); el.classList.remove('playing'); FR.sound.duck(false); }
+      if (v.paused) { v.muted = false; v.play().catch(() => {}); el.classList.add('playing'); } else { v.pause(); el.classList.remove('playing'); }
     };
-    v.onclick = () => { v.pause(); el.classList.remove('playing'); FR.sound.duck(false); };
+    v.onclick = () => { v.pause(); el.classList.remove('playing'); };
   });
 }
 
@@ -918,7 +943,7 @@ function renderHours() {
 
 /* ---------------- Zenchef ---------------- */
 const zen = $('#zenModal');
-function openZen() { const f = $('#zenFrame'); if (!f.src) f.src = 'https://bookings.zenchef.com/results?rid=371226&pid=1001&lang=' + FR.lang; zen.classList.add('open'); FR.sound.play('ui_click', 0.3); }
+function openZen() { const f = $('#zenFrame'); if (!f.src) f.src = 'https://bookings.zenchef.com/results?rid=371226&pid=1001&lang=' + FR.lang; zen.classList.add('open'); }
 $$('[data-zenchef]').forEach((b) => (b.onclick = openZen));
 $('#zenClose').onclick = () => zen.classList.remove('open');
 zen.addEventListener('click', (e) => { if (e.target === zen) zen.classList.remove('open'); });
@@ -927,9 +952,7 @@ document.addEventListener('keydown', (e) => e.key === 'Escape' && zen.classList.
 /* ---------------- Start & Sprüh-Intro ---------------- */
 const start = $('#start'), spray = $('#spray'), morph = $('#morph');
 let introDone = false;
-async function beginExperience(withSound) {
-  FR.sound.setEnabled(withSound);
-  if (withSound) { FR.sound.unlock(); FR.sound.preload(['spray_rattle', 'spray_hiss', 'amb_street', 'door', 'espresso', 'amb_cafe']); }
+async function beginExperience() {
   start.classList.add('gone');
   document.body.style.overflow = 'hidden';
   scrollTo(0, 0);
@@ -950,9 +973,7 @@ function runSpray() {
     const paths = sk.paths.slice().sort((a, b) => Math.min(...a.map((p) => p[0])) - Math.min(...b.map((p) => p[0])));
     const total = paths.reduce((s, p) => s + p.length, 0);
     const DUR = 2600; let t0 = 0, drawn = 0;
-    FR.sound.play('spray_rattle', 0.55);
-    await new Promise((r) => setTimeout(r, FR.sound.enabled ? 900 : 300));
-    FR.sound.play('spray_hiss', 0.4);
+    await new Promise((r) => setTimeout(r, 300));
     const pts = []; paths.forEach((pl, pi) => pl.forEach((p, i) => pts.push({ x: ox + p[0] * sc, y: oy + p[1] * sc, r: Math.max(2, p[2] * sc * 1.05), first: i === 0 })));
     const drips = [];
     function dot(x, y, r) {
@@ -999,7 +1020,6 @@ function morphToFacade(from) {
       morph.style.transform = `translate(${to.x}px,${to.y}px) scale(${s})`;
       morph.style.color = 'rgba(255,255,255,.0)';
       spray.style.transition = 'opacity 1.4s .2s'; spray.style.opacity = 0;
-      FR.sound.ambient('amb_street', 0.22);
       setTimeout(() => { endIntro(); resolve(); }, 1700);
     }));
   });
@@ -1008,10 +1028,9 @@ function endIntro() {
   introDone = true;
   spray.classList.remove('on'); spray.style.opacity = ''; morph.style.opacity = 0;
   document.body.style.overflow = '';
-  inWalk = true; FR.sound.ambient('amb_street', 0.22);
+  inWalk = true;
 }
-$('#withSound').onclick = () => beginExperience(true);
-$('#noSound').onclick = () => beginExperience(false);
+$('#enter').onclick = () => beginExperience();
 if (new URLSearchParams(location.search).get('skip') === '1' || location.hash) { start.classList.add('gone'); introDone = true; }
 
 
@@ -1027,7 +1046,6 @@ function confetti() {
     ps.forEach((p) => { p.vy += 0.35 * DPR; p.vx *= 0.99; p.x += p.vx; p.y += p.vy; p.a += p.va; g.save(); g.translate(p.x, p.y); g.rotate(p.a); g.fillStyle = p.c; g.fillRect(-p.r, -p.r / 2, p.r * 2, p.r); g.restore(); });
     if (++n < 260) requestAnimationFrame(f); else cv.remove();
   })();
-  FR.sound.play('confetti', 0.5);
 }
 function birthdayCheck() {
   const v = FR.vienna();
@@ -1041,10 +1059,7 @@ function birthdayCheck() {
 let inWalk = false, inFire = false;
 const io = new IntersectionObserver((es) => es.forEach((e) => {
   if (e.target === walk) inWalk = e.isIntersecting;
-  if (e.target === fire) { inFire = e.isIntersecting; if (e.isIntersecting) loadSeq(PEC); }
-  if (e.target === day && e.isIntersecting) FR.sound.ambient('amb_cafe', 0.14);
-  if (e.target.id === 'willkommen' && e.isIntersecting) FR.sound.ambient('amb_lounge', 0.12);
-  if (e.target.id === 'besuch' && e.isIntersecting) FR.sound.ambient('', 0);
+  if (e.target === fire) { inFire = e.isIntersecting; if (!e.isIntersecting) fireVid.pause(); }
 }), { threshold: 0 });
 [walk, fire, day, $('#willkommen'), $('#besuch')].forEach((el) => io.observe(el));
 const prog = $('#progress');
@@ -1078,7 +1093,6 @@ $$('.ev-type[data-type]').forEach((a) => a.addEventListener('click', () => { con
 const dIn = $('#ev-datum'); if (dIn) dIn.min = new Date().toISOString().slice(0, 10);
 document.addEventListener('fr:lang', () => { renderDishes(); renderEvents(); renderReels(); renderHours(); renderNow(); $$('[data-phone]').forEach(buildPhone); });
 document.addEventListener('fr:demo', () => { renderHours(); renderNow(); });
-document.addEventListener('fr:sound', (e) => { if (e.detail) FR.sound.ambient(inWalk ? SCENES[Math.max(0, walkScene)].amb : 'amb_cafe', 0.2); else FR.sound.ambient('', 0); });
 setInterval(renderNow, 30000);
 // erste Szene sofort, Rest nach und nach
 SCENES[0].seq.load(0).then(() => renderWalk());

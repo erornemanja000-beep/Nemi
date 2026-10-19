@@ -155,92 +155,12 @@
     return p;
   };
 
-  /* ---------------- Ton ---------------- */
-  const S = (FR.sound = { enabled: store.get('fr-sound', '0') === '1', ctx: null, bufs: {}, master: null, amb: null, ambName: '' });
+  /* ---------------- Ton ----------------
+     Effekte und Ambiente sind entfernt (Wunsch des Kunden). Reels haben ihren eigenen Ton per Tippen.
+     FR.sound bleibt als leeres Objekt, damit Seiten-Code nicht bricht. */
+  const S = (FR.sound = { enabled: false, ambName: '' });
   S.base = (document.querySelector('meta[name="fr-assets"]') || {}).content || 'assets/';
-  S.unlock = function () {
-    if (!S.ctx) {
-      const AC = window.AudioContext || window.webkitAudioContext;
-      if (!AC) return;
-      S.ctx = new AC();
-      S.master = S.ctx.createGain(); S.master.gain.value = S.enabled ? 1 : 0; S.master.connect(S.ctx.destination);
-    }
-    if (S.ctx.state === 'suspended') S.ctx.resume();
-  };
-  S.load = function (name) {
-    if (S.bufs[name]) return S.bufs[name];
-    S.bufs[name] = fetch(S.base + 'audio/' + name + '.mp3').then((r) => r.arrayBuffer())
-      .then((ab) => new Promise((res, rej) => S.ctx.decodeAudioData(ab, res, rej))).catch(() => null);
-    return S.bufs[name];
-  };
-  S.preload = function (names) { if (S.ctx) names.forEach(S.load); };
-  S.play = function (name, vol = 0.6, opts = {}) {
-    if (!S.enabled || !S.ctx) return;
-    S.load(name).then((b) => {
-      if (!b) return;
-      const src = S.ctx.createBufferSource(), g = S.ctx.createGain();
-      src.buffer = b; src.playbackRate.value = opts.rate || 1; g.gain.value = vol;
-      src.connect(g).connect(S.master); src.start(S.ctx.currentTime + (opts.delay || 0));
-    });
-  };
-  S.ambient = function (name, vol = 0.25, fade = 1.6) {
-    if (!S.ctx || name === S.ambName) { if (S.amb && name === S.ambName) S.amb.g.gain.setTargetAtTime(vol, S.ctx.currentTime, fade / 3); return; }
-    S.ambName = name;
-    const old = S.amb;
-    if (old) { old.g.gain.setTargetAtTime(0, S.ctx.currentTime, fade / 3); setTimeout(() => { try { old.src.stop(); } catch (e) {} }, fade * 1500); }
-    S.amb = null;
-    if (!name) return;
-    S.load(name).then((b) => {
-      if (!b || S.ambName !== name) return;
-      const src = S.ctx.createBufferSource(), g = S.ctx.createGain();
-      src.buffer = b; src.loop = true; g.gain.value = 0;
-      src.connect(g).connect(S.master); src.start();
-      g.gain.setTargetAtTime(vol, S.ctx.currentTime, fade / 3);
-      S.amb = { src, g };
-    });
-  };
-  S.duck = function (on) { if (S.amb && S.ctx) S.amb.g.gain.setTargetAtTime(on ? 0.04 : 0.25, S.ctx.currentTime, 0.3); };
-  S.setEnabled = function (on) {
-    S.enabled = on; store.set('fr-sound', on ? '1' : '0');
-    if (on) S.unlock();
-    if (S.master) S.master.gain.setTargetAtTime(on ? 1 : 0, S.ctx.currentTime, 0.15);
-    document.querySelectorAll('[data-sound-toggle]').forEach((b) => b.setAttribute('aria-pressed', on ? 'true' : 'false'));
-    document.dispatchEvent(new CustomEvent('fr:sound', { detail: on }));
-  };
-  // Offline (Datei direkt geöffnet): Browser erlauben dort kein fetch → einfache <audio>-Wiedergabe
-  if (location.protocol === 'file:') {
-    const url = (n) => S.base + 'audio/' + n + '.mp3';
-    const fadeTo = (a, v, ms = 1200, done) => {
-      const from = a.volume, t0 = performance.now();
-      const step = (t) => { const k = Math.min(1, (t - t0) / ms); a.volume = Math.max(0, Math.min(1, from + (v - from) * k)); if (k < 1) requestAnimationFrame(step); else done && done(); };
-      requestAnimationFrame(step);
-    };
-    S.unlock = () => {}; S.load = () => Promise.resolve(null); S.preload = () => {};
-    S.play = (name, vol = 0.6, opts = {}) => {
-      if (!S.enabled) return;
-      const a = new Audio(url(name)); a.volume = Math.min(1, vol); a.playbackRate = opts.rate || 1;
-      setTimeout(() => a.play().catch(() => {}), (opts.delay || 0) * 1000);
-    };
-    S.ambient = (name, vol = 0.25) => {
-      if (name === S.ambName) { if (S.amb) fadeTo(S.amb, S.enabled ? vol : 0, 600); return; }
-      S.ambName = name;
-      const old = S.amb; if (old) fadeTo(old, 0, 1200, () => old.pause());
-      S.amb = null;
-      if (!name) return;
-      const a = new Audio(url(name)); a.loop = true; a.volume = 0; S.amb = a; S.ambVol = vol;
-      if (S.enabled) { a.play().catch(() => {}); fadeTo(a, vol, 1500); }
-    };
-    S.duck = (on) => { if (S.amb) fadeTo(S.amb, on ? 0.03 : S.ambVol || 0.22, 300); };
-    S.setEnabled = (on) => {
-      S.enabled = on; store.set('fr-sound', on ? '1' : '0');
-      if (S.amb) { if (on) { S.amb.play().catch(() => {}); fadeTo(S.amb, S.ambVol || 0.22, 600); } else S.amb.pause(); }
-      document.querySelectorAll('[data-sound-toggle]').forEach((b) => b.setAttribute('aria-pressed', on ? 'true' : 'false'));
-      document.dispatchEvent(new CustomEvent('fr:sound', { detail: on }));
-    };
-  }
-  document.addEventListener('visibilitychange', () => { if (S.ctx) document.hidden ? S.ctx.suspend() : S.ctx.resume(); });
-  // jeder erste Klick entsperrt WebAudio (Browser-Regel)
-  addEventListener('pointerdown', () => S.enabled && S.unlock(), { once: true });
+  ['unlock', 'load', 'preload', 'play', 'ambient', 'duck', 'setEnabled'].forEach((k) => (S[k] = () => Promise.resolve(null)));
 
   /* ---------------- Navigation & Footer ---------------- */
   const ICON = {
@@ -253,7 +173,7 @@
   const style = document.createElement('style');
   const LOGO = window.FR_LOGO_URI || S.base + 'svg/logo-freiraum.svg';
   style.textContent = `.logo-mask{display:inline-block;aspect-ratio:2421/641;height:30px;background:currentColor;-webkit-mask:url("${LOGO}") center/contain no-repeat;mask:url("${LOGO}") center/contain no-repeat}
-  [data-sound-toggle][aria-pressed="false"] .w1,[data-sound-toggle][aria-pressed="false"] .w2{opacity:.15}`;
+`;
   document.head.appendChild(style);
 
   FR.mountChrome = function (opts = {}) {
@@ -269,7 +189,6 @@
       </ul>
       <div class="tools">
         <span class="chip jetzt" data-jetzt><span class="dot"></span><span class="t"></span></span>
-        <button class="icon-btn" data-sound-toggle aria-pressed="${S.enabled}" data-i18n-aria="nav.sound">${ICON.sound}</button>
         <button class="lang" type="button" aria-label="Sprache / Language"><span data-l="de">DE</span> / <span data-l="en">EN</span></button>
         <a class="btn btn-sm" href="${home}#besuch" data-reserve data-i18n="nav.reserve"></a>
         <button class="icon-btn burger" data-i18n-aria="nav.open">${ICON.burger}</button>
@@ -292,7 +211,6 @@
     ov.querySelector('.close').onclick = () => open(false);
     ov.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => open(false)));
     document.querySelectorAll('.lang').forEach((b) => (b.onclick = () => FR.setLang(FR.lang === 'de' ? 'en' : 'de')));
-    document.querySelectorAll('[data-sound-toggle]').forEach((b) => (b.onclick = () => FR.sound.setEnabled(!FR.sound.enabled)));
     if (opts.footer !== false) {
       const f = document.createElement('footer');
       f.className = 'footer';
@@ -399,14 +317,13 @@
     const cur = store.get('fr-demo-hour', '');
     d.innerHTML = `<b data-i18n="demo.time"></b><div class="row">${hours.map((h) => `<button data-h="${h}" class="${cur === h ? 'on' : ''}">${h ? h + ':00' : FR.t('demo.now')}</button>`).join('')}</div>
       <b data-i18n="demo.season"></b><div class="row"><button data-x="1" class="${store.get('fr-xmas', '') === '1' ? 'on' : ''}" data-i18n="demo.xmas"></button><button data-x="" class="${store.get('fr-xmas', '') === '' ? 'on' : ''}">Auto</button></div>
-      <b data-i18n="demo.lang"></b><div class="row"><button data-l2="de">DE</button><button data-l2="en">EN</button><button data-snd>♪</button><button data-close>×</button></div>`;
+      <b data-i18n="demo.lang"></b><div class="row"><button data-l2="de">DE</button><button data-l2="en">EN</button><button data-close>×</button></div>`;
     document.body.appendChild(d);
     d.addEventListener('click', (e) => {
       const b = e.target.closest('button'); if (!b) return;
       if ('h' in b.dataset) { store.set('fr-demo-hour', b.dataset.h); d.querySelectorAll('[data-h]').forEach((x) => x.classList.toggle('on', x === b)); FR.updateJetzt(); document.dispatchEvent(new CustomEvent('fr:demo', { detail: { hour: b.dataset.h } })); }
       if ('x' in b.dataset) { store.set('fr-xmas', b.dataset.x); d.querySelectorAll('[data-x]').forEach((x) => x.classList.toggle('on', x === b)); FR.xmas(); }
       if (b.dataset.l2) FR.setLang(b.dataset.l2);
-      if ('snd' in b.dataset) FR.sound.setEnabled(!FR.sound.enabled);
       if ('close' in b.dataset) { store.set('fr-demo', ''); d.remove(); }
     });
     FR.applyLang(d);
@@ -436,7 +353,7 @@
       const res = await FR.submit(type, data);
       if (btn) btn.disabled = false;
       const ok = document.createElement('div'); ok.className = 'form-ok'; ok.textContent = res.ok ? FR.t('form.sent') : FR.t('form.err');
-      form.replaceWith(ok); FR.sound.play('confetti', 0.4);
+      form.replaceWith(ok);
       onDone && onDone(res, ok);
     });
   };

@@ -14,7 +14,7 @@
 
   /* ---------------- Sprache ---------------- */
   const DICT = { de: {}, en: {} };
-  FR.lang = (qs.get('lang') || store.get('fr-lang', '') || (navigator.language || 'de').slice(0, 2)) === 'en' ? 'en' : 'de';
+  FR.lang = (qs.get('lang') || store.get('fr-lang', '') || 'de') === 'en' ? 'en' : 'de';   // Deutsch ist Standard
   FR.i18n = {
     add(d) { for (const l of ['de', 'en']) Object.assign(DICT[l], d[l] || {}); },
     t(key) { return DICT[FR.lang][key] ?? DICT.de[key] ?? key; },
@@ -141,8 +141,11 @@
     if (h > P[P.length - 1].h) h = P[P.length - 1].h;
     let i = 0; while (i < P.length - 2 && h > P[i + 1].h) i++;
     const a = P[i], b = P[i + 1], t = Math.min(1, Math.max(0, (h - a.h) / (b.h - a.h)));
-    const fg = mix(a.fg, b.fg, t), dark = hex(fg).reduce((s, v) => s + v, 0) > 600;
-    return { bg: mix(a.bg, b.bg, t), bg2: mix(a.bg2, b.bg2, t), fg, accent: mix(a.accent, b.accent, t), dark };
+    // Textfarbe nach echtem Kontrast zum Hintergrund (kein Grau beim Übergang)
+    const bg = mix(a.bg, b.bg, t), lum = hex(bg).map((v) => { v /= 255; return v <= 0.04 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; });
+    const L = 0.2126 * lum[0] + 0.7152 * lum[1] + 0.0722 * lum[2], dark = L < 0.22;
+    const fg = dark ? '#f6f4ff' : (hex(a.fg).reduce((s, v) => s + v, 0) > 600 ? b.fg : a.fg);
+    return { bg, bg2: mix(a.bg2, b.bg2, t), fg, accent: mix(a.accent, b.accent, t), dark };
   };
   FR.applyPhase = function (h, el) {
     const p = FR.palette(h), s = (el || document.documentElement).style;

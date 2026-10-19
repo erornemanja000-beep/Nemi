@@ -1,0 +1,4 @@
+node_modules
+.netlify
+dist
+__pycache__/

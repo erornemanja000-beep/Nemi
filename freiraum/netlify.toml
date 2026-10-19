@@ -1,0 +1,36 @@
+# Freiraum – Entwurf. Netlify-Projekt mit „Base directory“ = freiraum
+[build]
+  command = "python3 build.py"
+  publish = "dist"
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
+# Bilder, Bildsequenzen, Videos, Schriften: 1 Tag Cache
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Robots-Tag = "noindex"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+[[redirects]]
+  from = "/team"
+  to = "/team.html"
+  status = 200
+
+[[redirects]]
+  from = "/speisekarte"
+  to = "/speisekarte.html"
+  status = 200
+
+[[redirects]]
+  from = "/spielraum"
+  to = "/spielraum.html"
+  status = 200

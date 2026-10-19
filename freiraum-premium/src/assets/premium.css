@@ -376,9 +376,9 @@ main{position:relative;z-index:2}
   .num{font-size:96px}
   .stats{grid-template-columns:1fr 1fr;gap:28px 18px}
   .sec .head{grid-template-columns:1fr;gap:16px}
-  .reels{grid-template-columns:repeat(3,72vw);overflow-x:auto;scroll-snap-type:x mandatory;margin:0 calc(var(--gut) * -1);padding:0 var(--gut) 10px;scrollbar-width:none}
-  .reels::-webkit-scrollbar{display:none}
-  .reel{scroll-snap-align:center}
+  /* Telefon: Reels untereinander – weiter mit dem Skroll nach unten, wie überall sonst */
+  .reels{grid-template-columns:1fr;justify-items:center;gap:26px}
+  .reel{width:min(80vw,360px)}
   .card:nth-child(even){margin-top:0}
   .card{flex-basis:76vw}
   .intro{flex-basis:84vw}

@@ -37,12 +37,13 @@ def poster(mp4, at):
 def reporter(src, dst, d=0.5):
     a, b, x, y, w = REPORTER
     n = b - a - d
+    # Ton: Hauptteil und Anfang als eigene Eingänge – zweimal [0:a] im selben Graphen liefert keinen Ton
     f = (f'[0:v]trim={a + d}:{b},setpts=PTS-STARTPTS,{crop(x, y, w)}[m];'
          f'[0:v]trim={a}:{a + d},setpts=PTS-STARTPTS,{crop(x, y, w)}[h];'
          f'[m][h]xfade=transition=fade:duration={d}:offset={n - d:.2f}[v];'
-         f'[0:a]atrim={a + d}:{b},asetpts=PTS-STARTPTS[ma];[0:a]atrim={a}:{a + d},asetpts=PTS-STARTPTS[ha];'
-         f'[ma][ha]acrossfade=d={d}[au]')
-    run(['-i', src, '-filter_complex', f, '-map', '[v]', '-map', '[au]', *ENC, '-c:a', 'aac', '-b:a', '96k', dst])
+         f'[1:a][2:a]acrossfade=d={d},loudnorm=I=-16:TP=-1.5:LRA=11,aresample=48000[au]')
+    run(['-i', src, '-ss', str(a + d), '-t', f'{n:.2f}', '-i', src, '-ss', str(a), '-t', str(d), '-i', src,
+         '-filter_complex', f, '-map', '[v]', '-map', '[au]', *ENC, '-c:a', 'aac', '-b:a', '128k', dst])
     poster(dst, 4.0)
 
 

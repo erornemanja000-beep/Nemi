@@ -30,8 +30,13 @@ SUBPAGES = ['speisekarte.html', 'spielraum.html', 'datenschutz.html']
 for name in SUBPAGES:
     html = (v1 / name).read_text(encoding='utf-8')
     html = re.sub(r'''(["'`(])assets/''', r'\1shared/', html)
+    # auch die weiteren Kandidaten in srcset (Retina wählt die große Datei)
+    html = re.sub(r'srcset="[^"]*"', lambda m: re.sub(r'(,\s*)assets/', r'\1shared/', m.group(0)), html)
     if 'name="fr-assets"' not in html:
         html = html.replace('<meta charset="utf-8">', '<meta charset="utf-8">\n<meta name="fr-assets" content="shared/">', 1)
+    # ohne Team-Bereich: Demo-Hinweis nach dem Absenden ohne Link auf team.html
+    html = html.replace(' und ist im <a href="team.html">Team-Bereich</a> sichtbar.', '.')
+    html = html.replace(' and is visible in the <a href="team.html">team area</a>.', '.')
     if name != 'spielraum.html':   # Spielraum behält seine eigene bunte Welt
         html = html.replace('</head>', '<link rel="stylesheet" href="assets/menu-premium.css">\n</head>', 1)
     (site / name).write_text(html, encoding='utf-8')
@@ -45,6 +50,9 @@ for d in ('fonts', 'img', 'svg'):
     shutil.copytree(shared_src / d, shared / d)
 for f in ('site.js', 'site.css'):
     shutil.copy2(shared_src / f, shared / f)
+# Team-Login (team.html) gehört zur v1, nicht zur Premium-Version
+js = (shared / 'site.js').read_text(encoding='utf-8')
+(shared / 'site.js').write_text(js.replace('<p><a href="team.html" data-i18n="foot.team"></a></p>', ''), encoding='utf-8')
 (shared / 'video').mkdir(parents=True)
 for v in sorted(set(re.findall(r'(?:video/|v: *[\'"])(reel-[a-z0-9-]+|spiel-[a-z]+|feuer)', text))):
     for ext in ('.mp4', '.jpg'):

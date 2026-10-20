@@ -39,7 +39,10 @@ kruna (5 s, 1:1, početni = gotov burger, krajnji = burger sa krunom), 7 burgera
 Prva verzija smash klipa imala je sivu polugu iznad prese, zamenjena je verzijom sa rukom.
 
 ## Linkovi
-- Pregled (claude.ai Artifact, privatno, deli se preko Share): https://claude.ai/artifact/CAx6Fp8aYaWViyXgvx1fUv
+- **Za klijenta (GitHub Pages, javno, noindex): https://erornemanja000-beep.github.io/Nemi/smashking/**
+  Grana `gh-pages` sadrži samo sajt; obnavlja se sa `python3 smashking/build_pages.py <worktree-grane-gh-pages>`,
+  pa commit i push na `gh-pages` (GitHub objavi za 1–2 minuta).
+- Stariji pregled (claude.ai Artifact, privatno): https://claude.ai/artifact/CAx6Fp8aYaWViyXgvx1fUv
   Pravi se sa `python3 smashking/build_artifact.py <folder>` (King samo u jednom skupu kadrova, mapa kao link).
 - Netlify projekat `smashking-entwurf` napravljen, objava odbijena: „account credit usage exceeded“.
   Kad se krediti obnove: Base directory `smashking`, publish `src` (vidi `netlify.toml`).

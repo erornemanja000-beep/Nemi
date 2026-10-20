@@ -1,0 +1,22 @@
+# Smash King – Entwurf. Netlify-Projekt mit „Base directory“ = smashking, statische Seite ohne Build.
+[build]
+  publish = "src"
+  command = "echo 'Statische Seite - kein Build noetig'"
+
+# Bildfolgen, Bilder, Schriften: 1 Tag Cache
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Robots-Tag = "noindex"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+[[redirects]]
+  from = "/impressum"
+  to = "/impressum.html"
+  status = 200

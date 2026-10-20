@@ -44,6 +44,7 @@
       this.g = this.cv.getContext('2d');
       this.imgs = new Array(this.count);
       this.state = new Uint8Array(this.count);   // 0 nije, 1 učitava se, 2 spremno
+      this.tries = new Uint8Array(this.count);
       this.keys = (sec.dataset.keys || '0,0 1,1').split(' ').map((s) => s.split(',').map(Number));
       this.p = 0; this.target = 0; this.drawn = -1; this.top = 0; this.len = 1; this.near = true;
       this.layers = $$('.layer', sec).map((el) => ({ el, from: +el.dataset.from, to: +el.dataset.to, o: -1, own: el.classList.contains('smash-word') }));
@@ -56,7 +57,8 @@
         const im = new Image();
         im.decoding = 'async';
         im.onload = () => { this.imgs[i] = im; this.state[i] = 2; if (Math.abs(i - this.target) < 4) this.drawn = -1; res(); };
-        im.onerror = () => { this.state[i] = 0; res(); };
+        // prolazna greška servera (npr. 503 na GitHub Pages): još dva pokušaja
+        im.onerror = () => { this.state[i] = 0; res(); if (++this.tries[i] < 3) setTimeout(() => { Q.push([this, i]); pump(); }, 1500 * this.tries[i]); };
         im.src = this.src(i);
       });
     }

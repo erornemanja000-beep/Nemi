@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Smash King – Bester Smash Burger Wien · Viktor-Adler-Markt</title>
+<meta name="description" content="Smash King am Viktor-Adler-Markt, 1100 Wien: frisch gewolftes Rind, auf glühendem Stahl gesmasht. Halal, hausgemachte Saucen, handgemachte Buns.">
+<meta name="theme-color" content="#060403">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Smash King – Lang lebe der King">
+<meta property="og:description" content="Wiens Smash Burger vom Viktor-Adler-Markt. Außen Kruste, innen saftig.">
+<meta property="og:image" content="assets/img/og.jpg">
+<link rel="icon" type="image/png" href="assets/img/favicon.png">
+<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+<link rel="preload" href="assets/fonts/anton-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/seq/smash/d/0001.webp" as="image" media="(min-width: 821px)">
+<link rel="preload" href="assets/seq/smash/m/0001.webp" as="image" media="(max-width: 820px)">
+<link rel="stylesheet" href="assets/fonts.css">
+<link rel="stylesheet" href="assets/sk.css">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FastFoodRestaurant","name":"Smash King","servesCuisine":["Burger","Smash Burger"],
+ "address":{"@type":"PostalAddress","streetAddress":"Viktor-Adler-Markt 53/54","postalCode":"1100","addressLocality":"Wien","addressCountry":"AT"},
+ "geo":{"@type":"GeoCoordinates","latitude":48.17674,"longitude":16.37641},
+ "telephone":"+4316067467","email":"info@smash-king-burger.at","url":"https://www.smash-king-burger.at/",
+ "sameAs":["https://www.instagram.com/smashking_burger/"]}
+</script>
+</head>
+<body>
+<a class="skip" href="#karte" data-en="Skip to the menu">Zur Speisekarte springen</a>
+
+<div class="loader" id="loader" aria-hidden="true">
+  <img class="loader-emblem" src="assets/img/emblem.webp" alt="" width="180" height="219">
+  <div class="loader-bar"><i id="loaderBar"></i></div>
+  <p class="loader-txt" data-en="Heating up the griddle…">Die Platte wird vorgeheizt …</p>
+</div>
+
+<header class="nav" id="nav">
+  <a class="brand" href="#top" aria-label="Smash King – nach oben">
+    <img class="brand-emblem" src="assets/img/emblem.webp" alt="" width="44" height="54">
+    <img class="brand-word" src="assets/img/wordmark.png" alt="Smash King" width="96" height="44">
+  </a>
+  <nav class="nav-links" id="navLinks" aria-label="Hauptmenü">
+    <a href="#smash" data-en="The smash">Der Smash</a>
+    <a href="#king" data-en="The King">Der King</a>
+    <a href="#karte" data-en="Menu">Karte</a>
+    <a href="#besuch" data-en="Visit">Besuch</a>
+  </nav>
+  <div class="nav-actions">
+    <button class="lang" id="lang" type="button" aria-label="Sprache wechseln / switch language">EN</button>
+    <button class="btn btn-gold btn-sm" type="button" data-order data-en="Order">Bestellen</button>
+    <button class="burger-btn" id="menuBtn" type="button" aria-label="Menü öffnen" aria-expanded="false" aria-controls="navLinks">
+      <i></i><i></i><i></i>
+    </button>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- 1 · SMASH: Hand presst die Fleischkugel auf die Platte (Bildfolge am Scroll) -->
+  <section class="story story-smash" id="smash" data-seq="smash" data-count="121" data-fit="cover" style="--len:340">
+    <div class="stage">
+      <canvas class="seq-canvas" aria-hidden="true"></canvas>
+      <div class="shade shade-hero" aria-hidden="true"></div>
+
+      <div class="hero-copy layer" data-from="0" data-to=".19">
+        <p class="eyebrow"><span class="dot"></span> Viktor-Adler-Markt · 1100 Wien</p>
+        <h1 class="mega"><span class="mega-line">Smash</span><span class="mega-line">King<img class="mega-crown" src="assets/img/emblem.webp" alt="" width="90" height="110"></span></h1>
+        <p class="lead" data-en="Freshly ground beef, smashed on blazing-hot steel. Crispy outside, juicy inside – Vienna’s smash burger, straight from the market.">Frisch gewolftes Rind, auf glühendem Stahl gesmasht. Außen Kruste, innen saftig – Wiens Smash Burger, direkt vom Markt.</p>
+        <div class="cta-row">
+          <button class="btn btn-gold" type="button" data-order data-en="Order now">Jetzt bestellen</button>
+          <a class="btn btn-ghost" href="#karte" data-en="See the menu">Zur Karte</a>
+        </div>
+        <ul class="badges">
+          <li data-en="100% beef">100 % Rind</li>
+          <li class="badge-halal">Halal</li>
+          <li data-en="Ground fresh daily">Täglich frisch gewolft</li>
+        </ul>
+      </div>
+
+      <div class="smash-word layer" data-from=".2" data-to=".5" aria-hidden="true"><span id="smashWord">Smash!</span></div>
+
+      <div class="hero-copy hero-copy-2 layer" data-from=".56" data-to="1">
+        <p class="eyebrow" data-en="The technique">Die Technik</p>
+        <h2 class="big" data-en="Crust <em>outside.</em><br>Juicy inside.">Außen <em>Kruste.</em><br>Innen saftig.</h2>
+        <p class="lead" data-en="We press a ball of fresh beef flat onto the hot griddle. The juices caramelise on the surface – that’s the Maillard reaction, and it’s what you taste in every bite.">Wir pressen die Kugel aus frischem Rind flach auf die heiße Platte. Der Saft karamellisiert an der Oberfläche – das ist die Maillard-Reaktion, und die schmeckst du in jedem Bissen.</p>
+      </div>
+
+      <div class="scroll-cue layer" data-from="0" data-to=".08" aria-hidden="true"><span data-en="Scroll">Scrollen</span><i></i></div>
+    </div>
+  </section>
+
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker-track">
+      <span data-en="100% beef">100 % Rind</span><b>✦</b><span>Halal</span><b>✦</b><span data-en="Ground fresh daily">Täglich frisch gewolft</span><b>✦</b><span data-en="House-made sauces">Hausgemachte Saucen</span><b>✦</b><span data-en="Handmade buns">Handgemachte Buns</span><b>✦</b><span>Viktor-Adler-Markt</span><b>✦</b>
+      <span data-en="100% beef">100 % Rind</span><b>✦</b><span>Halal</span><b>✦</b><span data-en="Ground fresh daily">Täglich frisch gewolft</span><b>✦</b><span data-en="House-made sauces">Hausgemachte Saucen</span><b>✦</b><span data-en="Handmade buns">Handgemachte Buns</span><b>✦</b><span>Viktor-Adler-Markt</span><b>✦</b>
+    </div>
+  </div>
+
+  <!-- 2 · KING: Zutaten schweben, stapeln sich zum Burger, die Krone landet -->
+  <section class="story story-king" id="king" data-seq="king" data-count="196" data-fit="contain" data-keys="0,0 .16,.07 .58,.617 1,1" style="--len:460">
+    <div class="stage">
+      <div class="king-box">
+        <canvas class="seq-canvas" aria-hidden="true"></canvas>
+        <div class="callouts layer" data-from="0" data-to=".17" aria-hidden="true">
+          <span class="co" style="--y:.17;--x:.71"><b>Brioche Bun</b><em data-en="toasted">getoastet</em></span>
+          <span class="co" style="--y:.265;--x:.67"><b data-en="King sauce">King-Soße</b><em data-en="house-made">hausgemacht</em></span>
+          <span class="co" style="--y:.335;--x:.68"><b>Pickles</b><em data-en="crunchy">knackig</em></span>
+          <span class="co" style="--y:.41;--x:.69"><b data-en="Onions">Zwiebeln</b><em data-en="caramelised">karamellisiert</em></span>
+          <span class="co" style="--y:.49;--x:.73"><b>Cheddar</b><em data-en="melted">geschmolzen</em></span>
+          <span class="co" style="--y:.585;--x:.76"><b>2× Smash Patty</b><em data-en="100% beef">100 % Rind</em></span>
+        </div>
+      </div>
+
+      <div class="chap layer" data-from="0" data-to=".2">
+        <p class="eyebrow" data-en="Anatomy of a King">Anatomie eines Kings</p>
+        <h2 class="big" data-en="Every layer <em>counts.</em>">Jede Schicht <em>zählt.</em></h2>
+        <p class="lead" data-en="Soft brioche, house-made King sauce, pickles, caramelised onions, cheddar and two smash patties. None of it comes out of a freezer.">Weiches Brioche, hausgemachte King-Soße, Gurken, karamellisierte Zwiebeln, Cheddar und zwei Smash Patties. Nichts davon kommt aus der Tiefkühltruhe.</p>
+        <ul class="chips chips-mobile">
+          <li>Brioche</li><li data-en="King sauce">King-Soße</li><li>Pickles</li><li data-en="Onions">Zwiebeln</li><li>Cheddar</li><li>2× Patty</li>
+        </ul>
+      </div>
+
+      <div class="chap layer" data-from=".23" data-to=".56">
+        <p class="eyebrow" data-en="Made to order">Frisch auf Bestellung</p>
+        <h2 class="big" data-en="Smashed. <em>Stacked.</em>">Gesmasht. <em>Gestapelt.</em></h2>
+        <p class="lead" data-en="Every burger is built the moment you order – no heat lamp, no microwave. Two thin patties mean twice the crust.">Jeder Burger wird erst gebaut, wenn du bestellst – keine Wärmeplatte, keine Mikrowelle. Zwei dünne Patties heißt doppelte Kruste.</p>
+      </div>
+
+      <div class="chap chap-king layer" data-from=".6" data-to="1">
+        <p class="eyebrow">Viktor-Adler-Markt 53/54</p>
+        <h2 class="big" data-en="Long live the <em>King.</em>">Lang lebe der <em>King.</em></h2>
+        <p class="lead" data-en="Grab your smash burger at the market or have it delivered across Vienna.">Hol dir deinen Smash Burger am Markt oder lass ihn dir liefern.</p>
+        <div class="cta-row">
+          <button class="btn btn-gold" type="button" data-order data-en="Order now">Jetzt bestellen</button>
+          <a class="btn btn-ghost" href="#karte" data-en="All burgers">Alle Burger</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 · KARTE -->
+  <section class="section karte" id="karte">
+    <header class="sec-head reveal">
+      <p class="eyebrow" data-en="The menu">Die Karte</p>
+      <h2 class="big" data-en="Pick your <em>King.</em>">Wähl deinen <em>King.</em></h2>
+      <p class="lead" data-en="Seven burgers, all on brioche, all smashed fresh. Every burger also comes as a meal with fries and a drink of your choice.">Sieben Burger, alle auf Brioche, alle frisch gesmasht. Jeden Burger gibt’s auch als Menü – mit Pommes frites und Getränk nach Wahl.</p>
+    </header>
+
+    <div class="burgers" id="burgers">
+      <ol class="b-list">
+        <li class="b-item is-active">
+          <button class="b-btn" type="button">
+            <span class="b-no">01</span>
+            <span class="b-name">Hamburger</span>
+            <span class="b-tag" data-en="The classic">Der Klassiker</span>
+            <span class="b-ing" data-en="Smash patty, King sauce, pickles, onion">Smash Patty, King-Soße, eingelegte Gurken, Zwiebel</span>
+          </button>
+          <img class="b-img" src="assets/img/menu/hamburger-1000.webp" srcset="assets/img/menu/hamburger-560.webp 560w, assets/img/menu/hamburger-1000.webp 1000w" sizes="(max-width: 820px) 76vw, 44vw" alt="Hamburger" width="1000" height="1000" loading="lazy">
+        </li>
+        <li class="b-item">
+          <button class="b-btn" type="button">
+            <span class="b-no">02</span>
+            <span class="b-name">Cheeseburger</span>
+            <span class="b-tag" data-en="Most popular">Am beliebtesten</span>
+            <span class="b-ing" data-en="Smash patty, cheddar, King sauce, pickles, caramelised onion">Smash Patty, Cheddar, King-Soße, eingelegte Gurken, karamellisierte Zwiebel</span>
+          </button>
+          <img class="b-img" src="assets/img/menu/cheeseburger-1000.webp" srcset="assets/img/menu/cheeseburger-560.webp 560w, assets/img/menu/cheeseburger-1000.webp 1000w" sizes="(max-width: 820px) 76vw, 44vw" alt="Cheeseburger" width="1000" height="1000" loading="lazy">
+        </li>
+        <li class="b-item">
+          <button class="b-btn" type="button">
+            <span class="b-no">03</span>
+            <span class="b-name">Spicy Burger</span>
+            <span class="b-tag b-tag-hot" data-en="Hot">Scharf</span>
+            <span class="b-ing" data-en="Smash patty, cheddar, fresh jalapeños, caramelised onion, chilli mayo">Smash Patty, Cheddar, frische Jalapeños, karamellisierte Zwiebel, Chili-Mayo</span>
+          </button>
+          <img class="b-img" src="assets/img/menu/spicy-1000.webp" srcset="assets/img/menu/spicy-560.webp 560w, assets/img/menu/spicy-1000.webp 1000w" sizes="(max-width: 820px) 76vw, 44vw" alt="Spicy Burger" width="1000" height="1000" loading="lazy">
+        </li>
+        <li class="b-item">
+          <button class="b-btn" type="button">
+            <span class="b-no">04</span>
+            <span class="b-name">Prince Burger</span>
+            <span class="b-tag b-tag-gold" data-en="The royal one">Der Royale</span>
+            <span class="b-ing" data-en="Smash patty, cheddar, truffle dressing, lettuce, tomatoes">Smash Patty, Cheddar, Trüffel-Dressing, Salat, Tomaten</span>
+          </button>
+          <img class="b-img" src="assets/img/menu/prince-1000.webp" srcset="assets/img/menu/prince-560.webp 560w, assets/img/menu/prince-1000.webp 1000w" sizes="(max-width: 820px) 76vw, 44vw" alt="Prince Burger" width="1000" height="1000" loading="lazy">
+        </li>
+        <li class="b-item">
+          <button class="b-btn" type="button">
+            <span class="b-no">05</span>
+            <span class="b-name">BBQ Burger</span>
+            <span class="b-tag" data-en="Smoky">Rauchig</span>
+            <span class="b-ing" data-en="Smash patty, cheddar, barbecue sauce, pickles, onion rings">Smash Patty, Cheddar, Barbecuesoße, eingelegte Gurken, Onion Rings</span>
+          </button>
+          <img class="b-img" src="assets/img/menu/bbq-1000.webp" srcset="assets/img/menu/bbq-560.webp 560w, assets/img/menu/bbq-1000.webp 1000w" sizes="(max-width: 820px) 76vw, 44vw" alt="BBQ Burger" width="1000" height="1000" loading="lazy">
+        </li>
+        <li class="b-item">
+          <button class="b-btn" type="button">
+            <span class="b-no">06</span>
+            <span class="b-name">Crispy Chicken</span>
+            <span class="b-tag">Chicken</span>
+            <span class="b-ing" data-en="Crispy chicken patty, cheddar, coleslaw, sour cream, caramelised onion, pickles">Knuspriges Chicken Patty, Cheddar, Coleslaw, Sour Cream, karamellisierte Zwiebel, eingelegte Gurken</span>
+          </button>
+          <img class="b-img" src="assets/img/menu/crispy-1000.webp" srcset="assets/img/menu/crispy-560.webp 560w, assets/img/menu/crispy-1000.webp 1000w" sizes="(max-width: 820px) 76vw, 44vw" alt="Crispy Chicken Burger" width="1000" height="1000" loading="lazy">
+        </li>
+        <li class="b-item">
+          <button class="b-btn" type="button">
+            <span class="b-no">07</span>
+            <span class="b-name" data-en="Oyster Mushroom">Austernpilz</span>
+            <span class="b-tag b-tag-veg" data-en="Vegetarian">Vegetarisch</span>
+            <span class="b-ing" data-en="Crispy fried oyster mushrooms, cheddar, tomato, pickles, lettuce, curry mayo, truffle dressing">Knusprig frittierte Austernpilze, Cheddar, Tomate, eingelegte Gurken, Salat, Curry-Mayo, Trüffel-Dressing</span>
+          </button>
+          <img class="b-img" src="assets/img/menu/austernpilz-1000.webp" srcset="assets/img/menu/austernpilz-560.webp 560w, assets/img/menu/austernpilz-1000.webp 1000w" sizes="(max-width: 820px) 76vw, 44vw" alt="Austernpilz Burger" width="1000" height="1000" loading="lazy">
+        </li>
+      </ol>
+      <div class="b-stage" aria-hidden="true"><div class="b-glow"></div><div class="b-ring"></div></div>
+    </div>
+
+    <div class="deals reveal">
+      <article class="deal">
+        <p class="deal-kicker" data-en="Every burger">Jeder Burger</p>
+        <h3 data-en="As a <em>meal</em>">Als <em>Menü</em></h3>
+        <p data-en="With fries and a drink of your choice.">Mit Pommes frites und Getränk nach Wahl.</p>
+      </article>
+      <article class="deal deal-hot">
+        <p class="deal-kicker" data-en="Student deal">Schüler-Deal</p>
+        <h3 data-en="Burger, fries <em>&amp; iced tea</em>">Burger, Pommes <em>&amp; Eistee</em></h3>
+        <p data-en="Hamburger, fries and iced tea – the after-school deal. Ask at the counter.">Hamburger, Pommes und Eistee – der Deal nach der Schule. Frag einfach an der Theke.</p>
+      </article>
+    </div>
+
+    <div class="cats">
+      <article class="cat reveal">
+        <img class="cat-img" src="assets/img/menu/fries-560.webp" srcset="assets/img/menu/fries-560.webp 560w, assets/img/menu/fries-1000.webp 1000w" sizes="(max-width: 820px) 92vw, 30vw" alt="Smash Fries, Trüffel Fries und Chilli Cheese Fries" width="560" height="560" loading="lazy">
+        <h3>Fries</h3>
+        <ul class="items">
+          <li><b>Smash Fries</b><span data-en="King sauce, smash patty, caramelised onion">King-Soße, Smash Patty, karamellisierte Zwiebel</span></li>
+          <li><b data-en="Truffle Fries">Trüffel Fries</b><span data-en="Truffle mayo, parmesan">Trüffel-Mayo, Parmesan</span></li>
+          <li><b>Chilli Cheese Fries</b><span data-en="Cheddar, chilli mayo, jalapeños">Cheddar, Chili-Mayo, Jalapeños</span></li>
+          <li><b>Classic Fries</b><span data-en="Crispy and salted">Knusprig und gesalzen</span></li>
+        </ul>
+      </article>
+      <article class="cat reveal">
+        <img class="cat-img" src="assets/img/menu/fingerfood-560.webp" srcset="assets/img/menu/fingerfood-560.webp 560w, assets/img/menu/fingerfood-1000.webp 1000w" sizes="(max-width: 820px) 92vw, 30vw" alt="Chicken Stripes, Onion Rings, Mozzarella Sticks und Mexican Balls" width="560" height="560" loading="lazy">
+        <h3>Fingerfood</h3>
+        <ul class="items">
+          <li><b>Crispy Chicken Stripes</b><span data-en="4 pieces">4 Stück</span></li>
+          <li><b>Mexican Balls</b><span data-en="6 jalapeño cheese nuggets">6 Jalapeño-Cheese-Nuggets</span></li>
+          <li><b>Onion Rings</b><span data-en="6 pieces">6 Stück</span></li>
+          <li><b>Mozzarella Sticks</b><span data-en="6 pieces">6 Stück</span></li>
+        </ul>
+      </article>
+      <article class="cat reveal">
+        <img class="cat-img" src="assets/img/menu/pinsa-560.webp" srcset="assets/img/menu/pinsa-560.webp 560w, assets/img/menu/pinsa-1000.webp 1000w" sizes="(max-width: 820px) 92vw, 30vw" alt="Salami-Pinsa und Pasta Bolognese" width="560" height="560" loading="lazy">
+        <h3>Pinsa &amp; Pasta</h3>
+        <ul class="items">
+          <li><b>Pinsa</b><span>Margherita · Salami · <i data-en="Tuna">Thunfisch</i></span></li>
+          <li><b>Pasta</b><span>Bolognese · Carbonara · <i data-en="Tuna">Thunfisch</i></span></li>
+          <li><b data-en="Simply Italian">Ganz einfach</b><span>Pomodoro · Aglio e Olio</span></li>
+        </ul>
+      </article>
+      <article class="cat cat-small reveal">
+        <h3 data-en="Sweet">Süßes</h3>
+        <ul class="items">
+          <li><b>Profiterol</b><span data-en="Choux puffs filled with whipped cream and Nutella">Brandteig-Krapferl mit Schlagobers und Nutella</span></li>
+          <li><b>Cheesecake</b><span data-en="Creamy New York style on a crunchy biscuit base">Cremig, New-York-Art, auf knusprigem Keksboden</span></li>
+        </ul>
+        <h3 data-en="Sauces">Soßen</h3>
+        <p class="tags"><span data-en="King sauce">King-Soße</span><span data-en="Truffle mayo">Trüffel-Mayo</span><span data-en="Chilli mayo">Chili-Mayo</span><span>Sour Cream</span><span>Barbecue</span><span>Ketchup</span></p>
+        <h3 data-en="Drinks">Getränke</h3>
+        <p class="tags"><span>Coca-Cola</span><span>Coca-Cola Zero</span><span>Fanta</span><span>Sprite</span><span data-en="Iced tea peach">Eistee Pfirsich</span><span data-en="Iced tea lemon">Eistee Zitrone</span><span data-en="Mineral water">Mineralwasser</span></p>
+      </article>
+    </div>
+    <p class="karte-note reveal" data-en="Prices in the restaurant and on Wolt, Lieferando and foodora. Ask us about allergens.">Preise im Lokal und auf Wolt, Lieferando und foodora. Zu Allergenen beraten wir dich gern.</p>
+  </section>
+
+  <!-- 4 · VERSPRECHEN -->
+  <section class="section promise" id="qualitaet">
+    <div class="promise-grid">
+      <figure class="promise-photo reveal">
+        <img src="assets/img/burger-holz.webp" alt="Smash Burger mit doppeltem Patty, Cheddar und karamellisierten Zwiebeln" width="800" height="1000" loading="lazy">
+        <figcaption data-en="Double smashed, with cheddar and caramelised onions.">Doppelt gesmasht, mit Cheddar und karamellisierten Zwiebeln.</figcaption>
+      </figure>
+      <div class="promise-copy">
+        <header class="reveal">
+          <p class="eyebrow" data-en="The promise">Das Versprechen</p>
+          <h2 class="big" data-en="No <em>compromises.</em>">Keine <em>Kompromisse.</em></h2>
+        </header>
+        <ol class="pillars">
+          <li class="reveal"><span class="p-no">01</span><h3 data-en="100% beef">100 % Rind</h3><p data-en="Ground fresh every day, never frozen.">Jeden Tag frisch gewolft, nie tiefgefroren.</p></li>
+          <li class="reveal"><span class="p-no">02</span><h3 data-en="Handmade buns">Handgemachte Buns</h3><p data-en="Soft, fluffy and toasted just right.">Weich, fluffig und perfekt geröstet.</p></li>
+          <li class="reveal"><span class="p-no">03</span><h3 data-en="House-made sauces">Hausgemachte Saucen</h3><p data-en="Our own recipes, from spicy to creamy.">Eigene Rezepturen, von würzig bis cremig.</p></li>
+          <li class="reveal"><span class="p-no">04</span><h3>Halal</h3><p data-en="Our meat is halal.">Unser Fleisch ist halal.</p></li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 · BESUCH -->
+  <section class="section visit" id="besuch">
+    <header class="sec-head reveal">
+      <p class="eyebrow" data-en="Visit">Besuch</p>
+      <h2 class="big" data-en="Come to the <em>King.</em>">Komm zum <em>King.</em></h2>
+    </header>
+    <div class="visit-grid">
+      <div class="visit-card reveal">
+        <p class="open-state" id="openState"><i></i><span></span></p>
+        <address>
+          <b>Viktor-Adler-Markt 53/54</b><br>1100 Wien · Favoriten
+        </address>
+        <p class="muted" data-en="U1 Keplerplatz, a few minutes on foot.">U1 Keplerplatz, ein paar Minuten zu Fuß.</p>
+        <dl class="hours" id="hours">
+          <div><dt data-en="Mon – Sat">Mo – Sa</dt><dd>11:30 – 23:00</dd></div>
+          <div><dt data-en="Sun">So</dt><dd>11:30 – 21:00</dd></div>
+        </dl>
+        <div class="cta-row">
+          <a class="btn btn-gold" href="https://www.google.com/maps/dir/?api=1&amp;destination=Viktor-Adler-Markt+53,+1100+Wien" target="_blank" rel="noopener" data-en="Directions ↗">Route ↗</a>
+          <a class="btn btn-ghost" href="tel:+4316067467">01 606 74 67</a>
+        </div>
+        <p class="muted small"><a href="mailto:info@smash-king-burger.at">info@smash-king-burger.at</a></p>
+        <div class="deliver">
+          <p class="eyebrow" data-en="Delivered to your door">Geliefert</p>
+          <div class="deliver-row">
+            <a href="https://wolt.com/de/aut/vienna/restaurant/smash-king-vienna" target="_blank" rel="noopener">Wolt ↗</a>
+            <a href="https://www.lieferando.at/speisekarte/smash-king" target="_blank" rel="noopener">Lieferando ↗</a>
+            <a href="https://www.foodora.at/restaurant/fc2s/smash-king" target="_blank" rel="noopener">foodora ↗</a>
+          </div>
+        </div>
+      </div>
+      <div class="map reveal" id="map">
+        <div class="map-cover">
+          <img src="assets/img/lokal.webp" alt="Gastraum von Smash King" width="1360" height="765" loading="lazy">
+          <button class="btn btn-ghost map-load" type="button" id="mapLoad" data-en="Load map (OpenStreetMap)">Karte laden (OpenStreetMap)</button>
+        </div>
+      </div>
+      <figure class="visit-photo reveal">
+        <img src="assets/img/terrasse.webp" alt="Terrasse von Smash King am Viktor-Adler-Markt" width="765" height="1020" loading="lazy">
+      </figure>
+    </div>
+  </section>
+
+  <!-- 6 · INSTAGRAM -->
+  <section class="section insta reveal">
+    <a class="insta-link" href="https://www.instagram.com/smashking_burger/" target="_blank" rel="noopener">
+      <span class="eyebrow" data-en="Follow the King">Folge dem King</span>
+      <span class="insta-handle">@smashking_burger</span>
+      <span class="insta-arrow" aria-hidden="true">↗</span>
+    </a>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="fire" aria-hidden="true"><canvas id="fire"></canvas></div>
+  <div class="foot-top">
+    <img class="foot-word" src="assets/img/wordmark.png" alt="Smash King" width="180" height="83" loading="lazy">
+    <p class="foot-about" data-en="Smash King brings the original smash burger to Vienna. Fresh every day, for everyone who loves a real burger.">Smash King bringt das originale Smash-Burger-Erlebnis nach Wien. Täglich frisch, für alle, die echten Burgergeschmack zu schätzen wissen.</p>
+  </div>
+  <div class="foot-cols">
+    <div><h4 data-en="Visit">Besuch</h4><p>Viktor-Adler-Markt 53/54<br>1100 Wien</p></div>
+    <div><h4 data-en="Opening hours">Öffnungszeiten</h4><p><span data-en="Mon – Sat">Mo – Sa</span> 11:30 – 23:00<br><span data-en="Sun">So</span> 11:30 – 21:00</p></div>
+    <div><h4 data-en="Contact">Kontakt</h4><p><a href="tel:+4316067467">01 606 74 67</a><br><a href="mailto:info@smash-king-burger.at">info@smash-king-burger.at</a></p></div>
+    <div><h4 data-en="More">Mehr</h4><p><a href="https://www.instagram.com/smashking_burger/" target="_blank" rel="noopener">Instagram ↗</a><br><a href="impressum.html" data-en="Imprint &amp; privacy">Impressum &amp; Datenschutz</a></p></div>
+  </div>
+  <p class="foot-legal">© 2026 Smash King – Sezai Özyer e.U. <span class="draft" data-en="Draft · nemistudio">Entwurf · nemistudio</span></p>
+</footer>
+
+<div class="mobile-bar" id="mobileBar">
+  <a href="tel:+4316067467" aria-label="Anrufen"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z"/></svg></a>
+  <button class="btn btn-gold" type="button" data-order data-en="Order now">Jetzt bestellen</button>
+  <a href="https://www.google.com/maps/dir/?api=1&amp;destination=Viktor-Adler-Markt+53,+1100+Wien" target="_blank" rel="noopener" aria-label="Route"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg></a>
+</div>
+
+<dialog class="order" id="order" aria-labelledby="orderTitle">
+  <form method="dialog" class="order-inner">
+    <button class="order-x" value="close" aria-label="Schließen">×</button>
+    <img class="order-emblem" src="assets/img/emblem.webp" alt="" width="72" height="88">
+    <h2 id="orderTitle" data-en="How do you <em>want it?</em>">Wie hättest du’s <em>gern?</em></h2>
+    <p class="eyebrow" data-en="Delivery">Liefern lassen</p>
+    <div class="order-grid">
+      <a class="order-opt" href="https://wolt.com/de/aut/vienna/restaurant/smash-king-vienna" target="_blank" rel="noopener"><b>Wolt</b><span>↗</span></a>
+      <a class="order-opt" href="https://www.lieferando.at/speisekarte/smash-king" target="_blank" rel="noopener"><b>Lieferando</b><span>↗</span></a>
+      <a class="order-opt" href="https://www.foodora.at/restaurant/fc2s/smash-king" target="_blank" rel="noopener"><b>foodora</b><span>↗</span></a>
+    </div>
+    <p class="eyebrow" data-en="Pick up &amp; eat in">Abholen &amp; vor Ort</p>
+    <div class="order-grid order-grid-2">
+      <a class="order-opt" href="tel:+4316067467"><b data-en="Call">Anrufen</b><span>01 606 74 67</span></a>
+      <a class="order-opt" href="https://www.google.com/maps/dir/?api=1&amp;destination=Viktor-Adler-Markt+53,+1100+Wien" target="_blank" rel="noopener"><b>Route</b><span>Viktor-Adler-Markt</span></a>
+    </div>
+  </form>
+</dialog>
+
+<canvas class="fx" id="fx" aria-hidden="true"></canvas>
+<div class="grain" aria-hidden="true"></div>
+
+<script src="assets/sk.js" defer></script>
+</body>
+</html>

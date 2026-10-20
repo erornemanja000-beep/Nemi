@@ -37,6 +37,7 @@
       this.sec = sec;
       this.stage = $('.stage', sec);
       this.name = sec.dataset.seq;
+      this.set = sec.dataset.set || SET;   // data-set="d": isti kadrovi i za telefon (verzija za pregled)
       this.count = +sec.dataset.count;
       this.cover = sec.dataset.fit === 'cover';
       this.cv = $('.seq-canvas', sec);
@@ -47,7 +48,7 @@
       this.p = 0; this.target = 0; this.drawn = -1; this.top = 0; this.len = 1; this.near = true;
       this.layers = $$('.layer', sec).map((el) => ({ el, from: +el.dataset.from, to: +el.dataset.to, o: -1, own: el.classList.contains('smash-word') }));
     }
-    src(i) { return `assets/seq/${this.name}/${SET}/${String(i + 1).padStart(4, '0')}.webp`; }
+    src(i) { return `assets/seq/${this.name}/${this.set}/${String(i + 1).padStart(4, '0')}.webp`; }
     load(i) {
       if (this.state[i]) return Promise.resolve();
       this.state[i] = 1;
@@ -303,7 +304,8 @@
   dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
 
   /* ---------------- Karte erst auf Klick (DSGVO) ---------------- */
-  $('#mapLoad').addEventListener('click', () => {
+  const mapLoad = $('#mapLoad');
+  if (mapLoad) mapLoad.addEventListener('click', () => {
     const f = document.createElement('iframe');
     f.title = 'Karte: Smash King, Viktor-Adler-Markt 53/54';
     f.loading = 'lazy';

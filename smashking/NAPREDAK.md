@@ -38,6 +38,15 @@ Smash (8 s, 1080p), slaganje (8 s, 1:1, početni = eksplozija, krajnji = gotov b
 kruna (5 s, 1:1, početni = gotov burger, krajnji = burger sa krunom), 7 burgera + 3 kategorije.
 Prva verzija smash klipa imala je sivu polugu iznad prese, zamenjena je verzijom sa rukom.
 
+## Linkovi
+- Pregled (claude.ai Artifact, privatno, deli se preko Share): https://claude.ai/artifact/CAx6Fp8aYaWViyXgvx1fUv
+  Pravi se sa `python3 smashking/build_artifact.py <folder>` (King samo u jednom skupu kadrova, mapa kao link).
+- Netlify projekat `smashking-entwurf` napravljen, objava odbijena: „account credit usage exceeded“.
+  Kad se krediti obnove: Base directory `smashking`, publish `src` (vidi `netlify.toml`).
+- Figma (9 ekrana + stil): https://www.figma.com/design/FBLu10uyr2iMg8G1QmI2QF
+- Canva prezentacija za klijenta (DE): https://canva.link/z0ozech46fvkv9w
+- Artlist: potrošeno oko 5.460 kredita (6 slika, 4 videa, 10 fotki jela).
+
 ## Proveriti sa klijentom
 - **Radno vreme**: na starom sajtu tri verzije (Mo–Sa 11:30–21 / So –23; Mo–Sa –23 / So –21; schema 9–17).
   Trenutno: Mo–Sa 11:30–23:00, So 11:30–21:00 (`HOURS` u `sk.js` + tekst u `index.html`).

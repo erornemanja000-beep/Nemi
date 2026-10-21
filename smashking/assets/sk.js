@@ -126,6 +126,7 @@
       fitCanvas(S);
     });
     links.forEach((l) => { l.top = l.sec ? l.sec.offsetTop : Infinity; });
+    measureBurgers();
     fx.resize();
   }
   const progress = (S) => clamp((scrollY - S.top) / S.len);
@@ -263,34 +264,59 @@
     if (HERO.near) renderSmash(HERO.p);
     fx.amb = SEQS.some((S) => S.near && scrollY >= S.top - H * .3 && scrollY <= S.top + S.len) ? 1 : .18;
     fx.step();
-    if (scrollY !== last) { last = scrollY; renderNav(); }
+    if (scrollY !== last) { last = scrollY; renderNav(); renderBurgers(); }
     requestAnimationFrame(frame);
   }
 
-  /* ---------------- Karte: aktivni burger ---------------- */
+  /* ---------------- Karte: burger po burger na skrol ---------------- */
+  // Blok sa burgerima stoji (sticky) dok se skroluje kroz stazu #bTrack; svaki deo staze je jedan burger.
   const bItems = $$('.b-item');
-  const bWrap = $('#burgers'), bStage = $('.b-stage');
-  let bActive = 0;
-  // desktop: slika ide za izabranim burgerom, da ne ostane gore kad je lista duža od nje
-  function placeBurger() {
-    if (MOBILE || !bStage) return;
-    const li = bItems[bActive], img = bStage.offsetHeight;
-    const y = li.offsetTop + li.offsetHeight / 2 - img / 2;
-    bWrap.style.setProperty('--b-y', `${Math.round(Math.max(0, Math.min(y, bWrap.offsetHeight - img)))}px`);
+  const bTrack = $('#bTrack'), bView = $('.b-view'), bList = $('.b-list'), bStage = $('.b-stage');
+  const bNum = $('#bNum'), N = bItems.length;
+  const bT = { top: 0, len: 1, h0: 0 };
+  let bActive = -1;
+  bTrack.style.setProperty('--n', N);
+  $('#bTotal').textContent = String(N).padStart(2, '0');
+  // desktop: slike idu u desnu kolonu (u listi bi ih sekla maska i pomeranje liste)
+  const bImgs = bItems.map((li) => { const im = $('.b-img', li); if (!MOBILE) bStage.appendChild(im); return im; });
+
+  function measureBurgers() {
+    bT.top = bTrack.getBoundingClientRect().top + scrollY;
+    bT.len = Math.max(1, bTrack.offsetHeight - H);
+    const other = bItems.find((li, j) => j !== bActive) || bItems[0];
+    bT.h0 = other.offsetHeight;   // visina zatvorenog reda (svi neaktivni su iste visine)
+    if (bActive >= 0) centerList(bActive);
+  }
+  // desktop: lista se pomeri tako da aktivni red stoji u sredini; računa se iz konačnih visina,
+  // pa ne zavisi od animacije otvaranja sastojaka
+  function centerList(i) {
+    if (MOBILE) return;
+    const ing = $('.b-ing', bItems[i]);
+    const h1 = bT.h0 + ing.scrollHeight + 10;
+    const y = bView.clientHeight / 2 - (i * bT.h0 + h1 / 2);
+    bList.style.setProperty('--list-y', `${Math.round(y)}px`);
   }
   function setBurger(i) {
+    if (i === bActive) return;
     bActive = i;
-    bItems.forEach((li, j) => li.classList.toggle('is-active', i === j));
-    setTimeout(placeBurger, 60);
-    setTimeout(placeBurger, 650);   // posle otvaranja sastojaka (.b-ing) visine su konačne
+    bItems.forEach((li, j) => { li.classList.toggle('is-active', i === j); li.classList.toggle('is-past', j < i); });
+    bImgs.forEach((im, j) => im.classList.toggle('is-on', i === j));
+    bNum.textContent = String(i + 1).padStart(2, '0');
+    centerList(i);
   }
-  addEventListener('resize', placeBurger);
-  addEventListener('load', placeBurger);
+  // skrol -> burger; poziva se iz glavne petlje kad se skrol promeni
+  function renderBurgers() {
+    const p = clamp((scrollY - bT.top) / bT.len);
+    bTrack.style.setProperty('--b-p', p.toFixed(3));
+    bTrack.classList.toggle('is-done', p > .98);
+    setBurger(Math.min(N - 1, Math.floor(p * N)));
+  }
+  // klik ili tab na burger skroluje do njegovog dela staze
+  const goBurger = (i, smooth) => scrollTo({ top: bT.top + (i + .5) / N * bT.len, behavior: smooth && !REDUCED ? 'smooth' : 'auto' });
   bItems.forEach((li, i) => {
     const b = $('.b-btn', li);
-    b.addEventListener('pointerenter', () => { if (!MOBILE) setBurger(i); });
-    b.addEventListener('focus', () => setBurger(i));
-    b.addEventListener('click', () => setBurger(i));
+    b.addEventListener('click', () => goBurger(i, true));
+    b.addEventListener('focus', () => { if (i !== bActive) goBurger(i, false); });
   });
 
   /* ---------------- Reveal ---------------- */

@@ -183,10 +183,19 @@ em { font-style: italic; }
 .reveal.in { opacity: 1; transform: none; }
 
 /* KARTE */
-.karte { background: linear-gradient(180deg, var(--bg) 0%, var(--bg2) 30%, var(--bg2) 100%); overflow: hidden; }
+/* overflow: clip (a ne hidden) – hidden bi napravio novi skrol-kontejner i sticky blok sa burgerima ne bi stajao */
+.karte { background: linear-gradient(180deg, var(--bg) 0%, var(--bg2) 30%, var(--bg2) 100%); overflow: clip; }
 .karte::before { content: ''; position: absolute; inset: 0; background: url(img/rauch.webp) center/cover no-repeat; opacity: .12; mix-blend-mode: screen; pointer-events: none; }
-.burgers { position: relative; display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: 4vw; align-items: start; }
-.b-list { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+/* staza: jedan ekran + korak skrola po burgeru; blok .burgers stoji (sticky) dok se staza ne pređe */
+.b-track { position: relative; height: calc(100svh + (var(--n, 9) - 1) * var(--step, 42svh)); }
+.burgers {
+  position: sticky; top: 0; height: 100svh; display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: 4vw; align-items: center;
+  padding: calc(var(--nav-h) + 16px) 0 64px;
+}
+/* lista se pomera tako da aktivni burger uvek stoji u sredini prozora */
+.b-view { position: relative; height: 100%; overflow: hidden;
+  -webkit-mask-image: linear-gradient(transparent, #000 16%, #000 84%, transparent); mask-image: linear-gradient(transparent, #000 16%, #000 84%, transparent); }
+.b-list { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); transform: translateY(var(--list-y, 0px)); transition: transform .7s var(--ease); }
 .b-btn { position: relative; z-index: 2; }
 .b-item { border-bottom: 1px solid var(--line); }
 .b-btn {
@@ -205,18 +214,28 @@ em { font-style: italic; }
 .b-item.is-active .b-tag-hot { color: var(--ember); }
 .b-item.is-active .b-tag-veg { color: var(--veg); }
 .b-btn:hover .b-name { color: rgba(247, 236, 220, .75); }
-/* desktop: slike svih burgera leže jedna preko druge u desnoj koloni */
-.b-stage { grid-column: 2; grid-row: 1; aspect-ratio: 1; position: relative; transform: translateY(var(--b-y, 0px)); transition: transform .9s var(--ease); }
+/* desktop: slike svih burgera (JS ih premesti ovde) leže jedna preko druge u desnoj koloni */
+.b-stage { grid-column: 2; grid-row: 1; justify-self: center; position: relative; aspect-ratio: 1;
+  width: min(100%, calc(100svh - var(--nav-h) - 120px)); }
 .b-glow { position: absolute; inset: 8%; border-radius: 50%; background: radial-gradient(circle, rgba(255, 150, 40, .28), rgba(255, 91, 34, .08) 45%, transparent 70%); filter: blur(10px); animation: glow 5s ease-in-out infinite; }
 @keyframes glow { 50% { transform: scale(1.08); opacity: .8; } }
 .b-ring { position: absolute; inset: 4%; border-radius: 50%; border: 1px dashed rgba(255, 189, 58, .22); animation: spin 60s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
-.b-img {
-  position: absolute; z-index: 1; right: 0; top: var(--b-y, 0px); width: calc(6 / 11 * (100% - 4vw)); aspect-ratio: 1; height: auto; object-fit: cover;
+.b-stage .b-img {
+  position: absolute; z-index: 1; inset: 0; width: 100%; height: 100%; object-fit: cover;
   -webkit-mask-image: radial-gradient(closest-side, #000 72%, transparent 100%); mask-image: radial-gradient(closest-side, #000 72%, transparent 100%);
-  opacity: 0; transform: translateY(40px) scale(.9) rotate(-6deg); transition: opacity .55s, transform .9s var(--ease), top .9s var(--ease); pointer-events: none;
+  opacity: 0; transform: translateY(40px) scale(.9) rotate(-6deg); transition: opacity .55s, transform .9s var(--ease); pointer-events: none;
 }
-.b-item.is-active .b-img { opacity: 1; transform: none; }
+.b-stage .b-img.is-on { opacity: 1; transform: none; }
+.b-view .b-img { display: none; }   /* desktop: slike su u .b-stage; telefon ih prikazuje u kartici */
+/* brojač i traka napretka */
+.b-progress { position: absolute; left: 0; bottom: 22px; display: flex; align-items: center; gap: 16px; font-size: 13px; font-weight: 700; letter-spacing: .08em; color: var(--mute); }
+.b-count { font-variant-numeric: tabular-nums; }
+.b-count b { color: var(--gold); font-size: 18px; }
+.b-bar { position: relative; display: block; width: 120px; height: 2px; background: var(--line); border-radius: 2px; overflow: hidden; }
+.b-bar i { position: absolute; inset: 0; background: var(--gold); transform: scaleX(var(--b-p, 0)); transform-origin: left; }
+.b-hint { color: var(--dim); font-weight: 600; letter-spacing: .04em; transition: opacity .5s; }
+.b-track.is-done .b-hint { opacity: 0; }
 
 .deals { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin: clamp(60px, 9vh, 110px) 0 18px; position: relative; z-index: 2; }
 .deal { position: relative; overflow: hidden; padding: 30px 34px; border-radius: 24px; background: linear-gradient(135deg, #1b130b, #120d08); box-shadow: inset 0 0 0 1px var(--line); }
@@ -410,14 +429,20 @@ em { font-style: italic; }
   .ticker { padding: 13px 0; }
   .section { padding-top: 90px; padding-bottom: 90px; }
 
-  /* Karte: horizontalni karusel kartica */
-  .burgers { display: block; }
+  /* Karte: kartica stoji preko celog ekrana, skrol menja burger po burger */
+  .b-track { --step: 48svh; }
+  .burgers { display: flex; flex-direction: column; align-items: stretch; justify-content: center; gap: 16px; padding: calc(var(--nav-h) + 12px) 0 calc(96px + env(safe-area-inset-bottom)); }
   .b-stage { display: none; }
-  .b-list { display: flex; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; border: 0; margin: 0 calc(var(--pad) * -1); padding: 6px var(--pad) 24px; scrollbar-width: none; }
-  .b-list::-webkit-scrollbar { display: none; }
-  .b-item { flex: 0 0 78vw; scroll-snap-align: center; border: 0; border-radius: 26px; background: var(--card); box-shadow: inset 0 0 0 1px var(--line); overflow: hidden; display: flex; flex-direction: column; }
-  .b-item .b-img { position: static; order: -1; width: 100%; opacity: 1; transform: none; -webkit-mask-image: none; mask-image: none; background: #000; }
-  .b-btn { padding: 16px 20px 20px; cursor: default; grid-template-areas: 'tag tag' 'name price' 'ing ing'; }
+  .b-view { flex: 1 1 auto; width: 100%; max-height: 600px; overflow: visible; -webkit-mask-image: none; mask-image: none; }
+  .b-list { height: 100%; border: 0; transform: none; transition: none; }
+  .b-item { position: absolute; inset: 0; border: 0; border-radius: 26px; background: var(--card); box-shadow: inset 0 0 0 1px var(--line); overflow: hidden; display: flex; flex-direction: column;
+    opacity: 0; transform: translateY(36px) scale(.96); transition: opacity .45s, transform .6s var(--ease); pointer-events: none; }
+  .b-item.is-active { opacity: 1; transform: none; pointer-events: auto; }
+  .b-item.is-past { transform: translateY(-36px) scale(.96); }
+  .b-view .b-img { display: block; position: static; order: -1; flex: 1 1 0; min-height: 0; width: 100%; height: auto; object-fit: cover; opacity: 1; transform: none; -webkit-mask-image: none; mask-image: none; background: #000; }
+  .b-progress { position: static; justify-content: center; }
+  .b-hint { display: none; }
+  .b-btn { flex: none; padding: 16px 20px 20px; cursor: default; grid-template-areas: 'tag tag' 'name price' 'ing ing'; }
   .b-tag { justify-self: start; margin-bottom: 8px; }
   .b-price { color: var(--gold); font-size: 30px; }
   .b-name, .b-item.is-active .b-name { color: var(--ink); transform: none; font-size: 36px; }

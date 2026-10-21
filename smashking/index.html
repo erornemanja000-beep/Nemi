@@ -147,7 +147,10 @@
       <p class="lead" data-en="Nine burgers, all on brioche, all smashed fresh. Make any burger a meal with Classic Fries and a soft drink for just € 6 more.">Neun Burger, alle auf Brioche, alle frisch gesmasht. Jeden Burger gibt’s als Menü mit Classic Fries und Softdrink, für nur € 6 mehr.</p>
     </header>
 
+    <!-- staza za skrol: blok sa burgerima stoji, a skrol menja burger po burger -->
+    <div class="b-track" id="bTrack">
     <div class="burgers" id="burgers">
+      <div class="b-view">
       <ol class="b-list">
         <li class="b-item is-active">
           <button class="b-btn" type="button">
@@ -231,7 +234,14 @@
           <img class="b-img" src="assets/img/menu/sucuk-1000.webp" srcset="assets/img/menu/sucuk-560.webp 560w, assets/img/menu/sucuk-1000.webp 1000w" sizes="(max-width: 820px) 76vw, 44vw" alt="Sucuk Burger mit Ei" width="1000" height="1000" loading="lazy">
         </li>
       </ol>
+      </div>
       <div class="b-stage" aria-hidden="true"><div class="b-glow"></div><div class="b-ring"></div></div>
+      <div class="b-progress" aria-hidden="true">
+        <span class="b-count"><b id="bNum">01</b> / <span id="bTotal">09</span></span>
+        <i class="b-bar"><i id="bBar"></i></i>
+        <span class="b-hint" data-en="Scroll for the next burger">Scroll für den nächsten Burger</span>
+      </div>
+    </div>
     </div>
 
     <div class="deals reveal">

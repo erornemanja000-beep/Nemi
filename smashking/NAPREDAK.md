@@ -4,6 +4,23 @@ Klijent: Smash King, Viktor-Adler-Markt 53/54, 1100 Wien (Sezai Özyer e.U.).
 Stari sajt: smash-king-burger.at · Instagram: @smashking_burger.
 Princip: kao reel „CHAR & CO.“ (kebab koji se na skrol rastavlja i slaže), samo za smash burger i bolje.
 
+## Status (21. 10. 2026) i kako nastaviti
+Sajt je gotov za prezentaciju klijentu (22. 10.), sa celim menijem sa njihove karte.
+Sve je u grani `claude/nice-mendel-xsfnrl`, a objavljena verzija u grani `gh-pages`.
+
+Posle prezentacije: vrati se u isti razgovor (https://claude.ai/code/session_01CT3gbeW9pfTNiqL8DQfs2S)
+ili otvori novi na ovom repou i reci „pročitaj smashking/NAPREDAK.md“, pa navedi šta klijent želi da se promeni.
+Odgovori na pitanja iz „Proveriti sa klijentom“ (dole) idu direktno u izmene.
+
+Ako je kontejner nov, objava ide ovako:
+```
+git fetch origin gh-pages
+git worktree add ../gh-pages gh-pages
+python3 smashking/build_pages.py ../gh-pages
+cd ../gh-pages && git add -A && git commit -m "..." && git push origin gh-pages
+```
+GitHub objavi za 1–2 minuta.
+
 ## Šta sajt radi (redom)
 1. **Smash** (`#smash`): ruka u crnoj rukavici presom spljošti meso na ploči, skrolom se vrti 121 kadar.
    Reč „SMASH!“ se spljošti tačno u trenutku udara (oko 35 % skrola), pozlati se, ekran se strese, lete varnice.

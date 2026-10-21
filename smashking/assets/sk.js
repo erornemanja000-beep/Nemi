@@ -260,7 +260,23 @@
 
   /* ---------------- Karte: aktivni burger ---------------- */
   const bItems = $$('.b-item');
-  function setBurger(i) { bItems.forEach((li, j) => li.classList.toggle('is-active', i === j)); }
+  const bWrap = $('#burgers'), bStage = $('.b-stage');
+  let bActive = 0;
+  // desktop: slika ide za izabranim burgerom, da ne ostane gore kad je lista duža od nje
+  function placeBurger() {
+    if (MOBILE || !bStage) return;
+    const li = bItems[bActive], img = bStage.offsetHeight;
+    const y = li.offsetTop + li.offsetHeight / 2 - img / 2;
+    bWrap.style.setProperty('--b-y', `${Math.round(Math.max(0, Math.min(y, bWrap.offsetHeight - img)))}px`);
+  }
+  function setBurger(i) {
+    bActive = i;
+    bItems.forEach((li, j) => li.classList.toggle('is-active', i === j));
+    setTimeout(placeBurger, 60);
+    setTimeout(placeBurger, 650);   // posle otvaranja sastojaka (.b-ing) visine su konačne
+  }
+  addEventListener('resize', placeBurger);
+  addEventListener('load', placeBurger);
   bItems.forEach((li, i) => {
     const b = $('.b-btn', li);
     b.addEventListener('pointerenter', () => { if (!MOBILE) setBurger(i); });

@@ -215,9 +215,9 @@ export function render(c: Content): string {
     <section class="process" id="process">
       <div class="process__media">
         <div class="process__frame">
-          <img src="./media/img/model.jpg" alt="Architectural study model of a villa on its terrain" class="is-on" data-step-img="0" />
-          <img src="./media/img/detail.jpg" alt="Limestone wall, bronze window frame and linen curtain" data-step-img="2" />
-          <img src="./media/img/kyma.jpg" alt="Finished villa above the bay" data-step-img="3" />
+          <img loading="lazy" src="./media/img/model.jpg" alt="Architectural study model of a villa on its terrain" class="is-on" data-step-img="0" />
+          <img loading="lazy" src="./media/img/detail.jpg" alt="Limestone wall, bronze window frame and linen curtain" data-step-img="2" />
+          <img loading="lazy" src="./media/img/kyma.jpg" alt="Finished villa above the bay" data-step-img="3" />
         </div>
       </div>
       <div class="process__body">
@@ -266,7 +266,7 @@ export function render(c: Content): string {
     </section>
 
     <section class="contact" id="contact">
-      <div class="contact__bg"><img src="./media/img/interior.jpg" alt="" /></div>
+      <div class="contact__bg"><img loading="lazy" src="./media/img/interior.jpg" alt="" /></div>
       <div class="contact__inner">
         <div class="contact__copy">
           <p class="label mono">${esc(c.contact.label)}</p>

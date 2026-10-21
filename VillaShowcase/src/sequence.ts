@@ -5,7 +5,12 @@
 export type SequenceInfo = { count: number; width: number; height: number }
 export type Manifest = Record<string, SequenceInfo>
 
-const BASE = './media/seq'
+/**
+ * Phones in portrait get their own frame set (media/seq-m): fewer frames, centre-cropped to
+ * portrait. That is all a phone screen shows of a 16:9 frame anyway, at a quarter of the memory.
+ */
+export const PHONE = matchMedia('(max-width: 900px) and (orientation: portrait)').matches
+const BASE = PHONE ? './media/seq-m' : './media/seq'
 
 export class FrameSequence {
   readonly frames: (HTMLImageElement | null)[]
@@ -127,7 +132,7 @@ export class CoverCanvas {
   }
 
   resize() {
-    const dpr = Math.min(window.devicePixelRatio || 1, 2)
+    const dpr = Math.min(window.devicePixelRatio || 1, PHONE ? 1.5 : 2)
     const rect = this.el.getBoundingClientRect()
     this.w = Math.max(1, Math.round(rect.width * dpr))
     this.h = Math.max(1, Math.round(rect.height * dpr))

@@ -3,20 +3,23 @@ import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import Lenis from 'lenis'
 import { loadContent, render } from './content'
-import { CoverCanvas, FrameLoader, FrameSequence, loadImage, loadManifest } from './sequence'
+import { CoverCanvas, FrameLoader, FrameSequence, PHONE, loadImage, loadManifest } from './sequence'
 
 gsap.registerPlugin(ScrollTrigger)
+// Phones resize the viewport whenever the address bar slides in or out; re-measuring then stutters.
+ScrollTrigger.config({ ignoreMobileResize: true })
 
 type SeqName = 'descent' | 'grow' | 'lefka' | 'pefko' | 'enter' | 'aerial'
 
-/** Still that stands in for a clip until its frames arrive. */
+/** Still that stands in for a clip until its frames arrive (smaller files on phones). */
+const still = (name: string) => `./media/img/${name}${PHONE ? '-sm' : ''}.jpg`
 const POSTER: Record<SeqName, string> = {
-  descent: './media/img/hero.jpg',
-  grow: './media/img/plot.jpg',
-  lefka: './media/img/lefka.jpg',
-  pefko: './media/img/pefko.jpg',
-  enter: './media/img/selene.jpg',
-  aerial: './media/img/aerial.jpg',
+  descent: still('hero'),
+  grow: still('plot'),
+  lefka: still('lefka'),
+  pefko: still('pefko'),
+  enter: still('selene'),
+  aerial: still('aerial'),
 }
 
 const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -56,10 +59,18 @@ async function boot() {
   setupSections(lenis)
   setupChrome(lenis)
 
+  // Only a real layout change (new width, or rotating the phone) needs a re-measure.
+  let lastW = innerWidth
+  let resizeTimer = 0
   window.addEventListener('resize', () => {
-    fitText()
-    canvases.forEach((c) => c.resize())
-    ScrollTrigger.refresh()
+    if (innerWidth === lastW) return
+    lastW = innerWidth
+    clearTimeout(resizeTimer)
+    resizeTimer = window.setTimeout(() => {
+      fitText()
+      canvases.forEach((c) => c.resize())
+      ScrollTrigger.refresh()
+    }, 150)
   })
 
   lenis.start()
@@ -335,6 +346,12 @@ function setupChrome(lenis: Lenis) {
       e.preventDefault()
       lenis.scrollTo(target as number | HTMLElement, { duration: 1.6 })
     }),
+  )
+
+  // On phones the header drops mix-blend-mode (costly over moving canvases) and switches
+  // to dark text while a light section sits under it.
+  $$('.index, .process').forEach((section) =>
+    ScrollTrigger.create({ trigger: section, start: 'top 40px', end: 'bottom 40px', toggleClass: { targets: '#hdr', className: 'on-light' } }),
   )
 
   const fill = $('#rail-fill')

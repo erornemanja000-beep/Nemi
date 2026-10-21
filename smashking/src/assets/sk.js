@@ -121,9 +121,11 @@
     W = innerWidth; H = innerHeight;
     SEQS.forEach((S) => {
       S.top = S.sec.getBoundingClientRect().top + scrollY;
-      S.len = Math.max(1, S.sec.offsetHeight - S.stage.offsetHeight);
+      S.h = S.sec.offsetHeight;   // keširano: čitanje u svakom kadru posle upisa stilova tera browser na ponovni raspored
+      S.len = Math.max(1, S.h - S.stage.offsetHeight);
       fitCanvas(S);
     });
+    links.forEach((l) => { l.top = l.sec ? l.sec.offsetTop : Infinity; });
     fx.resize();
   }
   const progress = (S) => clamp((scrollY - S.top) / S.len);
@@ -187,8 +189,15 @@
         P.push({ k: 1, x: x + (Math.random() - .5) * 120, y, vx: Math.cos(a) * sp * 1.25, vy: Math.sin(a) * sp, t: 0, life: 35 + Math.random() * 55, r: .8 + Math.random() * 1.6 });
       }
     }
+    let idle = false;
     function step() {
       if (REDUCED) { g.clearRect(0, 0, W, H); return; }
+      // telefon: van priča (amb nizak) nema novog žara; kad nestane i poslednja iskra, platno miruje
+      if (MOBILE && amb < .5 && !P.length) {
+        if (!idle) { g.clearRect(0, 0, W, H); idle = true; }
+        return;
+      }
+      idle = false;
       g.clearRect(0, 0, W, H);
       g.globalCompositeOperation = 'lighter';
       let embers = 0;
@@ -213,7 +222,7 @@
         }
         if (p.t >= p.life || p.y < -20) P.splice(i, 1);
       }
-      if (embers < MAX * amb && Math.random() < .35) P.push(ember());
+      if (embers < MAX * amb && Math.random() < .35 && !(MOBILE && amb < .5)) P.push(ember());
       g.globalCompositeOperation = 'source-over';
     }
     return { resize, burst, step, set amb(v) { amb += (v - amb) * .05; }, get amb() { return amb; } };
@@ -232,7 +241,7 @@
     mobileBar.classList.toggle('show', scrollY > H * .7 && scrollY + H < document.documentElement.scrollHeight - 160);
     const y = scrollY + H * .45;
     let cur = null;
-    links.forEach((l) => { if (l.sec && l.sec.offsetTop <= y) cur = l; });
+    links.forEach((l) => { if (l.top <= y) cur = l; });
     links.forEach((l) => l.a.classList.toggle('on', l === cur));
   }
 
@@ -240,7 +249,7 @@
   let last = -1;
   function frame() {
     for (const S of SEQS) {
-      const top = S.top, bottom = S.top + S.sec.offsetHeight;
+      const top = S.top, bottom = S.top + S.h;
       S.near = scrollY + H > top - H * .5 && scrollY < bottom + H * .5;
       if (!S.near) continue;
       const t = progress(S);
@@ -367,7 +376,8 @@ gl_FragColor=vec4(c*f,f*.95);}`;
     let on = false, raf = 0;
     const t0 = performance.now();
     const size = () => { const r = cv.parentElement.getBoundingClientRect(), d = MOBILE ? 1 : Math.min(devicePixelRatio || 1, 1.5); cv.width = Math.max(1, r.width * d | 0); cv.height = Math.max(1, r.height * d | 0); gl.viewport(0, 0, cv.width, cv.height); };
-    size(); addEventListener('resize', size);
+    let fw = innerWidth;
+    size(); addEventListener('resize', () => { if (innerWidth !== fw) { fw = innerWidth; size(); } });
     addEventListener('pointermove', (e) => { const r = cv.parentElement.getBoundingClientRect(); tm.x = (e.clientX - r.left) / r.width; tm.y = 1 - (e.clientY - r.top) / r.height; }, { passive: true });
     const tick = (now) => {
       if (!on) return;
@@ -386,7 +396,15 @@ gl_FragColor=vec4(c*f,f*.95);}`;
   else updateOpen();
 
   measure();
-  addEventListener('resize', () => { measure(); SEQS.forEach((S) => { S.drawn = -1; }); });
+  // telefon menja visinu prozora kad se adresna traka skrije/pojavi; to nije pravi resize i ne sme da
+  // pokreće merenje usred skrola. Merimo samo kad se promeni širina (ili pri rotaciji ispod).
+  let rw = innerWidth, rt = 0;
+  addEventListener('resize', () => {
+    if (innerWidth === rw) return;
+    rw = innerWidth;
+    clearTimeout(rt);
+    rt = setTimeout(() => { measure(); SEQS.forEach((S) => { S.drawn = -1; }); }, 150);
+  });
   addEventListener('orientationchange', () => setTimeout(measure, 300));
   addEventListener('load', measure);
 

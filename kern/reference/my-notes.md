@@ -179,3 +179,17 @@
 - F787–792 tačke se pretvaraju u izmešana slova ("We de nest elsss bsildiass") pa u "We do not place buildings" — sa 2–3 plavo-cijan duple kopije (eho) iznad/ispod koje se skupljaju.
 - F793–816 isto za sledeće redove: "on land." → "We let the *coastline* finish" (coastline italic cijan) → "the drawing we begin."; ispod 3 kolone sitnog teksta se pojavljuju.
 - F817–834 tekst stoji (čist); F834–846 stranica skroluje gore: dole izlazi "FOUR / VILLAS / IN THE..." (veliki široki font) i lista "VILLA AMMOS / VILLA SALINA" desno; tekst manifesta dobija eho/duplikate dok se pomera (efekat zavisi od brzine skrola).
+
+## r8 — @ibanez_nick „My clients reaction to the video I did for his small local business“ (Maldivi) — viđeno lično
+Format: gore 16:9 prozor sa filmom (y≈5–37 %), dole klijenti reaguju. Film je ono što nam treba kao uvod. 4058 frejmova, 60 fps, 67,6 s; 221 rez (scene detect na isečenom prozoru), medijana kadra 0,08 s.
+MONTAŽA (gramatika):
+- Otvaranje: satelitski snimak iz izmaglice (oblaci), zum ka ostrvu (Google Earth stil) 1,3 s → tvrdi rez u rafal.
+- RAFALI („flash montage“): 15–27 kadrova po ~0,07–0,08 s (2 frejma na 24 fps), tematski grupisani (podvodne životinje / lica ljudi / priroda-detalji / makro teksture), na kraju USPORAVAJU (0,12 → 0,2 → 0,32 s) i „slete“ na HERO kadar 1,5–1,7 s. Ponavlja se ~5 puta (3,07–5,67 → hero; 7,18–10,13 → hero; 11,82–17,22 počinje sa 0,03 s → hero; 25,7–26,7; 35,07–35,93 makro teksture → hero 2,07 s). Isti kadrovi se ponavljaju u rafalu.
+- Između rafala: kadrovi 0,4–1,0 s (normalan ritam), sinhronizovani sa muzikom (rafal = „riser“, hero = „drop“).
+- Match cut na pokret: šake se kucnu pesnicom (17,2 s) → odozgo/odozdo uklizaju crne letterbox trake (2,39:1) → šake pljesnu → rez na skok u vodu iz istog pokreta (19,9 s); skok u usporenom (0,8 s).
+- Match cut OKO: makro oko se zatvara (30,67 s, 0,95 s) → 1–2 frejma pretapanja kapka u vodu → gliser na moru. (= naša ideja sa okom!)
+- Whip pan: kamera brzo zamahne (motion blur preko drveća 33,07–33,3 s) → rez skriven u blur-u → ruka sa koralom (hero 1,73 s).
+- Spin prelaz: kamera se okreće 360° (rotacioni/radijalni blur, 52,18–52,82 s, rezovi na 0,03 s unutar blur-a) → 3 frejma duplog pretapanja → plaža.
+- Makro rafal (35,07–35,93): list, latica, krljušt, korali, pesak — po 0,07 s, pa hero.
+- Kraj: hero 2,78 s (čovek na džet-skiju se okrene ka kameri i nasmeje) → pretapanje u BELI bljesak (bloom, 4 frejma) → rez nazad na stvarnost.
+- Kolor: teal & orange, jaka saturacija, kontrast, ujednačeno kroz ceo film; blagi zoom/drift u skoro svakom kadru; brzina: speed ramp na skokovima/vodi.

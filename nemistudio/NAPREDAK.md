@@ -22,8 +22,16 @@ npm run dev
 npm run build && python3 build_pages.py <gh-pages-folder>
 ```
 
+## Uvod sa okom (gotovo)
+- Oko (Mixkit 48017, obrnuto pa se zenica širi) → zenica se naglo raširi → kamera uleće → u zenici se pojavi prva epoha.
+- 13 epoha u beskonačnom zumu kroz okrugle „prozore“: neandertalac (lobanja iz muzeja), otisci šaka, pećina, vatra, hijeroglifi, antika, 1450 štampa, 1492 brod, 1910 grad, 1925 radio, 1955 TV, 1990 računar, danas (sajt u naočarima, Mixkit 13189).
+- Slike: Unsplash (besplatna licenca), u `public/intro/h/01..13.webp`; oko u `public/intro/eye/d|m`.
+- Završni tekst: „Seit es Menschen gibt, wollen sie gesehen werden. Heute beginnt es mit deiner Website.“
+- Pušta se jednom po poseti (sessionStorage), dugme „Intro überspringen“, isključen za `prefers-reduced-motion`.
+- Parametri: `?intro=1` uvek pusti, `?intro=0` preskoči, `?reel=1` verzija za video sa završnom karticom (nemi · NEMISTUDIO.AT).
+- Video za Instagram: `video/nemi_intro_9x16.mp4` i `video/nemi_intro_16x9.mp4` (renderovano kadar po kadar iz `?reel=1`).
+
 ## Otvoreno
-- Uvod sa okom (zenica se širi → zum u zenicu → smena epoha: kako čovek želi da bude viđen) — u izradi.
 - Impressum/Datenschutz: fale ime, adresa, UID i hosting (označeno narandžasto na stranicama).
 - Formular otvara e-mail program (mailto); kad se zna hosting, može pravo slanje (npr. Netlify Forms).
 - `noindex` je uključen dok je ovo pregled.

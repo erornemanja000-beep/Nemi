@@ -71,7 +71,8 @@
 .sixth { padding-top: clamp(120px, 20vh, 220px); }
 .sx-h { font-family: var(--serif); font-weight: 400; font-size: clamp(42px, 6vw, 108px); line-height: 1.02; letter-spacing: -0.015em; margin: 0; max-width: 16em; }
 .sx-h em { font-style: italic; color: var(--signal); }
-.sx-ch { display: inline-block; white-space: pre; opacity: 0.25; transition: opacity 0.3s, color 0.3s, text-shadow 0.4s; }
+.sx-w { display: inline-block; white-space: nowrap; }
+.sx-ch { display: inline-block; opacity: 0.25; transition: opacity 0.3s, color 0.3s, text-shadow 0.4s; }
 .sx-ch.set { opacity: 1; }
 .sx-h:not(.on) .sx-ch { opacity: 0.12; }
 .sx-p { max-width: 38em; }

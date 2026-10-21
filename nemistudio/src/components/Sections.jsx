@@ -47,10 +47,13 @@ export function Sixth() {
           {L(SIXTH.h).split(/(\*[^*]+\*)/).filter(Boolean).map((part, pi) => {
             const em = part.startsWith('*');
             const txt = em ? part.slice(1, -1) : part;
-            const chars = [...txt].map((ch) => (
-              <span className="sx-ch" data-ch={ch} key={k++}>{ch === ' ' ? ' ' : '·'}</span>
-            ));
-            return em ? <em key={pi}>{chars}</em> : <span key={pi}>{chars}</span>;
+            // letters grouped per word so lines only break between words
+            const words = txt.split(/(\s+)/).filter(Boolean).map((w, wi) => (/^\s+$/.test(w) ? ' ' : (
+              <span className="sx-w" key={wi}>
+                {[...w].map((ch) => <span className="sx-ch" data-ch={ch} key={k++}>·</span>)}
+              </span>
+            )));
+            return em ? <em key={pi}>{words}</em> : <span key={pi}>{words}</span>;
           })}
         </h2>
         <Up as="p" className="lead sx-p" delay={400}>{L(SIXTH.p)}</Up>

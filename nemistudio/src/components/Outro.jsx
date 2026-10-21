@@ -1,13 +1,14 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useLang } from '../i18n.jsx';
-import { SITES, OUTRO } from '../content.js';
+import { OUTRO } from '../content.js';
+import { WORLDS } from '../worlds.js';
 import { Words } from './Reveal.jsx';
 import { goSite } from './Chrome.jsx';
 import { reduced, vhPx } from '../scroll.js';
 
 // After the last website the camera pulls back: the hotel was one window among four.
 const PULL = 1.4; // scroll length of the pull-back, in viewport heights
-const URLS = { cafe: 'cafe-mila.at', law: 'kanzlei-aurum.at', gym: 'puls-studio.at', hotel: 'hotel-alba.at' };
+const SHOT = { cafe: 4, law: 4, gym: 2, hotel: 6 }; // the chapter that stands for each world
 
 export default function Outro() {
   const { L } = useLang();
@@ -61,13 +62,13 @@ export default function Outro() {
           <p className="lead">{L(OUTRO.p)}</p>
         </div>
         <div className="outro-grid" ref={grid}>
-          {SITES.map((s, i) => (
+          {WORLDS.map((s, i) => (
             <a key={s.id} href={`#${s.id}`} className="ocard" style={{ '--i': i }} onClick={(e) => { e.preventDefault(); goSite(s.id); }}>
-              <span className="ocard-bar"><i /><i /><i /><span>{URLS[s.id]}</span></span>
-              <span className="ocard-im"><img src={`${import.meta.env.BASE_URL}v/${s.id}.webp`} alt="" loading="lazy" /></span>
+              <span className="ocard-bar"><i /><i /><i /><span>{L(s.brand)}</span></span>
+              <span className="ocard-im"><img src={`${import.meta.env.BASE_URL}w/${s.id}/${SHOT[s.id]}/d/15.webp`} alt="" loading="lazy" /></span>
               <span className="ocard-cap">
-                <b>0{i + 1} · {s.name}</b>
-                <em>{L(s.label)}</em>
+                <b>0{i + 1} · {L(s.sense)}</b>
+                <em>{L(s.name)}</em>
                 <span className="ocard-go">{L(OUTRO.open)} ↗</span>
               </span>
             </a>

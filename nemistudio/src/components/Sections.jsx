@@ -1,11 +1,63 @@
 import { useEffect, useRef, useState } from 'react';
 import { useLang } from '../i18n.jsx';
-import { SERVICES, PROCESS, FACTS, FAQ, CONTACT, FOOT, INDUSTRIES, UI } from '../content.js';
+import { SERVICES, PROCESS, FACTS, FAQ, CONTACT, FOOT, INDUSTRIES, UI, SIXTH } from '../content.js';
+import { reduced } from '../scroll.js';
 import { RevealHeading, Up } from './Reveal.jsx';
 import { Logo } from './Chrome.jsx';
 import { scrollToId, scrollToY } from '../scroll.js';
 
 const BASE = import.meta.env.BASE_URL;
+
+// the sixth sense: a line that decodes itself out of noise (LITORALE), then the name explained
+const NOISE = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz§&·';
+export function Sixth() {
+  const { L, lang } = useLang();
+  const ref = useRef();
+  useEffect(() => {
+    const el = ref.current;
+    const chs = [...el.querySelectorAll('.sx-ch')];
+    if (reduced) { el.classList.add('on'); return; }
+    let id;
+    const io = new IntersectionObserver(([e]) => {
+      if (!e.isIntersecting) return;
+      io.disconnect();
+      el.classList.add('on');
+      let tick = 0;
+      id = setInterval(() => {
+        tick++;
+        chs.forEach((c, i) => {
+          const at = 2 + i * 0.45;
+          if (tick < at - 1.5) c.textContent = '·';
+          else if (tick < at) c.textContent = NOISE[(Math.random() * NOISE.length) | 0];
+          else c.textContent = c.dataset.ch;
+          c.classList.toggle('set', tick >= at);
+        });
+        if (tick > 3 + chs.length * 0.45) clearInterval(id);
+      }, 40);
+    }, { rootMargin: '0px 0px -25% 0px' });
+    io.observe(el);
+    return () => { io.disconnect(); clearInterval(id); };
+  }, [lang]);
+  let k = 0;
+  return (
+    <section className="sec sec-dark sixth" id="sinn">
+      <div className="wrap">
+        <p className="eye"><span className="dot" />{L(SIXTH.eye)}</p>
+        <h2 className="sx-h" ref={ref} key={lang}>
+          {L(SIXTH.h).split(/(\*[^*]+\*)/).filter(Boolean).map((part, pi) => {
+            const em = part.startsWith('*');
+            const txt = em ? part.slice(1, -1) : part;
+            const chars = [...txt].map((ch) => (
+              <span className="sx-ch" data-ch={ch} key={k++}>{ch === ' ' ? ' ' : '·'}</span>
+            ));
+            return em ? <em key={pi}>{chars}</em> : <span key={pi}>{chars}</span>;
+          })}
+        </h2>
+        <Up as="p" className="lead sx-p" delay={400}>{L(SIXTH.p)}</Up>
+      </div>
+    </section>
+  );
+}
 
 // services as an index: hovering a row floats a picture that follows the cursor
 export function Services() {

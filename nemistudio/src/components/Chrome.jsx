@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useLang } from '../i18n.jsx';
-import { NAV, UI, SITES, BAR } from '../content.js';
+import { NAV, UI, BAR } from '../content.js';
+import { WORLDS } from '../worlds.js';
 import { scrollToId, scrollToY, stop, resume, reduced } from '../scroll.js';
 
 export function Logo({ small }) {
@@ -16,8 +17,9 @@ export function Logo({ small }) {
 export function goSite(id) {
   const el = document.getElementById(id);
   if (!el) return;
+  // straight to the moment the screen fills the window (the end of the dive)
   const top = el.getBoundingClientRect().top + scrollY;
-  scrollToY(top + el.offsetHeight - el.firstElementChild.offsetHeight);
+  scrollToY(top + el.firstElementChild.offsetHeight * 1.6 + 2);
 }
 
 // ---------------------------------------------------------------- video intro
@@ -104,7 +106,7 @@ export function NemiBar({ show }) {
     addEventListener('keydown', k);
     return () => removeEventListener('keydown', k);
   }, [open]);
-  const site = SITES[cur - 1];
+  const site = WORLDS[cur - 1];
   const jump = (fn) => (e) => { e.preventDefault(); setOpen(false); setTimeout(fn, 320); };
   return (
     <>
@@ -114,7 +116,7 @@ export function NemiBar({ show }) {
           {site ? (
             <>
               <span className="bar-n">0{cur}<small>/04</small></span>
-              <span className="bar-t" key={site.id}>{site.name}<em>{L(BAR.concept)}</em></span>
+              <span className="bar-t" key={site.id}>{L(site.name).split(' & ')[0]}<em>{L(site.sense)}</em></span>
             </>
           ) : (
             <span className="bar-t" key="nemi">{L(BAR.start)}<em>{L(BAR.index)}</em></span>
@@ -133,10 +135,10 @@ export function NemiBar({ show }) {
         <div className="idx-in">
           <p className="eye">{L(BAR.index)}</p>
           <ol className="idx-sites">
-            {SITES.map((s, i) => (
+            {WORLDS.map((s, i) => (
               <li key={s.id} style={{ '--i': i }}>
                 <a href={`#${s.id}`} onClick={jump(() => goSite(s.id))} className={cur === i + 1 ? 'act' : ''}>
-                  <span>0{i + 1}</span><b>{s.name}</b><em>{L(s.label)}</em>
+                  <span>0{i + 1}</span><b>{L(s.sense)}</b><em>{L(s.name)}</em>
                 </a>
               </li>
             ))}

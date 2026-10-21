@@ -15,7 +15,7 @@ import '@fontsource/anton/400.css';
 import '@fontsource-variable/bodoni-moda/opsz.css';
 import '@fontsource-variable/bodoni-moda/opsz-italic.css';
 import './styles.css';
-import './sites/sites.css';
+import './worlds.css';
 import { LangProvider } from './i18n.jsx';
 import App from './App.jsx';
 

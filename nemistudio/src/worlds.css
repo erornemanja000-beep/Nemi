@@ -1,0 +1,96 @@
+/* ============ the sense worlds (scroll films inside the screens) ============ */
+.wf { position: absolute; inset: 0; overflow: hidden; background: #060606; color: #f3efe8; font-family: var(--sans); --wf-pad: clamp(20px, 4.4vw, 64px); }
+.wf-cv { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.wf-cv.nogl { background: #111; }
+
+.wf-nav { position: absolute; inset: 0 0 auto; z-index: 3; display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 26px var(--wf-pad); background: linear-gradient(rgba(0, 0, 0, 0.42), rgba(0, 0, 0, 0)); }
+.wf-brand { font-size: 26px; line-height: 1; letter-spacing: -0.01em; }
+.wf-sense { display: inline-flex; align-items: center; gap: 10px; font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.85; }
+.wf-sense i { width: 6px; height: 6px; border-radius: 50%; background: var(--wf-accent, #fff); box-shadow: 0 0 10px var(--wf-accent, #fff); }
+
+.wf-hud { position: absolute; right: var(--wf-pad); top: 50%; z-index: 3; display: flex; flex-direction: column; align-items: center; gap: 14px; transform: translateY(-50%); font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.14em; }
+.wf-hud span { writing-mode: vertical-rl; opacity: 0.75; }
+.wf-hud i { position: relative; width: 1px; height: 120px; background: rgba(255, 255, 255, 0.2); overflow: hidden; }
+.wf-hud b { position: absolute; inset: 0; background: var(--wf-accent, #fff); transform-origin: top; transform: scaleY(0); }
+.wf-index { display: none; }
+
+/* one line per chapter, in the corners like the reference films */
+.wf-block { position: absolute; z-index: 2; max-width: min(62%, 980px); pointer-events: none; }
+.wf-block::before { content: ''; position: absolute; inset: -40% -30%; z-index: -1; background: radial-gradient(closest-side, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0)); opacity: 0; transition: opacity 0.8s; }
+.wf-block.in::before { opacity: 1; }
+.wf-bl { left: var(--wf-pad); bottom: calc(var(--vh) * 6 + 84px); }
+.wf-br { right: calc(var(--wf-pad) + 40px); bottom: calc(var(--vh) * 6 + 84px); text-align: right; }
+.wf-c { left: 50%; top: 50%; transform: translate(-50%, -50%); text-align: center; max-width: min(80%, 1100px); }
+.wf-eye { margin: 0 0 18px; font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.22em; text-transform: uppercase; opacity: 0; transform: translateY(10px); transition: opacity 0.6s, transform 0.8s var(--ease); }
+.wf-h { margin: 0; font-weight: 400; font-size: clamp(46px, 6.4vw, 118px); line-height: 0.98; letter-spacing: -0.02em; text-wrap: balance; }
+.wf-p { margin: 20px 0 0; font-size: clamp(15px, 1.2vw, 18px); line-height: 1.55; opacity: 0; transform: translateY(12px); transition: opacity 0.7s 0.3s, transform 0.9s 0.3s var(--ease); max-width: 30em; }
+.wf-br .wf-p { margin-left: auto; }
+.wf-c .wf-p { margin-inline: auto; }
+.wf-block.in .wf-eye, .wf-block.in .wf-p { opacity: 0.88; transform: none; }
+.wf-block.out .wf-eye, .wf-block.out .wf-p { transition-delay: 0s; transition-duration: 0.35s; }
+.wf-word { display: inline-block; white-space: nowrap; }
+.wf-ch { display: inline-block; opacity: 0; transform: translateY(0.38em); filter: blur(10px); transition: opacity 0.6s, transform 0.9s var(--ease), filter 0.8s; transition-delay: calc(var(--i) * 22ms); }
+.wf-block.in .wf-ch { opacity: 1; transform: none; filter: blur(0); }
+.wf-block.out .wf-ch { opacity: 0; transform: translateY(-0.3em); filter: blur(8px); transition-delay: calc(var(--i) * 8ms); transition-duration: 0.45s; }
+.wf-h em { font-style: italic; color: var(--wf-accent); }
+
+/* café: smell. Warm serif; the letters drift like steam and evaporate upwards */
+.wf-cafe { --wf-accent: #f2b48d; }
+.wf-cafe .wf-brand, .wf-cafe .wf-h { font-family: 'Fraunces Variable', Georgia, serif; font-variation-settings: 'opsz' 144; }
+.wf-cafe .wf-brand { font-style: italic; font-size: 30px; }
+.wf-cafe .wf-h { font-weight: 300; letter-spacing: -0.035em; }
+.wf-cafe .wf-block.in .wf-ch { animation: steam 4.2s ease-in-out infinite; animation-delay: calc(var(--i) * -0.27s); }
+.wf-cafe .wf-block.out .wf-ch { transform: translateY(-0.9em) scale(1.04); filter: blur(14px); transition-duration: 0.9s; transition-delay: calc(var(--i) * 14ms); }
+@keyframes steam { 0%, 100% { translate: 0 0; } 50% { translate: 0 -0.06em; } }
+
+/* law firm: gut feeling, hearing. Quiet serif; every line decodes itself (scramble -> words) */
+.wf-law { --wf-accent: #e3cc9d; }
+.wf-law .wf-brand, .wf-law .wf-h { font-family: 'Cormorant Garamond', Georgia, serif; }
+.wf-law .wf-brand { font-weight: 500; letter-spacing: 0.3em; text-transform: uppercase; font-size: 18px; }
+.wf-law .wf-h { font-weight: 300; letter-spacing: -0.01em; font-size: clamp(50px, 6.8vw, 124px); }
+.wf-law .wf-ch { transform: none; filter: none; transition-duration: 0.3s; transition-delay: calc(var(--i) * 10ms); }
+
+/* gym: touch, pulse. Condensed and loud; words punch in */
+.wf-gym { --wf-accent: #d7ff3a; }
+.wf-gym .wf-brand, .wf-gym .wf-h { font-family: 'Anton', Impact, sans-serif; text-transform: uppercase; }
+.wf-gym .wf-brand { font-size: 28px; letter-spacing: 0.02em; }
+.wf-gym .wf-h { font-size: clamp(56px, 8.6vw, 168px); line-height: 0.88; letter-spacing: 0; }
+.wf-gym .wf-h em { font-style: normal; }
+.wf-gym .wf-ch { transform: scale(1.7); filter: blur(4px); transition: opacity 0.12s, transform 0.4s cubic-bezier(0.2, 1.4, 0.4, 1), filter 0.3s; transition-delay: calc(var(--i) * 28ms); }
+.wf-gym .wf-block.out .wf-ch { transform: scale(0.9) translateY(-0.2em); }
+
+/* hotel: sight, sound. Bodoni, slow; letters surface out of soft focus */
+.wf-hotel { --wf-accent: #cfd8bf; }
+.wf-hotel .wf-brand, .wf-hotel .wf-h { font-family: 'Bodoni Moda Variable', Didot, Georgia, serif; }
+.wf-hotel .wf-brand { letter-spacing: 0.3em; text-transform: uppercase; font-size: 20px; }
+.wf-hotel .wf-h { font-weight: 400; letter-spacing: -0.025em; }
+.wf-hotel .wf-ch { transform: none; filter: blur(16px); transition: opacity 1.4s, filter 1.6s; transition-delay: calc(var(--i) * 45ms); }
+.wf-hotel .wf-block.out .wf-ch { filter: blur(12px); transition-duration: 0.6s; }
+
+/* the sixth sense */
+.sixth { padding-top: clamp(120px, 20vh, 220px); }
+.sx-h { font-family: var(--serif); font-weight: 400; font-size: clamp(42px, 6vw, 108px); line-height: 1.02; letter-spacing: -0.015em; margin: 0; max-width: 16em; }
+.sx-h em { font-style: italic; color: var(--signal); }
+.sx-ch { display: inline-block; white-space: pre; opacity: 0.25; transition: opacity 0.3s, color 0.3s, text-shadow 0.4s; }
+.sx-ch.set { opacity: 1; }
+.sx-h:not(.on) .sx-ch { opacity: 0.12; }
+.sx-p { max-width: 38em; }
+
+@media (max-width: 800px) {
+  .wf-nav { padding: 18px var(--wf-pad); }
+  .wf-brand { font-size: 22px; }
+  .wf-cafe .wf-brand { font-size: 24px; }
+  .wf-sense { font-size: 9.5px; letter-spacing: 0.14em; }
+  .wf-hud { right: 12px; }
+  .wf-hud i { height: 80px; }
+  .wf-block { max-width: calc(100% - 2 * var(--wf-pad) - 20px); }
+  .wf-bl, .wf-br { left: var(--wf-pad); right: auto; bottom: calc(var(--vh) * 4 + 84px); text-align: left; }
+  .wf-br .wf-p { margin-left: 0; }
+  .wf-c { max-width: calc(100% - 2 * var(--wf-pad)); }
+  .wf-h { font-size: clamp(40px, 11.5vw, 64px); }
+  .wf-law .wf-h { font-size: clamp(44px, 12.5vw, 70px); }
+  .wf-gym .wf-h { font-size: clamp(50px, 15vw, 88px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .wf-ch { transition: opacity 0.3s; transform: none !important; filter: none !important; animation: none !important; }
+}

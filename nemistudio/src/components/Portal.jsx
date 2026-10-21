@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import PORTALS from '../portals.json';
-import { reduced, vhPx } from '../scroll.js';
+import { reduced, vhPx, lenis } from '../scroll.js';
 
 // "Site in a site": a photo of a device whose screen shows the next website (the real hero,
 // live). Scrolling flies the camera into the screen until the screen is the viewport, then the
@@ -71,7 +71,7 @@ function layout(name, W, H) {
   return { s, pw, ph, ox, oy, quad, covers: pw >= W - 1 && ph >= H - 1 };
 }
 
-export default function Portal({ id, device, label, children, caption, dim = false }) {
+export default function Portal({ id, device, label, children, caption, dim = false, film = 0, progress = null, snap = 0 }) {
   const sec = useRef();
   const stage = useRef();
   const screen = useRef();
@@ -106,8 +106,14 @@ export default function Portal({ id, device, label, children, caption, dim = fal
     const frame = () => {
       raf = requestAnimationFrame(frame);
       const r = sec.current.getBoundingClientRect();
-      const dist = r.height - H;
+      const dist = ZOOM * H;
       const p = reduced ? (r.top < -dist / 2 ? 1 : 0) : Math.min(1, Math.max(0, -r.top / dist));
+      // after the dive the screen plays its own scroll film
+      if (progress) {
+        progress.current.q = film ? Math.min(1, Math.max(0, (-r.top - dist) / (film * H))) : 0;
+        progress.current.p = p;
+        progress.current.visible = r.bottom > 0 && r.top < H;
+      }
       if (Math.abs(p - last) < 1e-4) return;
       last = p;
       const st = stage.current;
@@ -147,10 +153,34 @@ export default function Portal({ id, device, label, children, caption, dim = fal
     return () => cancelAnimationFrame(raf);
   }, [vp, name]);
 
+  // like the reference films: when you stop scrolling inside a film, the camera settles on the
+  // chapter whose line is fully on screen (desktop only, touch keeps its own momentum)
+  useEffect(() => {
+    if (!snap || reduced || !matchMedia('(pointer: fine)').matches) return;
+    let timer;
+    const settle = () => {
+      const r = sec.current.getBoundingClientRect();
+      const H = vp.H;
+      const zoom = ZOOM * H;
+      const len = film * H;
+      const q = (-r.top - zoom) / len;
+      if (q <= 0.01 || q >= 0.97) return;
+      const x = q * snap;
+      const target = (Math.floor(x) + 0.42) / snap;
+      if (Math.abs(target - q) * len < H * 0.35 && Math.abs(target - q) * len > 4 && lenis) {
+        lenis.scrollTo(scrollY + (target - q) * len, { duration: 0.9, easing: (t) => 1 - Math.pow(1 - t, 3) });
+      }
+    };
+    const on = () => { clearTimeout(timer); timer = setTimeout(settle, 220); };
+    addEventListener('wheel', on, { passive: true });
+    addEventListener('keyup', on);
+    return () => { clearTimeout(timer); removeEventListener('wheel', on); removeEventListener('keyup', on); };
+  }, [vp, snap, film]);
+
   const base = import.meta.env.BASE_URL;
   const img = `${base}portals/${name}.webp`;
   return (
-    <section id={id} className="portal" ref={sec} style={{ height: vp.H * (1 + ZOOM) }} aria-label={label}>
+    <section id={id} className="portal" ref={sec} style={{ height: vp.H * (1 + ZOOM + film) }} aria-label={label}>
       <div className="portal-sticky" style={{ height: vp.H }}>
         {!L.covers && <div className="portal-back" ref={shade} style={{ backgroundImage: `url(${img})` }} />}
         <div className="portal-stage" ref={stage} style={{ width: vp.W, height: vp.H }}>
@@ -158,7 +188,7 @@ export default function Portal({ id, device, label, children, caption, dim = fal
             {children}
             <div className="portal-glare" aria-hidden="true" />
           </div>
-          <img className="portal-photo" src={img} alt="" style={{ left: L.ox, top: L.oy, width: L.pw, height: L.ph }} />
+          <img className="portal-photo" src={img} alt="" fetchpriority="high" style={{ left: L.ox, top: L.oy, width: L.pw, height: L.ph }} />
         </div>
         {dim && <div className="portal-veil" ref={veil} />}
         {caption && <div className="portal-cap" ref={cap}>{caption}</div>}

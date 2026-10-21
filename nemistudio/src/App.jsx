@@ -1,24 +1,15 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { initScroll, scrollToY, stop, resume } from './scroll.js';
 import { useLang } from './i18n.jsx';
-import { OPEN, SITES, PORTAL } from './content.js';
+import { OPEN, PORTAL } from './content.js';
+import { WORLDS, FILM_VH } from './worlds.js';
 import { NemiBar, VideoIntro, shouldPlayIntro } from './components/Chrome.jsx';
 import { Words } from './components/Reveal.jsx';
 import Portal from './components/Portal.jsx';
+import WorldFilm from './components/WorldFilm.jsx';
 import Outro from './components/Outro.jsx';
-import { Services, Process, Faq, Contact, Footer } from './components/Sections.jsx';
-import { CafeHero, CafeBody } from './sites/Cafe.jsx';
-import { LawHero, LawBody } from './sites/Law.jsx';
-import { GymHero, GymBody } from './sites/Gym.jsx';
-import { HotelHero, HotelBody } from './sites/Hotel.jsx';
-
-const PARTS = {
-  cafe: [CafeHero, CafeBody],
-  law: [LawHero, LawBody],
-  gym: [GymHero, GymBody],
-  hotel: [HotelHero, HotelBody],
-};
+import { Sixth, Services, Process, Faq, Contact, Footer } from './components/Sections.jsx';
 
 // the first screen: Nemi's line over the desk, before the camera dives into the laptop
 function Opening({ ready }) {
@@ -33,17 +24,31 @@ function Opening({ ready }) {
   );
 }
 
-// the caption on every later device: which website lives in this screen
+// the caption on every later device: which sense lives in this screen
 function Next({ i }) {
   const { L } = useLang();
-  const s = SITES[i];
+  const w = WORLDS[i];
   return (
     <div className="next">
       <span className="next-n">0{i + 1}<small>/04</small></span>
       <p className="eye">{L(PORTAL.next)}</p>
-      <b className="next-name">{s.name}</b>
-      <em className="next-l">{L(s.label)}</em>
+      <b className="next-name">{L(w.sense)}</b>
+      <em className="next-l">{L(w.name)}</em>
       <span className="open-cue" aria-hidden="true"><i />{L(PORTAL.enter)}</span>
+    </div>
+  );
+}
+
+function World({ w, i, introDone }) {
+  const progress = useRef({ p: 0, q: 0, visible: false });
+  return (
+    <div className="site-wrap" data-site={i + 1}>
+      <Portal
+        id={w.id} device={w.device} label={w.id} film={FILM_VH} progress={progress} snap={w.chapters.length}
+        caption={i === 0 ? <Opening ready={introDone} /> : <Next i={i} />} dim={i === 0}
+      >
+        <WorldFilm world={w} progress={progress} index={i} />
+      </Portal>
     </div>
   );
 }
@@ -68,19 +73,10 @@ export default function App() {
     <>
       {intro && !introDone && <VideoIntro onDone={() => setIntroDone(true)} />}
       <main id="top">
-        {SITES.map((s, i) => {
-          const [Hero, Body] = PARTS[s.id];
-          return (
-            <div className="site-wrap" data-site={i + 1} key={s.id}>
-              <Portal id={s.id} device={s.device} label={s.name} caption={i === 0 ? <Opening ready={introDone} /> : <Next i={i} />} dim={i === 0}>
-                <Hero />
-              </Portal>
-              <Body />
-            </div>
-          );
-        })}
+        {WORLDS.map((w, i) => <World w={w} i={i} key={w.id} introDone={introDone} />)}
         <Outro />
         <div data-site="0">
+          <Sixth />
           <Services />
           <Process />
           <Faq />

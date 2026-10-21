@@ -3,6 +3,7 @@
 
 export const NAV = [
   { id: 'showroom', de: 'Showroom', en: 'Showroom' },
+  { id: 'sinn', de: 'Sechster Sinn', en: 'Sixth sense' },
   { id: 'leistungen', de: 'Leistungen', en: 'Services' },
   { id: 'ablauf', de: 'Ablauf', en: 'Process' },
   { id: 'faq', de: 'FAQ', en: 'FAQ' },
@@ -30,41 +31,45 @@ export const UI = {
 // The opening: the first device on the desk, before the camera dives in
 export const OPEN = {
   eye: { de: 'Nemi Studio · Webdesign aus Österreich', en: 'Nemi Studio · web design from Austria' },
-  h: { de: ['Websites, in die', 'man *eintaucht*.'], en: ['Websites you', '*dive* into.'] },
+  h: { de: ['Websites, die', 'man *spürt*.'], en: ['Websites you', 'can *feel*.'] },
   p: {
-    de: 'Vier Branchen, vier Websites, eine Reise. Scroll in den Bildschirm.',
-    en: 'Four industries, four websites, one journey. Scroll into the screen.',
+    de: 'Riechen, fühlen, sehen, hören. Und der sechste Sinn. Scroll in den Bildschirm.',
+    en: 'Smell, touch, sight, sound. And the sixth sense. Scroll into the screen.',
   },
   scroll: { de: 'Scrollen', en: 'Scroll' },
 };
 
-// the four concept websites in the order of the journey
-export const SITES = [
-  { id: 'cafe', device: 'desk', name: 'Café Mila', label: { de: 'Café & Bäckerei', en: 'Café & bakery' } },
-  { id: 'law', device: 'cafe', name: 'Kanzlei Aurum', label: { de: 'Kanzlei & Beratung', en: 'Law & consulting' } },
-  { id: 'gym', device: 'office', name: 'Puls Studio', label: { de: 'Fitness & Sport', en: 'Fitness & sport' } },
-  { id: 'hotel', device: 'tv', name: 'Hotel Alba', label: { de: 'Hotel & Tourismus', en: 'Hotel & tourism' } },
-];
-
 export const PORTAL = {
-  next: { de: 'Nächste Website', en: 'Next website' },
+  next: { de: 'Nächster Sinn', en: 'Next sense' },
   enter: { de: 'Scroll, um einzutreten', en: 'Scroll to enter' },
 };
 
 export const BAR = {
-  concept: { de: 'Konzept', en: 'Concept' },
+  concept: { de: 'Sinn', en: 'Sense' },
   index: { de: 'Übersicht', en: 'Index' },
   start: { de: 'Nemi Studio', en: 'Nemi Studio' },
 };
 
 export const OUTRO = {
   eye: { de: 'Showroom', en: 'Showroom' },
-  h: { de: ['Vier Branchen.', 'Vier *Stimmen*.'], en: ['Four industries.', 'Four *voices*.'] },
+  h: { de: ['Fünf Sinne.', 'Und ein *sechster*.'], en: ['Five senses.', 'And a *sixth*.'] },
   p: {
-    de: 'Jede dieser Websites hat ihre eigene Schrift, Farbe und Bewegung, weil jedes Geschäft anders klingt. Deins ist das nächste.',
-    en: 'Each of these websites has its own type, colour and motion, because every business sounds different. Yours is next.',
+    de: 'Eine gute Website riecht man, spürt man, hört man. Jede Branche klingt anders, und genau diesen Ton finden wir.',
+    en: 'You can smell a good website, feel it, hear it. Every industry sounds different, and we find exactly that tone.',
   },
   open: { de: 'Ansehen', en: 'View' },
+};
+
+export const SIXTH = {
+  eye: { de: 'Der sechste Sinn', en: 'The sixth sense' },
+  h: {
+    de: 'Eine Website, die weiß, was du suchst, *bevor* du fragst.',
+    en: 'A website that knows what you are looking for *before* you ask.',
+  },
+  p: {
+    de: 'Nemi heißt auf Serbisch „stumm“. Wir bauen Websites, die ohne Worte sprechen: mit Bild, Bewegung und Gefühl.',
+    en: 'Nemi is Serbian for “silent”. We build websites that speak without words: with image, motion and feeling.',
+  },
 };
 
 export const INDUSTRIES = {
@@ -76,12 +81,12 @@ export const SERVICES = {
   eye: { de: 'Leistungen', en: 'Services' },
   h: { de: ['Alles, was deine Website', 'zum *Sprechen* bringt.'], en: ['Everything that makes', 'your website *speak*.'] },
   items: [
-    { n: '01', img: 'v/intro.jpg', t: { de: 'Scroll-Storytelling', en: 'Scroll storytelling' }, d: { de: 'Deine Seite erzählt beim Scrollen eine Geschichte. Jede Bewegung führt zum nächsten Schritt.', en: 'Your page tells a story as people scroll. Every movement leads to the next step.' } },
-    { n: '02', img: 'v/cafe.webp', t: { de: 'Animation & Effekte', en: 'Animation & effects' }, d: { de: 'Übergänge, Hover-Effekte, Text-Reveals und 3D, die sich hochwertig anfühlen und nie stören.', en: 'Transitions, hover effects, text reveals and 3D that feel premium and never get in the way.' } },
-    { n: '03', img: 'img/cafe-croissant.webp', t: { de: 'Bild, Video & KI', en: 'Images, video & AI' }, d: { de: 'Passende Fotos, Videos und KI-Visuals. Ausgewählt, bearbeitet oder neu erstellt für deine Marke.', en: 'The right photos, video and AI visuals. Chosen, edited or created for your brand.' } },
-    { n: '04', img: 'v/law.webp', t: { de: 'Texte & Mehrsprachig', en: 'Copy & multilingual' }, d: { de: 'Klare Texte auf Deutsch, Englisch und weiteren Sprachen. Sauber übersetzt und für Google eingerichtet.', en: 'Clear copy in German, English and more. Properly translated and set up for Google.' } },
-    { n: '05', img: 'v/gym.webp', t: { de: 'Schnell & auffindbar', en: 'Fast & findable' }, d: { de: 'Schlanker Code, kurze Ladezeiten und SEO-Grundlagen ab dem ersten Tag.', en: 'Lean code, short loading times and SEO basics from day one.' } },
-    { n: '06', img: 'v/hotel.webp', t: { de: 'Hosting & Betreuung', en: 'Hosting & care' }, d: { de: 'Domain, Hosting und Änderungen aus einer Hand. Du hast immer denselben Ansprechpartner.', en: 'Domain, hosting and updates from one place. You always talk to the same person.' } },
+    { n: '01', img: 'w/cafe/1/d/15.webp', t: { de: 'Scroll-Storytelling', en: 'Scroll storytelling' }, d: { de: 'Deine Seite erzählt beim Scrollen eine Geschichte. Jede Bewegung führt zum nächsten Schritt.', en: 'Your page tells a story as people scroll. Every movement leads to the next step.' } },
+    { n: '02', img: 'w/cafe/4/d/15.webp', t: { de: 'Animation & Effekte', en: 'Animation & effects' }, d: { de: 'Übergänge, Hover-Effekte, Text-Reveals und 3D, die sich hochwertig anfühlen und nie stören.', en: 'Transitions, hover effects, text reveals and 3D that feel premium and never get in the way.' } },
+    { n: '03', img: 'w/hotel/2/d/15.webp', t: { de: 'Bild, Video & KI', en: 'Images, video & AI' }, d: { de: 'Passende Fotos, Videos und KI-Visuals. Ausgewählt, bearbeitet oder neu erstellt für deine Marke.', en: 'The right photos, video and AI visuals. Chosen, edited or created for your brand.' } },
+    { n: '04', img: 'w/law/4/d/15.webp', t: { de: 'Texte & Mehrsprachig', en: 'Copy & multilingual' }, d: { de: 'Klare Texte auf Deutsch, Englisch und weiteren Sprachen. Sauber übersetzt und für Google eingerichtet.', en: 'Clear copy in German, English and more. Properly translated and set up for Google.' } },
+    { n: '05', img: 'w/gym/2/d/15.webp', t: { de: 'Schnell & auffindbar', en: 'Fast & findable' }, d: { de: 'Schlanker Code, kurze Ladezeiten und SEO-Grundlagen ab dem ersten Tag.', en: 'Lean code, short loading times and SEO basics from day one.' } },
+    { n: '06', img: 'w/hotel/5/d/15.webp', t: { de: 'Hosting & Betreuung', en: 'Hosting & care' }, d: { de: 'Domain, Hosting und Änderungen aus einer Hand. Du hast immer denselben Ansprechpartner.', en: 'Domain, hosting and updates from one place. You always talk to the same person.' } },
   ],
 };
 
@@ -145,7 +150,7 @@ export const FOOT = {
   credits: { de: 'Bildnachweis', en: 'Credits' },
   top: { de: 'Nach oben', en: 'Back to top' },
   creditText: {
-    de: 'Videos: Mixkit (Mixkit Stock Video Free License). Fotos: Unsplash (Unsplash License). Musik im Intro: Mixkit. Die Marken, Personen und Bewertungen in den Konzepten sind erfunden.',
-    en: 'Video: Mixkit (Mixkit Stock Video Free License). Photos: Unsplash (Unsplash License). Intro music: Mixkit. The brands, people and reviews in the concepts are fictional.',
+    de: 'Videos: Mixkit (Mixkit Stock Video Free License) und Coverr (Coverr License). Fotos im Intro: Unsplash (Unsplash License). Musik im Intro: Mixkit.',
+    en: 'Video: Mixkit (Mixkit Stock Video Free License) and Coverr (Coverr License). Intro photos: Unsplash (Unsplash License). Intro music: Mixkit.',
   },
 };

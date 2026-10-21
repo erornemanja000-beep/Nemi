@@ -1,0 +1,141 @@
+{
+  "lang": "de",
+  "locale": "de-AT",
+  "ui": {
+    "construction": "Bauzeit",
+    "email": "E-Mail",
+    "phone": "Telefon",
+    "studio": "Atelier",
+    "backToTop": "Nach oben ↑",
+    "menu": "Hauptmenü"
+  },
+
+  "brand": {
+    "name": "OSTRIA",
+    "descriptor": "Residenzen an der Küste",
+    "established": "Seit 2011",
+    "region": "Ägäische Küste"
+  },
+
+  "nav": [
+    { "label": "Villen", "target": "#villas" },
+    { "label": "Atelier", "target": "#atelier" },
+    { "label": "Prozess", "target": "#process" },
+    { "label": "Kontakt", "target": "#contact" }
+  ],
+  "cta": "Anfragen",
+
+  "intro": {
+    "eyebrow": "Atelier für Häuser am Rand des Meeres",
+    "lead": "Wir planen und bauen nur wenige Häuser im Jahr – auf Grundstücken, die die meisten für zu wild zum Bauen halten.",
+    "scrollHint": "Scrollen, um anzukommen",
+    "plotLabel": "Grundstück 07",
+    "plotCoordinates": "37°06′N · 25°22′E",
+    "plotLine": "Jedes Haus beginnt als Linie, gezogen in den Boden.",
+    "buildFrom": 2023,
+    "buildTo": 2025
+  },
+
+  "villas": [
+    {
+      "id": "kyma",
+      "name": "Villa Kyma",
+      "location": "Naxos, Kykladen",
+      "year": "2025",
+      "status": "Fertiggestellt",
+      "area": "420 m²",
+      "bedrooms": "5 Schlafzimmer",
+      "plot": "6.200 m² Grundstück",
+      "summary": "Zwei Baukörper aus Kalkstein, flach über den Hang gelegt – damit die Bucht aus jedem Raum das Erste ist, was man sieht."
+    },
+    {
+      "id": "lefka",
+      "name": "Villa Lefka",
+      "location": "Folegandros, Kykladen",
+      "year": "2024",
+      "status": "Fertiggestellt",
+      "area": "310 m²",
+      "bedrooms": "4 Schlafzimmer",
+      "plot": "3.900 m² Grundstück",
+      "summary": "Weißer Kalkputz, in die Klippe gestapelt, mit einem schmalen Pool entlang der Kante wie ein zweiter Horizont."
+    },
+    {
+      "id": "pefko",
+      "name": "Villa Pefko",
+      "location": "Sithonia, Chalkidiki",
+      "year": "2026",
+      "status": "In Bau",
+      "area": "540 m²",
+      "bedrooms": "6 Schlafzimmer",
+      "plot": "11.000 m² Grundstück",
+      "summary": "Lokaler Naturstein und Bronze zwischen alten Aleppo-Kiefern. Zwei Wasserbecken führen das Meer bis an die Haustür."
+    },
+    {
+      "id": "selene",
+      "name": "Villa Selene",
+      "location": "Vouliagmeni, Athener Riviera",
+      "year": "2026",
+      "status": "Verfügbar",
+      "area": "480 m²",
+      "bedrooms": "5 Schlafzimmer",
+      "plot": "2.800 m² Grundstück",
+      "summary": "Ein langes, flaches Haus für die Abende. Nach Einbruch der Dunkelheit werden Pool, Stadtlichter und Wohnraum zu einem einzigen Raum."
+    }
+  ],
+
+  "manifesto": {
+    "label": "Atelier",
+    "before": "Ein Haus an dieser Küste sollte sich",
+    "accent": "selbstverständlich",
+    "after": "anfühlen – als hätte der Hügel schon immer darauf gewartet.",
+    "columns": [
+      { "title": "Ort", "text": "Wir begehen das Grundstück zu jeder Tageszeit, bevor wir die erste Linie ziehen. Wind, Sonne und Ausblick bestimmen, wo die Räume liegen." },
+      { "title": "Licht", "text": "Öffnungen setzen wir für das Licht der Stunden, in denen Sie wirklich leben: Kaffee um sieben, Abendessen um neun." },
+      { "title": "Material", "text": "Stein von der Insel, Kalkputz, Eiche und Bronze. Materialien, die in salziger Luft gut altern und in zehn Jahren schöner aussehen." }
+    ]
+  },
+
+  "index": {
+    "label": "Ausgewählte Projekte",
+    "title": "Vier Villen"
+  },
+
+  "process": {
+    "label": "Prozess",
+    "title": "Schritt für Schritt",
+    "steps": [
+      { "title": "Standortanalyse", "text": "Topografie, Sonnenstand, Wind und Ausblicke werden erfasst, bevor die erste Skizze entsteht. Wir sagen Ihnen ehrlich, was das Grundstück zulässt.", "duration": "4–6 Wochen" },
+      { "title": "Entwurf", "text": "Modelle, Pläne und Materialmuster auf dem Tisch – Raum für Raum, bis das Haus unverwechselbar Ihres ist.", "duration": "3–5 Monate" },
+      { "title": "Genehmigung & Bau", "text": "Ein Team von der Einreichung bis zum letzten Stein, mit Fixpreis und monatlichem Baustellenbericht.", "duration": "14–20 Monate" },
+      { "title": "Übergabe", "text": "Möbliert, bepflanzt und probebewohnt. In den ersten zwei Jahren kommen wir jede Saison wieder.", "duration": "Laufend" }
+    ]
+  },
+
+  "plan": {
+    "label": "Von oben gesehen",
+    "title": "Jeder Meter mit Absicht",
+    "stats": [
+      { "value": 6200, "suffix": " m²", "label": "Grundstück" },
+      { "value": 24, "suffix": " m", "label": "Poollänge" },
+      { "value": 38, "suffix": "", "label": "Erhaltene Olivenbäume" },
+      { "value": 4, "suffix": "", "label": "Gartenterrassen" }
+    ]
+  },
+
+  "contact": {
+    "label": "Kontakt",
+    "title": "Ihr Haus beginnt hier.",
+    "text": "Erzählen Sie uns, wo Ihr Grundstück liegt oder wonach Sie suchen. Wir übernehmen jedes Jahr nur wenige neue Häuser.",
+    "email": "studio@ostria-atelier.com",
+    "phone": "+30 210 000 0000",
+    "address": "Odos Akti 12, 843 00 Naxos, Griechenland",
+    "formTitle": "Gespräch beginnen",
+    "formFields": { "name": "Ihr Name", "email": "E-Mail", "message": "Wo liegt Ihr Grundstück, oder wonach suchen Sie?" },
+    "formButton": "Anfrage senden",
+    "formThanks": "Vielen Dank. Wir melden uns innerhalb von zwei Werktagen."
+  },
+
+  "footer": {
+    "note": "Konzeptpräsentation. Alle Projekte, Namen und Bilder sind illustrativ."
+  }
+}

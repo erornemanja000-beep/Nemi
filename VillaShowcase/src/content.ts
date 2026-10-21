@@ -14,6 +14,11 @@ export type Villa = {
 }
 
 export type Content = {
+  /** html lang attribute and number formatting, e.g. "de" / "de-AT". */
+  lang: string
+  locale: string
+  /** Small fixed labels around the page. */
+  ui: { construction: string; email: string; phone: string; studio: string; backToTop: string; menu: string }
   brand: { name: string; descriptor: string; established: string; region: string }
   nav: { label: string; target: string }[]
   cta: string
@@ -55,8 +60,11 @@ export const VILLA_IMAGE: Record<Villa['id'], string> = {
   selene: './media/img/selene',
 }
 
+/** Which text file to load. The German build sets VITE_CONTENT=content.de.json (see .env.de). */
+const CONTENT_FILE = import.meta.env.VITE_CONTENT || 'content.json'
+
 export async function loadContent(): Promise<Content> {
-  const res = await fetch('./content.json', { cache: 'no-cache' })
+  const res = await fetch(`./${CONTENT_FILE}`, { cache: 'no-cache' })
   return res.json()
 }
 
@@ -106,7 +114,7 @@ export function render(c: Content): string {
 
   <header class="hdr" id="hdr">
     <a class="hdr__logo" href="#top" aria-label="${esc(c.brand.name)} home">${esc(c.brand.name)}</a>
-    <nav class="hdr__nav" aria-label="Main">
+    <nav class="hdr__nav" aria-label="${esc(c.ui.menu)}">
       ${c.nav.map((n) => `<a href="${esc(n.target)}">${esc(n.label)}</a>`).join('')}
     </nav>
     <a class="hdr__cta" href="#contact">${esc(c.cta)}<span aria-hidden="true">↗</span></a>
@@ -136,7 +144,7 @@ export function render(c: Content): string {
           <p class="mono"><span class="pin"></span>${esc(c.intro.plotLabel)} &nbsp;·&nbsp; ${esc(c.intro.plotCoordinates)}</p>
           <p class="arrival__plotline">${maskedWords(c.intro.plotLine)}</p>
         </div>
-        <p class="arrival__build mono">Construction <span id="build-year" data-to="${esc(c.intro.buildTo)}">${esc(c.intro.buildFrom)}</span> → ${esc(c.intro.buildTo)}</p>
+        <p class="arrival__build mono">${esc(c.ui.construction)} <span id="build-year" data-to="${esc(c.intro.buildTo)}">${esc(c.intro.buildFrom)}</span> → ${esc(c.intro.buildTo)}</p>
 
         ${villaTitle(kyma, 0, total)}
       </div>
@@ -265,9 +273,9 @@ export function render(c: Content): string {
           <h2 class="contact__title">${maskedWords(c.contact.title)}</h2>
           <p class="contact__text">${esc(c.contact.text)}</p>
           <dl class="contact__details">
-            <div><dt class="mono">Email</dt><dd><a href="mailto:${esc(c.contact.email)}">${esc(c.contact.email)}</a></dd></div>
-            <div><dt class="mono">Phone</dt><dd><a href="tel:${esc(c.contact.phone.replace(/\s+/g, ''))}">${esc(c.contact.phone)}</a></dd></div>
-            <div><dt class="mono">Studio</dt><dd>${esc(c.contact.address)}</dd></div>
+            <div><dt class="mono">${esc(c.ui.email)}</dt><dd><a href="mailto:${esc(c.contact.email)}">${esc(c.contact.email)}</a></dd></div>
+            <div><dt class="mono">${esc(c.ui.phone)}</dt><dd><a href="tel:${esc(c.contact.phone.replace(/\s+/g, ''))}">${esc(c.contact.phone)}</a></dd></div>
+            <div><dt class="mono">${esc(c.ui.studio)}</dt><dd>${esc(c.contact.address)}</dd></div>
           </dl>
         </div>
         <form class="form" id="enquiry" novalidate>
@@ -284,7 +292,7 @@ export function render(c: Content): string {
         <div class="ftr__row mono">
           <span>© ${year} ${esc(c.brand.name)} · ${esc(c.brand.established)}</span>
           <span>${esc(c.footer.note)}</span>
-          <a href="#top">Back to top ↑</a>
+          <a href="#top">${esc(c.ui.backToTop)}</a>
         </div>
       </footer>
     </section>

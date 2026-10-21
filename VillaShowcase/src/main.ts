@@ -27,6 +27,7 @@ const $$ = <T extends Element = HTMLElement>(sel: string, root: ParentNode = doc
 async function boot() {
   const [content, manifest] = await Promise.all([loadContent(), loadManifest()])
   document.title = `${content.brand.name} — ${content.brand.descriptor}`
+  document.documentElement.lang = content.lang
   $('#app').innerHTML = render(content)
 
   const seq = Object.fromEntries(
@@ -51,7 +52,7 @@ async function boot() {
   await document.fonts.ready
   fitText()
 
-  const canvases = setupStages(seq, loader)
+  const canvases = setupStages(seq, loader, content.locale)
   setupSections(lenis)
   setupChrome(lenis)
 
@@ -121,11 +122,11 @@ function titleIn(el: HTMLElement) {
 function titleOut(el: HTMLElement) {
   return gsap
     .timeline()
-    .to(el.querySelectorAll('.vt__name .mask__in'), { yPercent: -105, stagger: 0.08, duration: 0.6, ease: 'power2.in' }, 0)
+    .to(el.querySelectorAll('.vt__name .mask__in'), { yPercent: -130, stagger: 0.08, duration: 0.6, ease: 'power2.in' }, 0)
     .to(el.querySelectorAll('.vt__index, .vt__foot'), { opacity: 0, y: -14, duration: 0.4 }, 0)
 }
 
-function setupStages(seq: Record<SeqName, FrameSequence>, loader: FrameLoader) {
+function setupStages(seq: Record<SeqName, FrameSequence>, loader: FrameLoader, locale: string) {
   const arrivalCv = new CoverCanvas($<HTMLCanvasElement>('#cv-arrival'))
   const layerCv = $$('.stage--villas .layer').map((l) => new CoverCanvas($<HTMLCanvasElement>('canvas', l)))
   const planCv = new CoverCanvas($<HTMLCanvasElement>('#cv-plan'))
@@ -220,7 +221,7 @@ function setupStages(seq: Record<SeqName, FrameSequence>, loader: FrameLoader) {
     .fromTo('.stat', { opacity: 0, y: 30 }, { opacity: 1, y: 0, stagger: 0.25, duration: 1 }, 2.0)
   stats.forEach((el, i) => {
     const to = Number(el.dataset.value)
-    pt.to(counters[i], { v: to, duration: 4, ease: 'power2.out', onUpdate: () => (el.textContent = Math.round(counters[i].v).toLocaleString('en-US')) }, 2.2 + i * 0.3)
+    pt.to(counters[i], { v: to, duration: 4, ease: 'power2.out', onUpdate: () => (el.textContent = Math.round(counters[i].v).toLocaleString(locale)) }, 2.2 + i * 0.3)
   })
 
   // Prefetch the next clip a little before its section arrives.
@@ -356,6 +357,23 @@ function fitText() {
   })
   const mark = $('.arrival__mark')
   $('.stage--arrival').style.setProperty('--mark-h', `${mark.getBoundingClientRect().height}px`)
+  fitWords()
+}
+
+/**
+ * Big titles wrap between words but a single long word (German "Grundstück") can be wider
+ * than its column. Shrink such a title just enough that its longest word fits.
+ */
+function fitWords() {
+  $$('.vt__name, .index__title, .process__title, .plan__title, .contact__title').forEach((el) => {
+    el.style.fontSize = ''
+    const longest = Math.max(...$$('.mask__in', el).map((w) => w.getBoundingClientRect().width))
+    const avail = el.clientWidth
+    if (longest > avail) {
+      const size = parseFloat(getComputedStyle(el).fontSize)
+      el.style.fontSize = `${Math.floor((size * avail * 0.97) / longest)}px`
+    }
+  })
 }
 
 boot()

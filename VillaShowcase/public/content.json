@@ -1,4 +1,15 @@
 {
+  "lang": "en",
+  "locale": "en-US",
+  "ui": {
+    "construction": "Construction",
+    "email": "Email",
+    "phone": "Phone",
+    "studio": "Studio",
+    "backToTop": "Back to top ↑",
+    "menu": "Main"
+  },
+
   "brand": {
     "name": "OSTRIA",
     "descriptor": "Coastal residences",

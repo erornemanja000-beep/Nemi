@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:de": "vite --mode de",
     "build": "tsc --noEmit && vite build",
+    "build:de": "tsc --noEmit && vite build --mode de --outDir dist-de",
     "preview": "vite preview"
   },
   "dependencies": {

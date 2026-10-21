@@ -24,6 +24,16 @@ Everything a visitor reads lives in **`public/content.json`**:
 Save the file and reload the page. In a built site (`dist/`) you can edit
 `dist/content.json` directly, no rebuild needed.
 
+### German version
+
+The German text lives in **`public/content.de.json`** (same fields, plus `lang`, `locale`
+and the small `ui` labels). Run it with `npm run dev:de`; build it with `npm run build:de`,
+which writes to `dist-de/` and loads `content.de.json` (see `.env.de`). Another language
+works the same way: copy the file, translate it, add an `.env.<lang>` with
+`VITE_CONTENT=content.<lang>.json` and build with `--mode <lang>`.
+
+Long words in the big titles are shrunk automatically so they never overflow.
+
 ## Run it
 
 ```bash

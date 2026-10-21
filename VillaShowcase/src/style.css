@@ -90,13 +90,14 @@ a {
   background: currentColor;
 }
 
-/* Words that slide up out of a clipped box. */
+/* Words that slide up out of a clipped box. The top padding keeps the dots of
+   Ä Ö Ü inside the clip in tightly set capitals. */
 .mask {
   display: inline-block;
   overflow: hidden;
   vertical-align: top;
-  padding-bottom: 0.08em;
-  margin-bottom: -0.08em;
+  padding: 0.2em 0 0.08em;
+  margin: -0.2em 0 -0.08em;
 }
 .mask__in {
   display: inline-block;

@@ -1,0 +1,181 @@
+# Lične beleške — pregled svih frejmova (Claude, 21.10.2026)
+
+## r2 (CIAO Energy F1–194, Reposé F196–441) — sheet 05–14 viđeni lično
+- F151–167 lineup: 12 limenki u dijagonalnom redu koji odlazi gore-desno, tamni pod, refleksije; lagani drift.
+- F168 "FOIRE AUX" ulazi odozdo levo dok su limenke još tu; F169–170 limenke klize gore/blede, naslov debeli italic sa 2–3 "eho" kopije ispod; F171–173 naslov ide gore, FAQ lista linija u sredini.
+- F174–177 "REJOIGNEZ-NOUS" mali naslov (sa eho kopijom), polje + puno belo dugme.
+- F178–182 footer: bela traka, linkovi; magenta limenka izranja odozdo u centar, stoji sama.
+- F183 bočne tamne limenke se vraćaju, F184 halo prsten iznad, F185–194 hero vrteška ponovo + pill "POMME RHUBARBE" na postolju, magenta sjaj ispod → BESKONAČNA PETLJA.
+- F195 tvrdi rez: ruka drži belu Magic Mouse ispred iMac-a; telefon se odmiče F195–210.
+- Reposé hero F196–219: oblaci (video), "Reposé / Residence" beli serif levo, zelena WhatsApp tačka dole desno, mali logo dole desno.
+- F219–224 kroz oblake se pojavljuju kule (skyline) dole; F223–225 naslov bledi; F225 oblaci nestanu → kružno naselje u koncentričnim prstenovima + Dubai skyline na horizontu; F226–240 kamera se spušta i naginje ka centru.
+- F241 tamni veo + "READY / TO RISE." serif kapitalke u centru; F242 skoro crna kartica + sitan tekst; F243–245 bledi nazad na prstenove.
+- F246–249 u centru prstena gradilište sa narandžastim kranovima; F250 "WHY DUBAI?" gore levo + tekst; F250–253 skelet kule raste sa kranom; F254–255 balkoni; F256 gotova kula sa podijumom sa vertikalnim lamelama; F257 nivo oka, sumrak, palme, podijum sija.
+- F258–296 kula u centru, blagi tilt gore; od F273 bela horizontalna svetla traka preko sprata + mala bela pill etiketa; F277+ "EXPLORE RESIDENCES" levo; traka menja spratove.
+- F297 SKOK (šav) na topliji, širi kadar podijuma; F297–312 dolly ka ulazu sa lamelama, zlatna staklena vrata; F313–318 kroz staklo se vidi lobi (kameni zid, bela stolica); F319–320 pretapanje kroz vrata.
+- F321–341 lobi: travertin, grubi kameni zid, bela zakrivljena svetla linija, terakota ležaljke, bela stolica; crna traka dole (letterbox); "WELCOME TO REPOSÉ" mali dole levo; spori push.
+- F342–348 krem sekcija gura video gore; "Step inside / the / everyday." centriran (zadnji redovi italic).
+- F350–362 4 kartice sa lučnim vrhom (sobe) pojavljuju se jedna po jedna, pa natpisi ispod.
+- F365–370 sve ide gore; "The amenities" sitno; F371–378 "Twelve ways / to spend a day." dole levo, slika pergole sa visećim biljkama izranja, lista desno; F379–384 slika bledi u prazno.
+- F384–412 horizontalna galerija: "A slower kind of everyday." + lučna slika → "Find your balance." → "Room to move." (teretana, čovek) → "Time to exhale." (sauna, ćilibar) → "Simply be."; naslovi preklapaju slike, male slike paralaksa.
+- F413–420 kartica bazena raste do punog ekrana; "Nothing to do. / Everything to feel." blur-in; žena pliva.
+- F423–426 beli krug raste odozdo iz centra i prekrije ekran; F427–432 "Less rush. / More Reposé." na mint pozadini, mala slika skyline dole desno.
+- F433–441 sekcija ide gore → "Above the / everyday." preko krovne terase (pergola, palme).
+
+## r3 (Zero F1–185, GQ×AP F186–403) — svi sheetovi viđeni lično
+- F1–19 hero: makro novčanice preko celog ekrana, zeleni oval sa belom gipsanom šakom koja se pruža gore; ivice novčanice "RESERVE NOTE", "00000 0", "ZR"; topla svetla tačka (prati kursor) putuje po zelenom polju do šake; staklena kapsula dugme dole u centru.
+- F20–24 kamera se odmiče: šaka se pretapa u Franklin portret; F23–30 cela novčanica od 100, druge lete ispred tamne zelene table; žar.
+- F31–60 novčanice lepršaju; logo "University / sells" (serif + script) dole levo; F36+ ivice počnu da gore (žuto-narandžasta užarena ivica); rupe rastu; F49–60 ostaju fragmenti sa užarenim ivicama; na tabli bledе kredom jednačine.
+- F61–66 poslednji fragmenti u žar; F67–80 "Paper" sa kitnjastim P, beli sjaj, pod zelenim reflektorom odozgo.
+- F81–90 bledo zeleni papiri lete ka kameri; "but / Companies" gore levo.
+- F97+ papiri se cepaju u trake; "want / Someone" dole desno; F103+ kartice-citati (zeleni pocepani papir + c/b portret); F111–120 let kroz trake; "who can / do the" centar.
+- F127–135 "Job" script u centru; F136–143 "see the / Disconnect"; trake nestaju → crna sa zvezdama; F143–144 "Disconnect" implodira u svetlu tačku.
+- F143–150 "and that's / Why" gore levo; "we had / to Exist" dole desno se ispisuje.
+- F151–164 oko tačke segmentirani prstenovi (zeleno/belo), spoljni zeleni prsten raste preko kadra; F165–185 orb sa izohipsama + 2 prstena, "TAP / HOLD" sitno desno.
+- F186 tvrdi rez → GQ×AP: sat na crnom postolju na belom stolu, ispred zakrivljenog video zida (plavo→breskva zalazak); "+" hotspot; dole talasna linija narandžasto→plavo.
+- F199–216 pogled odozgo na beli sto (crno postolje, crni predmeti), kran dole do nivoa oka.
+- F227–240 kamera klizi levo u crnu prazninu; druga soba se pojavljuje u daljini (beli sto, c/b dim zid); let ka njoj.
+- F241–303 Soba 2: c/b dimni zakrivljeni zid, osmougaono crno postolje, pera (guščja), crne okrugle senke; push-in + orbit, sat se okreće; titlovi se menjaju.
+- F304 sat se smanji/pretapanje; F305–327 tamna soba, beli sto; F328–330 let preko tame do plave linije Zemlje (horizont iz svemira).
+- F331–342 Soba 3: beli disk pod, plavi luk Zemlje, sat izranja iz tamnog bunara, ekrani na tronošcima (robot ruka, rendgen mehanizma); F343–359 približavanje ekranu sa plavim rendgen mehanizmom.
+- F360–376 nagnuti svetloplavi ekran sa nacrtom mehanizma preko belog poda; F377–388 ekran sa robotom/mašinom; F389–399 let kroz zakrivljeni beli panel sa nacrtom; F400 zeleni ton; F401–403 nazad: sat na disku, dva lebdeća ekrana levo i desno.
+
+## r1 Pear (346 f, bez rezova) — viđeno lično
+- F1–13 hero: leva polovina ravna kobalt plava, tanki serif "Pear makes you appear.", 2 reda sitnog teksta, crno dugme, ispod tanka linija + mono oznaka + 3 reda teksta. Desno: mladić (kovrdže, bela tunika, crveni pojas, sandale) na mermernoj ivici, izlazi iza sive zavese sa halftone tačkicama. Miruje.
+- F14–15 zvezdasti odsjaj (4 kraka) na zavesi; F16–20 beli oblak dima prelazi zdesna nalevo, sve zamućeno; mladić sada ispred, vuče zavesu (motion blur); F21–22 hero tekst bledi uz blur.
+- F22–30 mladić vuče zavesu, zavesa raste; kamera ulazi u tkaninu; tkanina se uvija, pojavljuje se krem traka/ivica.
+- F31–42 krem traka preko plavog, pa pozadina prelazi u bledosivo-plavo (F34); traka dijagonalno, uvija se.
+- F43–48 ulaze listovi i grana; traka postaje traka za kalemljenje; ruke u zeleno-zlatnim vezenim manžetnama + nož sa drvenom drškom.
+- F49–62 krupno: ruke vezuju kalem na grani kruške, siva pozadina; F61–63 ruke odlaze.
+- F63–66 kalem pušta izdanak, kruška raste, kamera se odmiče; "We build it." dole levo (F65).
+- F67–90 gusta krošnja maslinastozelenih krušaka; "We build it." + linija; F77–80 jedna kruška postaje zlatna; F83–90 ruka izlazi odozdo i hvata zlatnu krušku.
+- F91–100 ruka drži zlatnu krušku u krošnji, "We rank it." + linija dole levo; F101–103 kamera pada kroz grane, krupne kruške u prvom planu (DOF); F103–104 kroz lišće se pojavljuje lice — match-morph u portret.
+- F105–122 portret na sivoj pozadini: mladić u zelenom somotskom dubletu drži zlatnu krušku desno, tekst levo ("We share in what it earns."); F110–122 vadi nož i seče krušku, blagi push-in; listovi u gornjem desnom uglu.
+- F121–129 kruška presečena; dve ruke drže polovine jednu prema drugoj, padaju listovi; F129–131 kamera ulazi u procep između polovina; F130–138 u procepu raste PLAVI pravougaonik sa "dither"/pikselizovanom ivicom i pokriva ekran; mali beli oblak se pojavi dole desno.
+- F139–160 ravno kobalt nebo, mali crtani beli oblak (halftone), u sredini-desno mono pill + serif naslov + 3 reda teksta; na desnoj ivici vertikalni lenjir sa crticama i brojačem; F141–153 miruje; F154–162 oblaci plove nagore, novi ulaze odozdo (paralaksa).
+- F163–168 odozdo ulazi vrh džinovske kruške u sivim halftone tačkicama (peteljka); F169–174 čovek u beloj tunici sa crvenim pojasom na skeli boji krušku ZLATNOM — zlato zamenjuje tačkice; F175–180 kamera ide dole niz krušku: drvena skela, kameni postament, radnici.
+- F181–192 na skeli: čovek u tunici (crveni pojas) dodaje pergament ženi u beloj tunici; tekst desno gore preko neba; F187–198 kamera ide ka pergamentu dok ne prekrije ekran; F199–203 ceo ekran prazan pergament, zamućen (DOF), hold.
+- F204–210 na pergamentu se pojavljuje sepija crtež (da Vinči stil): radnici guraju džinovsku zlatnu krušku na drvenu platformu; F211–218 crtež se razvija, kamera se diže iznad.
+- F218–226 kamera ide gore u tlocrt odozgo (kruška kao kupola u sredini kvadratne konstrukcije), slika se SMANJUJE i klizi u levo — postaje kvadrat u ramu (grčki meandar ivica, crni L uglovi).
+- F226–240 desno se ispisuje tekst: sitni znakovi se "razlivaju" pa se sklapaju u "No fees. A share / of the upside." + 2 kolone teksta (per-glyph ink dissolve).
+- F243–252 odozdo se diže plava scena sa talasastom "dither" ivicom (pikseli) preko pergamenta; F249–256 žena u beloj tunici sa crvenim pojasom na postamentu, makazama orezuje drvo kruške u saksiji; lišće pada.
+- F255 "We say no more / often than yes." ulazi velik odozdo levo sa duplim "ghost" tragom, smanji se gore levo F256–258; ispod tekst + lista.
+- F263–266 kamera prati zlatnu krušku koja pada; F266 oko kruške krug-talas; F267–268 duga (prizmatični prsten) oko kruške, kruška raste ka kameri; "Asked before" u centru.
+- F269–270 prolaz kroz krušku → pogled odozdo u krošnju sa kruškama i nebom; "Asked before" + script reč počinje da se crta.
+- F271–301 pogled odozdo u krošnju (rupa u lišću ka plavom nebu sa oblakom); "Asked before" serif + "signing" script koji se crta slovo po slovo (F271–276); ispod pitanja (FAQ) u redovima koji se pomeraju (zdesna nalevo) sa tankim linijama; kamera polako ide gore.
+- F302–312 kamera prolazi kroz krošnju u nebo; lišće izlazi sa strana; u nebu se oblaci zatvaraju u prsten sa ČETVOROKRAKIM zvezdastim otvorom u sredini (tamnije plavo); F313–317 oblaci postaju pikselizovani/halftone, zoom kroz otvor.
+- F318–346 finale: čovek u beloj tunici sa crvenim pojasom na belim mermernim stepenicama među oblacima, pokazuje gore desno; duboko kobalt nebo; F323+ zvezde se pale (odsjaji), F327+ linije sazvežđa i staklena forma (plavičasta, blur) desno: polja + crno dugme; blagi pull-back F345–346.
+- UI tokom celog sajta: gore levo logo kruške + tačke-meni; gore desno crno "APPLY" + "+"; leva tanka vertikalna linija (rail); UI menja boju svetlo/tamno po sceni.
+
+## r2 CIAO Energy F1–150 — viđeno lično (dopuna)
+- F1–4 hero: tamni studio, ~11 limenki u luku, neaktivne skoro crne (samo obodno svetlo u boji), aktivna (crvena) u centru frontalno osvetljena; iznad hromirani halo-prsten sa logom; ispod crni pak-postament; F5–7 pill "PÊCHE BLANCHE" na postamentu.
+- F7–24 vrteška brzo okreće: crvena → magenta → ljubičasta → plava → zelena → crvena → magenta (~3 frejma po limenci), svaka nova staje u centar i dobija svetlo; donji sjaj menja boju (narandžasto/ljubičasto/plavo).
+- F25–36 usporava i staje na magenta; F27–36 pill "POMME RHUBARBE"; magenta sjaj ispod postamenta.
+- F37–39 halo i postament nestaju, bočne limenke padaju/odlaze u stranu, pozadina iz sive u duboku ljubičastu sa sjajem; F40–45 kamera se približava, limenka ×2, nagnuta ~20°; desno se pojavi vertikalna šina od 4 male ikonice.
+- F46–58 levo "POMME / RHUBARBE" debeli italic + 2 reda teksta; ogromna limenka odsečena dole.
+- F59–64 limenka se okreće oko svoje ose na poleđinu, kamera bliže; naslov nestaje u "trakama".
+- F64–90 poleđina limenke: ružičasta svetleća traka označava red teksta na etiketi; levo "MOINS / DE SUCRE" + tekst; F84–90 tekst se menja (glitch), traka klizi na sledeći red.
+- F91–123 isto za "ARÔMES NATURELS", "CAFÉINE ISSUE DE GRAINS DE CAFÉ", "STEVIA": svaki put limenka se lagano nagne drugačije, ružičasta traka na etiketi pređe na sledeći red, naslov levo se zameni glitch trakama, aktivna ikonica u desnoj šini dobija prsten.
+- F124–128 limenka se okrene nazad na prednju stranu, smanji i uspravi u centru; tekst bledi; F129–131 pozadina eksplodira u svetlu magenta maglu (dim se kreće).
+- F131–148 iza limenke džinovska bleda "ZERO / BULLSHIT" (debeli italic) se pojavljuje slovo po slovo kroz maglu.
+- F148–150 magla tamni, sa strane ulete tamne limenke.
+
+## r4 Larkhaven Golf — viđeno lično
+- F1–12 hero: klupska kuća (drvena, plavi krov, upaljeni prozori), okrugli travnjak, breskva nebo; levo "Golf the way / it *should* feel." (serif, "should" italic) + tekst + mali play; dole u sredini tamna staklena pill traka sa crvenim dugmetom (stalno prisutna).
+- F13–18 kamera se diže preko krova (krov prelazi preko kadra kao "wipe"); naslov bledi F13–16.
+- F19–42 iznad: jezero, ferveji, magla, zlatno svetlo; "Lake *Larkin*" levo dole (italic Larkin); kamera stoji (hold).
+- F43–48 kamera ide napred iznad jezera, jezero reflektuje ružičasto nebo; F46–56 desno "Coffee first. Then / the *first tee.*"
+- F57–64 spušta se i okreće levo; F62–80 iza prvog tee-a, nivo očiju, ružičasto nebo, "First off." levo dole + tekst; desno gore mala kartica (rupa info).
+- F81–86 nisko dolly napred preko trave; F86–90 makro: loptica na drvenom tee-u, bokeh; "Everything starts *here*." centar dole.
+- F91–98 hold na loptici, "Everything starts *here*." blur; desno gore kartica rupe.
+- F98–102 glava drajvera ulazi sleva sa motion blur-om, staje iza loptice; "Hit the *big stick*." dole desno (F102–112).
+- F113–114 zamah (blur), F115 loptica nestaje, F116–120 prazan tee, kamera ostaje pa kreće nisko napred.
+- F121–138 "ball-cam": kamera juri nisko niz prugasti fervej; dole levo widget sa 4 broja (brzina, ugao, visina, carry) koji se broje; narandžasta tanka linija (putanja) ka zastavici; bunkeri prolaze sa strane.
+- F139–153 kamera se smiruje na grinu, crvena zastavica, magla; "Three feet for eagle." levo dole.
+- F154 TVRDI REZ (drugi take): ribnjak odozgo, "Fly the *front run*." centar; F156+ desno gore tablica rupa 2–6.
+- F157–162 kamera roni ka vodi i banka (horizont nagnut); F163–180 nisko uz vodu, zid od narandžastog složenog kamena, borovi u kontra svetlu, odsjaji.
+- F181–186 penje se na grin (crvena zastavica), sunce kroz borove; F187–203 FPV let nisko KROZ borovu šumu (crvena tla od iglica, sunčevi zraci), izlaz na čistinu sa belim bunkerima; F204–220 hold visoko: dogleg sa bunkerima u obliku krsta, "Long Leaf" dole desno + tekst.
+- F221–225 ponire u krošnje → skoro crni kadar (prirodni "wipe" kroz lišće) → F226–228 izlazi nisko uz jezero, crvena staza; F229–245 hold: dugačak fervej uz jezero, odsjaj sunca u vodi, bunkeri; "Shoreline" dole levo.
+- F246–250 nisko preko bunkera/staze u izmaglicu (pretapanje kroz maglu); F251–252 izmaglica → visoko iznad; F253–270 hold: uski fervej između šume odozgo, ružičasto nebo na horizontu, "The Drop" dole desno.
+- F271–282 kamera se spušta niz "The Drop" fervej (iz visine ka nivou), naslov bledi; F283–300 nisko iznad ferveja, beli bunkeri, kamera banka levo-desno; F297–302 svetlo postaje zlatno, prelazi greben.
+- F301–308 kamera se naginje (roll ~15°), nebo postaje ružičasto-magenta; ispod se pojavljuje ružičasto jezero; F309–324 skim nisko preko ružičaste vode ka ostrvskom grinu (okrugli zeleni grin u jezeru), odraz neba u vodi.
+- F325–346 kamera se diže i naginje: grin odozgo sa drvenim mostićem; "The Island" levo dole + tekst; hold.
+- F347–368 spori push-in; tekst nestaje; F352+ u centru "Your tee time / is *waiting*." + crveno dugme na samom grinu (centrirano).
+- F368–369 sekcija se otpušta: dole izranja tamnozelena sekcija "Pick your *time*." + ćelije sa datumima.
+- UI stalno: providna gornja traka (logo levo, linkovi desno), donja staklena pill traka sa crvenim dugmetom "Book a tee time" (uvek na istom mestu), desno gore tablica rupa u drugom delu; tekst u jednom uglu, sledeći u suprotnom (levo dole ↔ desno dole).
+
+## r5 Hartleigh & Vane — viđeno lično
+- F1–60 telefon se pomera (iMac sa strane → blizu teksta → nazad); sajt miruje.
+- Hero (F1–98): prazna duga soba, frontalni kadar, zidovi tamni ljubičasto-sivi, pod svetli drveni (ružičasti ton), crni čelični prozor levo sa sunčevim prugama po podu i zidu, napa od maltera gore u centru sa toplim LED svetlom ispod, crne utičnice na zidu. Centriran serif "Scroll to fit / the kitchen" + sitna linija teksta ispod + "SCROLL".
+- Gore tamna fiksna traka: logo "Hartleigh & Vane" centriran-levo, linkovi desno.
+- F98–100 naslov hero nestaje (3 frejma), pojavljuje se tekst dole levo "Scribed to the wall" (serif) + linija + 2 reda; svetlo ispod nape se upali (V-mlaz svetla na zid).
+- F100–122 zeleni shaker ormarići RASTU iz poda duž zadnjeg zida: prvo krajevi (levo i desno), pa sredina; dobiju tanku radnu ploču; F112 slavina iskoči.
+- F123–134 desno gore se "odmota" nadole zidni ormarić (zeleni, 2 vrata); caption se menja u "One slab, folded" (F127).
+- F129–150 sa desne ivice uklizava mermerno ostrvo (beli Calacatta, crni/zeleni prednji deo), usporava i staje ispod nape; zadnja radna ploča postaje mermer, crna ploča za kuvanje se pojavi, zlatna slavina.
+- F152–180 "Warmed by degrees": tri staklene globus lampe se spuštaju odozgo i pale (odsjaji-zvezdice); mermerna zidna obloga se diže iza ormarića; dnevno svetlo (pruge sa prozora) bledi → veče, lampe su glavno svetlo.
+- F181–207 hold gotova kuhinja, veče; caption prelazi sa leve na DESNU stranu: "Supper at eight" + zeleno-tirkizno dugme ispod (F185+); crossfade ~4 frejma.
+- F208–221 pin se otpušta: kuhinja klizi gore, odozdo izlazi tamna sekcija (#121316).
+- F211–228 tamni editorial: mala oznaka + serif naslov "A kitchen is furniture — built once, built properly" (deo u boji mesinga), slika portreta (kartica), tekst, 3 broja (38 / 900+ / 5-day).
+- F222–232 "The craft" 2×2 kartice; F230–240 "Five days on site" 4 kolone sa brojevima; F238–255 "Made & fitted" galerija (1 velika + 2 manje slike kuhinja; jedna se lazy-load-uje kasno — vidi se siva).
+- F250–262 citat centriran u serifu; F260–274 "Let's make your kitchen" kontakt (redovi: telefon, email...) + kartica sa tirkiznim dugmetom; footer.
+- Elementi ulaze sa kratkim fade-up (3–6 frejmova).
+
+## r6 Fighter Ready — viđeno lično
+- F1–37 hero: tamno plavi betonski zid, osvetljen FR logo znak (srebrno F, narandžasto-crveno R) iznad udubljenih staklenih vrata sa narandžastim sjajem, refleksija na sjajnom podu; levo "FIGHTER / READY" debeli kondenzovani beli + tekst + narandžasti link; dole "SCROLL TO ENTER" + ikonica miša; gore solidna tamna traka sa logom i 8 linkova.
+- F38–60 kamera dolly ka vratima; hero tekst klizi gore 1:1 sa skrolom pod nav; logo znak raste i izlazi gore; "FIGHTER READY" natpis ispod znaka.
+- F61–69 kamera ispred vrata, vrata se otvaraju (krila se pomeraju), narandžasto svetlo iznutra.
+- F70–78 "MATCHMAKING / IS BROKEN." ulazi levo (blur→oštro, slova se pojavljuju); kamera prolazi kroz vrata, jak narandžasti bljesak (F76–80).
+- F79–90 hodnik: tamni zidovi, plavo-belo svetlo na plafonu, posteri boraca, lightbox; kamera ide napred.
+- F91–104 hodnik se završava, "MATCHMAKING IS BROKEN." klizi gore i nestaje pod nav (F94–104); na kraju hodnika ring u daljini (crveno-bele užadi, FR logo).
+- F105–117 izlaz iz hodnika u salu sa ringom; ring centriran, reflektori odozgo (svetli konusi), bez teksta.
+- F117–122 "EVERY MATCH, / SAFELY." ulazi levo (blur→oštro); F122–160 kamera prilazi i luči desno oko ugla ringa (FR na stubu, ploči i pod ringa; posteri + trofej na zadnjem zidu).
+- F160–172 tekst klizi gore i nestaje; F172–180 ring sa strane, prazno putovanje.
+- F181–186 "THE RIGHT / ROUNDS." ulazi; F186–193 brz pan desno preko plave strunjače sa crvenom ivicom; F193–210 dva boksera (crvena vs plava kaciga) se spare u petlji (animacija ide i kad kamera stoji).
+- F211–222 kamera stoji, bokseri se spare; "THE RIGHT ROUNDS." klizi gore i nestaje pod nav (F213–219).
+- F223–235 kamera truck desno; "GET FIGHTER / READY." ulazi DOLE levo pa klizi na mesto (F226–232); strunjača odlazi levo.
+- F235–256 tamna zona: 3 crvena džaka vise, narandžaste mrlje svetla na podu, reflektor; kamera klizi desno.
+- F256–266 tekst nestaje gore; kamera nastavlja desno → zid sa okruglim lampama (bloom) i uramljenim portretima.
+- F267–300 "ANYONE CAN / START." ulazi dole levo; zid profila sa 4–5 velikih okruglih lampi sa jakim bloom-om, portreti, stats tabla.
+- F299–307 tekst bledi; tamni stub prelazi preko ekrana (wipe) → arena: tribine sa ljubičastim svetlom i publikom, LED trake.
+- F307–329 "FIRST SLOT / TO FINAL BELL." ulazi; jarko osvetljen ring pod trusom, žuti "BOUTPASS" znak; kamera klizi desno pored tribina.
+- Tekst uvek isti obrazac: ulazi odozdo-levo sa blur→oštro, stoji dok se kamera kreće, izlazi gore ispod nav-a.
+
+## r7 LITORALE — viđeno lično
+- !!! Natpis na samom reel-u: "POV: You used GPT-6 and Higgsfield API for a clients website" → autor KAŽE alate: GPT-6 (kod/tekst) + Higgsfield API (AI slike/video). Jedini reel koji otkriva alat.
+- F1–60 telefon se pomera ka monitoru; hero: brdo sa niskim žbunjem (makija) iznad tirkiznog zaliva sa belim peskom; ogroman "LITORALE" (široki ekstendovani sans, belo) preko celog dna; mali tekst iznad levo.
+- F61–82 hero miruje (slika se ipak lagano kreće — oblaci/svetlo).
+- F83–93 zlatni sunčev zrak prelazi preko trave (cela padina požuti) — deo videa.
+- F91–100 "LITORALE" se gasi (bledi + blur), slika malo potamni (F94–100).
+- F100–108 dole levo "VILLA / AMMOS" (isti široki font, manji) + mali tekst; svetlo se vraća zlatno.
+- F112–120 GRADNJA počinje: zdesna se teren boji u narandžastu zemlju (poravnat plato); pojavi se bela linija/marker.
+- F121–132 narandžasti plato, bele linije iskolčavanja, pa beli obodni temelj (pravougaonik sa izbočinama); F133–150 ploča se puni belim betonom, iz nje niču narandžaste šipke armature u mreži, pa drveni skelet stubova i greda (krovna mreža).
+- F151–162 zidovi rastu: levo bela fasada, sredina i desno topli krečnjak (žuto), prozori; F163–180 prizemlje gotovo, sprat se gradi, beli zidovi sprata; travnjak pozeleni (F172–180).
+- F181–192 krovovi od terakote se pojavljuju; bazen postaje plav (F187); F193–210 čempresi i masline rastu, staza, žbunje → gotova vila; F211–240 hold (VILLA AMMOS dole levo), kamera praktično zaključana.
+- F241–250 hold Ammos; naslov bledi F244–250. F251–257 PRETAPANJE (crossfade, vidi se dvostruka slika) u Salinu: prazan plato na dini iznad mora, kamena staza u prvom planu između suve zlatne trave, ljubičasto-breskva nebo.
+- F265–268 "VILLA / SALINA" ulazi dole levo; F266–275 beli obris ploče pa beli podignut plato se širi preko celog platoa.
+- F283–300 beli kikladski zidovi-oštrice i kocke rastu na oba krila (levo i desno), staza ostaje.
+- F301–316 u sredini izraste stakleni paviljon dvostruke visine (prvo okvir, pa staklo, vrata).
+- F316–330 gornje kocke, fasada se popuni i približi (lagani push-in), terase.
+- F330–360 hold + male promene: zelenilo (masline) se pojavljuje ispred (F352–360).
+- F361–400 hold gotova Salina (bela kubična vila, stakleni centar, masline ispred, staza), sunce nisko; naslov bledi F397–405.
+- F409–416 PRETAPANJE u Meltemi (vidi se dvostruka slika palmi preko vile); F416–426 peskoviti plac na kanalu, palme, vile preko vode, duge senke; F427–434 "VILLA / MELTEMI" ulazi dole levo.
+- F433–450 iskopavanje: rovovi/kade bazena i temelja se pojavljuju uz vodu (tamne linije u pesku).
+- F451–462 crni čelični + stakleni ram niče, bela zidna ploča desno; F462–480 bela terasa se širi, bazen se puni tirkizno, staklo prizemlja, ležaljke.
+- F481–510 gornji spratovi: konzolne bele ploče, stakleni boks sprata, plave senke; lagani push-in ka kući; palme u prvom planu.
+- F511–540 travertinski volumen (bež kameni zid) pokriva levi deo, nameštaj unutra, staklo; svetlo hladnije (kasno popodne → plavi ton).
+- F541–552 DAN → SUMRAK u istom kadru: unutrašnjost se pali toplo narandžasto, nebo duboko plavo, AUTO se pojavi na prilazu (F543+); naslov "VILLA MELTEMI" bledi F541–547.
+- F553–566 PRETAPANJE u Aureu (dvostruka slika, žuta stakla) ; F559–570 Aurea: dvospratna staklena kuća sa kamenim zidom, unutrašnjost jarko žuto osvetljena, plavi bazen, plavi sat (blue hour); F567–570 "VILLA / AUREA".
+- F571–600 spori dolly ka kući: lebdeće hrastovo stepenište vidljivo kroz staklo, dnevna soba; kamera se približava staklenim vratima.
+- F601–614 kamera stiže do staklenih vrata (crni okvir), prolazi kroz njih (F610–614, blur).
+- F615–640 unutra: dnevna soba dvostruke visine, lebdeće hrastovo stepenište levo, topla svetla, CIJAN LED linija na plafonu, TV, fotelje; kamera ide napred i okreće se.
+- F641–660 skreće desno ka staklenom zidu od poda do plafona → iza: plavi sat, palme, grad.
+- F661–690 izlazi kroz otvorena klizna vrata na terasu: kameni pod, drvene ležaljke, osvetljene palme (uplight), infinity bazen, SKYLINE grada (neboderi) preko vode.
+- F691–720 nisko klizi preko kamenog ruba pa preko plavog osvetljenog bazena ka gradu; naslov "VILLA AUREA" bledi oko F715–720.
+- F721–732 kamera nisko preko vode ka gradu, palme izlaze desno, naslov nestaje (F727–733).
+- F733–742 nepomičan kadar: plavi sat, grad se ogleda u mirnoj vodi.
+- F743–756 ŠAV između klipova: siluete (palme, kuće levo) se razmazuju/dupliraju, vrh neba pređe u cijan-belu — AI prelaz između dva klipa koji se ne poklapaju.
+- F757–780 kamera se spušta i naginje ka vodi: grad izlazi gore iz kadra, ostaje samo plava voda koja tamni.
+- F781–786 skoro crno (tamno plavo-crno, #07070D) — voda se pretopila u pozadinu stranice; pojave se SITNE TAČKE u redovima (F784–786) = slova kao tačke.
+- F787–792 tačke se pretvaraju u izmešana slova ("We de nest elsss bsildiass") pa u "We do not place buildings" — sa 2–3 plavo-cijan duple kopije (eho) iznad/ispod koje se skupljaju.
+- F793–816 isto za sledeće redove: "on land." → "We let the *coastline* finish" (coastline italic cijan) → "the drawing we begin."; ispod 3 kolone sitnog teksta se pojavljuju.
+- F817–834 tekst stoji (čist); F834–846 stranica skroluje gore: dole izlazi "FOUR / VILLAS / IN THE..." (veliki široki font) i lista "VILLA AMMOS / VILLA SALINA" desno; tekst manifesta dobija eho/duplikate dok se pomera (efekat zavisi od brzine skrola).

@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Freiraum · Ein Tag im Freiraum · Wien</title>
+<meta name="description" content="Freiraum, Mariahilfer Straße 117, Wien: Röstraum-Kaffee ab 8, Frühstück bis 17 Uhr, One World Kitchen, Spielraum, Signature Cocktails und Pizza aus dem Holzofen. Seit 2008.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#f6efe6">
+<meta name="fr-assets" content="shared/">
+<link rel="stylesheet" href="assets/premium.css">
+</head>
+<body>
+
+<div class="loader" id="loader" aria-hidden="true">
+  <canvas id="loaderLogo" width="1210" height="320"></canvas>
+  <div class="pct tab" id="pct">0 %</div>
+  <div class="where">Mariahilfer Straße 117 · Wien</div>
+</div>
+
+<div class="sky" aria-hidden="true"><canvas id="smoke"></canvas></div>
+<div class="disc" aria-hidden="true"><b></b><i></i><em></em></div>
+<canvas id="fx" aria-hidden="true"></canvas>
+<div class="grain" aria-hidden="true"></div>
+<div class="progress" id="progress"></div>
+
+<header class="nav" id="nav">
+  <a class="logo" href="#dan" aria-label="Freiraum – Start"><span class="logo-mask" role="img" aria-label="frei raum"></span></a>
+  <ul>
+    <li><a href="#dan" data-i18n="nav.morgen">Morgen</a></li>
+    <li><a href="#kueche" data-i18n="nav.kueche">Küche</a></li>
+    <li><a href="#spielraum" data-i18n="nav.spiel">Spielraum</a></li>
+    <li><a href="#nacht" data-i18n="nav.abend">Abend</a></li>
+    <li><a href="#pizza" data-i18n="nav.pizza">Pizza</a></li>
+    <li><a href="#feiern" data-i18n="nav.feiern">Feiern</a></li>
+    <li><a href="#besuch" data-i18n="nav.besuch">Besuch</a></li>
+  </ul>
+  <div class="right">
+    <div class="clock tab" id="clock" aria-hidden="true"><i></i><span>07:59</span></div>
+    <div class="lang" role="group" aria-label="Sprache"><span data-l="de">DE</span><span data-l="en">EN</span></div>
+    <button class="pill" data-reserve data-i18n="nav.reserve">Reservieren</button>
+    <button class="burger" id="burger" data-i18n-aria="nav.open" aria-label="Menü öffnen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 9h16M4 15h16"/></svg></button>
+  </div>
+</header>
+
+<nav class="menu" id="menu" aria-label="Menü">
+  <button class="burger x" id="menuClose" data-i18n-aria="nav.close" aria-label="Menü schließen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  <a class="big" href="#dan"><small>08:00</small><span data-i18n="nav.morgen">Morgen</span></a>
+  <a class="big" href="#kueche"><small>12:00</small><span data-i18n="nav.kueche">Küche</span></a>
+  <a class="big" href="#spielraum"><small>15:00</small><span data-i18n="nav.spiel">Spielraum</span></a>
+  <a class="big" href="#nacht"><small>17:00</small><span data-i18n="nav.abend">Abend</span></a>
+  <a class="big" href="#pizza"><small>19:00</small><span data-i18n="nav.pizza">Pizza</span></a>
+  <a class="big" href="#feiern"><small>23:00</small><span data-i18n="nav.feiern">Feiern</span></a>
+  <a class="big" href="#besuch"><small>00:30</small><span data-i18n="nav.besuch">Besuch</span></a>
+  <div class="foot">
+    <div class="lang"><span data-l="de">DE</span><span data-l="en">EN</span></div>
+    <a class="pill ghost" href="speisekarte.html" data-i18n="nav.menu">Speisekarte</a>
+    <button class="pill" data-reserve data-i18n="nav.reserve">Reservieren</button>
+  </div>
+</nav>
+
+<ol class="index" id="index" aria-label="Kapitel"></ol>
+<button class="next" id="next" aria-label="Weiter"><svg class="ring" viewBox="0 0 60 60"><circle cx="30" cy="30" r="29"/></svg><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6"/></svg></button>
+
+<main>
+
+<!-- 08:00 Morgen: Röstraum-Espresso → Cappuccino → Frühstück (eine durchgehende Animation) -->
+<section class="pin seq" id="dan" data-count="409" data-steps="0-120,120-216,216-312,312-408" data-ch="08" data-label="nav.morgen" style="--len:1250vh" data-t0="7.97" data-t1="12.7">
+  <div class="frame">
+    <div class="copy">
+      <div class="layer on" data-at="0">
+        <div class="eyebrow fade" data-i18n-html="h.eyebrow">Mariahilfer Straße 117 · <b>seit 2008</b></div>
+        <h1 class="h split" data-i18n-html="h.title">Ein Tag im <em>Freiraum.</em></h1>
+        <p class="lead fade d1" data-i18n="h.lead">Vom ersten Röstraum-Espresso am Morgen bis zum letzten Drink um 2 – scroll dich durch unseren Tag.</p>
+        <div class="btns fade d2">
+          <button class="pill" data-reserve><span data-i18n="cta.reserve">Tisch reservieren</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+          <a class="pill ghost" href="speisekarte.html" data-i18n="cta.menu">Speisekarte</a>
+        </div>
+        <div class="btns fade d3" style="margin-top:20px">
+          <span class="chip" data-jetzt><span class="dot"></span><span class="t">Geöffnet</span></span>
+          <button class="chip jump" id="jetztBtn"><span data-i18n="h.jump">Spring ins Jetzt</span> · <span class="tab" id="jetztT">--:--</span> ↓</button>
+        </div>
+      </div>
+      <div class="layer" data-at=".07">
+        <div class="time" aria-hidden="true">08:00</div>
+        <div class="eyebrow fade" data-i18n-html="c.eyebrow">Röstraum · <b>unsere hauseigene Rösterei</b></div>
+        <h2 class="h split" data-i18n-html="c.title">Guten Morgen, <em>Wien.</em></h2>
+        <p class="lead fade d1" data-i18n="c.lead">Jeder Espresso beginnt bei uns in der eigenen Rösterei – dunkel, samtig, Mo–Sa ab 8 und So ab 9 Uhr.</p>
+        <div class="prices fade d2"><div><b>Cappuccino</b><small></small><i>4,4</i></div><div><b>Caffè Latte</b><small></small><i>4,9</i></div><div><b>Elephant Chai Latte</b><small></small><i>4,9</i></div></div>
+      </div>
+      <div class="layer" data-at=".36">
+        <div class="time" aria-hidden="true">10:00</div>
+        <div class="eyebrow fade" data-i18n-html="b2.eyebrow">Frühstück · <b>täglich bis 17 Uhr</b></div>
+        <h2 class="h split" data-i18n-html="b2.title">Frühstück, <em>so lange</em> du willst.</h2>
+        <p class="lead fade d1" data-i18n="b2.lead">Signature Boxes, Pancakes, Bowls – und Eier, wie du sie magst.</p>
+        <div class="prices fade d2"><div><b>Wiener Box</b><small data-i18n="c.b1">Schinken, Emmentaler, weiches Ei, Kornspitz</small><i>15,8</i></div><div><b>American Box</b><small data-i18n="c.b2">Mini Rösti, Spiegelei, Speck, Avocado</small><i>14,8</i></div><div><b>Oriental Box</b><small data-i18n="c.b3">Falafel, Hummus, Ajvar, Oliven</small><i>13,9</i></div></div>
+      </div>
+      <div class="layer" data-at=".62">
+        <div class="time" aria-hidden="true">12:00</div>
+        <div class="eyebrow fade" data-i18n-html="l.eyebrow">Mittag · <b>Küche bis 21:45</b></div>
+        <h2 class="h split" data-i18n-html="l.title">Mittags auf <em>Weltreise.</em></h2>
+        <p class="lead fade d1" data-i18n="l.lead">Pasta mit Garnelen, Ente sous vide, Steak vom Grill – unsere Küche kocht einmal quer durch die Welt.</p>
+        <div class="prices fade d2"><div><b>Spaghetti mit Garnelen</b><small data-i18n="k.d2">San-Marzano-Tomaten, knusprige Garnelen</small><i>17,9</i></div><div><b>Entenbrust Sous Vide</b><small data-i18n="k.d3">Kirschsauce, knusprige Polenta</small><i>18,9</i></div><div><b>Rumpsteak Sous Vide</b><small data-i18n="k.d1">mit Grillgemüse und Salsa-Dip</small><i>29,5</i></div></div>
+      </div>
+    </div>
+    <div class="stage"><canvas id="danCv"></canvas></div>
+    <div class="meta"><span>Mariahilfer Straße 117 · 1060 Wien</span><span class="scrollcue"><i></i><span data-i18n="scroll">Scrollen</span></span></div>
+  </div>
+</section>
+
+<!-- 13:00 Küche -->
+<section class="hz" id="kueche" data-ch="12" data-label="nav.kueche" data-t0="12.7" data-t1="14.3">
+  <div class="frame">
+    <div class="track" id="track">
+      <div class="intro">
+        <div class="time" aria-hidden="true">13:00</div>
+        <div class="eyebrow rv" data-i18n-html="k.eyebrow">Mittag · Küche bis <b>21:45</b></div>
+        <h2 class="h s split rv" data-i18n-html="k.title">One World <em>Kitchen.</em></h2>
+        <p class="lead" data-i18n="k.lead">Wir bringen die ganze Welt nach Wien – von Wiener Schnitzel bis Falafel-Bowl, von Sous-vide-Ente bis Tacos zum Teilen.</p>
+        <div class="btns"><a class="pill ghost" href="speisekarte.html" data-i18n="cta.allmenu">Ganze Speisekarte</a></div>
+      </div>
+      <article class="card"><div class="ph"><span class="ix">01</span><img src="shared/img/steak-s.webp" alt="Rumpsteak Sous Vide" loading="lazy"></div><div class="cap"><div><h4>Rumpsteak Sous Vide</h4><p data-i18n="k.d1">mit Grillgemüse und Salsa-Dip</p></div><span class="pr">29,5</span></div></article>
+      <article class="card"><div class="ph"><span class="ix">02</span><img src="shared/img/linguine-s.webp" alt="Spaghetti mit Garnelen" loading="lazy"></div><div class="cap"><div><h4>Spaghetti mit Garnelen</h4><p data-i18n="k.d2">San-Marzano-Tomaten, knusprige Garnelen</p></div><span class="pr">17,9</span></div></article>
+      <article class="card"><div class="ph"><span class="ix">03</span><img src="shared/img/entenbrust-s.webp" alt="Entenbrust Sous Vide" loading="lazy" style="object-position:50% 88%"></div><div class="cap"><div><h4>Entenbrust Sous Vide</h4><p data-i18n="k.d3">Kirschsauce, knusprige Polenta</p></div><span class="pr">18,9</span></div></article>
+      <article class="card"><div class="ph"><span class="ix">04</span><img src="shared/img/tapas-s.webp" alt="Tapas zum Teilen" loading="lazy"></div><div class="cap"><div><h4 data-i18n="k.n5">Tapas zum Teilen</h4><p data-i18n="k.d5">Tacos, Patatas Bravas, Garnelen-Tempura</p></div><span class="pr" data-i18n="k.p5">ab 4,9</span></div></article>
+      <article class="card"><div class="ph"><span class="ix">05</span><img src="shared/img/rote-beete-s.webp" alt="Rote Beete Salat" loading="lazy" style="object-position:50% 90%"></div><div class="cap"><div><h4>Rote Beete Salat</h4><p data-i18n="k.d6">Blattsalate, Schafskäse, Walnüsse</p></div><span class="pr">15,8</span></div></article>
+      <article class="card"><div class="ph"><span class="ix">06</span><img src="shared/img/souffle-s.webp" alt="Choco Lava Special" loading="lazy"></div><div class="cap"><div><h4>Choco Lava Special</h4><p data-i18n="k.d7">flüssiger Schokokern, Himbeereis</p></div><span class="pr">8,8</span></div></article>
+    </div>
+    <div class="count tab" id="kCount">01 / 06</div>
+  </div>
+</section>
+
+<!-- Manifest -->
+<section class="manifest" id="manifest" data-t0="14.3" data-t1="15" aria-label="World Kitchen & Social Space">
+  <div class="marq o" data-speed="-1"><span>World Kitchen</span><span>·</span><span>Social Space</span><span>·</span><span>seit 2008</span><span>·</span><span>World Kitchen</span><span>·</span><span>Social Space</span><span>·</span></div>
+  <div class="marq f" data-speed="1"><span>Pizza</span><span>Pasta</span><span>Bowls</span><span>Brunch</span><span>Tapas</span><span>Cocktails</span><span>Pizza</span><span>Pasta</span><span>Bowls</span><span>Brunch</span><span>Tapas</span><span>Cocktails</span></div>
+  <div class="stats">
+    <div class="stat rv"><b class="tab" data-count="2008">2008</b><span data-i18n="m.s1">Mitten auf der Mahü</span></div>
+    <div class="stat rv"><b class="tab" data-count="350">350</b><span data-i18n="m.s2">Gäste bei Feiern</span></div>
+    <div class="stat rv"><b class="tab" data-count="7">7</b><span data-i18n="m.s3">Tage die Woche geöffnet</span></div>
+    <div class="stat rv"><b class="tab" data-count="425">425</b><span data-i18n="m.s4">Gerichte &amp; Drinks auf der Karte</span></div>
+  </div>
+</section>
+
+<!-- 15:00 Spielraum -->
+<section class="pin" id="spielraum" data-ch="15" data-label="nav.spiel" style="--len:230vh" data-t0="15" data-t1="16.4">
+  <div class="frame">
+    <div class="copy">
+      <div class="layer on" data-at="0">
+        <div class="time" aria-hidden="true">15:00</div>
+        <div class="eyebrow fade" data-i18n-html="s.eyebrow">Spielraum im Freiraum · <b>täglich 9–18 Uhr</b></div>
+        <h2 class="h split" data-i18n-html="s.title">Ihr genießt. <em>die Kinder</em> toben.</h2>
+        <p class="lead fade d1" data-i18n="s.lead">Rutsche, Bällebad und Trampolin – direkt hinter der Glaswand. Ihr esst in Ruhe, die Kleinen sind in Sichtweite. RIO passt auf.</p>
+        <div class="btns fade d2"><a class="pill" href="spielraum.html" data-i18n="s.cta">Spielraum entdecken</a><a class="pill ghost" href="spielraum.html#party" data-i18n="s.party">Kindergeburtstag</a></div>
+      </div>
+    </div>
+    <div class="stage">
+      <div class="clouds" id="clouds"><i></i><i></i><i></i></div>
+      <div class="polas">
+        <figure class="pola a snd-pola"><div class="ph"><video muted loop playsinline preload="none" poster="shared/video/spiel-heute.jpg" src="shared/video/spiel-heute.mp4" aria-label="heute.at-Reporterin rutscht im Spielraum"></video><button class="snd" type="button" data-i18n="r.tap">Tippen für Ton</button><small class="cr">Video: heute.at</small></div><figcaption data-i18n="s.p1">heute.at war da</figcaption></figure>
+        <figure class="pola b"><div class="ph"><img src="shared/img/spielraum-hari-s.webp" alt="Der Chef lacht im Bällebad vor der gelben Rutsche" loading="lazy"><small class="cr">Foto: heute.at</small></div><figcaption data-i18n="s.p2">Der Chef testet selbst</figcaption></figure>
+        <figure class="pola c"><div class="ph"><video muted loop playsinline preload="none" poster="shared/video/spiel-baelle.jpg" src="shared/video/spiel-baelle.mp4" aria-hidden="true"></video></div><figcaption data-i18n="s.p3">Bällebad!</figcaption></figure>
+        <figure class="pola d"><div class="ph"><video muted loop playsinline preload="none" poster="shared/video/spiel-party.jpg" src="shared/video/spiel-party.mp4" aria-hidden="true"></video></div><figcaption data-i18n="s.p4">Kindergeburtstag</figcaption></figure>
+      </div>
+    </div>
+    <div class="rio" id="rio"><img src="shared/img/rio-s.webp" alt="RIO, der Schmetterling vom Spielraum" loading="lazy"></div>
+  </div>
+</section>
+
+<!-- 16:59 → 17:00 -->
+<section class="pin" id="flip" style="--len:260vh" data-t0="16.6" data-t1="17">
+  <div class="frame">
+    <div class="flipwrap">
+      <div class="eyebrow fade in" data-i18n-html="fl.eyebrow">Golden Hour · <b>Mariahilfer Straße</b></div>
+      <div class="flipclock tab" id="flipclock" aria-label="17:00">
+        <span class="d"><b>1</b></span><span class="d"><b>6</b></span><span class="colon">:</span><span class="d"><b>5</b></span><span class="d"><b>9</b></span>
+      </div>
+      <h2 class="h s split" id="flipTitle" data-i18n-html="fl.title">Ab jetzt wird's <em>Bar.</em></h2>
+      <p class="lead fade" id="flipLead" data-i18n="fl.lead">Lichter an, Musik lauter – der Freiraum wechselt in den Abend.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 17:00 Abend: Signature Cocktail → Freiraum Sprizz → Feuer → Pizza (eine durchgehende Animation) -->
+<section class="pin seq" id="nacht" data-count="217" data-steps="0-96,96-216" data-ch="17" data-label="nav.abend" style="--len:780vh" data-t0="17" data-t1="19.5">
+  <div class="frame">
+    <div class="copy">
+      <div class="layer on" data-at="0">
+        <div class="time" aria-hidden="true">17:00</div>
+        <div class="eyebrow fade" data-i18n-html="n1.eyebrow">Golden Hour · <b>ab 17 Uhr</b></div>
+        <h2 class="h split" data-i18n-html="n1.title">Zeit für <em>Drinks.</em></h2>
+        <p class="lead fade d1" data-i18n="n1.lead">Signature Cocktails, hausgemachte Sirups und Sprizz in allen Farben.</p>
+        <div class="prices fade d2"><div><b>Passion Touch</b><small data-i18n="d.p2">Gin, Aperol, Maracuja, Ananas</small><i>11,9</i></div><div><b>Freiraum Negroni</b><small data-i18n="d.p3">Gin, Erdbeer-Bitter, Feige</small><i>11,5</i></div><div><b>Southern Passion</b><small data-i18n="d.p4">alkoholfrei · Ananas, Maracuja, Ginger Ale</small><i>9,5</i></div></div>
+      </div>
+      <div class="layer" data-at=".44">
+        <div class="time" aria-hidden="true">18:00</div>
+        <div class="eyebrow fade" data-i18n-html="n2.eyebrow">Jeden Donnerstag · <b>Ladies Night</b></div>
+        <h2 class="h split" data-i18n-html="n2.title">Freiraum <em>Sprizz.</em></h2>
+        <p class="lead fade d1" data-i18n="n2.lead">Rose Secco, Pfirsich, Gurke, Rosmarin – unser Signature-Sprizz. Und donnerstags geht das erste Glas Prosecco auf uns.</p>
+        <div class="prices fade d2"><div><b>Freiraum Sprizz</b><small data-i18n="d.p1">Rose Secco, Pfirsich, Gurke, Rosmarin</small><i>7,9</i></div><div><b>Passionfruit Sprizz</b><small data-i18n="d.p5">Prosecco, Maracuja, Basilikum</small><i>7,5</i></div><div><b>Granatapfel Sprizz</b><small data-i18n="d.p6">Prosecco, Granatapfel, Minze</small><i>7,5</i></div></div>
+      </div>
+      <div class="layer" data-at=".68">
+        <div class="time" aria-hidden="true">19:00</div>
+        <div class="eyebrow fade" data-i18n-html="n3.eyebrow">Pizzastation · <b>Holzofen</b></div>
+        <h2 class="h split" data-i18n-html="n3.title">Echtes <em>Feuer.</em></h2>
+        <p class="lead fade d1" data-i18n="n3.lead">Naturhefe-Sauerteig, Caputo-Manitoba-Mehl, mindestens 48 Stunden Reifezeit.</p>
+        <div class="prices fade d2"><div><b>Margherita</b><small>Fior di Latte</small><i>12,8</i></div><div><b>Bresaola</b><small data-i18n="k.d4">Stracciatella di bufala, Rucola, Rinderschinken</small><i>16,8</i></div><div><b>Burrata</b><small data-i18n="n3.p3">Burrata, gelbe Cherrytomaten, Basilikumpesto</small><i>16,8</i></div></div>
+      </div>
+    </div>
+    <div class="stage"><canvas id="nachtCv"></canvas></div>
+  </div>
+</section>
+
+<!-- 19:30 Ohne Filter: echte Clips aus der Pizzastation -->
+<section class="pin pizza" id="pizza" data-ch="19" data-label="nav.pizza" style="--len:560vh" data-t0="19.5" data-t1="21.8">
+  <div class="frame">
+    <div class="copy">
+      <div class="eyebrow rv" data-i18n-html="p.eyebrow">Ohne Filter · <b>echte Clips aus unserer Pizzastation</b></div>
+      <h2 class="h s split rv" data-i18n-html="p.title">Vom Teig <em>zum</em> Feuer.</h2>
+      <div class="steps" id="steps">
+        <div class="step" data-step="teig"><span class="num">01</span><h3 data-i18n="p.s1h">Teig</h3><p data-i18n="p.s1">Naturhefe-Sauerteig aus Caputo-Manitoba-Mehl, jeden Tag von Hand geformt.</p></div>
+        <div class="step" data-step="belag"><span class="num">02</span><h3 data-i18n="p.s2h">Belag</h3><p data-i18n="p.s2">Was draufkommt, kommt frisch: Trüffel, Prosciutto, Fior di Latte.</p></div>
+        <div class="step" data-step="ofen"><span class="num">03</span><h3 data-i18n="p.s3h">Ofen</h3><p data-i18n="p.s3">Rein in den Holzofen – direkt vor deinen Augen, hinter der Glasscheibe.</p></div>
+        <div class="step" data-step="feuer"><span class="num">04</span><h3 data-i18n="p.s4h">Feuer</h3><p data-i18n="p.s4">Mindestens 48 Stunden Reifezeit, dann ein paar Minuten echtes Feuer. Mehr braucht es nicht.</p></div>
+        <div class="step" data-step="genuss"><span class="num">05</span><h3 data-i18n="p.s5h">Genuss</h3><p data-i18n="p.s5">Burrata und Basilikum zum Schluss – und ab an deinen Tisch.</p><p class="badge"><span class="chip" data-i18n="p.sunday">Pizza Sunday · jeden Sonntag 14–22 Uhr · ausgewählte Pizzen 9,90 €</span></p></div>
+      </div>
+    </div>
+    <div class="stage">
+      <div class="portal"><canvas id="pizzaCv"></canvas></div>
+      <svg class="dial" viewBox="0 0 100 100" aria-hidden="true">
+        <circle class="track" cx="50" cy="50" r="46"/>
+        <circle class="bar" id="dialBar" cx="50" cy="50" r="46" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"/>
+        <g id="dialMarks"></g>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- 22:00 Bar & Beats -->
+<section id="bar" data-ch="22" data-label="nav.bar" data-t0="22" data-t1="23">
+  <div class="sec">
+    <div class="head">
+      <div>
+        <div class="time rv" aria-hidden="true">22:00</div>
+        <div class="eyebrow rv" data-i18n-html="b.eyebrow">Freitag &amp; Samstag <b>bis 2 Uhr</b></div>
+        <h2 class="h s split rv" data-i18n-html="b.title">Bar &amp; <em>Beats.</em></h2>
+      </div>
+      <p class="lead rv" data-i18n="b.lead">Wenn's draußen dunkel wird, wird's bei uns laut: DJ-Abende, Halloween – und am 20.11. feiern wir 18 Jahre Freiraum. Ein paar unserer Lieblinge von Instagram, tippen für Ton.</p>
+    </div>
+    <div class="reels" id="reels"></div>
+    <div class="press">
+      <b>@freiraumwien</b><span data-i18n="b.follow">8.952 Follower</span>
+      <span>·</span><span data-i18n-html="b.press">Bekannt aus <b style="font-size:20px">heute.at</b></span>
+      <a class="pill ghost" href="https://www.instagram.com/freiraumwien/" target="_blank" rel="noopener" style="margin-left:auto" data-i18n="b.ig">Folge uns auf Instagram ↗</a>
+    </div>
+  </div>
+</section>
+
+<!-- 23:00 Feiern -->
+<section class="pin" id="feiern" data-ch="23" data-label="nav.feiern" style="--len:240vh" data-t0="23" data-t1="23.6">
+  <div class="frame">
+    <div class="copy">
+      <div class="layer on" data-at="0">
+        <div class="eyebrow fade" data-i18n-html="e.eyebrow">Feiern &amp; Events</div>
+        <div class="big350 fade"><span class="tab" id="n350">0</span><small data-i18n-html="e.guests">Gäste<br>bis zu</small></div>
+        <h2 class="h s split" data-i18n-html="e.title">Euer Fest. <em>unser</em> Freiraum.</h2>
+        <p class="lead fade d1" data-i18n="e.lead">Ganzes Lokal oder eigener Bereich, Set-Menü, Buffet oder à la carte, mit DJ oder Lounge Music. Wir kümmern uns um alles.</p>
+        <div class="types fade d2"><span class="chip" data-i18n="e.t1">Hochzeit</span><span class="chip" data-i18n="e.t2">Firmenfeier</span><span class="chip" data-i18n="e.t3">Geburtstag</span><span class="chip" data-i18n="e.t4">Weihnachtsfeier</span><a class="chip" href="spielraum.html#party" data-i18n="e.t5">Kindergeburtstag →</a></div>
+      </div>
+    </div>
+    <div class="arch"><canvas id="salaCv"></canvas><div class="lbl" data-i18n="e.lbl">Der Saal · Mariahilfer Straße 117</div></div>
+  </div>
+</section>
+
+<section id="anfrage" data-t0="23.6" data-t1="23.95">
+  <div class="sec" style="padding-top:6vh">
+    <div class="form-wrap">
+      <div class="glass rv">
+        <h2 class="h s split" data-i18n-html="f.title">Eure Feier <em>anfragen.</em></h2>
+        <p class="lead" data-i18n="f.lead">Unverbindlich – wir melden uns innerhalb von 24 Stunden.</p>
+        <form class="form" id="eventForm">
+          <label><span data-i18n="f.anlass">Anlass</span><select name="occasion" required><option value="Hochzeit" data-i18n="e.t1">Hochzeit</option><option value="Firmenfeier" data-i18n="e.t2">Firmenfeier</option><option value="Geburtstag" data-i18n="e.t3">Geburtstag</option><option value="Weihnachtsfeier" data-i18n="e.t4">Weihnachtsfeier</option><option value="Anderes" data-i18n="f.other">Etwas anderes</option></select></label>
+          <label><span data-i18n="f.datum">Wunschdatum</span><input type="date" name="date" required></label>
+          <label><span data-i18n="f.gaeste">Gäste</span><input type="number" name="guests" min="8" max="350" value="40" required></label>
+          <label><span data-i18n="f.bereich">Bereich</span><select name="area"><option data-i18n="f.b1">Eigener Bereich</option><option data-i18n="f.b2">Ganzes Lokal</option><option data-i18n="f.b3">Weiß ich noch nicht</option></select></label>
+          <label><span data-i18n="f.essen">Essen</span><select name="food"><option data-i18n="f.e1">Set-Menü</option><option data-i18n="f.e2">Buffet</option><option data-i18n="f.e3">À la carte</option><option data-i18n="f.e4">Fingerfood &amp; Tapas</option></select></label>
+          <label><span data-i18n="f.musik">Musik</span><select name="music"><option>DJ</option><option>Lounge Music</option><option data-i18n="f.m3">Keine</option></select></label>
+          <label><span data-i18n="f.name">Name</span><input name="name" autocomplete="name" required></label>
+          <label><span data-i18n="f.tel">Telefon</span><input name="phone" type="tel" autocomplete="tel"></label>
+          <label class="full"><span data-i18n="f.mail">E-Mail</span><input name="email" type="email" autocomplete="email" required></label>
+          <label class="full"><span data-i18n="f.msg">Nachricht</span><textarea name="message" data-i18n-ph="f.msgph" placeholder="Erzählt uns kurz von eurer Feier …"></textarea></label>
+          <label class="ds"><input type="checkbox" name="consent" value="ja" required><span data-i18n-html="f.ds">Ich bin einverstanden, dass meine Angaben zur Bearbeitung der Anfrage gespeichert werden (<a href="datenschutz.html">Datenschutz</a>).</span></label>
+          <button class="pill" type="submit" data-i18n="f.send">Anfrage senden</button>
+        </form>
+      </div>
+      <div class="reels one" id="eventReel" style="grid-template-columns:1fr"></div>
+    </div>
+  </div>
+</section>
+
+<!-- 00:00 18 Jahre -->
+<section class="jahre" id="jahre" data-ch="00" data-label="nav.jahre" data-t0="23.95" data-t1="24.4">
+  <div class="eyebrow rv" data-i18n-html="j.eyebrow">00:00 · 20.11.2026</div>
+  <div class="n18" id="n18" aria-label="18">18</div>
+  <h2 class="h s split rv" data-i18n-html="j.title">Jahre <em>Freiraum.</em></h2>
+  <p class="lead rv" id="jLead" data-i18n="j.lead" style="margin:0 auto">Am 20. November werden wir volljährig. Feiert mit uns – wir zählen schon.</p>
+  <div class="cd tab rv" id="cd"><div><b>0</b><span data-i18n="j.d">Tage</span></div><div><b>0</b><span data-i18n="j.h">Stunden</span></div><div><b>0</b><span data-i18n="j.m">Minuten</span></div><div><b>0</b><span data-i18n="j.s">Sekunden</span></div></div>
+</section>
+
+<!-- Besuch -->
+<section class="pin" id="besuch" data-ch="02" data-label="nav.besuch" style="--len:220vh" data-t0="24.4" data-t1="26">
+  <div class="frame">
+    <div class="copy">
+      <div class="layer on" data-at="0">
+        <div class="eyebrow fade" data-i18n-html="v.eyebrow">Besuch · <b>U3 Zieglergasse</b></div>
+        <h2 class="h s split" data-i18n-html="v.title">Komm <em>vorbei.</em></h2>
+        <div class="hours fade d1" id="hours"></div>
+        <p class="addr fade d2" data-i18n-html="v.addr"><b>Mariahilfer Straße 117</b>, 1060 Wien · U3 Zieglergasse / U6 Westbahnhof</p>
+        <div class="btns fade d3"><button class="pill" data-reserve data-i18n="cta.reserve">Tisch reservieren</button><a class="pill ghost" href="https://maps.google.com/?q=Freiraum+Mariahilfer+Stra%C3%9Fe+117+Wien" target="_blank" rel="noopener" data-i18n="v.route">Route ↗</a><a class="pill ghost" href="tel:+4315969600">+43 1 596 96 00</a></div>
+      </div>
+    </div>
+    <div class="arch"><canvas id="fasadaCv"></canvas><div class="lbl">Mariahilfer Straße 117</div></div>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot" data-t0="26" data-t1="26">
+  <div class="cols">
+    <div><h5 data-i18n="ft.visit">Besuch</h5><p>Mariahilfer Straße 117<br>1060 Wien</p></div>
+    <div><h5 data-i18n="ft.hours">Öffnungszeiten</h5><p data-i18n-html="ft.h">Mo 8–23 · Di–Do 8–24<br>Fr–Sa 8–2 · So 9–23<br>Küche bis 21:45</p></div>
+    <div><h5 data-i18n="ft.contact">Kontakt</h5><p><a href="tel:+4315969600">+43 1 596 96 00</a><br><a href="mailto:info@freiraum117.at">info@freiraum117.at</a><br><a href="https://www.instagram.com/freiraumwien/" target="_blank" rel="noopener">Instagram ↗</a></p></div>
+    <div><h5 data-i18n="ft.more">Mehr</h5><p><a href="speisekarte.html" data-i18n="nav.menu">Speisekarte</a><br><a href="spielraum.html">Spielraum</a><br><a href="datenschutz.html" data-i18n="ft.legal">Impressum &amp; Datenschutz</a></p></div>
+  </div>
+  <div class="huge"><span class="logo-mask" role="img" aria-label="frei raum"></span></div>
+  <div class="legal"><span>© 2026 Freiraum · World Kitchen &amp; Social Space</span><span data-i18n="ft.draft">Entwurf · nemistudio</span></div>
+</footer>
+
+<div class="modal" id="zen" role="dialog" aria-modal="true" aria-label="Reservierung">
+  <div class="box"><button class="x" id="zenClose" aria-label="Schließen"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button><iframe title="Zenchef" data-src="https://bookings.zenchef.com/results?rid=371226&amp;pid=1001&amp;lang="></iframe><div class="alt" data-i18n-html="zen.alt">Reservierung über Zenchef. Lieber telefonisch? <a href="tel:+4315969600">+43 1 596 96 00</a></div></div>
+</div>
+<div class="draft" data-i18n="ft.draft">Entwurf · nemistudio</div>
+
+<script src="assets/data.js"></script>
+<script src="shared/site.js"></script>
+<script src="assets/premium.js"></script>
+</body>
+</html>

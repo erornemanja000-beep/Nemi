@@ -1,0 +1,4422 @@
+{
+ "source": "Freiraum Speisekarte (PDF, Juli 2026), transkribiert",
+ "groups": [
+  {
+   "id": "fruehstueck",
+   "de": "Frühstück",
+   "en": "Breakfast",
+   "sections": [
+    {
+     "title": "Signature Boxes",
+     "note": null,
+     "items": [
+      {
+       "name": "Wiener Box",
+       "desc": "Schinken, Emmentaler, Salami, Müsli mit Joghurt und Fruchtsalat, Schokobrownie mit Nüssen, weiches Ei, Butter, Marillenmarmelade, Kräuterricotta, Semmel, Kornspitz",
+       "allergens": [
+        "A",
+        "C",
+        "G",
+        "E"
+       ],
+       "price": "15.8",
+       "flags": []
+      },
+      {
+       "name": "Oriental Box",
+       "desc": "Falafel, Hummus, Ajvar, Melanzanicreme, Oliven, Tomaten, Gurken, Fruchtsalat, hausgemachtes Brot",
+       "allergens": [
+        "A",
+        "E",
+        "H"
+       ],
+       "price": "13.9",
+       "flags": [
+        "vegan"
+       ]
+      },
+      {
+       "name": "American Box",
+       "desc": "Mini Rösti, Spiegelei, knuspriger Speck, Avocado, Tomaten, Schokobrownie mit Nüssen, Toast, Erdnussbutter, Marmelade",
+       "allergens": [
+        "A",
+        "C",
+        "G",
+        "E"
+       ],
+       "price": "14.8",
+       "flags": []
+      }
+     ],
+     "footnotes": []
+    },
+    {
+     "title": "Box Add-ons",
+     "note": null,
+     "items": [
+      {
+       "name": "Beinschinken",
+       "desc": "",
+       "allergens": [],
+       "price": "5",
+       "flags": []
+      },
+      {
+       "name": "Knuspriger Speck",
+       "desc": "",
+       "allergens": [],
+       "price": "5",
+       "flags": []
+      },
+      {
+       "name": "Mailänder Salami",
+       "desc": "",
+       "allergens": [],
+       "price": "5",
+       "flags": []
+      },
+      {
+       "name": "Prosciutto di Parma",
+       "desc": "",
+       "allergens": [],
+       "price": "5",
+       "flags": []
+      },
+      {
+       "name": "Schnittkäse",
+       "desc": "",
+       "allergens": [
+        "G"
+       ],
+       "price": "5",
+       "flags": [
+        "veg"
+       ]
+      },
+      {
+       "name": "Feta mit Oliven und Cherrytomaten",
+       "desc": "",
+       "allergens": [
+        "G"
+       ],
+       "price": "6",
+       "flags": [
+        "veg"
+       ]
+      },
+      {
+       "name": "Beinschinken und Emmentaler",
+       "desc": "",
+       "allergens": [
+        "G"
+       ],
+       "price": "5",
+       "flags": []
+      },
+      {
+       "name": "Heimische Räucherlachsforelle mit Frischkäse",
+       "desc": "",
+       "allergens": [
+        "D",
+        "G"
+       ],
+       "price": "7",
+       "flags": []
+      },
+      {
+       "name": "Kleines Frühstückstatar vom Rind",
+       "desc": "",
+       "allergens": [],
+       "price": "7.5",
+       "flags": []
+      },
+      {
+       "name": "Büffelmozzarella mit Pesto und Cherrytomaten",
+       "desc": "",
+       "allergens": [
+        "E",
+        "G",
+        "H"
+       ],
+       "price": "7.5",
+       "flags": [
+        "veg"
+       ]
+      },
+      {
+       "name": "Kräuterricotta",
+       "desc": "",
+       "allergens": [
+        "G"
+       ],
+       "price": "5",
+       "flags": [
+        "veg"
+       ]
+      },
+      {
+       "name": "Schnittlauchbrot",
+       "desc": "",
+       "allergens": [],
+       "price": "5.9",
+       "flags": []
+      },
+      {
+       "name": "Halbe Avocado",
+       "desc": "",
+       "allergens": [],
+       "price": "4.9",
+       "flags": []
+      }
+     ],
+     "footnotes": [
+      "Unser gesamtes Frühstücksangebot ist täglich von 08:00 bis 17:00 Uhr erhältlich."
+     ]
+    },
+    {
+     "title": "Eier vom Landhendl",
+     "note": null,
+     "items": [
+      {
+       "name": "Weich gekochtes Ei",
+       "desc": "",
+       "allergens": [
+        "C"
+       ],
+       "price": "2.5",
+       "flags": [
+        "veg"
+       ]
+      },
+      {
+       "name": "Spiegelei",
+       "desc": "",
+       "allergens": [
+        "C"
+       ],
+       "price": "2.5",
+       "flags": [
+        "veg"
+       ]
+      }
+     ],
+     "footnotes": []
+    },
+    {
+     "title": "Aufstriche",
+     "note": null,
+     "items": [
+      {
+       "name": "Hausgemachte Marillenmarmelade",
+       "desc": "",
+       "allergens": [],
+       "price": "1.8",
+       "flags": [
+        "vegan"
+       ]
+      },
+      {
+       "name": "Kräuterricotta",
+       "desc": "",
+       "allergens": [
+        "G"
+       ],
+       "price": "1.8",
+       "flags": [
+        "veg"
+       ]
+      },
+      {
+       "name": "Butter",
+       "desc": "",
+       "allergens": [
+        "G"
+       ],
+       "price": "1.8",
+       "flags": [
+        "veg"
+       ]
+      },
+      {
+       "name": "Honig",
+       "desc": "",
+       "allergens": [],
+       "price": "1.8",
+       "flags": [
+        "veg"
+       ]
+      },
+      {
+       "name": "Nutella",
+       "desc": "",
+       "allergens": [
+        "H"
+       ],
+       "price": "1.8",
+       "flags": []
+      },
+      {
+       "name": "Hummus",
+       "desc": "",
+       "allergens": [
+        "N"
+       ],
+       "price": "3.4",
+       "flags": [
+        "vegan"
+       ]
+      },
+      {
+       "name": "Erdnussbutter",
+       "desc": "",
+       "allergens": [
+        "E"
+       ],
+       "price": "1.8",
+       "flags": [
+        "veg"
+       ]
+      }
+     ],
+     "footnotes": []
+    },
+    {
+     "title": "Gebäck",
+     "note": null,
+     "items": [
+      {
+       "name": "Buttercroissant",
+       "desc": "",
+       "allergens": [],
+       "price": "2.9",
+       "flags": [
+        "veg"
+       ]
+      },
+      {
+       "name": "Hausbrot",
+       "desc": "",
+       "allergens": [
+        "A"
+       ],
+       "price": "2.9",
+       "flags": [
+        "vegan"
+       ]
+      },
+      {
+       "name": "Kaisersemmel",
+       "desc": "",
+       "allergens": [
+        "A"
+       ],
+       "price": "2.6",
+       "flags": [
+        "vegan"
+       ]
+      },
+      {
+       "name": "Kornspitz",
+       "desc": "",
+       "allergens": [
+        "A"
+       ],
+       "price": "2.9",
+       "flags": [
+        "vegan"
+       ]
+      },
+      {
+       "name": "Glutenfreies Brot",
+       "desc": "",
+       "allergens": [
+        "N"
+       ],
+       "price": "3.2",
+       "flags": []
+      }
+     ],
+     "footnotes": []
+    },
+    {
+     "title": "Direkt gepresste Säfte",
+     "note": null,
+     "items": [
+      {
+       "name": "Orangensaft",
+       "desc": "",
+       "allergens": [],
+       "price": "4.9",
+       "flags": [],
+       "size": "0.25l"
+      },
+      {
+       "name": "Orangen-Karotten-Saft",
+       "desc": "",
+       "allergens": [],
+       "price": "4.9",
+       "flags": [],
+       "size": "0.25l"
+      },
+      {
+       "name": "Karottensaft",
+       "desc": "",
+       "allergens": [],
+       "price": "4.9",
+       "flags": [],
+       "size": "0.25l"
+      }
+     ],
+     "footnotes": []
+    },
+    {
+     "title": "Frühstücksgerichte",
+     "note": "08:00 bis 17:00 Uhr",
+     "items": [
+      {
+       "name": "Granola mit Früchten",
+       "desc": "Granola, Griechischer Joghurt, Obst, Honig",
+       "allergens": [
+        "E",
+        "G"
+       ],
+       "price": "8.9",
+       "flags": [
+        "veg"
+       ]
+      },
+      {
+       "name": "Exotic Bowl",
+       "desc": "Kokos-Mango Joghurt, Maracuja, Kokoschips, Chia-Samen",
+       "allergens": [
+        "G",
+        "E"
+       ],
+       "price": "10.5",
+       "flags": [
+        "vegan"
+       ]
+      },
+      {
+       "name": "English Breakfast",
+       "desc": "Toast, Baked Beans, Speck, Käsekrainer, Spiegelei, Mini Rösti, gegrillte Tomaten, Champignons",
+       "allergens": [
+        "C",
+        "A"
+       ],
+       "price": "12.9",
+       "flags": []
+      },
+      {
+       "name": "Shakshuka",
+       "desc": "2 Freiland Eier, Feta, Paprika, Melanzani, Jungzwiebel, Tomatensauce",
+       "allergens": [
+        "C",
+        "A",
+        "G"
+       ],
+       "price": "11.8",
+       "flags": [
+        "veg"
+       ]
+      },
+      {
+       "name": "Breakfast Quesadilla",
+       "desc": "Weizentortilla, Chorizo, Cheddar, Kräuterricotta, Tomaten, Zwiebel, Sour Cream Dip",
+       "allergens": [
+        "A",
+        "G"
+       ],
+       "price": "10.5",
+       "flags": []
+      },
+      {
+       "name": "Banane Zimt Porridge",
+       "desc": "Haferflocken, Banane, Sojamilch, Honig, Zimt",
+       "allergens": [
+        "F"
+       ],
+       "price": "10.5",
+       "flags": [
+        "vegan"
+       ]
+      },
+      {
+       "name": "Pancakes",
+       "desc": "Mascarponecreme mit Vanille, Beerensauce, Mandeln, Früchte",
+       "allergens": [
+        "A",
+        "C",
+        "E",
+        "G"
+       ],
+       "price": "9.2",
+       "flags": []
+      },
+      {
+       "name": "Crunchy Müsli",
+       "desc": "mit Früchten",
+       "allergens": [
+        "A",
+        "G",
+        "E"
+       ],
+       "price": "6.2",
+       "flags": [
+        "veg"
+       ]
+      },
+      {
+       "name": "Avocado Brot",
+       "desc": "Hausbrot, Avocadocreme, Tomaten, Salatmix, Sonnenblumenkerne, Olivenöl",
+       "allergens": [
+        "A",
+        "E",
+        "M"
+       ],
+       "price": "9.7",
+       "flags": [
+        "vegan"
+       ],
+       "extras": [
+        {
+         "name": "dazu Spiegelei",
+         "desc": "",
+         "allergens": [],
+         "price": "2,5",
+         "flags": [
+          "veg"
+         ]
+        },
+        {
+         "name": "dazu Büffelmozzarella",
+         "desc": "",
+         "allergens": [],
+         "price": "3",
+         "flags": [
+          "veg"
+         ]
+        },
+        {
+         "name": "dazu Räucherlachs",
+         "desc": "",
+         "allergens": [],
+         "price": "5",
+         "flags": []
+        },
+        {
+         "name": "dazu Prosciutto di Parma",
+         "desc": "",
+         "allergens": [],
+         "price": "5",
+         "flags": []
+        }
+       ]
+      }
+     ],
+     "footnotes": []
+    },
+    {
+     "title": "Eiergerichte",
+     "note": null,
+     "items": [
+      {
+       "name": "Ham & Eggs",
+       "desc": "",
+       "allergens": [
+        "C"
+       ],
+       "price": "9.8",
+       "flags": []
+      },
+      {
+       "name": "Bacon & Eggs",
+       "desc": "",
+       "allergens": [
+        "C"
+       ],
+       "price": "9.8",
+       "flags": []
+      },
+      {
+       "name": "Omelette oder Eierspeise (3 Eier)",
+       "desc": "",
+       "allergens": [
+        "C"
+       ],
+       "price": "6.5",
+       "flags": [
+        "veg"
+       ]
+      }
+     ],
+     "footnotes": []
+    },
+    {
+     "title": "dazu",
+     "note": null,
+     "items": [
+      {
+       "name": "Tomaten",
+       "desc": "",
+       "allergens": [],
+       "price": "1",
+       "flags": []
+      },
+      {
+       "name": "Brokkoli",
+       "desc": "",
+       "allergens": [],
+       "price": "1",
+       "flags": []
+      },
+      {
+       "name": "Pilze",
+       "desc": "",
+       "allergens": [],
+       "price": "1",
+       "flags": []
+      },
+      {
+       "name": "Spinat",
+       "desc": "",
+       "allergens": [],
+       "price": "1",
+       "flags": []
+      },
+      {
+       "name": "Paprika",
+       "desc": "",
+       "allergens": [],
+       "price": "1",
+       "flags": []
+      },
+      {
+       "name": "Zwiebel",
+       "desc": "",
+       "allergens": [],
+       "price": "1",
+       "flags": []
+      },
+      {
+       "name": "Gouda",
+       "desc": "",
+       "allergens": [],
+       "price": "1",
+       "flags": []
+      },
+      {
+       "name": "Schafskäse",
+       "desc": "",
+       "allergens": [],
+       "price": "2",
+       "flags": []
+      },
+      {
+       "name": "Beinschinken",
+       "desc": "",
+       "allergens": [],
+       "price": "2",
+       "flags": []
+      },
+      {
+       "name": "Rinderfiletspitzen",
+       "desc": "",
+       "allergens": [],
+       "price": "5",
+       "flags": []
+      },
+      {
+       "name": "Garnelen",
+       "desc": "",
+       "allergens": [],
+       "price": "5",
+       "flags": []
+      },
+      {
+       "name": "Frühstücksspeck",
+       "desc": "",
+       "allergens": [],
+       "price": "2",
+       "flags": []
+      },
+      {
+       "name": "Trüffelöl",
+       "desc": "",
+       "allergens": [],
+       "price": "1",
+       "flags": []
+      },
+      {
+       "name": "Kernöl",
+       "desc": "",
+       "allergens": [],
+       "price": "1",
+       "flags": []
+      }
+     ],
+     "footnotes": []
+    },
+    {
+     "title": "Bagels",
+     "note": null,
+     "items": [
+      {
+       "name": "Hangover Bagel",
+       "desc": "Beinschinken, mit Käse überbacken, Spiegelei, Kräuterricotta",
+       "allergens": [
+        "A",
+        "C",
+        "G"
+       ],
+       "price": "9.9",
+       "flags": []
+      },
+      {
+       "name": "Avocado Bagel",
+       "desc": "Avocado, gegrillte Kräuterseitlinge, Blattsalat, Radieschen, Frischkäse",
+       "allergens": [
+        "A",
+        "C",
+        "G"
+       ],
+       "price": "8.9",
+       "flags": [
+        "veg"
+       ],
+       "extras": [
+        {
+         "name": "dazu Spiegelei",
+         "desc": "",
+         "allergens": [],
+         "price": "2.5",
+         "flags": []
+        }
+       ]
+      },
+      {
+       "name": "Lachs Bagel",
+       "desc": "Räucherlachs, Kräuterricotta, Salat, Gurken, Avocado",
+       "allergens": [
+        "A",
+        "D",
+        "G"
+       ],
+       "price": "9.9",
+       "flags": []
+      }
+     ],
+     "footnotes": []
+    }
+   ]
+  },
+  {
+   "id": "starters",
+   "de": "Bites & Starters",
+   "en": "Bites & Starters",
+   "sections": [
+    {
+     "title": "Bites",
+     "note": null,
+     "items": [
+      {
+       "name": "Rote Rüben Hummus",
+       "desc": "Brokkoli, Mandeln",
+       "allergens": [
+        "M",
+        "N"
+       ],
+       "price": "6.4",
+       "flags": [
+        "vegan"
+       ]
+      },
+      {
+       "name": "Melanzani on Fire",
+       "desc": "Melanzani Dip, Granatapfelkerne, hausgemachtes Fladenbrot",
+       "allergens": [
+        "H",
+        "N"
+       ],
+       "price": "6.8",
+       "flags": [
+        "vegan"
+       ]
+      },
+      {
+       "name": "Chili Garnelen aus dem Ofen*",
+       "desc": "Garnelen, Chili, Knoblauch, hausgemachtes Fladenbrot",
+       "allergens": [
+        "A",
+        "B",
+        "G"
+       ],
+       "price": "13.9",
+       "flags": []
+      },
+      {
+       "name": "Calamari Fritti",
+       "desc": "mit Sauce Tartare",
+       "allergens": [
+        "C",
+        "R"
+       ],
+       "price": "12.9",
+       "flags": []
+      },
+      {
+       "name": "Parmigiana di Melanzane",
+       "desc": "im Ofen gebackene Melanzani, Tomatensauce, Fior di Latte, Grana Padano, Basilikum",
+       "allergens": [
+        "A",
+        "C",
+        "G",
+        "L"
+       ],
+       "price": "12.5",
+       "flags": [
+        "veg"
+       ]
+      },
+      {
+       "name": "Käsekrokette",
+       "desc": "auf Kirschsauce",
+       "allergens": [
+        "A",
+        "G"
+       ],
+       "price": "10.9",
+       "flags": [
+        "veg"
+       ]
+      }
+     ],
+     "footnotes": []
+    },
+    {
+     "title": "Soup & Starters",
+     "note": null,
+     "items": [
+      {
+       "name": "Tomatencremesuppe",
+       "desc": "mit Basilikumöl",
+       "allergens": [
+        "L"
+       ],
+       "price": "6.9",
+       "flags": [
+        "vegan"
+       ]
+      },
+      {
+       "name": "Feta aus dem Ofen*",
+       "desc": "Schafskäse, Tomaten, Rotweinzwiebel, Chiliöl, hausgemachtes Fladenbrot",
+       "allergens": [
+        "A",
+        "G",
+        "O"
+       ],
+       "price": "11.8",
+       "flags": [
+        "veg"
+       ]
+      },
+      {
+       "name": "Beef Tatar",
+       "desc": "Rote Zwiebel, Kapernbeeren, Butter, Dijonnaise, Maldon Meersalz, hausgemachtes Brot",
+       "allergens": [
+        "A",
+        "C",
+        "D",
+        "G",
+        "M"
+       ],
+       "price": "13.8",
+       "flags": []
+      },
+      {
+       "name": "Antipasti Platte",
+       "desc": "Prosciutto, Chorizo, Käsevariation, Oliven, Aioli, hausgemachtes Brot",
+       "allergens": [
+        "A",
+        "C",
+        "G",
+        "M",
+        "E",
+        "H"
+       ],
+       "price": "15.9",
+       "flags": []
+      },
+      {
+       "name": "Orientalische Platte",
+       "desc": "Melanzani Dip, Ajvar, Hummus, Falafel, Oliven, Pilze, hausgemachtes Brot",
+       "allergens": [
+        "A",
+        "N"
+       ],
+       "price": "15.9",
+       "flags": [
+        "veg"
+       ]
+      }
+     ],
+     "footnotes": [
+      "* ab 11:00"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "soulfood",
+   "de": "Soulfood & Salads",
+   "en": "Soulfood & Salads",
+   "sections": [
+    {
+     "title": "Soulfood & Salads",
+     "note": null,
+     "items": [
+      {
+       "name": "Crispy Chicken Salat",
+       "desc": "Knuspriges österreichisches Landhendlfilet, Blattsalat, Cherrytomaten, Cashewkerne, Sweet Chili Sauce",
+       "allergens": [
+        "A",
+        "C",
+        "N",
+        "M"
+       ],
+       "price": "15.8",
+       "flags": []
+      },
+      {
+       "name": "Wiese und Ziege",
+       "desc": "Lauwarmer Ziegenkäse, Salat, Baby Mangold, Babyspinat, Balsamico, Birne, Cioggia Rübe, Maracujadressing",
+       "allergens": [
+        "H",
+        "N"
+       ],
+       "price": "15.2",
+       "flags": [
+        "veg"
+       ]
+      },
+      {
+       "name": "Freiraum Bowl",
+       "desc": "Couscous, Hummus, Falafel, Kichererbsen, Cherrytomaten, Brokkoli, Granatapfel, Dressing",
+       "allergens": [
+        "A",
+        "N",
+        "M"
+       ],
+       "price": "14.6",
+       "flags": [
+        "vegan"
+       ],
+       "signature": true
+      },
+      {
+       "name": "Falafel Salat",
+       "desc": "Gemischte Blattsalate, Wiener Dressing, Gurken, Granatapfel, Hummus",
+       "allergens": [
+        "C",
+        "R"
+       ],
+       "price": "13.9",
+       "flags": [
+        "vegan"
+       ]
+      },
+      {
+       "name": "Caesar Salat",
+       "desc": "Römersalat, Caesar Dressing, Croutons, Grana Padano",
+       "allergens": [
+        "A",
+        "C",
+        "G",
+        "L"
+       ],
+       "price": "11.9",
+       "flags": [
+        "veg"
+       ],
+       "extras": [
+        {
+         "name": "dazu Hühnerstreifen",
+         "desc": "",
+         "allergens": [],
+         "price": "3",
+         "flags": []
+        },
+        {
+         "name": "dazu Garnelen",
+         "desc": "",
+         "allergens": [],
+         "price": "5",
+         "flags": []
+        }
+       ]
+      },
+      {
+       "name": "Rote Beete Salat",
+       "desc": "Gemischte Blattsalate, Schafskäse, Rote Beete, Walnüsse",
+       "allergens": [
+        "A",
+        "C",
+        "G",
+        "L"
+       ],
+       "price": "15.8",
+       "flags": [
+        "veg"
+       ]
+      }
+     ],
+     "footnotes": []
+    }
+   ]
+  },
+  {
+   "id": "italy",
+   "de": "Italy",
+   "en": "Italy",
+   "sections": [
+    {
+     "title": "Italy",
+     "note": null,
+     "items": [
+      {
+       "name": "Spaghetti mit Garnelen",
+       "desc": "San Marzano Tomatensauce, knusprige Garnelen, frische Petersilie, Knoblauch",
+       "allergens": [
+        "A",
+        "B",
+        "M",
+        "L"
+       ],
+       "price": "17.9",
+       "flags": []
+      },
+      {
+       "name": "Spaghetti Carbonara",
+       "desc": "Guanciale, Pecorino Romano, Eigelb, Pfeffer",
+       "allergens": [
+        "A",
+        "C",
+        "G"
+       ],
+       "price": "15.8",
+       "flags": []
+      },
+      {
+       "name": "Rigatoni Pollo Fresca",
+       "desc": "Hühnerfilet, sonnengetrocknete Tomaten, Babyspinat, Grana Padano",
+       "allergens": [
+        "A",
+        "G"
+       ],
+       "price": "16.9",
+       "flags": []
+      },
+      {
+       "name": "Spaghetti Bolognese",
+       "desc": "Rindfleischragout, Grana Padano",
+       "allergens": [
+        "A",
+        "G",
+        "L",
+        "M",
+        "O"
+       ],
+       "price": "15.9",
+       "flags": []
+      },
+      {
+       "name": "Marry me Pasta",
+       "desc": "Orecchiette, Basilikumpesto, Champignons, Cherrytomaten, Sonnenblumenkerne",
+       "allergens": [
+        "A",
+        "M",
+        "G",
+        "H"
+       ],
+       "price": "15.9",
+       "flags": [
+        "veg"
+       ]
+      },
+      {
+       "name": "Classic Lasagne",
+       "desc": "Rindfleischragout, Fior di Latte, Tomatensauce",
+       "allergens": [
+        "A",
+        "G",
+        "L",
+        "M",
+        "O"
+       ],
+       "price": "15.9",
+       "flags": []
+      }
+     ],
+     "footnotes": []
+    }
+   ]
+  },
+  {
+   "id": "grill",
+   "de": "Barbecue & Burger",
+   "en": "Barbecue & Burger",
+   "sections": [
+    {
+     "title": "Barbecue",
+     "note": null,
+     "items": [
+      {
+       "name": "Rumpsteak Sous Vide",
+       "desc": "mit Grillgemüse und Salsa-Dip",
+       "allergens": [
+        "G"
+       ],
+       "price": "29.5",
+       "flags": []
+      },
+      {
+       "name": "Entenbrust Sous Vide",
+       "desc": "Ente, Kirschsauce, knusprige Polenta",
+       "allergens": [
+        "G"
+       ],
+       "price": "18.9",
+       "flags": []
+      },
+      {
+       "name": "Lachsfilet",
+       "desc": "Lachsfilet, Spinat-Kartoffel, Knoblauch, Zitrone",
+       "allergens": [
+        "D",
+        "G"
+       ],
+       "price": "21.4",
+       "flags": []
+      },
+      {
+       "name": "Branzinofilet",
+       "desc": "Safranrisotto, Zitrone, Parmesan",
+       "allergens": [
+        "D",
+        "G",
+        "O"
+       ],
+       "price": "19.8",
+       "flags": []
+      }
+     ],
+     "footnotes": []
+    },
+    {
+     "title": "Burger",
+     "note": null,
+     "items": [
+      {
+       "name": "Homemade Vegan Burger",
+       "desc": "Pitabrot, Hausgemachtes Laibchen, Hummus, Avocadocreme, Rucola, Tomaten, Süßkartoffel Fries",
+       "allergens": [
+        "A",
+        "M",
+        "N"
+       ],
+       "price": "16.8",
+       "flags": [
+        "vegan"
+       ]
+      },
+      {
+       "name": "Veggie Club",
+       "desc": "Toast, Veggie Patty, Aioli, Zwiebel, Tomaten, Fries",
+       "allergens": [
+        "A",
+        "C"
+       ],
+       "price": "13.8",
+       "flags": [
+        "veg"
+       ]
+      },
+      {
+       "name": "Cheeseburger",
+       "desc": "Milch Bun, österr. Premium Beef, Cheddar, Blattsalat, Tomaten, Essiggurkerl, rote Zwiebel, Cocktail Sauce, Fries",
+       "allergens": [
+        "A",
+        "C",
+        "G"
+       ],
+       "price": "16.8",
+       "flags": []
+      },
+      {
+       "name": "BBQ Burger",
+       "desc": "Milch Bun, österr. Premium Beef, Cheddar, Speck, Blattsalat, Tomaten, Essiggurkerl, BBQ Sauce, karamelisierte Zwiebel, Fries",
+       "allergens": [
+        "A",
+        "C",
+        "G",
+        "O"
+       ],
+       "price": "17.8",
+       "flags": []
+      },
+      {
+       "name": "Clubsandwich",
+       "desc": "Toast, Pulled Chicken, Avocado, Speck, Blattsalat, Tomaten, Aioli, Fries",
+       "allergens": [
+        "A",
+        "C",
+        "G"
+       ],
+       "price": "16.8",
+       "flags": []
+      }
+     ],
+     "footnotes": []
+    }
+   ]
+  },
+  {
+   "id": "klassiker",
+   "de": "Klassiker",
+   "en": "Classics",
+   "sections": [
+    {
+     "title": "Klassiker",
+     "note": null,
+     "items": [
+      {
+       "name": "Schinkenfleckerl",
+       "desc": "Überbacken mit Emmentaler, Blattsalat mit Wiener Dressing",
+       "allergens": [
+        "A",
+        "G",
+        "M"
+       ],
+       "price": "13.6",
+       "flags": []
+      },
+      {
+       "name": "Eiernockerl",
+       "desc": "Hausgemachte Nockerl, Eier, Schnittlauch, Blattsalat mit Wiener Dressing",
+       "allergens": [
+        "A",
+        "C",
+        "M"
+       ],
+       "price": "12.6",
+       "flags": [
+        "veg"
+       ]
+      },
+      {
+       "name": "Wiener Schnitzel",
+       "desc": "Vom Kalb, Petersilerdäpfel, Vogerlsalat mit Wiener Dressing",
+       "allergens": [
+        "A",
+        "G",
+        "C",
+        "M"
+       ],
+       "price": "26",
+       "flags": [],
+       "extras": [
+        {
+         "name": "dazu Preiselbeeren",
+         "desc": "",
+         "allergens": [],
+         "price": "1.4",
+         "flags": []
+        }
+       ]
+      },
+      {
+       "name": "Käsespätzle",
+       "desc": "Hausgemachte Nockerl, Gouda, Ziegenkäse, Röstzwiebel, Blattsalat mit Wiener Dressing",
+       "allergens": [
+        "A",
+        "C",
+        "M",
+        "G"
+       ],
+       "price": "13.9",
+       "flags": [
+        "veg"
+       ]
+      },
+      {
+       "name": "Gemüse aus dem Wok",
+       "desc": "Basmatireis, Sojasauce,",
+       "allergens": [
+        "F",
+        "N",
+        "M"
+       ],
+       "price": "14.9",
+       "flags": [
+        "vegan"
+       ],
+       "extras": [
+        {
+         "name": "dazu Hühnerstreifen",
+         "desc": "",
+         "allergens": [],
+         "price": "3",
+         "flags": []
+        },
+        {
+         "name": "dazu Garnelen",
+         "desc": "",
+         "allergens": [
+          "B"
+         ],
+         "price": "5",
+         "flags": []
+        },
+        {
+         "name": "dazu Rinderfiletspitzen",
+         "desc": "",
+         "allergens": [],
+         "price": "5",
+         "flags": []
+        }
+       ]
+      }
+     ],
+     "footnotes": []
+    }
+   ]
+  },
+  {
+   "id": "tapas",
+   "de": "Tapas",
+   "en": "Tapas",
+   "sections": [
+    {
+     "title": "Tapas",
+     "note": null,
+     "items": [
+      {
+       "name": "Pulled Pork Taco 2St.",
+       "desc": "Mix Salat, Gurken, Tomaten, Mais, Röstzwiebel, Frühlingszwiebel, Avocadocreme",
+       "allergens": [
+        "A"
+       ],
+       "price": "10.8",
+       "flags": []
+      },
+      {
+       "name": "Chicken Taco 2St.",
+       "desc": "Mix Salat, Tomaten, Röstzwiebel, Frühlingszwiebel, Aioli",
+       "allergens": [
+        "A",
+        "C",
+        "G"
+       ],
+       "price": "10.8",
+       "flags": []
+      },
+      {
+       "name": "Veggie Taco 2St.",
+       "desc": "Mix Salat, Gurken,Tomaten, Mais, Röstzwiebel, Frühlingszwiebel, Avocadocreme",
+       "allergens": [
+        "A"
+       ],
+       "price": "10.8",
+       "flags": [
+        "veg"
+       ]
+      },
+      {
+       "name": "Tacos Mix 3St.",
+       "desc": "Pulled Pork, Chicken, Veggie",
+       "allergens": [],
+       "price": "14.8",
+       "flags": []
+      },
+      {
+       "name": "Nachos",
+       "desc": "mit Käse überbacken, Tomate, Frühlingszwiebel",
+       "allergens": [
+        "A",
+        "G"
+       ],
+       "price": "6.9",
+       "flags": [
+        "veg"
+       ]
+      },
+      {
+       "name": "Pimientos de Padron",
+       "desc": "gegrillt mit Meersalz",
+       "allergens": [],
+       "price": "6.9",
+       "flags": [
+        "vegan"
+       ]
+      },
+      {
+       "name": "Patatas Bravas",
+       "desc": "Aioli, Schnittlauch",
+       "allergens": [
+        "C",
+        "G"
+       ],
+       "price": "6.9",
+       "flags": [
+        "vegan"
+       ]
+      },
+      {
+       "name": "Prosciutto",
+       "desc": "mit Grana Padano",
+       "allergens": [],
+       "price": "7.9",
+       "flags": []
+      },
+      {
+       "name": "Käseteller",
+       "desc": "Nüsse, Trauben",
+       "allergens": [
+        "G",
+        "E",
+        "H"
+       ],
+       "price": "7.9",
+       "flags": [
+        "veg"
+       ]
+      },
+      {
+       "name": "Garnelen",
+       "desc": "Tempura, Sweet Chili Sauce",
+       "allergens": [
+        "A",
+        "B"
+       ],
+       "price": "7.9",
+       "flags": []
+      },
+      {
+       "name": "Grüne Oliven",
+       "desc": "",
+       "allergens": [],
+       "price": "4.9",
+       "flags": [
+        "vegan"
+       ]
+      }
+     ],
+     "footnotes": []
+    }
+   ]
+  },
+  {
+   "id": "pizza",
+   "de": "Pizza",
+   "en": "Pizza",
+   "sections": [
+    {
+     "title": "Pizza",
+     "note": "pizza ab 11:00",
+     "items": [
+      {
+       "name": "Margherita",
+       "desc": "Fior di Latte",
+       "allergens": [
+        "G"
+       ],
+       "price": "12.8",
+       "flags": [
+        "veg"
+       ]
+      },
+      {
+       "name": "Fresh Buffalo",
+       "desc": "Büffelmozzarella, Pesto, Basilikum",
+       "allergens": [
+        "A",
+        "G"
+       ],
+       "price": "14.8",
+       "flags": [
+        "veg"
+       ]
+      },
+      {
+       "name": "Farmer",
+       "desc": "Fior di Latte, Zucchini, Melanzani, Tomaten, Melanzanicreme",
+       "allergens": [
+        "A",
+        "G"
+       ],
+       "price": "15.2",
+       "flags": [
+        "veg"
+       ]
+      },
+      {
+       "name": "Mushroom",
+       "desc": "Fior di Latte, Portobello, Kräuterseitlinge, Rotweinzwiebel",
+       "allergens": [
+        "A",
+        "G"
+       ],
+       "price": "16.2",
+       "flags": [
+        "veg"
+       ]
+      },
+      {
+       "name": "Bresaola",
+       "desc": "Fior di Latte, Stracciatella di bufala, Rucola, Rinderschinken",
+       "allergens": [
+        "A",
+        "G"
+       ],
+       "price": "16.8",
+       "flags": []
+      },
+      {
+       "name": "Avocado",
+       "desc": "Veganer Käse, Avocado, Tomaten, Petersilie",
+       "allergens": [
+        "A"
+       ],
+       "price": "16.2",
+       "flags": [
+        "vegan"
+       ]
+      },
+      {
+       "name": "Hells Bells",
+       "desc": "Fior di Latte, scharfe Salami, Jalapenos, Ricotta, Habanero Sauce",
+       "allergens": [
+        "A",
+        "G"
+       ],
+       "price": "15.8",
+       "flags": []
+      },
+      {
+       "name": "Salami",
+       "desc": "Fior di Latte, Mailänder Salami",
+       "allergens": [
+        "A",
+        "G"
+       ],
+       "price": "14.8",
+       "flags": []
+      },
+      {
+       "name": "Cardinale",
+       "desc": "Fior di Latte, Beinschinken, Büffelmozzarella",
+       "allergens": [
+        "A",
+        "G"
+       ],
+       "price": "14.8",
+       "flags": []
+      },
+      {
+       "name": "Tonno",
+       "desc": "Fior di Latte, Thunfisch, Zwiebel, Oliven",
+       "allergens": [
+        "A",
+        "D"
+       ],
+       "price": "15.8",
+       "flags": []
+      },
+      {
+       "name": "Prosciutto & Rucola",
+       "desc": "Fior di Latte, Prosciutto di Parma, Rucola, Grana Padano",
+       "allergens": [
+        "A",
+        "G"
+       ],
+       "price": "15.8",
+       "flags": []
+      },
+      {
+       "name": "Sweet & Spicy",
+       "desc": "Fior di Latte, Chorizo, Ziegenfrischkäse, Rucola, Ahornsirup",
+       "allergens": [
+        "A",
+        "G"
+       ],
+       "price": "16.2",
+       "flags": []
+      },
+      {
+       "name": "Bacon & Truffle",
+       "desc": "Kartoffelcreme, Trüffelcreme, Scamorza, Wacholderspeck, Babyspinat",
+       "allergens": [
+        "A",
+        "G"
+       ],
+       "price": "16.2",
+       "flags": []
+      },
+      {
+       "name": "Cheeselover",
+       "desc": "Fior di Latte, Gorgonzola, Taleggio, Scamorza, Creme Fraiche, Feigen",
+       "allergens": [
+        "A",
+        "G"
+       ],
+       "price": "16.8",
+       "flags": [
+        "veg"
+       ]
+      },
+      {
+       "name": "Burrata",
+       "desc": "Fior di Latte, Burrata, gelbe Cherry Tomaten, Burrata, Basilikumpesto",
+       "allergens": [
+        "A",
+        "G"
+       ],
+       "price": "16.8",
+       "flags": [
+        "veg"
+       ]
+      }
+     ],
+     "footnotes": [
+      "Unsere Pizzastation arbeitet unabhängig von der Hauptküche, dadurch können Speisen zeitversetzt serviert werden.",
+      "*Pizza ab 11:00"
+     ]
+    },
+    {
+     "title": "Add-ons and sides",
+     "note": null,
+     "items": [
+      {
+       "name": "Falafel",
+       "desc": "",
+       "allergens": [
+        "F"
+       ],
+       "price": "3",
+       "flags": [
+        "vegan"
+       ]
+      },
+      {
+       "name": "Garnelen",
+       "desc": "",
+       "allergens": [
+        "B"
+       ],
+       "price": "5",
+       "flags": []
+      },
+      {
+       "name": "Österreichische Rinderfiletspitzen",
+       "desc": "",
+       "allergens": [],
+       "price": "7",
+       "flags": []
+      },
+      {
+       "name": "Fries",
+       "desc": "",
+       "allergens": [],
+       "price": "5",
+       "flags": [
+        "vegan"
+       ]
+      },
+      {
+       "name": "Süßkartoffelfries",
+       "desc": "",
+       "allergens": [],
+       "price": "6",
+       "flags": [
+        "vegan"
+       ]
+      },
+      {
+       "name": "Rosmarinkartoffel",
+       "desc": "",
+       "allergens": [
+        "B"
+       ],
+       "price": "5",
+       "flags": [
+        "veg"
+       ]
+      },
+      {
+       "name": "Reis",
+       "desc": "",
+       "allergens": [],
+       "price": "4",
+       "flags": [
+        "vegan"
+       ]
+      },
+      {
+       "name": "Grillgemüse",
+       "desc": "",
+       "allergens": [],
+       "price": "6",
+       "flags": [
+        "vegan"
+       ]
+      },
+      {
+       "name": "Blattsalat",
+       "desc": "",
+       "allergens": [
+        "M"
+       ],
+       "price": "4.2",
+       "flags": [
+        "vegan"
+       ]
+      },
+      {
+       "name": "Gemischter Salat",
+       "desc": "",
+       "allergens": [
+        "M"
+       ],
+       "price": "5.2",
+       "flags": [
+        "vegan"
+       ]
+      },
+      {
+       "name": "Rucolasalat mit Grana Padano und Cherrytomaten",
+       "desc": "",
+       "allergens": [
+        "G",
+        "M"
+       ],
+       "price": "5.8",
+       "flags": [
+        "veg"
+       ]
+      }
+     ],
+     "footnotes": []
+    },
+    {
+     "title": "Fladen",
+     "note": null,
+     "items": [
+      {
+       "name": "Natur mit Olivenöl",
+       "desc": "",
+       "allergens": [
+        "A"
+       ],
+       "price": "3.8",
+       "flags": [
+        "vegan"
+       ]
+      },
+      {
+       "name": "Frischer Rosmarin",
+       "desc": "",
+       "allergens": [
+        "A"
+       ],
+       "price": "5",
+       "flags": [
+        "vegan"
+       ]
+      },
+      {
+       "name": "Knoblauch und Petersilie",
+       "desc": "",
+       "allergens": [
+        "A"
+       ],
+       "price": "5",
+       "flags": [
+        "vegan"
+       ]
+      },
+      {
+       "name": "Hummus und Oliven",
+       "desc": "",
+       "allergens": [
+        "A",
+        "F"
+       ],
+       "price": "5.8",
+       "flags": [
+        "vegan"
+       ]
+      }
+     ],
+     "footnotes": []
+    },
+    {
+     "title": "Saucen",
+     "note": null,
+     "items": [
+      {
+       "name": "Ketchup, Senf, Mayo",
+       "desc": "",
+       "allergens": [
+        "C",
+        "F",
+        "M"
+       ],
+       "price": "1.3",
+       "flags": [
+        "veg"
+       ]
+      },
+      {
+       "name": "Sour Cream",
+       "desc": "",
+       "allergens": [
+        "G"
+       ],
+       "price": "1.8",
+       "flags": [
+        "veg"
+       ]
+      },
+      {
+       "name": "Sweet Chili",
+       "desc": "",
+       "allergens": [
+        "N"
+       ],
+       "price": "1.8",
+       "flags": [
+        "vegan"
+       ]
+      },
+      {
+       "name": "Sauce Tartare",
+       "desc": "",
+       "allergens": [
+        "C",
+        "F",
+        "M"
+       ],
+       "price": "1.8",
+       "flags": [
+        "veg"
+       ]
+      },
+      {
+       "name": "BBQ",
+       "desc": "",
+       "allergens": [],
+       "price": "1.8",
+       "flags": [
+        "vegan"
+       ]
+      },
+      {
+       "name": "Ajvar",
+       "desc": "",
+       "allergens": [],
+       "price": "1.8",
+       "flags": [
+        "vegan"
+       ]
+      }
+     ],
+     "footnotes": []
+    },
+    {
+     "title": "Bakery",
+     "note": null,
+     "items": [
+      {
+       "name": "Hausbrot dunkel*",
+       "desc": "",
+       "allergens": [
+        "A"
+       ],
+       "price": "2.4",
+       "flags": [
+        "vegan"
+       ]
+      }
+     ],
+     "footnotes": [
+      "*Der Teig, mit unserem Naturhefe Weizensauerteig, rastet für mindestens 48h. Das macht das Brot sehr bekömmlich und geschmackvoll. Er beinhaltet Mehl, Hartweizen, Salz, Wasser, Eigenhefe und Olivenöl."
+     ]
+    }
+   ]
+  },
+  {
+   "id": "desserts",
+   "de": "Desserts",
+   "en": "Desserts",
+   "sections": [
+    {
+     "title": "Desserts",
+     "note": null,
+     "items": [
+      {
+       "name": "Choco Lava Special",
+       "desc": "mit flüssigem Schokokern, Himbeereis",
+       "allergens": [
+        "A",
+        "G",
+        "C"
+       ],
+       "price": "8.8",
+       "flags": [
+        "veg"
+       ]
+      },
+      {
+       "name": "Cheesecake",
+       "desc": "wahlweise mit Beerensauce, Karamell oder Pistaziencreme",
+       "allergens": [
+        "A",
+        "C",
+        "G"
+       ],
+       "price": "7.8",
+       "flags": [
+        "veg"
+       ]
+      },
+      {
+       "name": "Maracuja Crème Brûlée",
+       "desc": "Vanille, Kokosflecken, Maracuja",
+       "allergens": [
+        "C",
+        "G"
+       ],
+       "price": "7.4",
+       "flags": [
+        "veg"
+       ]
+      },
+      {
+       "name": "Apfelstrudel",
+       "desc": "hausgemacht aus heimischen Äpfeln",
+       "allergens": [
+        "A",
+        "C"
+       ],
+       "price": "6.8",
+       "flags": [
+        "vegan"
+       ],
+       "extras": [
+        {
+         "name": "dazu Vanilleeis",
+         "desc": "",
+         "allergens": [],
+         "price": "1.5",
+         "flags": []
+        },
+        {
+         "name": "dazu Vanillesauce",
+         "desc": "",
+         "allergens": [],
+         "price": "1.5",
+         "flags": []
+        },
+        {
+         "name": "dazu Schlagobers",
+         "desc": "",
+         "allergens": [],
+         "price": "0.8",
+         "flags": []
+        }
+       ]
+      },
+      {
+       "name": "Tiramisu",
+       "desc": "Mascarpone, Röstraum Espresso",
+       "allergens": [
+        "A",
+        "C",
+        "G"
+       ],
+       "price": "6.8",
+       "flags": [
+        "veg"
+       ]
+      },
+      {
+       "name": "Zwei Palatschinken",
+       "desc": "Nutella / Marilenmarmelade / Beerensauce / Pistaziencreme",
+       "allergens": [
+        "A",
+        "C",
+        "G"
+       ],
+       "price": "7.9",
+       "flags": [
+        "veg"
+       ]
+      }
+     ],
+     "footnotes": [
+      "Zusätzliche Desserts gibt es in unserer Vitrine!"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "kaffee",
+   "de": "Kaffee",
+   "en": "Coffee",
+   "sections": [
+    {
+     "title": "Röstraum black",
+     "note": null,
+     "items": [
+      {
+       "name": "Espresso",
+       "desc": "",
+       "allergens": [],
+       "price": "3.4",
+       "flags": []
+      },
+      {
+       "name": "Espresso Macchiato",
+       "desc": "",
+       "allergens": [
+        "G"
+       ],
+       "price": "3.6",
+       "flags": []
+      },
+      {
+       "name": "Ristretto",
+       "desc": "",
+       "allergens": [],
+       "price": "3.4",
+       "flags": []
+      },
+      {
+       "name": "Espresso Doppio",
+       "desc": "",
+       "allergens": [],
+       "price": "5.1",
+       "flags": []
+      },
+      {
+       "name": "Espresso Doppio Macchiato",
+       "desc": "",
+       "allergens": [
+        "G"
+       ],
+       "price": "5.3",
+       "flags": []
+      },
+      {
+       "name": "Doppio Ristretto",
+       "desc": "",
+       "allergens": [],
+       "price": "5.1",
+       "flags": []
+      },
+      {
+       "name": "Einspänner",
+       "desc": "Doppelter Espresso mit Schlagobers",
+       "allergens": [
+        "G"
+       ],
+       "price": "5.3",
+       "flags": []
+      },
+      {
+       "name": "Irish Coffee",
+       "desc": "mit 4cl Jameson Original, halb geschlagener Obers",
+       "allergens": [
+        "E",
+        "G"
+       ],
+       "price": "9.9",
+       "flags": []
+      }
+     ],
+     "footnotes": []
+    },
+    {
+     "title": "Röstraum red",
+     "note": null,
+     "items": [
+      {
+       "name": "Kleiner Brauner",
+       "desc": "",
+       "allergens": [
+        "G"
+       ],
+       "price": "3.4",
+       "flags": []
+      },
+      {
+       "name": "Großer Brauner",
+       "desc": "",
+       "allergens": [
+        "G"
+       ],
+       "price": "5.3",
+       "flags": []
+      },
+      {
+       "name": "Verlängerter",
+       "desc": "",
+       "allergens": [],
+       "price": "3.9",
+       "flags": []
+      },
+      {
+       "name": "Melange",
+       "desc": "",
+       "allergens": [
+        "G"
+       ],
+       "price": "4.4",
+       "flags": []
+      },
+      {
+       "name": "Cappuccino",
+       "desc": "",
+       "allergens": [
+        "G"
+       ],
+       "price": "4.4",
+       "flags": []
+      },
+      {
+       "name": "Cappuccino con Panna",
+       "desc": "",
+       "allergens": [
+        "G"
+       ],
+       "price": "4.9",
+       "flags": []
+      },
+      {
+       "name": "Caffé Latte",
+       "desc": "",
+       "allergens": [
+        "G"
+       ],
+       "price": "4.9",
+       "flags": []
+      },
+      {
+       "name": "Milchkaffee",
+       "desc": "",
+       "allergens": [
+        "G"
+       ],
+       "price": "4.9",
+       "flags": []
+      },
+      {
+       "name": "Moccaccino",
+       "desc": "",
+       "allergens": [
+        "G"
+       ],
+       "price": "5.9",
+       "flags": []
+      },
+      {
+       "name": "Alternativ Hafer-, Soja-, Laktosefreie Milch",
+       "desc": "",
+       "allergens": [],
+       "price": "0.8",
+       "flags": []
+      }
+     ],
+     "footnotes": []
+    },
+    {
+     "title": "mit Geschmack",
+     "note": null,
+     "items": [
+      {
+       "name": "Macadamia, Amaretto, weiße Schokolade, Vanille, Kokos",
+       "desc": "",
+       "allergens": [
+        "F",
+        "G"
+       ],
+       "price": "0.8",
+       "flags": []
+      },
+      {
+       "name": "Baileys",
+       "desc": "",
+       "allergens": [
+        "E",
+        "G"
+       ],
+       "price": "1.5",
+       "flags": []
+      },
+      {
+       "name": "Eiskaffee",
+       "desc": "Espresso, Vanilleeis, Schlagobers",
+       "allergens": [
+        "F",
+        "G"
+       ],
+       "price": "6.9",
+       "flags": []
+      },
+      {
+       "name": "Eismoccaccino „Freiraum\"",
+       "desc": "Schokolade, Espresso, Vanilleeis, Schlagobers",
+       "allergens": [
+        "F",
+        "G"
+       ],
+       "price": "7",
+       "flags": [],
+       "signature": true
+      }
+     ],
+     "footnotes": []
+    },
+    {
+     "title": "Schokolade",
+     "note": null,
+     "items": [
+      {
+       "name": "Heiße Trinkschokolade",
+       "desc": "",
+       "allergens": [
+        "F",
+        "G"
+       ],
+       "price": "4.6",
+       "flags": []
+      },
+      {
+       "name": "Eisschokolade",
+       "desc": "mit Vanilleeis und Schlagobers",
+       "allergens": [
+        "F",
+        "G"
+       ],
+       "price": "6.5",
+       "flags": []
+      },
+      {
+       "name": "Extra Schlagobers",
+       "desc": "",
+       "allergens": [
+        "G"
+       ],
+       "price": "0.5",
+       "flags": []
+      },
+      {
+       "name": "Elephant Chai Latte",
+       "desc": "",
+       "allergens": [],
+       "price": "4.9",
+       "flags": []
+      }
+     ],
+     "footnotes": [
+      "Alle Getränke nach Wahl mit Vollmilch, laktosefreier Milch, Sojadrink oder Haferdrink!"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "tee",
+   "de": "Tee",
+   "en": "Tea",
+   "sections": [
+    {
+     "title": "Freiraum Bio & Frische Selektion",
+     "note": null,
+     "items": [
+      {
+       "name": "Bio Bergkräuter",
+       "desc": "5-7 min — \"Für diesen Kräutertee werden beste Bio Bergkräuter ausgewählt. Melisse, süßer Fenchel und Anis bilden die harmonische Basis, Minze verleiht der Mischung einen frischen Geschmack.\"",
+       "allergens": [],
+       "price": "4.5",
+       "flags": []
+      }
+     ],
+     "footnotes": []
+    },
+    {
+     "title": "Schwarz & Minze",
+     "note": null,
+     "items": [
+      {
+       "name": "Earl Grey",
+       "desc": "2-3 min — \"Der Klassiker - eine elegante Mischung aromatischer Schwarztees aus Indian Darjeeling | Assam und Nepàl | veredelt mit Bergamotte-Aroma - begleitet durch den ganzen Tag.\"",
+       "allergens": [],
+       "price": "4.5",
+       "flags": []
+      },
+      {
+       "name": "English Breakfast",
+       "desc": "2-4 min — \"Dieser Schwarztee aus kontrolliert biologischem Anbau überzeugt durch seine feine Würze und die leuchtend kupferfarbene Tassenfarbe.\"",
+       "allergens": [],
+       "price": "4.5",
+       "flags": []
+      },
+      {
+       "name": "Minze",
+       "desc": "5-7 min — \"Diese ausgewogene Minz-Mischung ist inspiriert von dem Nationalgetränk Marokkos, der Marokkanischen Minze.\"",
+       "allergens": [],
+       "price": "4.5",
+       "flags": []
+      }
+     ],
+     "footnotes": []
+    },
+    {
+     "title": "Grün, Kamille",
+     "note": null,
+     "items": [
+      {
+       "name": "Chun Mee",
+       "desc": "2-3 min — \"Dieser Grüntee aus kontrolliert biologischem Anbau hebt sich durch sein besonders fruchtiges und exotisches Aroma ab. In der Tasse besticht dieser Tee durch ein leuchtend sattes Gelb.\"",
+       "allergens": [],
+       "price": "4.5",
+       "flags": []
+      },
+      {
+       "name": "Kamille",
+       "desc": "5-7 min — \"Ausgesuchte Blütenköpfe der Bio Kamille verleihen diesem Tee einen frischen, mild - aromatischen Geschmack. In der Klostermedizin wird der Kamille eine positive Wirkung auf das Wohlbefinden nachgesagt\"",
+       "allergens": [],
+       "price": "4.5",
+       "flags": []
+      }
+     ],
+     "footnotes": []
+    },
+    {
+     "title": "Fruit & Herbal Infusion, Koffeinfrei",
+     "note": null,
+     "items": [
+      {
+       "name": "Früchtereigen",
+       "desc": "5-7 min — \"Die Fruchtmischung aus Äpfeln, Hibiskus und Holunder, abgerundet mit Orange und Beeren ist der perfekte Durstlöscher und zeichnet sich durch die besonders rote Tassenfarbe aus.\"",
+       "allergens": [],
+       "price": "4.5",
+       "flags": []
+      },
+      {
+       "name": "Rooibos natur",
+       "desc": "5-10 min — \"Rotbraune Farbe, mit leichter Süße - aus kontrolliert biologischem Anbau\"",
+       "allergens": [],
+       "price": "4.5",
+       "flags": []
+      }
+     ],
+     "footnotes": []
+    }
+   ]
+  },
+  {
+   "id": "hausgemacht",
+   "de": "Hausgemachtes & Alkoholfrei",
+   "en": "Homemade & Soft Drinks",
+   "sections": [
+    {
+     "title": "Smoothies",
+     "note": null,
+     "items": [
+      {
+       "name": "Tropic Twister",
+       "desc": "Mango, Ananas, Banane, Kokosnuss, Orange",
+       "allergens": [],
+       "price": "5.9",
+       "flags": [],
+       "size": "0.2l"
+      },
+      {
+       "name": "Royal Berry",
+       "desc": "Heidelbeere, Erdbeere, Banane, Aronia",
+       "allergens": [],
+       "price": "5.9",
+       "flags": [],
+       "size": "0.2l"
+      }
+     ],
+     "footnotes": [
+      "Unser gesamtes Frühstücksangebot ist täglich von 08:00 bis 17:00 Uhr erhältlich."
+     ]
+    },
+    {
+     "title": "Hausgemachte Drinks — Limonaden 0.5L",
+     "note": null,
+     "items": [
+      {
+       "name": "Ingwer Minze",
+       "desc": "Frische Minze | Zitrone | Ingwer | Soda",
+       "allergens": [],
+       "price": "5.1",
+       "flags": []
+      },
+      {
+       "name": "Himbeer Minze",
+       "desc": "Himbeere | Minze | Gurke | Limette | Soda",
+       "allergens": [],
+       "price": "5.1",
+       "flags": []
+      },
+      {
+       "name": "Ananas Mango",
+       "desc": "Ananas | Mango | Limette| Soda",
+       "allergens": [],
+       "price": "5.1",
+       "flags": []
+      },
+      {
+       "name": "Maracuja",
+       "desc": "Frische Maracuja | Zitrone | Soda",
+       "allergens": [],
+       "price": "5.1",
+       "flags": []
+      },
+      {
+       "name": "Erdbeere-Basilikum",
+       "desc": "Erdbeer-Basilikum-Püree | Zitrone | Erdbeeren | Basilikum | Soda",
+       "allergens": [],
+       "price": "5.1",
+       "flags": []
+      }
+     ],
+     "footnotes": []
+    },
+    {
+     "title": "Eistee 0.5L",
+     "note": null,
+     "items": [
+      {
+       "name": "Pfirsich",
+       "desc": "Assam Schwarztee | Pfirsichpüree | Zitrone",
+       "allergens": [],
+       "price": "4.9",
+       "flags": []
+      },
+      {
+       "name": "Erdbeer Basilikum",
+       "desc": "Assam Schwarztee | Zitrone | Erdbeer-Basilikum",
+       "allergens": [],
+       "price": "4.9",
+       "flags": []
+      },
+      {
+       "name": "Mango",
+       "desc": "Assam Schwarztee | Mango Püree | Zitrone",
+       "allergens": [],
+       "price": "4.9",
+       "flags": []
+      }
+     ],
+     "footnotes": []
+    },
+    {
+     "title": "Milchshakes",
+     "note": null,
+     "items": [
+      {
+       "name": "Mango",
+       "desc": "Pürierte Mango | Milch",
+       "allergens": [
+        "G"
+       ],
+       "price": "5.5",
+       "flags": [],
+       "size": "0.25l"
+      },
+      {
+       "name": "Erdbeere",
+       "desc": "Pürierte Erdbeere | Milch",
+       "allergens": [
+        "G"
+       ],
+       "price": "5.5",
+       "flags": [],
+       "size": "0.25l"
+      }
+     ],
+     "footnotes": []
+    },
+    {
+     "title": "Smoothies",
+     "note": null,
+     "items": [
+      {
+       "name": "Tropic Twister",
+       "desc": "Mango, Ananas, Kokosnuss, Orange",
+       "allergens": [],
+       "price": "5.9",
+       "flags": [],
+       "size": "0.2l"
+      },
+      {
+       "name": "Royal Berry",
+       "desc": "Heidelbeere, Erdbeere, Banane, Aronia",
+       "allergens": [],
+       "price": "5.9",
+       "flags": [],
+       "size": "0.2l"
+      }
+     ],
+     "footnotes": []
+    },
+    {
+     "title": "Alkoholfrei — Fruchtsaft",
+     "note": null,
+     "items": [
+      {
+       "name": "Apfel | Birne naturtrüb",
+       "desc": "",
+       "allergens": [],
+       "price": "3.7",
+       "flags": [],
+       "size": "0.25l"
+      },
+      {
+       "name": "Mango",
+       "desc": "",
+       "allergens": [],
+       "price": "3.7",
+       "flags": [],
+       "size": "0.25l"
+      },
+      {
+       "name": "Orange",
+       "desc": "",
+       "allergens": [],
+       "price": "3.7",
+       "flags": [],
+       "size": "0.25l"
+      },
+      {
+       "name": "Marille",
+       "desc": "",
+       "allergens": [],
+       "price": "3.7",
+       "flags": [],
+       "size": "0.25l"
+      },
+      {
+       "name": "Erdbeere",
+       "desc": "",
+       "allergens": [],
+       "price": "3.7",
+       "flags": [],
+       "size": "0.25l"
+      },
+      {
+       "name": "Johannisbeere",
+       "desc": "",
+       "allergens": [],
+       "price": "3.7",
+       "flags": [],
+       "size": "0.25l"
+      }
+     ],
+     "footnotes": []
+    },
+    {
+     "title": "Soft Drinks",
+     "note": null,
+     "items": [
+      {
+       "name": "Coca Cola | Zero",
+       "desc": "",
+       "allergens": [],
+       "price": "4.2",
+       "flags": [],
+       "size": "0.33l"
+      },
+      {
+       "name": "Almdudler",
+       "desc": "",
+       "allergens": [],
+       "price": "4.2",
+       "flags": [],
+       "size": "0.33l"
+      },
+      {
+       "name": "Frucade",
+       "desc": "",
+       "allergens": [],
+       "price": "4.2",
+       "flags": [],
+       "size": "0.33l"
+      },
+      {
+       "name": "Makava",
+       "desc": "",
+       "allergens": [],
+       "price": "4.2",
+       "flags": [],
+       "size": "0.33l"
+      },
+      {
+       "name": "Energy Drinks",
+       "desc": "Red Bull / Sugarfree / Sea Blue Sommer Edition",
+       "allergens": [],
+       "price": "5.2",
+       "flags": [],
+       "size": "0.25l"
+      },
+      {
+       "name": "Fentimans",
+       "desc": "Fentimans Connoisseurs Tonic, Ginger Ale, Rose, Ginger Beer, Pink Grapefruit Tonic, Valencian Orange Tonic, Yuzu Tonic",
+       "allergens": [],
+       "price": "5.2",
+       "flags": [],
+       "size": "0.2l"
+      },
+      {
+       "name": "Soda* 0.25l /",
+       "desc": "",
+       "allergens": [],
+       "price": "2.2/3.2",
+       "flags": [],
+       "size": "0.5l"
+      },
+      {
+       "name": "Soda Zitrone* Himbeer/Holunder 0.25l /",
+       "desc": "",
+       "allergens": [],
+       "price": "2.8/4.5",
+       "flags": [],
+       "size": "0.5l"
+      },
+      {
+       "name": "Gasteiner still 0.25l /",
+       "desc": "",
+       "allergens": [],
+       "price": "3.9/7.2",
+       "flags": [],
+       "size": "0.75l"
+      },
+      {
+       "name": "Gasteiner prickelnd 0.25l /",
+       "desc": "",
+       "allergens": [],
+       "price": "3.9/7.2",
+       "flags": [],
+       "size": "0.75l"
+      }
+     ],
+     "footnotes": []
+    },
+    {
+     "title": "Fruchtsaft gespritzt",
+     "note": null,
+     "items": [
+      {
+       "name": "Apfel / Birne natur 0.25l /",
+       "desc": "",
+       "allergens": [],
+       "price": "2.8/4.8",
+       "flags": [],
+       "size": "0.5l"
+      },
+      {
+       "name": "Mango 0.25l /",
+       "desc": "",
+       "allergens": [],
+       "price": "2.8/4.8",
+       "flags": [],
+       "size": "0.5l"
+      },
+      {
+       "name": "Orange 0.25l /",
+       "desc": "",
+       "allergens": [],
+       "price": "2.8/4.8",
+       "flags": [],
+       "size": "0.5l"
+      },
+      {
+       "name": "Marille 0.25l /",
+       "desc": "",
+       "allergens": [],
+       "price": "2.8/4.8",
+       "flags": [],
+       "size": "0.5l"
+      },
+      {
+       "name": "Erdbeere 0.25l /",
+       "desc": "",
+       "allergens": [],
+       "price": "2.8/4.8",
+       "flags": [],
+       "size": "0.5l"
+      },
+      {
+       "name": "Johannisbeere 0.25l /",
+       "desc": "",
+       "allergens": [],
+       "price": "2.8/4.8",
+       "flags": [],
+       "size": "0.5l"
+      }
+     ],
+     "footnotes": [
+      "*Jugendgetränk"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "bier-wein",
+   "de": "Bier & Wein",
+   "en": "Beer & Wine",
+   "sections": [
+    {
+     "title": "Bier — Fass",
+     "note": "0.3l / 0.5l",
+     "items": [
+      {
+       "name": "American Bud",
+       "desc": "",
+       "allergens": [
+        "A"
+       ],
+       "price": "4.5/5.6",
+       "flags": [],
+       "size": "0.3l / 0.5l"
+      },
+      {
+       "name": "Corona Extra",
+       "desc": "",
+       "allergens": [
+        "A"
+       ],
+       "price": "4.5/5.6",
+       "flags": [],
+       "size": "0.3l / 0.5l"
+      },
+      {
+       "name": "Stella Artois",
+       "desc": "",
+       "allergens": [
+        "A"
+       ],
+       "price": "4.5/5.6",
+       "flags": [],
+       "size": "0.3l / 0.5l"
+      },
+      {
+       "name": "Franziskaner",
+       "desc": "",
+       "allergens": [
+        "A"
+       ],
+       "price": "4.5/5.6",
+       "flags": [],
+       "size": "0.3l / 0.5l"
+      },
+      {
+       "name": "Leffe Blond",
+       "desc": "",
+       "allergens": [
+        "A"
+       ],
+       "price": "4.5/5.6",
+       "flags": [],
+       "size": "0.3l / 0.5l"
+      },
+      {
+       "name": "Spaten",
+       "desc": "",
+       "allergens": [
+        "A"
+       ],
+       "price": "4/4.9",
+       "flags": [],
+       "size": "0.3l / 0.5l"
+      }
+     ],
+     "footnotes": []
+    },
+    {
+     "title": "Bier — Flasche",
+     "note": null,
+     "items": [
+      {
+       "name": "Muttermilch Wiener Bubi",
+       "desc": "",
+       "allergens": [
+        "A"
+       ],
+       "price": "5.2",
+       "flags": [],
+       "size": "0.33l"
+      },
+      {
+       "name": "Muttermilch Bitta v. Tresen",
+       "desc": "",
+       "allergens": [
+        "A"
+       ],
+       "price": "5.2",
+       "flags": [],
+       "size": "0.33l"
+      },
+      {
+       "name": "Gösser Radler",
+       "desc": "",
+       "allergens": [
+        "A"
+       ],
+       "price": "5.2",
+       "flags": [],
+       "size": "0.33l"
+      },
+      {
+       "name": "Bernard Dark Lager",
+       "desc": "",
+       "allergens": [
+        "A"
+       ],
+       "price": "5.2",
+       "flags": [],
+       "size": "0.5l"
+      },
+      {
+       "name": "Corona Extra",
+       "desc": "",
+       "allergens": [
+        "A"
+       ],
+       "price": "5.2",
+       "flags": [],
+       "size": "0.33l"
+      },
+      {
+       "name": "Corona Cero Alkoholfrei",
+       "desc": "",
+       "allergens": [
+        "A"
+       ],
+       "price": "5.2",
+       "flags": [],
+       "size": "0.33l"
+      },
+      {
+       "name": "Blak Stock Cider",
+       "desc": "",
+       "allergens": [
+        "A"
+       ],
+       "price": "4.9",
+       "flags": [],
+       "size": "0.33l"
+      },
+      {
+       "name": "Schladminger Bio Zwickl",
+       "desc": "",
+       "allergens": [
+        "A"
+       ],
+       "price": "5.2",
+       "flags": [],
+       "size": "0.5l"
+      },
+      {
+       "name": "Brewdog Punk IPA",
+       "desc": "",
+       "allergens": [
+        "A"
+       ],
+       "price": "5.2",
+       "flags": [],
+       "size": "0.33l"
+      }
+     ],
+     "footnotes": []
+    },
+    {
+     "title": "Prosecco / Rosé",
+     "note": null,
+     "items": [
+      {
+       "name": "Fräulein Rosé",
+       "desc": "Mayer am Pfarrplatz",
+       "allergens": [
+        "O"
+       ],
+       "price": "5.3/34",
+       "flags": [],
+       "size": "0.125l / 0.75l"
+      },
+      {
+       "name": "Casa Gheller Prosecco DOC",
+       "desc": "",
+       "allergens": [],
+       "price": "4.9/29",
+       "flags": [],
+       "size": "0.1l / 0.75l"
+      },
+      {
+       "name": "Casa Gheller Cuveé Brut Rose",
+       "desc": "",
+       "allergens": [],
+       "price": "4.9/29",
+       "flags": [],
+       "size": "0.1l / 0.75l"
+      }
+     ],
+     "footnotes": []
+    },
+    {
+     "title": "Wein — Weiss",
+     "note": "0.125l / 0.75l",
+     "items": [
+      {
+       "name": "Grüner Veltliner „Hundschupfen„",
+       "desc": "Hagn, Weinviertel",
+       "allergens": [
+        "O"
+       ],
+       "price": "5.3/31",
+       "flags": []
+      },
+      {
+       "name": "Gemischter Satz",
+       "desc": "Wieninger, Wien",
+       "allergens": [
+        "O"
+       ],
+       "price": "5.3/31",
+       "flags": []
+      },
+      {
+       "name": "Chardonnay „Klassik„",
+       "desc": "Artner, Carnuntum",
+       "allergens": [
+        "O"
+       ],
+       "price": "5.3/31",
+       "flags": []
+      },
+      {
+       "name": "Riesling „Furth Terrassen DAC„",
+       "desc": "Unger, Kremstal",
+       "allergens": [
+        "O"
+       ],
+       "price": "5.3/31",
+       "flags": []
+      },
+      {
+       "name": "Gelber Muskateller",
+       "desc": "Artner, Carnuntum",
+       "allergens": [
+        "O"
+       ],
+       "price": "5.3/31",
+       "flags": []
+      },
+      {
+       "name": "Sauvignon Blanc Vulkanland DAC",
+       "desc": "Gollenz, Vulkanland Steiermark",
+       "allergens": [
+        "O"
+       ],
+       "price": "5.3/31",
+       "flags": []
+      }
+     ],
+     "footnotes": []
+    },
+    {
+     "title": "Wein — Rot",
+     "note": "0.125l / 0.75l",
+     "items": [
+      {
+       "name": "Zweigelt „Rubin Carnuntum„",
+       "desc": "Netzl, Carnuntum",
+       "allergens": [
+        "O"
+       ],
+       "price": "5.3/31",
+       "flags": []
+      },
+      {
+       "name": "Blaufränkisch",
+       "desc": "Krutzler, Burgenland",
+       "allergens": [
+        "O"
+       ],
+       "price": "5.3/31",
+       "flags": []
+      },
+      {
+       "name": "Cuvée Carnuntum",
+       "desc": "Markowitsch, Carnuntum",
+       "allergens": [
+        "O"
+       ],
+       "price": "5.3/31",
+       "flags": []
+      }
+     ],
+     "footnotes": []
+    },
+    {
+     "title": "Champagner",
+     "note": "0.75l",
+     "items": [
+      {
+       "name": "Veuve Clicquot Reserve Cuvée",
+       "desc": "",
+       "allergens": [
+        "O"
+       ],
+       "price": "95",
+       "flags": []
+      },
+      {
+       "name": "R de Ruinart",
+       "desc": "",
+       "allergens": [
+        "O"
+       ],
+       "price": "115",
+       "flags": []
+      },
+      {
+       "name": "Moet & Chandon Impérial Brut",
+       "desc": "",
+       "allergens": [
+        "O"
+       ],
+       "price": "99",
+       "flags": []
+      },
+      {
+       "name": "Moet & Chandon Brut Rosé",
+       "desc": "",
+       "allergens": [
+        "O"
+       ],
+       "price": "119",
+       "flags": []
+      },
+      {
+       "name": "Moet & Chandon Ice",
+       "desc": "",
+       "allergens": [
+        "O"
+       ],
+       "price": "129",
+       "flags": []
+      },
+      {
+       "name": "Moet & Chandon N.I.R. Nectar Imperial Rose",
+       "desc": "",
+       "allergens": [
+        "O"
+       ],
+       "price": "139",
+       "flags": []
+      },
+      {
+       "name": "Dom Perignon Impérial Brut 2013",
+       "desc": "",
+       "allergens": [
+        "O"
+       ],
+       "price": "390",
+       "flags": []
+      }
+     ],
+     "footnotes": []
+    },
+    {
+     "title": "Weiß",
+     "note": null,
+     "items": [
+      {
+       "name": "FX PICHLER",
+       "desc": "Grüner Veltliner Ried Klosersatz Wachau DAC 2024",
+       "allergens": [],
+       "price": "52",
+       "flags": [],
+       "size": "0,75l"
+      },
+      {
+       "name": "GOBELSBURG",
+       "desc": "Grüner Veltliner Ried Lamm Kamptal DAC-R 2022",
+       "allergens": [],
+       "price": "78",
+       "flags": [],
+       "size": "0,75l"
+      },
+      {
+       "name": "DOMÄNE WACHAU",
+       "desc": "Grüner Veltliner Smaragd Kellerberg 2023",
+       "allergens": [],
+       "price": "58",
+       "flags": [],
+       "size": "0,75l"
+      },
+      {
+       "name": "NIGL",
+       "desc": "Grüner Veltliner Senftenberg Piri Kremstal DAC 2024",
+       "allergens": [],
+       "price": "44",
+       "flags": [],
+       "size": "0,75l"
+      },
+      {
+       "name": "FX PICHLER",
+       "desc": "Grüner Veltliner Dürnstein, Wachau Magnum 2024",
+       "allergens": [],
+       "price": "110",
+       "flags": [],
+       "size": "1,5l"
+      },
+      {
+       "name": "MAYER PFARR",
+       "desc": "Wr. Gemischter Satz DAC Preussen-Nussberg 2024",
+       "allergens": [],
+       "price": "50",
+       "flags": [],
+       "size": "0,75l"
+      },
+      {
+       "name": "SABATHI 0,75l [vegan leaf]",
+       "desc": "Sauvignon Blanc Leutschach 2024",
+       "allergens": [],
+       "price": "48",
+       "flags": []
+      },
+      {
+       "name": "ARTNER 0,75l [vegan leaf]",
+       "desc": "Chardonnay massive a. [weiß] 2023",
+       "allergens": [],
+       "price": "75",
+       "flags": []
+      },
+      {
+       "name": "GATTINGER",
+       "desc": "Riesling Smaragd Ried Loibenberg 2024",
+       "allergens": [],
+       "price": "58",
+       "flags": [],
+       "size": "0,75l"
+      },
+      {
+       "name": "UNGER",
+       "desc": "Riesling Steiner Gaisberg Kremstal DAC-Reserve 2024",
+       "allergens": [],
+       "price": "46",
+       "flags": [],
+       "size": "0,75l"
+      },
+      {
+       "name": "HIRSCH 0,75l [vegan leaf]",
+       "desc": "Riesling Ried Heiligenstein Zöbing 2018",
+       "allergens": [],
+       "price": "70",
+       "flags": []
+      },
+      {
+       "name": "WIENINGER 0,75l [vegan leaf]",
+       "desc": "Riesling Ried Rosengartel 1ÖTW Riesling 2021",
+       "allergens": [],
+       "price": "70",
+       "flags": []
+      },
+      {
+       "name": "PRAGER",
+       "desc": "Riesling Wachau DAC Ried Achleiten Smaragd 2022",
+       "allergens": [],
+       "price": "96",
+       "flags": [],
+       "size": "0,75l"
+      }
+     ],
+     "footnotes": []
+    },
+    {
+     "title": "Rot",
+     "note": null,
+     "items": [
+      {
+       "name": "HEINRICH SILVIA",
+       "desc": "Blaufränkisch Goldberg Reserve 2019",
+       "allergens": [],
+       "price": "66",
+       "flags": [],
+       "size": "0,75l"
+      },
+      {
+       "name": "SCHEIBLHOFER",
+       "desc": "The Legends 2021",
+       "allergens": [],
+       "price": "55",
+       "flags": [],
+       "size": "0,75l"
+      },
+      {
+       "name": "NITTNAUS ANITA & HANS 0,75l [vegan leaf]",
+       "desc": "Comondor 2018",
+       "allergens": [],
+       "price": "100",
+       "flags": []
+      },
+      {
+       "name": "CLUB BATONNAGE",
+       "desc": "Batonnage 2021",
+       "allergens": [],
+       "price": "290",
+       "flags": [],
+       "size": "0,75l"
+      },
+      {
+       "name": "KOLLWENTZ",
+       "desc": "Steinzeiler 2019",
+       "allergens": [],
+       "price": "100",
+       "flags": [],
+       "size": "0,75l"
+      },
+      {
+       "name": "UMATHUM",
+       "desc": "Pinot Noir Unter den Terrassen 2022",
+       "allergens": [],
+       "price": "75",
+       "flags": [],
+       "size": "0,75l"
+      },
+      {
+       "name": "KRUTZLER",
+       "desc": "Merlot 2017",
+       "allergens": [],
+       "price": "78",
+       "flags": [],
+       "size": "0,75l"
+      },
+      {
+       "name": "GESELLMANN 0,75l [vegan leaf]",
+       "desc": "Bela Rex 2021",
+       "allergens": [],
+       "price": "69",
+       "flags": []
+      },
+      {
+       "name": "ZAHEL 0,75l [vegan leaf]",
+       "desc": "Antares Grande Reserve 2017",
+       "allergens": [],
+       "price": "65",
+       "flags": []
+      },
+      {
+       "name": "MARKOWITSCH",
+       "desc": "M1 2020 Limitiert!",
+       "allergens": [],
+       "price": "120",
+       "flags": [],
+       "size": "0,75l"
+      },
+      {
+       "name": "GRASSL",
+       "desc": "Ried Bärnreiser 2021",
+       "allergens": [],
+       "price": "80",
+       "flags": [],
+       "size": "0,75l"
+      },
+      {
+       "name": "KIRNBAUER",
+       "desc": "Das Phantom 2021",
+       "allergens": [],
+       "price": "58",
+       "flags": [],
+       "size": "0,75l"
+      },
+      {
+       "name": "RIECINE 0,75l [vegan leaf]",
+       "desc": "Chianti Classico Riserva DOCG 2021",
+       "allergens": [],
+       "price": "70",
+       "flags": []
+      },
+      {
+       "name": "ALTESINO",
+       "desc": "Brunello di Montalcino DOCG 2018",
+       "allergens": [],
+       "price": "78",
+       "flags": [],
+       "size": "0,75l"
+      },
+      {
+       "name": "PÖCKL",
+       "desc": "Rosso e Nero 2020 Magnum",
+       "allergens": [],
+       "price": "90",
+       "flags": [],
+       "size": "1,5l"
+      }
+     ],
+     "footnotes": []
+    },
+    {
+     "title": "Rosé",
+     "note": null,
+     "items": [
+      {
+       "name": "EAU DE PROVENCE",
+       "desc": "Rose 2023",
+       "allergens": [],
+       "price": "58",
+       "flags": [],
+       "size": "0,75l"
+      },
+      {
+       "name": "ULTIMATE PROVENCE AOP",
+       "desc": "Côtes de Provence Rosé Magnum 2023",
+       "allergens": [],
+       "price": "190",
+       "flags": [],
+       "size": "1,5l"
+      }
+     ],
+     "footnotes": []
+    }
+   ]
+  },
+  {
+   "id": "spritz",
+   "de": "Spritz & Aperitif",
+   "en": "Spritz & Aperitif",
+   "sections": [
+    {
+     "title": "Spriz",
+     "note": null,
+     "items": [
+      {
+       "name": "Freiraum Sprizz",
+       "desc": "Rose Secco, Soda, Pfirsich, Limette, Gurke, Rosmarin",
+       "allergens": [],
+       "price": "7.9",
+       "flags": [],
+       "signature": true
+      },
+      {
+       "name": "Hugo",
+       "desc": "Prosecco, Soda, Holunder, Limette, Minze",
+       "allergens": [],
+       "price": "7.5",
+       "flags": []
+      },
+      {
+       "name": "Aperone Prosecco",
+       "desc": "Aperone, Prosecco, Soda, Orange",
+       "allergens": [],
+       "price": "7.5",
+       "flags": []
+      },
+      {
+       "name": "Aperone Spritzer",
+       "desc": "Aperone, Wein, Soda, Orange",
+       "allergens": [],
+       "price": "6.9",
+       "flags": []
+      },
+      {
+       "name": "Granatapfel Sprizz",
+       "desc": "Prosecco, Soda, Granatapfel Sirup, Zitrone, Minze",
+       "allergens": [],
+       "price": "7.5",
+       "flags": []
+      },
+      {
+       "name": "Passionfruit Sprizz",
+       "desc": "Prosecco, Organics Tonic, Maracuja, Limettensaft, Basilikum",
+       "allergens": [],
+       "price": "7.5",
+       "flags": []
+      },
+      {
+       "name": "Pink Grapefruit Sprizz",
+       "desc": "Prosecco, Soda, Grapefruit, Zitronensaft, Minze",
+       "allergens": [],
+       "price": "7.5",
+       "flags": []
+      },
+      {
+       "name": "Sarti Sprizz",
+       "desc": "Prosecco, Soda, Sarti, Grapefruit",
+       "allergens": [],
+       "price": "7.5",
+       "flags": []
+      },
+      {
+       "name": "Weißer Spritzer",
+       "desc": "Weißwein, Soda",
+       "allergens": [],
+       "price": "4.5",
+       "flags": []
+      },
+      {
+       "name": "Roter Spritzer",
+       "desc": "Rotwein, Soda",
+       "allergens": [],
+       "price": "4.5",
+       "flags": []
+      },
+      {
+       "name": "Sommerspritzer",
+       "desc": "Weißwein, Soda, Eis, Zitrone",
+       "allergens": [],
+       "price": "4.5",
+       "flags": []
+      },
+      {
+       "name": "Pfirsichspritzer",
+       "desc": "Pfirsichwein, Soda",
+       "allergens": [],
+       "price": "4.5",
+       "flags": []
+      },
+      {
+       "name": "Kaiserspritzer",
+       "desc": "Weißwein, Soda, Holunderblüten Sirup",
+       "allergens": [],
+       "price": "4.9",
+       "flags": []
+      },
+      {
+       "name": "La Vie en Rose",
+       "desc": "Lillet, Prosecco, Soda, Rose Limonade",
+       "allergens": [],
+       "price": "7.5",
+       "flags": []
+      },
+      {
+       "name": "Limoncello Sprizz",
+       "desc": "Limoncello, Prosecco, Soda Zitrone",
+       "allergens": [],
+       "price": "7.5",
+       "flags": []
+      },
+      {
+       "name": "Lillet Berry",
+       "desc": "Lillet Rose, Schweppes Wild Berry",
+       "allergens": [],
+       "price": "7.5",
+       "flags": []
+      }
+     ],
+     "footnotes": []
+    },
+    {
+     "title": "Negroni | Aperitif",
+     "note": null,
+     "items": [
+      {
+       "name": "Freiraum Negroni",
+       "desc": "Tanqueray Gin, Strawberry Infused Bitterone, Chocolate Bitters, Feigen Infused Cocchi Vermouth",
+       "allergens": [],
+       "price": "11.5",
+       "flags": [],
+       "signature": true
+      },
+      {
+       "name": "Negroni Sbagliato",
+       "desc": "Bitterone, Cocchi Red Vermouth, Prosecco",
+       "allergens": [],
+       "price": "11.5",
+       "flags": []
+      },
+      {
+       "name": "Classic Negroni",
+       "desc": "Tanqueray Gin, Cocchi Red Vermouth",
+       "allergens": [],
+       "price": "12.5",
+       "flags": []
+      },
+      {
+       "name": "Bitterone Soda",
+       "desc": "Bitterone, Soda",
+       "allergens": [],
+       "price": "5.8",
+       "flags": []
+      },
+      {
+       "name": "Bitterone Orange",
+       "desc": "Bitterone, Orangensaft",
+       "allergens": [],
+       "price": "7.9",
+       "flags": []
+      },
+      {
+       "name": "Martini Rosso & Tonic",
+       "desc": "Martini Rosso, Organics Tonic Water",
+       "allergens": [],
+       "price": "7.9",
+       "flags": []
+      }
+     ],
+     "footnotes": []
+    }
+   ]
+  },
+  {
+   "id": "cocktails",
+   "de": "Cocktails",
+   "en": "Cocktails",
+   "sections": [
+    {
+     "title": "Classics",
+     "note": null,
+     "items": [
+      {
+       "name": "Margarita",
+       "desc": "Don Julio Reposado, Triple Sec, Limette, Agave",
+       "allergens": [],
+       "price": "11.0",
+       "flags": []
+      },
+      {
+       "name": "Don Paloma",
+       "desc": "Don Julio Reposado, Grapefruitsaft, Limette, Agave",
+       "allergens": [],
+       "price": "11.0",
+       "flags": []
+      },
+      {
+       "name": "Daiquiri",
+       "desc": "Angostura Reserva, Limettensaft, Zuckersirup",
+       "allergens": [],
+       "price": "10.5",
+       "flags": []
+      },
+      {
+       "name": "Espresso Martini",
+       "desc": "Ketel One Vodka, Kahlua, Espresso, Vanillesirup",
+       "allergens": [],
+       "price": "10.5",
+       "flags": []
+      },
+      {
+       "name": "Makava Vodka",
+       "desc": "Ketel One Vodka, Makava",
+       "allergens": [],
+       "price": "10.5",
+       "flags": []
+      },
+      {
+       "name": "Caipiroska",
+       "desc": "Ketel One Vodka, Brauner Zucker, Limette",
+       "allergens": [],
+       "price": "10.5",
+       "flags": []
+      },
+      {
+       "name": "Caipirinha",
+       "desc": "Cachaca, Brauner Zucker, Limette",
+       "allergens": [],
+       "price": "10.5",
+       "flags": []
+      },
+      {
+       "name": "Cuba Libre",
+       "desc": "Angostura Reserva, Coca Cola, Limette",
+       "allergens": [],
+       "price": "10.9",
+       "flags": []
+      },
+      {
+       "name": "Mojito",
+       "desc": "Angostura Reserva, Minze, Limettensaft, Brauner Zucker",
+       "allergens": [],
+       "price": "10.5",
+       "flags": []
+      },
+      {
+       "name": "Mojito Fruit",
+       "desc": "Angostura Reserva, Minze, Limettensaft Erdbeer | Mango | Pfirsich | Himbeer",
+       "allergens": [],
+       "price": "10.5",
+       "flags": []
+      },
+      {
+       "name": "Pornstar Martini",
+       "desc": "Ketel One Vodka, Aloha Fassionola, Passoã, Maracuja Püree, Limettensaft, Vanillesirup",
+       "allergens": [],
+       "price": "11.9",
+       "flags": []
+      },
+      {
+       "name": "White Russian",
+       "desc": "Ketel One Vodka, Kahlua, Obers",
+       "allergens": [],
+       "price": "10.9",
+       "flags": []
+      },
+      {
+       "name": "Black Russian",
+       "desc": "Ketel One Vodka, Kahlua",
+       "allergens": [],
+       "price": "10.5",
+       "flags": []
+      },
+      {
+       "name": "Bloody Mary",
+       "desc": "Ketel One Vodka, Tomatensaft, Pfeffer, Salz, Worcestershire, Tabasco",
+       "allergens": [],
+       "price": "10.9",
+       "flags": []
+      },
+      {
+       "name": "Vodka Gimlet",
+       "desc": "Ketel One Vodka, Zitronensaft, Zuckersirup",
+       "allergens": [],
+       "price": "10.9",
+       "flags": []
+      },
+      {
+       "name": "Gin Gimlet",
+       "desc": "Tanqueray Gin, Zitronensaft, Limetten Cordial",
+       "allergens": [],
+       "price": "10.9",
+       "flags": []
+      },
+      {
+       "name": "Tom Collins",
+       "desc": "Tanqueray Gin, Zitronensaft, Zuckersirup, Soda",
+       "allergens": [],
+       "price": "10.5",
+       "flags": []
+      },
+      {
+       "name": "Old Fashioned",
+       "desc": "Bulleit Bourbon, Zuckersirup, Angostura Bitters",
+       "allergens": [],
+       "price": "11.7",
+       "flags": []
+      },
+      {
+       "name": "Long Island Iced Tea",
+       "desc": "Ketel One Vodka, Angostura Reserva, Don Julio Reposado, Tanqueray Gin, Zitronensaft, Coca Cola",
+       "allergens": [],
+       "price": "13.5",
+       "flags": []
+      },
+      {
+       "name": "Matcha Martini",
+       "desc": "Ketel One Vodka, Vanillesirup, Matcha Premix White Choco Liquer, Obers",
+       "allergens": [],
+       "price": "11.9",
+       "flags": []
+      }
+     ],
+     "footnotes": []
+    },
+    {
+     "title": "Signature",
+     "note": null,
+     "items": [
+      {
+       "name": "Freiraum Sour",
+       "desc": "Ketel One Vodka, Cointreau, Yuzu Marmalade, White Chocolate, Zitronensaft, Orange Bitters",
+       "allergens": [],
+       "price": "10.5",
+       "flags": [],
+       "signature": true
+      },
+      {
+       "name": "Matcha Martini",
+       "desc": "Ketel One Vodka, Vanillesirup, Matcha Premix White Choco Liquer, Obers",
+       "allergens": [],
+       "price": "11.9",
+       "flags": []
+      },
+      {
+       "name": "Red & Hot Love",
+       "desc": "Ketel One Vodka, Ingwersirup, Zitronensaft, Erdbeerpüree, Fentimans Rose Lemonade",
+       "allergens": [],
+       "price": "11.9",
+       "flags": []
+      },
+      {
+       "name": "Velvet Spice",
+       "desc": "Angostura Reserva, Triple Sec,Birne, Kokos, Limette, Zimt",
+       "allergens": [],
+       "price": "11.9",
+       "flags": []
+      },
+      {
+       "name": "Cocotini",
+       "desc": "Angostura Reserva, Kokosnuss Likör, Kokos Vanille Milch, Kokosnuss Flocken, Grenadine",
+       "allergens": [],
+       "price": "11.9",
+       "flags": []
+      },
+      {
+       "name": "Mai Tai v2.0",
+       "desc": "Angostura Reserva, Angostura 7, Disaronno, Maracuja Püree, Falernum, Limettensaft, Orange Bitter, Angostura Bitters",
+       "allergens": [],
+       "price": "12.9",
+       "flags": []
+      },
+      {
+       "name": "Hanami Club",
+       "desc": "Tanqueray Gin, Dry Vermut, Monin Cherry, Limette",
+       "allergens": [],
+       "price": "10.9",
+       "flags": []
+      },
+      {
+       "name": "Pink Cloud Martini",
+       "desc": "Baileys, Ketel One Vodka, Obers, Erdbeerpüree",
+       "allergens": [],
+       "price": "11.9",
+       "flags": []
+      },
+      {
+       "name": "Monkey Around",
+       "desc": "Monkey 47, Bananen Likör, Honigsirup, Zitronensaft, Angostura Bitters",
+       "allergens": [],
+       "price": "11.9",
+       "flags": []
+      },
+      {
+       "name": "De Nada",
+       "desc": "Pisco, Licor 43, Erdbeer Püree, Limettensaft, Chocolate Bitters",
+       "allergens": [],
+       "price": "11.9",
+       "flags": []
+      },
+      {
+       "name": "Apple Pie",
+       "desc": "Ketel One Vodka, Angostura Reserva, Agavendicksaft, Limettensaft, Zimtsirup, Apfelsaft",
+       "allergens": [],
+       "price": "11.9",
+       "flags": []
+      },
+      {
+       "name": "Shark Attack",
+       "desc": "Angostura, Bananen Liquer, Limette, Zucker",
+       "allergens": [],
+       "price": "11.9",
+       "flags": []
+      },
+      {
+       "name": "From Mexico with Love [chili icon]",
+       "desc": "Don Julio, Chinola Mango, Limettensaft, Agavendicksaft",
+       "allergens": [],
+       "price": "11.9",
+       "flags": []
+      },
+      {
+       "name": "Clover Veil",
+       "desc": "Tanqueray, Himbeer Püree, Zitronen Karamell Espuma, Zucker",
+       "allergens": [],
+       "price": "11.9",
+       "flags": []
+      },
+      {
+       "name": "Passion Touch",
+       "desc": "Tanqueray Gin, Aperol, Maracujasirup, Ananassaft, Zitronensaft",
+       "allergens": [],
+       "price": "11.9",
+       "flags": []
+      },
+      {
+       "name": "Yuzu Gin Fizz",
+       "desc": "Tanqueray Gin, Pfirsich Likör, Yuzu Marmelade, Zuckersirup, Zitronensaft, Soda",
+       "allergens": [],
+       "price": "11.9",
+       "flags": []
+      }
+     ],
+     "footnotes": []
+    },
+    {
+     "title": "Mules",
+     "note": null,
+     "items": [
+      {
+       "name": "Freiraum Mule",
+       "desc": "Ketel One Vodka, Triple Sec, Yuzu Marmelade, Limettensaft, Ginger Beer",
+       "allergens": [],
+       "price": "10.5",
+       "flags": [],
+       "signature": true
+      },
+      {
+       "name": "Moscow Mule",
+       "desc": "Ketel One Vodka, Lime Cordial, Limettensaft, Ginger Beer",
+       "allergens": [],
+       "price": "11.5",
+       "flags": []
+      },
+      {
+       "name": "London Mule",
+       "desc": "Tanqueray Gin, Lime Cordial, Limettensaft, Ginger Beer",
+       "allergens": [],
+       "price": "11.5",
+       "flags": []
+      },
+      {
+       "name": "Tamboo Mule",
+       "desc": "Angostura Tamboo, Lime Cordial, Limettensaft, Ginger Beer",
+       "allergens": [],
+       "price": "10.5",
+       "flags": []
+      }
+     ],
+     "footnotes": []
+    },
+    {
+     "title": "Sour Cocktails",
+     "note": null,
+     "items": [
+      {
+       "name": "Averna Sour",
+       "desc": "Averna, Zitronensaft, Zuckersirup, Orangensaft",
+       "allergens": [],
+       "price": "10.5",
+       "flags": []
+      },
+      {
+       "name": "Amaretto Sour",
+       "desc": "Amaretto, Zitronensaft, Zuckersirup, Orangensaft",
+       "allergens": [],
+       "price": "10.5",
+       "flags": []
+      },
+      {
+       "name": "Whiskey Sour",
+       "desc": "Jack Daniels, Zitronensaft, Zuckersirup, Orangensaft",
+       "allergens": [],
+       "price": "10.5",
+       "flags": []
+      },
+      {
+       "name": "Vodka Sour",
+       "desc": "Ketel One Vodka, Zitronensaft, Zuckersirup, Orangensaft",
+       "allergens": [],
+       "price": "10.5",
+       "flags": []
+      }
+     ],
+     "footnotes": []
+    },
+    {
+     "title": "Mixed Shots",
+     "note": "2 SHOT",
+     "items": [
+      {
+       "name": "Frozen Watermelon",
+       "desc": "Ketel One Vodka, Waterlemon, Limette",
+       "allergens": [],
+       "price": "11.9",
+       "flags": []
+      },
+      {
+       "name": "Pallini Beach",
+       "desc": "Pallini Limoncello,Erdbeerpüree",
+       "allergens": [],
+       "price": "11.9",
+       "flags": []
+      },
+      {
+       "name": "B.1020",
+       "desc": "Basilikum, Ketel One Vodka",
+       "allergens": [],
+       "price": "11.9",
+       "flags": []
+      },
+      {
+       "name": "Espresso Martini Shot",
+       "desc": "Ketel One Vodka, Kahlua, Espresso, Zucker",
+       "allergens": [],
+       "price": "11.9",
+       "flags": []
+      },
+      {
+       "name": "Pornstar Martini Shot",
+       "desc": "Ketel One Vodka, Aloha Fassionola, Passoa, Maracuja, Limettensaft",
+       "allergens": [],
+       "price": "14.9",
+       "flags": []
+      },
+      {
+       "name": "10 Shots",
+       "desc": "erdbeer / himbeer /mango",
+       "allergens": [],
+       "price": "30",
+       "flags": []
+      },
+      {
+       "name": "20 Shots",
+       "desc": "erdbeer / himbeer /mango",
+       "allergens": [],
+       "price": "50",
+       "flags": []
+      },
+      {
+       "name": "30 Shots",
+       "desc": "erdbeer / himbeer /mango",
+       "allergens": [],
+       "price": "70",
+       "flags": []
+      }
+     ],
+     "footnotes": []
+    },
+    {
+     "title": "Mocktails BA",
+     "note": null,
+     "items": [
+      {
+       "name": "Southern Passion",
+       "desc": "Ananassaft, Maracujasirup, Ahornsirup, Limettensaft, Ginger Ale",
+       "allergens": [],
+       "price": "9.5",
+       "flags": []
+      },
+      {
+       "name": "Safe Sex on the Beach",
+       "desc": "Ananassaft, Orangensaft, Preiselbeersaft, Mangosirup, Zitronensaft",
+       "allergens": [],
+       "price": "9.5",
+       "flags": []
+      },
+      {
+       "name": "Among the Berries",
+       "desc": "Ananassaft, Cranberrysaft, Beeren Püree, Zitronensaft",
+       "allergens": [],
+       "price": "9.5",
+       "flags": []
+      },
+      {
+       "name": "Tanqueray 0,0% & Tonic",
+       "desc": "Tanqueray 0,0%, Fentimans Tonic Water, Limettensaft, Beeren",
+       "allergens": [],
+       "price": "9.5",
+       "flags": []
+      },
+      {
+       "name": "Limonzero 0,0% Tonic",
+       "desc": "Limonzero 0,0%, Fentimans Tonic, Zitrone",
+       "allergens": [],
+       "price": "6.9",
+       "flags": []
+      },
+      {
+       "name": "Easy Mojito",
+       "desc": "Limettensaft, Brauner Zucker, Minze, Ginger Ale",
+       "allergens": [],
+       "price": "9.5",
+       "flags": []
+      }
+     ],
+     "footnotes": []
+    }
+   ]
+  },
+  {
+   "id": "spirits",
+   "de": "Spirituosen",
+   "en": "Spirits",
+   "sections": [
+    {
+     "title": "Aperitif | Bitter",
+     "note": "4CL",
+     "items": [
+      {
+       "name": "Bitterone",
+       "desc": "",
+       "allergens": [],
+       "price": "4.9",
+       "flags": []
+      },
+      {
+       "name": "Martini Bianco",
+       "desc": "",
+       "allergens": [],
+       "price": "4.9",
+       "flags": []
+      },
+      {
+       "name": "Jägermeister",
+       "desc": "",
+       "allergens": [],
+       "price": "4.9",
+       "flags": []
+      },
+      {
+       "name": "Amaro Averna",
+       "desc": "",
+       "allergens": [],
+       "price": "4.9",
+       "flags": []
+      }
+     ],
+     "footnotes": []
+    },
+    {
+     "title": "Whiskey",
+     "note": "4CL",
+     "items": [
+      {
+       "name": "Chivas Regal 12y",
+       "desc": "",
+       "allergens": [],
+       "price": "8.9",
+       "flags": []
+      },
+      {
+       "name": "Johnnie Walker Black Label 12y",
+       "desc": "",
+       "allergens": [],
+       "price": "9.9",
+       "flags": []
+      },
+      {
+       "name": "Johnnie Walker Blue Label",
+       "desc": "",
+       "allergens": [],
+       "price": "17.9",
+       "flags": []
+      },
+      {
+       "name": "Talisker 10y",
+       "desc": "",
+       "allergens": [],
+       "price": "12.8",
+       "flags": []
+      },
+      {
+       "name": "Lagavulin 8y 48%",
+       "desc": "",
+       "allergens": [],
+       "price": "8.9",
+       "flags": []
+      },
+      {
+       "name": "Bunnahabhain 12y",
+       "desc": "",
+       "allergens": [],
+       "price": "12.8",
+       "flags": []
+      },
+      {
+       "name": "Tomatin 14y",
+       "desc": "",
+       "allergens": [],
+       "price": "12.8",
+       "flags": []
+      },
+      {
+       "name": "Deanston",
+       "desc": "",
+       "allergens": [],
+       "price": "8.9",
+       "flags": []
+      },
+      {
+       "name": "Jameson Irish Whiskey",
+       "desc": "",
+       "allergens": [],
+       "price": "9.9",
+       "flags": []
+      },
+      {
+       "name": "Jameson Black Barrel",
+       "desc": "",
+       "allergens": [],
+       "price": "11.9",
+       "flags": []
+      },
+      {
+       "name": "Bulleit Bourbon",
+       "desc": "",
+       "allergens": [],
+       "price": "8.9",
+       "flags": []
+      },
+      {
+       "name": "Jack Daniel's",
+       "desc": "",
+       "allergens": [],
+       "price": "9.9",
+       "flags": []
+      }
+     ],
+     "footnotes": []
+    },
+    {
+     "title": "Cognac",
+     "note": "4CL",
+     "items": [
+      {
+       "name": "Remy Martin VSOP",
+       "desc": "",
+       "allergens": [],
+       "price": "10.9",
+       "flags": []
+      },
+      {
+       "name": "Hennessy XO",
+       "desc": "",
+       "allergens": [],
+       "price": "15.9",
+       "flags": []
+      }
+     ],
+     "footnotes": []
+    },
+    {
+     "title": "Schnaps",
+     "note": "2CL",
+     "items": [
+      {
+       "name": "Freihof Haselnuss",
+       "desc": "",
+       "allergens": [],
+       "price": "4.5",
+       "flags": []
+      },
+      {
+       "name": "Hämmerle Himbeere",
+       "desc": "",
+       "allergens": [],
+       "price": "7.9",
+       "flags": []
+      },
+      {
+       "name": "Hämmerle Holunder",
+       "desc": "",
+       "allergens": [],
+       "price": "7.9",
+       "flags": []
+      },
+      {
+       "name": "Hämmerle Marille",
+       "desc": "",
+       "allergens": [],
+       "price": "7.9",
+       "flags": []
+      },
+      {
+       "name": "Hämmerle Apfel",
+       "desc": "",
+       "allergens": [],
+       "price": "7.9",
+       "flags": []
+      },
+      {
+       "name": "Hämmerle Williams",
+       "desc": "",
+       "allergens": [],
+       "price": "7.9",
+       "flags": []
+      },
+      {
+       "name": "Hämmerle Enzian",
+       "desc": "",
+       "allergens": [],
+       "price": "7.9",
+       "flags": []
+      },
+      {
+       "name": "Gölles Alter Apfel",
+       "desc": "",
+       "allergens": [],
+       "price": "7.9",
+       "flags": []
+      }
+     ],
+     "footnotes": []
+    },
+    {
+     "title": "Gin",
+     "note": "4CL",
+     "items": [
+      {
+       "name": "Tanqueray London Dry Gin",
+       "desc": "",
+       "allergens": [],
+       "price": "8.9",
+       "flags": []
+      },
+      {
+       "name": "Tanqueray No.10",
+       "desc": "",
+       "allergens": [],
+       "price": "11.9",
+       "flags": []
+      },
+      {
+       "name": "Tanqueray 0,0%",
+       "desc": "",
+       "allergens": [],
+       "price": "8.9",
+       "flags": []
+      },
+      {
+       "name": "Monkey 47 Schwarzwald Dry Gin",
+       "desc": "",
+       "allergens": [],
+       "price": "12.9",
+       "flags": []
+      },
+      {
+       "name": "Hendricks Gin",
+       "desc": "",
+       "allergens": [],
+       "price": "11.9",
+       "flags": []
+      }
+     ],
+     "footnotes": []
+    },
+    {
+     "title": "Vodka",
+     "note": "4CL",
+     "items": [
+      {
+       "name": "Grey Goose",
+       "desc": "",
+       "allergens": [],
+       "price": "8.9",
+       "flags": []
+      },
+      {
+       "name": "Ketel One",
+       "desc": "",
+       "allergens": [],
+       "price": "7.9",
+       "flags": []
+      },
+      {
+       "name": "Ciroc",
+       "desc": "",
+       "allergens": [],
+       "price": "8.9",
+       "flags": []
+      },
+      {
+       "name": "Belvedere",
+       "desc": "",
+       "allergens": [],
+       "price": "9.9",
+       "flags": []
+      },
+      {
+       "name": "Beluga Noble",
+       "desc": "",
+       "allergens": [],
+       "price": "9.9",
+       "flags": []
+      },
+      {
+       "name": "Beluga Gold",
+       "desc": "",
+       "allergens": [],
+       "price": "14.9",
+       "flags": []
+      }
+     ],
+     "footnotes": []
+    },
+    {
+     "title": "Rum",
+     "note": "4CL",
+     "items": [
+      {
+       "name": "Angostura Reserva 3y 37,5%",
+       "desc": "",
+       "allergens": [],
+       "price": "7.9",
+       "flags": []
+      },
+      {
+       "name": "Angostura Gold 5y 40%",
+       "desc": "",
+       "allergens": [],
+       "price": "8.9",
+       "flags": []
+      },
+      {
+       "name": "Angostura Dark 7y 40%",
+       "desc": "",
+       "allergens": [],
+       "price": "8.9",
+       "flags": []
+      },
+      {
+       "name": "Angostura 1824 Prem. 40%",
+       "desc": "",
+       "allergens": [],
+       "price": "11.9",
+       "flags": []
+      },
+      {
+       "name": "Angostura 1787 Super Premium 40%",
+       "desc": "",
+       "allergens": [],
+       "price": "14.9",
+       "flags": []
+      },
+      {
+       "name": "Angostura 1919 Deluxe Blend 40%",
+       "desc": "",
+       "allergens": [],
+       "price": "11.9",
+       "flags": []
+      },
+      {
+       "name": "Zacapa Centenario 23y 40%",
+       "desc": "",
+       "allergens": [],
+       "price": "14.9",
+       "flags": []
+      }
+     ],
+     "footnotes": []
+    },
+    {
+     "title": "Likör",
+     "note": "4CL",
+     "items": [
+      {
+       "name": "Amaretto Gozio",
+       "desc": "",
+       "allergens": [],
+       "price": "5.9",
+       "flags": []
+      }
+     ],
+     "footnotes": []
+    },
+    {
+     "title": "Grappa",
+     "note": "2CL",
+     "items": [
+      {
+       "name": "Luigi Francoli Chardonnay",
+       "desc": "",
+       "allergens": [],
+       "price": "4.5",
+       "flags": []
+      },
+      {
+       "name": "Luigi Francoli Riserva",
+       "desc": "",
+       "allergens": [],
+       "price": "4.5",
+       "flags": []
+      },
+      {
+       "name": "Luigi Francoli Barrique Limousin",
+       "desc": "",
+       "allergens": [],
+       "price": "4.5",
+       "flags": []
+      },
+      {
+       "name": "Luigi Francoli Oro di Barola Riserva",
+       "desc": "",
+       "allergens": [],
+       "price": "7.9",
+       "flags": []
+      }
+     ],
+     "footnotes": []
+    },
+    {
+     "title": "Tequila / Mezcal",
+     "note": "2CL",
+     "items": [
+      {
+       "name": "Don Julio Blanco",
+       "desc": "",
+       "allergens": [],
+       "price": "5.9",
+       "flags": []
+      },
+      {
+       "name": "Don Julio Reposado",
+       "desc": "",
+       "allergens": [],
+       "price": "5.9",
+       "flags": []
+      },
+      {
+       "name": "Don Julio 1942",
+       "desc": "",
+       "allergens": [],
+       "price": "15.9",
+       "flags": []
+      },
+      {
+       "name": "Casamigos Reposado",
+       "desc": "",
+       "allergens": [],
+       "price": "5.9",
+       "flags": []
+      },
+      {
+       "name": "Casamigos Blanco",
+       "desc": "",
+       "allergens": [],
+       "price": "5.9",
+       "flags": []
+      },
+      {
+       "name": "Casamigos Mezcal",
+       "desc": "",
+       "allergens": [],
+       "price": "6.9",
+       "flags": []
+      },
+      {
+       "name": "Clase Azul Reposado",
+       "desc": "",
+       "allergens": [],
+       "price": "15.9",
+       "flags": []
+      }
+     ],
+     "footnotes": []
+    }
+   ]
+  }
+ ],
+ "allergenLegend": [
+  "A - glutenhaltiges Getreide",
+  "B - Krebstiere",
+  "C - Ei",
+  "D - Fisch",
+  "E - Erdnuss",
+  "F - Soja",
+  "G - Milch oder Laktose",
+  "H - Schalenfrüchte",
+  "I - Sellerie",
+  "M - Senf",
+  "N - Sesam",
+  "O - Sulfite",
+  "P - Lupinen",
+  "R - Weichtiere"
+ ]
+}

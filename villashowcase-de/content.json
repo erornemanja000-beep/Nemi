@@ -1,0 +1,141 @@
+{
+  "lang": "en",
+  "locale": "en-US",
+  "ui": {
+    "construction": "Construction",
+    "email": "Email",
+    "phone": "Phone",
+    "studio": "Studio",
+    "backToTop": "Back to top ↑",
+    "menu": "Main"
+  },
+
+  "brand": {
+    "name": "OSTRIA",
+    "descriptor": "Coastal residences",
+    "established": "Est. 2011",
+    "region": "Aegean coast"
+  },
+
+  "nav": [
+    { "label": "Villas", "target": "#villas" },
+    { "label": "Atelier", "target": "#atelier" },
+    { "label": "Process", "target": "#process" },
+    { "label": "Contact", "target": "#contact" }
+  ],
+  "cta": "Enquire",
+
+  "intro": {
+    "eyebrow": "Atelier for houses at the edge of the sea",
+    "lead": "We design and build a handful of houses each year, on land most people would call too wild to build on.",
+    "scrollHint": "Scroll to arrive",
+    "plotLabel": "Plot 07",
+    "plotCoordinates": "37°06′N · 25°22′E",
+    "plotLine": "Every house begins as a line drawn in the ground.",
+    "buildFrom": 2023,
+    "buildTo": 2025
+  },
+
+  "villas": [
+    {
+      "id": "kyma",
+      "name": "Villa Kyma",
+      "location": "Naxos, Cyclades",
+      "year": "2025",
+      "status": "Completed",
+      "area": "420 m²",
+      "bedrooms": "5 bedrooms",
+      "plot": "6,200 m² plot",
+      "summary": "Two limestone volumes laid low across the slope, so the bay is the first thing you see from every room."
+    },
+    {
+      "id": "lefka",
+      "name": "Villa Lefka",
+      "location": "Folegandros, Cyclades",
+      "year": "2024",
+      "status": "Completed",
+      "area": "310 m²",
+      "bedrooms": "4 bedrooms",
+      "plot": "3,900 m² plot",
+      "summary": "White plaster stacked into the cliff, with a narrow pool cut along the edge like a second horizon."
+    },
+    {
+      "id": "pefko",
+      "name": "Villa Pefko",
+      "location": "Sithonia, Halkidiki",
+      "year": "2026",
+      "status": "Under construction",
+      "area": "540 m²",
+      "bedrooms": "6 bedrooms",
+      "plot": "11,000 m² plot",
+      "summary": "Local stone and bronze among old Aleppo pines. Two reflecting pools carry the sea all the way to the front door."
+    },
+    {
+      "id": "selene",
+      "name": "Villa Selene",
+      "location": "Vouliagmeni, Athens Riviera",
+      "year": "2026",
+      "status": "Available",
+      "area": "480 m²",
+      "bedrooms": "5 bedrooms",
+      "plot": "2,800 m² plot",
+      "summary": "A long, low house made for evenings. After dark the pool, the city lights and the living room become one room."
+    }
+  ],
+
+  "manifesto": {
+    "label": "Atelier",
+    "before": "A house on this coast should feel",
+    "accent": "inevitable",
+    "after": "— as if the hill had been waiting for it all along.",
+    "columns": [
+      { "title": "Site", "text": "We walk the land at every hour before we draw a line. Wind, sun and the view decide where the rooms go." },
+      { "title": "Light", "text": "Openings are placed for the light at the times you actually live: coffee at seven, dinner at nine." },
+      { "title": "Material", "text": "Stone from the island, lime plaster, oak and bronze. Materials that age well in salt air and look better in ten years." }
+    ]
+  },
+
+  "index": {
+    "label": "Selected work",
+    "title": "Four villas"
+  },
+
+  "process": {
+    "label": "Process",
+    "title": "From plot to keys",
+    "steps": [
+      { "title": "Site study", "text": "Topography, sun path, wind and views are mapped before a single sketch. We tell you honestly what the land allows.", "duration": "4–6 weeks" },
+      { "title": "Design", "text": "Models, drawings and material samples on the table, room by room, until the house is unmistakably yours.", "duration": "3–5 months" },
+      { "title": "Permits & build", "text": "One team from permits to the last stone, with a fixed budget and a monthly visit report.", "duration": "14–20 months" },
+      { "title": "Handover", "text": "Furnished, landscaped and lived-in tested. We return each season for the first two years.", "duration": "Ongoing" }
+    ]
+  },
+
+  "plan": {
+    "label": "Seen from above",
+    "title": "Every metre placed on purpose",
+    "stats": [
+      { "value": 6200, "suffix": " m²", "label": "Plot" },
+      { "value": 24, "suffix": " m", "label": "Pool length" },
+      { "value": 38, "suffix": "", "label": "Olive trees kept" },
+      { "value": 4, "suffix": "", "label": "Garden terraces" }
+    ]
+  },
+
+  "contact": {
+    "label": "Contact",
+    "title": "Begin with a plot.",
+    "text": "Tell us where your land is, or what you are looking for. We take on a small number of new houses each year.",
+    "email": "studio@ostria-atelier.com",
+    "phone": "+30 210 000 0000",
+    "address": "Odos Akti 12, Naxos 843 00, Greece",
+    "formTitle": "Start a conversation",
+    "formFields": { "name": "Your name", "email": "Email", "message": "Where is your plot, or what are you looking for?" },
+    "formButton": "Send enquiry",
+    "formThanks": "Thank you. We will reply within two working days."
+  },
+
+  "footer": {
+    "note": "Concept presentation. All projects, names and images are illustrative."
+  }
+}

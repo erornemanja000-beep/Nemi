@@ -2,9 +2,8 @@
 // Every string is { de, en }; L(x) picks the active language.
 
 export const NAV = [
-  { id: 'film', de: 'Film', en: 'Film' },
-  { id: 'leistungen', de: 'Leistungen', en: 'Services' },
   { id: 'showroom', de: 'Showroom', en: 'Showroom' },
+  { id: 'leistungen', de: 'Leistungen', en: 'Services' },
   { id: 'ablauf', de: 'Ablauf', en: 'Process' },
   { id: 'faq', de: 'FAQ', en: 'FAQ' },
   { id: 'kontakt', de: 'Kontakt', en: 'Contact' },
@@ -13,7 +12,10 @@ export const NAV = [
 export const UI = {
   start: { de: 'Projekt starten', en: 'Start a project' },
   call: { de: 'Erstgespräch · 30 Min · kostenlos', en: 'First call · 30 min · free' },
-  skip: { de: 'Film überspringen', en: 'Skip the film' },
+  skip: { de: 'Überspringen', en: 'Skip' },
+  sound: { de: 'Ton an', en: 'Sound on' },
+  mute: { de: 'Ton aus', en: 'Sound off' },
+  play: { de: 'Film abspielen', en: 'Play the film' },
   scroll: { de: 'Scrollen', en: 'Scroll' },
   silent: { de: 'Stumm', en: 'Silent' },
   live: { de: 'Laut', en: 'Live' },
@@ -25,218 +27,62 @@ export const UI = {
   loading: { de: 'Der Film lädt', en: 'Loading the film' },
 };
 
-export const INTRO = {
-  word: 'nemi',
-  phon: { de: '[ˈnɛmi] · serbisch · stumm, ohne Stimme', en: '[ˈnɛmi] · Serbian · silent, without a voice' },
-  prologue: {
-    eye: { de: '00:00 — Prolog', en: '00:00 — Prologue' },
-    h: { de: ['Die meisten Websites', '*schweigen*.'], en: ['Most websites', 'stay *silent*.'] },
-    p: {
-      de: 'Ein Logo, die Öffnungszeiten, ein Kontaktformular. Und dann: Stille.',
-      en: 'A logo, the opening hours, a contact form. And then: silence.',
-    },
+// The opening: the first device on the desk, before the camera dives in
+export const OPEN = {
+  eye: { de: 'Nemi Studio · Webdesign aus Österreich', en: 'Nemi Studio · web design from Austria' },
+  h: { de: ['Websites, in die', 'man *eintaucht*.'], en: ['Websites you', '*dive* into.'] },
+  p: {
+    de: 'Vier Branchen, vier Websites, eine Reise. Scroll in den Bildschirm.',
+    en: 'Four industries, four websites, one journey. Scroll into the screen.',
   },
-  voice: { de: ['Wir geben ihnen', 'eine *Stimme*.'], en: ['We give them', 'a *voice*.'] },
-  day: {
-    eye: { de: '06:58 — Ein Tag in deiner Stadt', en: '06:58 — A day in your city' },
-    h: { de: ['Acht Branchen.', 'Ein *Studio*.'], en: ['Eight industries.', 'One *studio*.'] },
-    p: {
-      de: 'Webdesign, Motion und Content aus Österreich. Für Cafés, Kanzleien, Werkstätten und jede andere Branche.',
-      en: 'Web design, motion and content from Austria. For cafés, law firms, workshops and every other industry.',
-    },
-  },
+  scroll: { de: 'Scrollen', en: 'Scroll' },
 };
 
-// The eight chapters of the film, in the order of the day.
-export const CHAPTERS = [
-  {
-    id: 'cafe', seq: 'cafe', time: '07:12',
-    label: { de: 'Café & Bäckerei', en: 'Café & bakery' },
-    h: { de: ['Duft kann man nicht googeln.', 'Deine *Website* schon.'], en: ['You can’t google a smell.', 'Your *website*, you can.'] },
-    p: {
-      de: 'Speisekarte, Öffnungszeiten und Tischreservierung. So warm wie der erste Espresso des Tages.',
-      en: 'Menu, opening hours and table booking. As warm as the first espresso of the day.',
-    },
-    card: {
-      name: 'Café Mila', url: 'cafe-mila.at', style: 'warm',
-      nav: { de: ['Karte', 'Über uns', 'Besuch'], en: ['Menu', 'About', 'Visit'] },
-      cta: { de: 'Reservieren', en: 'Book a table' },
-      eye: { de: 'Frühstück · Brot · Kuchen', en: 'Breakfast · bread · cakes' },
-      h: { de: 'Kaffee, der nach Zuhause schmeckt.', en: 'Coffee that tastes like home.' },
-      b: { de: 'Speisekarte ansehen', en: 'See the menu' },
-      f: { de: ['Täglich frisch', 'Sonnige Terrasse', 'Online reservieren'], en: ['Fresh every day', 'Sunny terrace', 'Book online'] },
-    },
-  },
-  {
-    id: 'craft', seq: 'craft', time: '09:40',
-    label: { de: 'Handwerk & Bau', en: 'Trades & construction' },
-    h: { de: ['Handarbeit,', 'die man *online* sieht.'], en: ['Craftsmanship', 'you can *see* online.'] },
-    p: {
-      de: 'Referenzen, Werkstatt und Angebot auf einen Blick. Damit der nächste Auftrag nicht beim Nachbarn landet.',
-      en: 'Projects, workshop and quote request at a glance, so the next job doesn’t go to the competitor next door.',
-    },
-    card: {
-      name: { de: 'Tischlerei Eiche', en: 'Oak Joinery' }, url: 'tischlerei-eiche.at', style: 'wood',
-      nav: { de: ['Leistungen', 'Referenzen', 'Werkstatt'], en: ['Services', 'Work', 'Workshop'] },
-      cta: { de: 'Angebot', en: 'Get a quote' },
-      eye: { de: 'Möbel · Küchen · Treppen', en: 'Furniture · kitchens · stairs' },
-      h: { de: 'Handgemacht. Für Generationen.', en: 'Handmade. For generations.' },
-      b: { de: 'Referenzen ansehen', en: 'View our work' },
-      f: { de: ['Maßanfertigung', 'Eigene Werkstatt', 'Montage vor Ort'], en: ['Made to measure', 'Own workshop', 'Fitted on site'] },
-    },
-  },
-  {
-    id: 'dent', seq: 'dent', time: '11:05',
-    label: { de: 'Arzt & Zahnarzt', en: 'Doctor & dentist' },
-    h: { de: ['Vertrauen beginnt', 'vor dem *Termin*.'], en: ['Trust starts', 'before the *appointment*.'] },
-    p: {
-      de: 'Ruhige Gestaltung, klare Leistungen und Online-Termine. Auch für Angstpatienten.',
-      en: 'Calm design, clear treatments and online booking. Anxious patients included.',
-    },
-    card: {
-      name: 'Praxis am Park', url: 'praxis-am-park.at', style: 'clear',
-      nav: { de: ['Leistungen', 'Team', 'Anfahrt'], en: ['Treatments', 'Team', 'Directions'] },
-      cta: { de: 'Termin', en: 'Appointment' },
-      eye: { de: 'Zahnmedizin', en: 'Dentistry' },
-      h: { de: 'Gesund lächeln. Ohne Angst.', en: 'Healthy smiles. No fear.' },
-      b: { de: 'Termin vereinbaren', en: 'Make an appointment' },
-      f: { de: ['Online-Termin', 'Angstpatienten willkommen', 'Alle Kassen'], en: ['Online booking', 'Anxious patients welcome', 'All insurers'] },
-    },
-  },
-  {
-    id: 'law', seq: 'law', time: '14:30',
-    label: { de: 'Kanzlei & Beratung', en: 'Law & consulting' },
-    h: { de: ['Seriös heißt nicht', '*langweilig*.'], en: ['Serious doesn’t', 'mean *boring*.'] },
-    p: {
-      de: 'Kompetenz zeigen, ohne Fachchinesisch. Mit einer Website, die Mandanten in Ruhe überzeugt.',
-      en: 'Show expertise without the jargon, with a website that quietly convinces clients.',
-    },
-    card: {
-      name: { de: 'Kanzlei Aurum', en: 'Aurum Legal' }, url: 'kanzlei-aurum.at', style: 'noble',
-      nav: { de: ['Rechtsgebiete', 'Anwälte', 'Kontakt'], en: ['Practice areas', 'Lawyers', 'Contact'] },
-      cta: { de: 'Erstberatung', en: 'Consultation' },
-      eye: { de: 'Rechtsanwälte', en: 'Attorneys at law' },
-      h: { de: 'Klarheit in schwierigen Fragen.', en: 'Clarity in difficult questions.' },
-      b: { de: 'Erstberatung anfragen', en: 'Request a consultation' },
-      f: { de: ['Familienrecht', 'Arbeitsrecht', 'Vertragsrecht'], en: ['Family law', 'Employment law', 'Contract law'] },
-    },
-  },
-  {
-    id: 'fit', seq: 'fit', time: '17:15',
-    label: { de: 'Fitness & Sport', en: 'Fitness & sport' },
-    h: { de: ['Motivation,', 'die *mitzieht*.'], en: ['Energy that', '*pulls you in*.'] },
-    p: {
-      de: 'Kursplan live, Probetraining mit einem Klick und Bilder, die schon beim Scrollen den Puls heben.',
-      en: 'Live class schedule, one-click free trial and visuals that raise the pulse while you scroll.',
-    },
-    card: {
-      name: 'Puls Studio', url: 'puls-studio.at', style: 'bold',
-      nav: { de: ['Kurse', 'Preise', 'Coaches'], en: ['Classes', 'Pricing', 'Coaches'] },
-      cta: { de: 'Probetraining', en: 'Free trial' },
-      eye: { de: 'Kraft · Ausdauer · Mobility', en: 'Strength · cardio · mobility' },
-      h: { de: 'Stärker als gestern.', en: 'Stronger than yesterday.' },
-      b: { de: 'Gratis testen', en: 'Try it free' },
-      f: { de: ['Kursplan live', 'Personal Training', 'App-Check-in'], en: ['Live schedule', 'Personal training', 'App check-in'] },
-    },
-  },
-  {
-    id: 'barber', seq: 'barber', time: '19:20',
-    label: { de: 'Friseur & Beauty', en: 'Hair & beauty' },
-    h: { de: ['Stil, der', '*gebucht* wird.'], en: ['Style that', 'gets *booked*.'] },
-    p: {
-      de: 'Termine rund um die Uhr, Preise ohne Rätselraten und ein Auftritt, der zum Laden passt.',
-      en: 'Bookings around the clock, prices without guesswork and a look that matches the shop.',
-    },
-    card: {
-      name: 'Ferro Barbershop', url: 'ferro-barber.at', style: 'barber',
-      nav: { de: ['Leistungen', 'Team', 'Preise'], en: ['Services', 'Team', 'Prices'] },
-      cta: { de: 'Termin buchen', en: 'Book now' },
-      eye: { de: 'Schnitt · Bart · Pflege', en: 'Cut · beard · care' },
-      h: { de: 'Frisch geschnitten. In 30 Sekunden gebucht.', en: 'Fresh cut. Booked in 30 seconds.' },
-      b: { de: 'Termin buchen', en: 'Book an appointment' },
-      f: { de: ['Online-Termin', 'Bartpflege', 'Gutscheine'], en: ['Online booking', 'Beard care', 'Gift cards'] },
-    },
-  },
-  {
-    id: 'food', seq: 'food', time: '20:45',
-    label: { de: 'Restaurant', en: 'Restaurant' },
-    h: { de: ['Der Tisch ist', 'schon *reserviert*.'], en: ['The table is', 'already *booked*.'] },
-    p: {
-      de: 'Speisekarte, Weinbegleitung und Reservierung ohne Anruf. Der Hunger kommt beim Scrollen.',
-      en: 'Menu, wine pairing and reservations without a phone call. Appetite comes with scrolling.',
-    },
-    card: {
-      name: 'Osteria Lume', url: 'osteria-lume.at', style: 'dinner',
-      nav: { de: ['Menü', 'Weine', 'Über uns'], en: ['Menu', 'Wines', 'About'] },
-      cta: { de: 'Reservieren', en: 'Reserve' },
-      eye: { de: 'Saisonale Küche', en: 'Seasonal kitchen' },
-      h: { de: 'Ein Abend, über den man spricht.', en: 'An evening people talk about.' },
-      b: { de: 'Tisch reservieren', en: 'Book a table' },
-      f: { de: ['Saisonale Karte', 'Weinbegleitung', 'Private Dining'], en: ['Seasonal menu', 'Wine pairing', 'Private dining'] },
-    },
-  },
-  {
-    id: 'hotel', seq: 'hotel', time: '23:10',
-    label: { de: 'Hotel & Ferienwohnung', en: 'Hotel & holiday homes' },
-    h: { de: ['Ankommen,', 'bevor man *anreist*.'], en: ['Arrive', 'before you *travel*.'] },
-    p: {
-      de: 'Zimmer, die man spürt, bevor man sie betritt. Und Direktbuchung ohne Provision an Plattformen.',
-      en: 'Rooms you can feel before you walk in. And direct booking without paying commission to platforms.',
-    },
-    card: {
-      name: 'Hotel Alba', url: 'hotel-alba.at', style: 'linen',
-      nav: { de: ['Zimmer', 'Erleben', 'Lage'], en: ['Rooms', 'Experience', 'Location'] },
-      cta: { de: 'Buchen', en: 'Book' },
-      eye: { de: 'Boutique-Hotel', en: 'Boutique hotel' },
-      h: { de: 'Ankommen und durchatmen.', en: 'Arrive and breathe.' },
-      b: { de: 'Verfügbarkeit prüfen', en: 'Check availability' },
-      f: { de: ['Direkt buchen', 'Frühstück inklusive', 'Spa & Garten'], en: ['Book direct', 'Breakfast included', 'Spa & garden'] },
-    },
-  },
+// the four concept websites in the order of the journey
+export const SITES = [
+  { id: 'cafe', device: 'desk', name: 'Café Mila', label: { de: 'Café & Bäckerei', en: 'Café & bakery' } },
+  { id: 'law', device: 'cafe', name: 'Kanzlei Aurum', label: { de: 'Kanzlei & Beratung', en: 'Law & consulting' } },
+  { id: 'gym', device: 'office', name: 'Puls Studio', label: { de: 'Fitness & Sport', en: 'Fitness & sport' } },
+  { id: 'hotel', device: 'tv', name: 'Hotel Alba', label: { de: 'Hotel & Tourismus', en: 'Hotel & tourism' } },
 ];
 
-export const FINALE = {
-  eye: { de: '23:59 — Noch wach?', en: '23:59 — Still up?' },
-  q: { de: ['Und dein', '*Geschäft*?'], en: ['And your', '*business*?'] },
-  next: { de: ['Es ist das', '*nächste*.'], en: ['It’s the', '*next* one.'] },
-  p: {
-    de: 'Wir bauen Websites, die beim Scrollen erzählen. Von Grund auf, ohne Baukasten, für jede Branche.',
-    en: 'We build websites that tell a story as you scroll. From scratch, without templates, for every industry.',
-  },
+export const PORTAL = {
+  next: { de: 'Nächste Website', en: 'Next website' },
+  enter: { de: 'Scroll, um einzutreten', en: 'Scroll to enter' },
 };
 
-export const MANIFEST = {
-  lines: {
-    de: ['Nemi heißt auf Serbisch „stumm“.', 'Wir haben den Namen gewählt,', 'weil wir das *Gegenteil* machen.'],
-    en: ['Nemi is Serbian for “silent”.', 'We chose the name', 'because we do the *opposite*.'],
+export const BAR = {
+  concept: { de: 'Konzept', en: 'Concept' },
+  index: { de: 'Übersicht', en: 'Index' },
+  start: { de: 'Nemi Studio', en: 'Nemi Studio' },
+};
+
+export const OUTRO = {
+  eye: { de: 'Showroom', en: 'Showroom' },
+  h: { de: ['Vier Branchen.', 'Vier *Stimmen*.'], en: ['Four industries.', 'Four *voices*.'] },
+  p: {
+    de: 'Jede dieser Websites hat ihre eigene Schrift, Farbe und Bewegung, weil jedes Geschäft anders klingt. Deins ist das nächste.',
+    en: 'Each of these websites has its own type, colour and motion, because every business sounds different. Yours is next.',
   },
-  cols: [
-    { k: { de: 'Bewegung', en: 'Motion' }, v: { de: 'Scroll-Storytelling, Übergänge und Effekte, die sich hochwertig anfühlen und nie stören.', en: 'Scroll storytelling, transitions and effects that feel premium and never get in the way.' } },
-    { k: { de: 'Bild', en: 'Image' }, v: { de: 'Fotos, Video und KI-Visuals, ausgewählt, bearbeitet oder neu erstellt für deine Marke.', en: 'Photos, video and AI visuals, chosen, edited or created for your brand.' } },
-    { k: { de: 'Klarheit', en: 'Clarity' }, v: { de: 'Ein Ziel pro Seite: dass Menschen anrufen, buchen oder vorbeikommen.', en: 'One goal per page: that people call, book or come by.' } },
-  ],
+  open: { de: 'Ansehen', en: 'View' },
+};
+
+export const INDUSTRIES = {
+  de: ['Café & Gastronomie', 'Kanzlei & Beratung', 'Fitness & Sport', 'Hotel & Tourismus', 'Handwerk & Bau', 'Gesundheit & Praxis', 'Handel & Shop'],
+  en: ['Café & hospitality', 'Law & consulting', 'Fitness & sport', 'Hotel & tourism', 'Trades & construction', 'Health & practice', 'Retail & shop'],
 };
 
 export const SERVICES = {
   eye: { de: 'Leistungen', en: 'Services' },
   h: { de: ['Alles, was deine Website', 'zum *Sprechen* bringt.'], en: ['Everything that makes', 'your website *speak*.'] },
   items: [
-    { n: '01', img: 'city', t: { de: 'Scroll-Storytelling', en: 'Scroll storytelling' }, d: { de: 'Deine Seite erzählt beim Scrollen eine Geschichte. Jede Bewegung führt zum nächsten Schritt.', en: 'Your page tells a story as people scroll. Every movement leads to the next step.' } },
-    { n: '02', img: 'cafe', t: { de: 'Animation & Effekte', en: 'Animation & effects' }, d: { de: 'Übergänge, Hover-Effekte, Text-Reveals und 3D, die sich hochwertig anfühlen und nie stören.', en: 'Transitions, hover effects, text reveals and 3D that feel premium and never get in the way.' } },
-    { n: '03', img: 'food', t: { de: 'Bild, Video & KI', en: 'Images, video & AI' }, d: { de: 'Passende Fotos, Videos und KI-Visuals. Ausgewählt, bearbeitet oder neu erstellt für deine Marke.', en: 'The right photos, video and AI visuals. Chosen, edited or created for your brand.' } },
-    { n: '04', img: 'law', t: { de: 'Texte & Mehrsprachig', en: 'Copy & multilingual' }, d: { de: 'Klare Texte auf Deutsch, Englisch und weiteren Sprachen. Sauber übersetzt und für Google eingerichtet.', en: 'Clear copy in German, English and more. Properly translated and set up for Google.' } },
-    { n: '05', img: 'fit', t: { de: 'Schnell & auffindbar', en: 'Fast & findable' }, d: { de: 'Schlanker Code, kurze Ladezeiten und SEO-Grundlagen ab dem ersten Tag.', en: 'Lean code, short loading times and SEO basics from day one.' } },
-    { n: '06', img: 'hotel', t: { de: 'Hosting & Betreuung', en: 'Hosting & care' }, d: { de: 'Domain, Hosting und Änderungen aus einer Hand. Du hast immer denselben Ansprechpartner.', en: 'Domain, hosting and updates from one place. You always talk to the same person.' } },
+    { n: '01', img: 'v/intro.jpg', t: { de: 'Scroll-Storytelling', en: 'Scroll storytelling' }, d: { de: 'Deine Seite erzählt beim Scrollen eine Geschichte. Jede Bewegung führt zum nächsten Schritt.', en: 'Your page tells a story as people scroll. Every movement leads to the next step.' } },
+    { n: '02', img: 'v/cafe.webp', t: { de: 'Animation & Effekte', en: 'Animation & effects' }, d: { de: 'Übergänge, Hover-Effekte, Text-Reveals und 3D, die sich hochwertig anfühlen und nie stören.', en: 'Transitions, hover effects, text reveals and 3D that feel premium and never get in the way.' } },
+    { n: '03', img: 'img/cafe-croissant.webp', t: { de: 'Bild, Video & KI', en: 'Images, video & AI' }, d: { de: 'Passende Fotos, Videos und KI-Visuals. Ausgewählt, bearbeitet oder neu erstellt für deine Marke.', en: 'The right photos, video and AI visuals. Chosen, edited or created for your brand.' } },
+    { n: '04', img: 'v/law.webp', t: { de: 'Texte & Mehrsprachig', en: 'Copy & multilingual' }, d: { de: 'Klare Texte auf Deutsch, Englisch und weiteren Sprachen. Sauber übersetzt und für Google eingerichtet.', en: 'Clear copy in German, English and more. Properly translated and set up for Google.' } },
+    { n: '05', img: 'v/gym.webp', t: { de: 'Schnell & auffindbar', en: 'Fast & findable' }, d: { de: 'Schlanker Code, kurze Ladezeiten und SEO-Grundlagen ab dem ersten Tag.', en: 'Lean code, short loading times and SEO basics from day one.' } },
+    { n: '06', img: 'v/hotel.webp', t: { de: 'Hosting & Betreuung', en: 'Hosting & care' }, d: { de: 'Domain, Hosting und Änderungen aus einer Hand. Du hast immer denselben Ansprechpartner.', en: 'Domain, hosting and updates from one place. You always talk to the same person.' } },
   ],
-};
-
-export const SHOWROOM = {
-  eye: { de: 'Showroom', en: 'Showroom' },
-  h: { de: ['Acht Branchen.', 'Acht *Stimmen*.'], en: ['Eight industries.', 'Eight *voices*.'] },
-  p: {
-    de: 'Konzepte aus dem Film: so könnte deine Website aussehen. Jede Branche hat ihre eigene Sprache, und genau die finden wir.',
-    en: 'Concepts from the film: this is how your website could look. Every industry has its own language, and we find it.',
-  },
 };
 
 export const PROCESS = {
@@ -299,7 +145,7 @@ export const FOOT = {
   credits: { de: 'Bildnachweis', en: 'Credits' },
   top: { de: 'Nach oben', en: 'Back to top' },
   creditText: {
-    de: 'Videos im Film: Mixkit (Mixkit Stock Video Free License). Die Marken in den Konzepten sind erfunden.',
-    en: 'Footage in the film: Mixkit (Mixkit Stock Video Free License). The brands in the concepts are fictional.',
+    de: 'Videos: Mixkit (Mixkit Stock Video Free License). Fotos: Unsplash (Unsplash License). Musik im Intro: Mixkit. Die Marken, Personen und Bewertungen in den Konzepten sind erfunden.',
+    en: 'Video: Mixkit (Mixkit Stock Video Free License). Photos: Unsplash (Unsplash License). Intro music: Mixkit. The brands, people and reviews in the concepts are fictional.',
   },
 };

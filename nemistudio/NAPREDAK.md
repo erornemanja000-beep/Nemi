@@ -1,19 +1,31 @@
 # Nemi Studio: novi sajt (nemistudio.at)
 
 Pregled uživo: https://erornemanja000-beep.github.io/Nemi/nemistudio/
+(`?intro=0` preskače uvodni film, `?intro=1` ga uvek pušta, `?lang=en` engleski)
 
-## Princip (isti kao referentni reelovi @w.wearebrand)
-- Sticky WebGL platno preko celog ekrana; skrol bira kadar iz niza slika (WebP), dva susedna kadra se mešaju pa kretanje ostaje glatko.
-- Prelazi između scena u shaderu: piksel-dither (Pear), gorenje sa užarenom ivicom (Zero), zum kroz scenu, svetlosni prelaz, trake.
-- Svaka branša počinje „nema“ (crtež linijama na tamnoj podlozi) i puni se bojom dok skroluješ; mišem se boja otkriva oko kursora.
-- Jedan dan u gradu: sat u uglu ide od 06:58 do 23:59, svetlo ide od jutra do noći (kao LITORALE).
-- Uz svaku branšu iskoči koncept-sajt (mali prozor pregledača) sa izmišljenim brendom.
-- Posle filma: manifest se „dekodira“ (LITORALE), pa mirni deo: Leistungen, Showroom (horizontalno), Ablauf, FAQ, Kontakt, footer.
-- Stalno: meni, DE/EN, staklena pilula „Erstgespräch · 30 Min · kostenlos“ dole.
+## v3: „sajt u sajtu u sajtu“
+1. **Uvodni film** (23 s, montaža po uzoru na reel @ibanez_nick): oko → zenica se širi → istorija u brzim rezovima (−40.000 … 1991) → „Menschen wollen gesehen werden.“ → branše → „Die meisten Websites schweigen.“ → nemi. Desktop 16:9, telefon 9:16, DE i EN. Dugmad „Ton an“ i „Überspringen“, pušta se jednom po poseti.
+2. **Početak**: laptop na stolu, zamućen, preko njega „Websites, in die man eintaucht.“ Skrol: kamera izoštri, pa uleti u ekran laptopa.
+3. Na ekranu je **pravi sajt** (ne slika): kad ekran popuni prozor, to je sajt Café Mila i skroluje se dalje normalno.
+4. Na kraju svakog sajta: novi uređaj sa sledećim sajtom na ekranu, opet zum unutra.
+   - Café Mila (krem/espresso, Fraunces): karta sa cenama i slikom koja prati miš, galerija, recenzije, radno vreme, rezervacija.
+   - Kanzlei Aurum (teget/zlato, Cormorant): brojke, rečenica koja se pali reč po reč, oblasti prava (harmonika), advokati, citat, koraci, forma.
+   - Puls Studio (crno/limeta, Anton): ukrštene trake, raspored po danima, treneri, brojevi, cene.
+   - Hotel Alba (lan/žalfija, Bodoni): traka za rezervaciju, sobe u lukovima, spa krug koji se otvara, doručak, lokacija.
+5. **Povratni zum**: hotel je jedan od četiri prozora → „Vier Branchen. Vier Stimmen.“ → Leistungen, Ablauf, FAQ, Kontakt.
+6. Stalna Nemi traka dole: koji je sajt na ekranu (01/04 …), pregled svih, DE/EN, „Projekt starten“.
 
-## Snimci (Mixkit, besplatna licenca, bez obaveznog navođenja)
-curtain 22240 · city 5015 · cafe 41858 · craft 39500 · dent 33328 · law 23222 · fit 52088 · barber 43222 · food 47555 · hotel 4196 · night 49845
-Isecanje u slike: `tools/frames.sh <folder-sa-mp4> public/seq` (desktop 1280×720 + uspravni isečak za telefon).
+Na telefonu su uređaji telefoni (na stolu, u ruci), pa se ekran poklapa sa uspravnim prikazom.
+
+## Kako radi zum
+`src/components/Portal.jsx`: hero sledećeg sajta se iscrta u veličini prozora i homografijom (matrix3d) smesti u ekran uređaja. Skrol pomera celu scenu drugom homografijom dok uglovi ekrana ne postanu uglovi prozora; tada je sajt ravan i oštar.
+Ekrani su isečeni iz snimaka sa zelenim ekranom: `python3 tools/portals.py <folder-sa-mp4> <izlaz>` (daje .webp sa providnim ekranom i `portals.json` sa uglovima).
+
+## Materijal (sve besplatno)
+- Video: Mixkit (Mixkit Stock Video Free License). Hero: cafe 41858, law 23222, gym 52088, hotel 4196. Uređaji: 48285, 52076, 44737, 9584, 100069, 42621, 8839, 100079.
+- Fotografije: Unsplash (preuzimanja zabeležena preko Unsplash API-ja), `public/img/`.
+- Muzika u uvodu: Mixkit 543.
+- Uvodni film: `python3 tools/intro_film.py <klipovi> <slike> <izlaz.mp4> [--format reel] [--lang en] --music <mp3>`.
 
 ## Pokretanje
 ```
@@ -22,16 +34,9 @@ npm run dev
 npm run build && python3 build_pages.py <gh-pages-folder>
 ```
 
-## Uvod sa okom (gotovo)
-- Oko (Mixkit 48017, obrnuto pa se zenica širi) → zenica se naglo raširi → kamera uleće → u zenici se pojavi prva epoha.
-- 13 epoha u beskonačnom zumu kroz okrugle „prozore“: neandertalac (lobanja iz muzeja), otisci šaka, pećina, vatra, hijeroglifi, antika, 1450 štampa, 1492 brod, 1910 grad, 1925 radio, 1955 TV, 1990 računar, danas (sajt u naočarima, Mixkit 13189).
-- Slike: Unsplash (besplatna licenca), u `public/intro/h/01..13.webp`; oko u `public/intro/eye/d|m`.
-- Završni tekst: „Seit es Menschen gibt, wollen sie gesehen werden. Heute beginnt es mit deiner Website.“
-- Pušta se jednom po poseti (sessionStorage), dugme „Intro überspringen“, isključen za `prefers-reduced-motion`.
-- Parametri: `?intro=1` uvek pusti, `?intro=0` preskoči, `?reel=1` verzija za video sa završnom karticom (nemi · NEMISTUDIO.AT).
-- Video za Instagram: `video/nemi_intro_9x16.mp4` i `video/nemi_intro_16x9.mp4` (renderovano kadar po kadar iz `?reel=1`).
-
 ## Otvoreno
 - Impressum/Datenschutz: fale ime, adresa, UID i hosting (označeno narandžasto na stranicama).
 - Formular otvara e-mail program (mailto); kad se zna hosting, može pravo slanje (npr. Netlify Forms).
+- Forme u koncept-sajtovima ne šalju ništa (piše „Konzept-Demo“).
+- Sledeće branše (zanat, zubar, frizer, restoran): isti obrazac, novi uređaj + novi sajt.
 - `noindex` je uključen dok je ovo pregled.

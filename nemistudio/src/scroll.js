@@ -15,7 +15,10 @@ export function setVh() {
   lastW = innerWidth;
   document.documentElement.style.setProperty('--vh', innerHeight / 100 + 'px');
 }
-export const vhPx = () => parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--vh')) || innerHeight / 100;
+export const vhPx = () => {
+  if (!lastW) setVh();
+  return parseFloat(document.documentElement.style.getPropertyValue('--vh')) || innerHeight / 100;
+};
 
 export function initScroll() {
   setVh();

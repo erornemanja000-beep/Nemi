@@ -1,9 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useLang } from '../i18n.jsx';
-import { NAV, UI } from '../content.js';
-import { scrollToId, stop, resume } from '../scroll.js';
-import { loadedCount, onProgress } from '../film/frames.js';
-import { SEQ } from '../film/timeline.js';
+import { NAV, UI, SITES, BAR } from '../content.js';
+import { scrollToId, scrollToY, stop, resume, reduced } from '../scroll.js';
 
 export function Logo({ small }) {
   return (
@@ -14,101 +12,146 @@ export function Logo({ small }) {
   );
 }
 
-export function Nav() {
-  const { L, lang, setLang } = useLang();
-  const [open, setOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
+// jump to the moment a site's screen fills the viewport (the end of its dive)
+export function goSite(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const top = el.getBoundingClientRect().top + scrollY;
+  scrollToY(top + el.offsetHeight - el.firstElementChild.offsetHeight);
+}
+
+// ---------------------------------------------------------------- video intro
+const KEY = 'nemi-intro-v3';
+export function shouldPlayIntro() {
+  const q = new URLSearchParams(location.search).get('intro');
+  if (q === '1') return true;
+  if (q === '0' || reduced) return false;
+  try { return !sessionStorage.getItem(KEY); } catch (e) { return true; }
+}
+
+export function VideoIntro({ onDone }) {
+  const { L, lang } = useLang();
+  const ref = useRef();
+  const [muted, setMuted] = useState(true);
+  const [blocked, setBlocked] = useState(false);
+  const [pct, setPct] = useState(0);
+  const [out, setOut] = useState(false);
+  const [portrait] = useState(() => innerWidth / innerHeight < 0.9);
+  const base = import.meta.env.BASE_URL;
+  const src = `${base}v/intro-${portrait ? '9x16' : '16x9'}${lang === 'en' ? '-en' : ''}.mp4`;
+  const done = useRef(false);
+  const finish = () => {
+    if (done.current) return;
+    done.current = true;
+    setOut(true);
+    const v = ref.current;
+    // fade the music out with the picture
+    if (v && !v.muted) { const t0 = performance.now(); const f = () => { const k = 1 - (performance.now() - t0) / 900; v.volume = Math.max(0, k); if (k > 0) requestAnimationFrame(f); }; f(); }
+    setTimeout(onDone, 950);
+  };
   useEffect(() => {
-    const on = () => setScrolled(scrollY > 40);
-    addEventListener('scroll', on, { passive: true });
-    return () => removeEventListener('scroll', on);
+    try { sessionStorage.setItem(KEY, '1'); } catch (e) { /* storage blocked */ }
+    const v = ref.current;
+    const p = v.play();
+    if (p) p.catch(() => setBlocked(true));
+    const key = (e) => { if (e.key === 'Escape' || e.key === 'Enter') finish(); };
+    addEventListener('keydown', key);
+    return () => removeEventListener('keydown', key);
   }, []);
-  useEffect(() => { (open ? stop : resume)(); }, [open]);
-  const go = (id) => (e) => { e.preventDefault(); setOpen(false); setTimeout(() => scrollToId(id), open ? 300 : 0); };
+  const toggle = () => { const v = ref.current; v.muted = !v.muted; setMuted(v.muted); if (v.paused) v.play(); };
+  const play = () => { const v = ref.current; v.play().then(() => setBlocked(false)).catch(() => finish()); };
   return (
-    <>
-      <header className={`nav${scrolled ? ' scrolled' : ''}${open ? ' open' : ''}`}>
-        <a href="#film" onClick={go('film')} className="nav-logo"><Logo /></a>
-        <nav className="nav-links">
-          {NAV.map((n, i) => (
-            <a key={n.id} href={`#${n.id}`} onClick={go(n.id)}><sup>{String(i + 1).padStart(2, '0')}</sup>{L(n)}</a>
-          ))}
-        </nav>
-        <div className="nav-right">
-          <div className="lang" role="group" aria-label="Sprache / Language">
-            <button className={lang === 'de' ? 'act' : ''} onClick={() => setLang('de')}>DE</button>
-            <button className={lang === 'en' ? 'act' : ''} onClick={() => setLang('en')}>EN</button>
-          </div>
-          <a className="btn btn-line nav-cta" href="#kontakt" onClick={go('kontakt')}>{L(UI.start)}</a>
-          <button className="nav-burger" aria-expanded={open} onClick={() => setOpen(!open)} aria-label={L(open ? UI.close : UI.menu)}>
-            <i /><i />
-          </button>
-        </div>
-      </header>
-      <div className={`menu${open ? ' open' : ''}`} aria-hidden={!open}>
-        <nav>
-          {NAV.map((n, i) => (
-            <a key={n.id} href={`#${n.id}`} onClick={go(n.id)} style={{ '--i': i }}><sup>{String(i + 1).padStart(2, '0')}</sup>{L(n)}</a>
-          ))}
-        </nav>
-        <a className="btn btn-signal" href="#kontakt" onClick={go('kontakt')}>{L(UI.start)}<span>→</span></a>
+    <div className={`vi${out ? ' out' : ''}`} role="dialog" aria-label="Intro">
+      <video
+        ref={ref} src={src} poster={`${base}v/intro.jpg`} muted playsInline preload="auto"
+        onTimeUpdate={(e) => setPct(e.target.currentTime / (e.target.duration || 23))}
+        onEnded={finish} onError={finish}
+      />
+      {blocked && (
+        <button className="vi-play" onClick={play}><span>▶</span>{L(UI.play)}</button>
+      )}
+      <div className="vi-ui">
+        <button className="vi-b" onClick={toggle} aria-pressed={!muted}>
+          <span className={`vi-eq${muted ? '' : ' on'}`} aria-hidden="true"><i /><i /><i /><i /></span>
+          {L(muted ? UI.sound : UI.mute)}
+        </button>
+        <div className="vi-bar"><i style={{ transform: `scaleX(${pct})` }} /></div>
+        <button className="vi-b" onClick={finish}>{L(UI.skip)} →</button>
       </div>
-    </>
+    </div>
   );
 }
 
-// the glass pill at the bottom, always one click from the contact form
-export function Pill() {
-  const { L } = useLang();
-  const [hide, setHide] = useState(false);
+// ---------------------------------------------------------------- the Nemi bar
+// One quiet pill at the bottom that says where you are (which concept), with the index,
+// the language switch and the way to the contact form.
+export function NemiBar({ show }) {
+  const { L, lang, setLang } = useLang();
+  const [cur, setCur] = useState(0);
+  const [open, setOpen] = useState(false);
   useEffect(() => {
-    const el = document.getElementById('kontakt');
-    if (!el) return;
-    const io = new IntersectionObserver(([e]) => setHide(e.isIntersecting), { rootMargin: '0px 0px -30% 0px' });
-    io.observe(el);
+    const els = [...document.querySelectorAll('[data-site]')];
+    const io = new IntersectionObserver((es) => {
+      es.forEach((e) => { if (e.isIntersecting) setCur(+e.target.dataset.site); });
+    }, { rootMargin: '-50% 0px -50% 0px' });
+    els.forEach((el) => io.observe(el));
     return () => io.disconnect();
   }, []);
-  return (
-    <div className={`pill${hide ? ' hide' : ''}`}>
-      <span className="pill-dot" />
-      <span className="pill-t">{L(UI.call)}</span>
-      <a className="btn btn-signal sm" href="#kontakt" onClick={(e) => { e.preventDefault(); scrollToId('kontakt'); }}>{L(UI.start)}</a>
-    </div>
-  );
-}
-
-// counts the first sequences in, then lifts like a curtain
-export function Preloader({ onDone }) {
-  const { L } = useLang();
-  const [pct, setPct] = useState(0);
-  const [gone, setGone] = useState(false);
+  useEffect(() => { (open ? stop : resume)(); }, [open]);
   useEffect(() => {
-    const need = SEQ.curtain + 12;
-    let fonts = false;
-    let shown = 0;
-    document.fonts.ready.then(() => { fonts = true; });
-    const t0 = performance.now();
-    const id = setInterval(() => {
-      const have = loadedCount('curtain') + Math.min(12, loadedCount('city'));
-      const real = Math.min(1, have / need) * (fonts ? 1 : 0.95);
-      // never faster than ~1.4 s, so the counter reads as a count
-      const cap = Math.min(1, (performance.now() - t0) / 1400);
-      shown += (Math.min(real, cap) - shown) * 0.25;
-      if (real >= 1 && cap >= 1 && shown > 0.985) shown = 1;
-      setPct(shown);
-      if (shown >= 1) {
-        clearInterval(id);
-        setTimeout(() => { setGone(true); onDone(); }, 250);
-      }
-    }, 50);
-    const off = onProgress(() => {});
-    return () => { clearInterval(id); off(); };
-  }, []);
+    if (!open) return;
+    const k = (e) => { if (e.key === 'Escape') setOpen(false); };
+    addEventListener('keydown', k);
+    return () => removeEventListener('keydown', k);
+  }, [open]);
+  const site = SITES[cur - 1];
+  const jump = (fn) => (e) => { e.preventDefault(); setOpen(false); setTimeout(fn, 320); };
   return (
-    <div className={`pre${gone ? ' gone' : ''}`} aria-hidden={gone}>
-      <div className="pre-num">{String(Math.round(pct * 100)).padStart(3, '0')}</div>
-      <div className="pre-bar"><i style={{ transform: `scaleX(${pct})` }} /></div>
-      <div className="pre-l">{L(UI.loading)}</div>
-    </div>
+    <>
+      <div className={`bar${show ? ' in' : ''}${open ? ' open' : ''}`}>
+        <a className="bar-logo" href="#top" onClick={jump(() => scrollToY(0))} aria-label="Nemi Studio"><Logo small /></a>
+        <button className="bar-where" onClick={() => setOpen(!open)} aria-expanded={open}>
+          {site ? (
+            <>
+              <span className="bar-n">0{cur}<small>/04</small></span>
+              <span className="bar-t" key={site.id}>{site.name}<em>{L(BAR.concept)}</em></span>
+            </>
+          ) : (
+            <span className="bar-t" key="nemi">{L(BAR.start)}<em>{L(BAR.index)}</em></span>
+          )}
+          <span className="bar-burger" aria-hidden="true"><i /><i /></span>
+        </button>
+        <div className="bar-lang" role="group" aria-label="Sprache / Language">
+          <button className={lang === 'de' ? 'act' : ''} onClick={() => setLang('de')}>DE</button>
+          <button className={lang === 'en' ? 'act' : ''} onClick={() => setLang('en')}>EN</button>
+        </div>
+        <a className="btn btn-signal sm bar-cta" href="#kontakt" onClick={jump(() => scrollToId('kontakt'))}>
+          <span className="bar-cta-t">{L(UI.start)}</span><span>→</span>
+        </a>
+      </div>
+      <div className={`idx${open ? ' open' : ''}`} aria-hidden={!open} onClick={(e) => { if (e.target === e.currentTarget) setOpen(false); }}>
+        <div className="idx-in">
+          <p className="eye">{L(BAR.index)}</p>
+          <ol className="idx-sites">
+            {SITES.map((s, i) => (
+              <li key={s.id} style={{ '--i': i }}>
+                <a href={`#${s.id}`} onClick={jump(() => goSite(s.id))} className={cur === i + 1 ? 'act' : ''}>
+                  <span>0{i + 1}</span><b>{s.name}</b><em>{L(s.label)}</em>
+                </a>
+              </li>
+            ))}
+          </ol>
+          <nav className="idx-nemi">
+            {NAV.map((n, i) => (
+              <a key={n.id} href={`#${n.id}`} onClick={jump(() => scrollToId(n.id))} style={{ '--i': i + 4 }}>{L(n)}</a>
+            ))}
+          </nav>
+          <div className="idx-lang">
+            <button className={lang === 'de' ? 'act' : ''} onClick={() => setLang('de')}>Deutsch</button>
+            <button className={lang === 'en' ? 'act' : ''} onClick={() => setLang('en')}>English</button>
+          </div>
+        </div>
+      </div>
+    </>
   );
 }

@@ -1,13 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useLang } from '../i18n.jsx';
-import { SERVICES, SHOWROOM, PROCESS, FACTS, FAQ, CONTACT, FOOT, CHAPTERS, UI } from '../content.js';
+import { SERVICES, PROCESS, FACTS, FAQ, CONTACT, FOOT, INDUSTRIES, UI } from '../content.js';
 import { RevealHeading, Up } from './Reveal.jsx';
-import MiniSite from './MiniSite.jsx';
 import { Logo } from './Chrome.jsx';
-import { posterUrl } from '../film/frames.js';
-import { scrollToId, scrollToY, reduced } from '../scroll.js';
+import { scrollToId, scrollToY } from '../scroll.js';
+
+const BASE = import.meta.env.BASE_URL;
 
 // services as an index: hovering a row floats a picture that follows the cursor
 export function Services() {
@@ -43,47 +41,8 @@ export function Services() {
       </div>
       <div className={`svc-prev${img ? ' on' : ''}`} ref={prev} aria-hidden="true">
         {SERVICES.items.map((s) => (
-          <img key={s.img} src={posterUrl(s.img)} alt="" className={img === s.img ? 'act' : ''} loading="lazy" />
+          <img key={s.img} src={BASE + s.img} alt="" className={img === s.img ? 'act' : ''} loading="lazy" />
         ))}
-      </div>
-    </section>
-  );
-}
-
-// the eight concepts on a horizontal track, pinned while you scroll
-export function Showroom() {
-  const { L } = useLang();
-  const sec = useRef();
-  const track = useRef();
-  useEffect(() => {
-    if (reduced) return;
-    const mm = gsap.matchMedia();
-    mm.add('(min-width: 900px)', () => {
-      const dist = () => track.current.scrollWidth - innerWidth + 80;
-      const tw = gsap.to(track.current, {
-        x: () => -dist(), ease: 'none',
-        scrollTrigger: { trigger: sec.current, start: 'top top', end: () => '+=' + dist(), pin: true, scrub: 0.6, invalidateOnRefresh: true },
-      });
-      return () => tw.scrollTrigger && tw.scrollTrigger.kill();
-    });
-    return () => mm.revert();
-  }, []);
-  return (
-    <section id="showroom" className="sec sec-bone show" ref={sec}>
-      <div className="show-in">
-        <div className="show-head">
-          <p className="eye">{L(SHOWROOM.eye)}</p>
-          <RevealHeading lines={L(SHOWROOM.h)} className="h-xl" />
-          <p className="lead">{L(SHOWROOM.p)}</p>
-        </div>
-        <div className="show-track" ref={track}>
-          {CHAPTERS.map((c, i) => (
-            <figure className="show-card" key={c.id} style={{ '--i': i }}>
-              <MiniSite ch={c} />
-              <figcaption><span>{String(i + 1).padStart(2, '0')}</span>{L(c.label)}<em>{L(UI.concept)}</em></figcaption>
-            </figure>
-          ))}
-        </div>
       </div>
     </section>
   );
@@ -190,7 +149,7 @@ export function Contact() {
           <label><span>{L(f.ind)}</span>
             <select name="industry" defaultValue="">
               <option value="" disabled>{L(f.pick)}</option>
-              {CHAPTERS.map((c) => <option key={c.id}>{L(c.label)}</option>)}
+              {L(INDUSTRIES).map((x) => <option key={x}>{x}</option>)}
               <option>{L(f.other)}</option>
             </select>
           </label>
@@ -206,7 +165,6 @@ export function Contact() {
 export function Footer() {
   const { L } = useLang();
   const [credits, setCredits] = useState(false);
-  const base = import.meta.env.BASE_URL;
   return (
     <footer className="foot">
       <div className="wrap foot-top">
@@ -217,8 +175,8 @@ export function Footer() {
       <div className="wrap foot-bar">
         <Logo small />
         <span>© 2026 Nemi Studio</span>
-        <a href={`${base}impressum.html`}>{L(FOOT.legal)}</a>
-        <a href={`${base}datenschutz.html`}>{L(FOOT.privacy)}</a>
+        <a href={`${BASE}impressum.html`}>{L(FOOT.legal)}</a>
+        <a href={`${BASE}datenschutz.html`}>{L(FOOT.privacy)}</a>
         <button onClick={() => setCredits(!credits)}>{L(FOOT.credits)}</button>
         <button onClick={() => scrollToY(0)}>{L(FOOT.top)} ↑</button>
       </div>

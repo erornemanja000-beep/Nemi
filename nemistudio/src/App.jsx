@@ -1,19 +1,25 @@
 import { useEffect, useState } from 'react';
-import { initScroll, scrollToY } from './scroll.js';
+import { initScroll, scrollToY, stop, resume } from './scroll.js';
 import { start as startFrames } from './film/frames.js';
 import Film from './film/Film.jsx';
 import { Nav, Pill, Preloader } from './components/Chrome.jsx';
+import Intro, { shouldPlayIntro } from './components/Intro.jsx';
 import { Services, Showroom, Process, Faq, Contact, Footer } from './components/Sections.jsx';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 export default function App() {
-  const [ready, setReady] = useState(false);
+  const [loaded, setLoaded] = useState(false);
+  const [intro] = useState(shouldPlayIntro);
+  const [introDone, setIntroDone] = useState(!intro);
+  const ready = loaded && introDone;
   useEffect(() => {
     if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
     scrollToY(0, true);
     initScroll();
     startFrames();
   }, []);
+  // no scrolling while the intro plays
+  useEffect(() => { (introDone ? resume : stop)(); }, [introDone]);
   useEffect(() => {
     if (!ready) return;
     document.documentElement.classList.add('is-ready');
@@ -23,7 +29,8 @@ export default function App() {
   }, [ready]);
   return (
     <>
-      <Preloader onDone={() => setReady(true)} />
+      <Preloader onDone={() => setLoaded(true)} />
+      {intro && !introDone && <Intro onDone={() => setIntroDone(true)} />}
       <Nav />
       <main>
         <Film ready={ready} />

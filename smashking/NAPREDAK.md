@@ -8,8 +8,9 @@ Princip: kao reel „CHAR & CO.“ (kebab koji se na skrol rastavlja i slaže), 
 1. **Smash** (`#smash`): ruka u crnoj rukavici presom spljošti meso na ploči, skrolom se vrti 121 kadar.
    Reč „SMASH!“ se spljošti tačno u trenutku udara (oko 35 % skrola), pozlati se, ekran se strese, lete varnice.
 2. **King** (`#king`): eksplodirani burger sa oznakama sastojaka → slaže se → kruna pada na burger (196 kadrova).
-3. **Karte**: 7 burgera (lista + velika slika na kompjuteru, karusel kartica na telefonu), deal-ovi, Fries,
-   Fingerfood, Pinsa & Pasta, Süßes/Soßen/Getränke. Bez cena (dogovor), napomena da su cene u lokalu i na platformama.
+3. **Karte**: ceo meni sa njihove štampane karte, sa cenama i alergenima. 9 burgera (lista + velika slika koja prati
+   izabrani burger na kompjuteru, karusel kartica na telefonu), „Als Menü + € 6“ i Extras, zatim Fries & Saucen,
+   Fingerfood, Pinsa & Pasta, Getränke, Kaffee & Tee, Dessert i legenda alergena (A–R).
 4. **Versprechen**: 100 % Rind, Buns, Saucen, Halal.
 5. **Besuch**: adresa, U1 Keplerplatz, radno vreme sa „otvoreno sada“ (bečko vreme), mapa tek na klik (DSGVO),
    Wolt / Lieferando / foodora.
@@ -35,7 +36,8 @@ python3 scripts/smashking/frames.py king  smashking/izvor/slaganje.mp4 smashking
 
 ## AI (Artlist, Kling 3.0 + Nano Banana Pro)
 Smash (8 s, 1080p), slaganje (8 s, 1:1, početni = eksplozija, krajnji = gotov burger),
-kruna (5 s, 1:1, početni = gotov burger, krajnji = burger sa krunom), 7 burgera + 3 kategorije.
+kruna (5 s, 1:1, početni = gotov burger, krajnji = burger sa krunom), 9 burgera + 3 kategorije
+(Fish i Sucuk Burger dodati kasnije, iz fotke Hamburgera da stil bude isti).
 Prva verzija smash klipa imala je sivu polugu iznad prese, zamenjena je verzijom sa rukom.
 
 ## Linkovi
@@ -48,13 +50,18 @@ Prva verzija smash klipa imala je sivu polugu iznad prese, zamenjena je verzijom
   Kad se krediti obnove: Base directory `smashking`, publish `src` (vidi `netlify.toml`).
 - Figma (9 ekrana + stil): https://www.figma.com/design/FBLu10uyr2iMg8G1QmI2QF
 - Canva prezentacija za klijenta (DE): https://canva.link/z0ozech46fvkv9w
-- Artlist: potrošeno oko 5.460 kredita (6 slika, 4 videa, 10 fotki jela).
+- Artlist: potrošeno oko 5.780 kredita (6 slika, 4 videa, 12 fotki jela).
 
 ## Proveriti sa klijentom
 - **Radno vreme**: na starom sajtu tri verzije (Mo–Sa 11:30–21 / So –23; Mo–Sa –23 / So –21; schema 9–17).
   Trenutno: Mo–Sa 11:30–23:00, So 11:30–21:00 (`HOURS` u `sk.js` + tekst u `index.html`).
 - **Halal**: istaknuto po njihovim #halal objavama; potvrditi da važi za sve meso.
-- **Schüler-Deal** (Hamburger + Pommes + Eistee): da li još važi i po kojoj ceni.
-- **Cene**: namerno nisu na sajtu; Wolt cene (npr. Cheeseburger 11 €) su cene dostave.
+- **Cene**: prepisane sa štampane karte u lokalu (slike od klijenta). Napomena na sajtu: na Wolt/Lieferando/foodora
+  cene mogu da budu drugačije. Schüler-Deal je skinut jer ga nema na karti.
+- **Bacon i salama uz Halal**: karta nudi Extra Bacon, Carbonara sa slaninom i Pinsa Salami; proveriti da li je
+  goveđe/ćureće (halal), inače tekst „Unser Fleisch ist halal“ treba ublažiti.
+- **Dessert alergeni**: na karti piše (A,C,G,H,S), a „S“ ne postoji u legendi; na sajtu je Cheesecake A C G H.
+- **Cheesecake** („cremig, auf knusprigem Keksboden“) i **Melange** („Wiener Kaffee mit Milchschaum“) imaju kratak
+  opis kog na štampanoj karti nema.
 - **Impressum**: broj u Firmenbuch-u (na starom sajtu „FNXXXXX“), telefon (01 6067467, u starom Impressumu piše 6057467).
 - Fotke jela su AI prikazi njihovih burgera; za finalnu verziju po želji prave fotke.

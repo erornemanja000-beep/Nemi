@@ -30,25 +30,15 @@ Pregled uživo: https://erornemanja000-beep.github.io/Nemi/nemistudio/
 Ključne reči u tekstu su istaknute (`*reč*` u content.js/worlds.js): kurziv, narandžasto u uvodnim pasusima, u svetovima u boji tog sveta.
 Svetli dnevni snimci u kancelariji (žena, rukovanje, ugovor, potpis) dobili su tamniji filmski kolor (`GRADE` u tools/world_frames.py); poslednji kadar teretane je nova borkinja u crveno-plavom svetlu (40988).
 
-## Zamena starog sajta na nemistudio.at (Cloudflare)
-Stari sajt („Nemi’s“) je na Cloudflare-u (domen nemistudio.at i www idu preko Cloudflare-a). Novi sajt je spreman za produkciju
-(bez noindex, canonical https://nemistudio.at/, og.jpg, robots.txt, sitemap.xml).
-
-**Ručno (dashboard, jednom):** Workers & Pages → Create → Pages → Connect to Git → repo erornemanja000-beep/Nemi,
-production branch `gh-pages`, framework None, build command prazno, output `nemistudio` → Save and Deploy.
-Zatim u starom projektu Custom domains: ukloniti nemistudio.at i www; u novom: dodati nemistudio.at i www.
-Posle toga svaki `build_pages.py` + push na gh-pages ide automatski na nemistudio.at.
-
-**Preko API-ja (ako postoji env `CLOUDFLARE_API_TOKEN`: Pages Edit, Workers Scripts Edit, Zone DNS Edit + Zone Read za nemistudio.at):**
-1. `curl -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" https://api.cloudflare.com/client/v4/user/tokens/verify`
-2. ID naloga: `GET /accounts`; ID zone: `GET /zones?name=nemistudio.at`
-3. Gde je stari sajt: `GET /accounts/{acc}/pages/projects` (polje domains) ili `GET /accounts/{acc}/workers/domains`
-4. Novi projekat i deploy: `cd nemistudio && npm run build && CLOUDFLARE_ACCOUNT_ID={acc} npx wrangler pages project create nemistudio-site --production-branch main`
-   pa `npx wrangler pages deploy dist --project-name nemistudio-site --branch main`
-5. Domeni: `DELETE /accounts/{acc}/pages/projects/{stari}/domains/nemistudio.at` (i www),
-   `POST /accounts/{acc}/pages/projects/nemistudio-site/domains` sa `{"name":"nemistudio.at"}` (i www)
-6. DNS u zoni: CNAME `nemistudio.at` i `www` → `nemistudio-site.pages.dev` (proxied); stare zapise ka starom sajtu izmeniti (`PATCH /zones/{zone}/dns_records/{id}`)
-7. Provera: `curl -sI https://nemistudio.at` i da index.html sadrži „Websites, die man spürt“.
+## Uživo: nemistudio.at (Cloudflare)
+Od 22.10.2026. nemistudio.at i www.nemistudio.at prikazuju novi sajt.
+- Domen je registrovan na World4You; nameserveri su **bingo.ns.cloudflare.com** i **dane.ns.cloudflare.com** (Cloudflare nalog erornemanja000@gmail.com).
+- Sajt je Cloudflare Worker **nemistudio-site** (Workers & Pages), povezan sa GitHub repoom, grana **gh-pages**.
+  Deploy komanda: `npx wrangler deploy --assets=./nemistudio --name=nemistudio-site --compatibility-date=2025-09-01`
+  (koristi i `wrangler.jsonc` + `cloudflare/worker.js` iz korena gh-pages: Worker odgovara na byte-range zahteve za filmove, zbog Safarija).
+- **Objava izmena:** `npm run build && python3 build_pages.py <gh-pages-folder>`, commit i push na gh-pages → za oko minut je na nemistudio.at
+  (i na pregledu https://erornemanja000-beep.github.io/Nemi/nemistudio/).
+- Stari sajt („Nemi’s“) više nije na domenu; ostao je na starom Cloudflare nalogu odakle je bio posluživan.
 
 ## Alati
 - Uvodni film: `python3 tools/intro_film.py <klipovi> <slike> <izlaz.mp4> [--format reel] [--lang en] --music <mp3> --sr <AI-klipovi>`

@@ -19,6 +19,7 @@ images-dir: stills named hands, cave, hiero, statue, greek, papyrus, type, ship,
 import argparse
 import math
 import os
+import re
 import subprocess
 import sys
 
@@ -55,14 +56,14 @@ BEAT = 60 / 130 * FPS             # 13.85 frames
 # '|' groups words that land together (slam / flash); '*word*' is italic; '/' breaks the line
 T = {
     'de': {
-        'l1': 'Seit es Menschen gibt,',
+        'l1': 'Seit es *Menschen* gibt,',
         'l2': 'hinterlassen|wir|*Spuren*.',
-        'l3': 'Eine Hand an der Höhlenwand.',
-        'l4': 'Ein Zeichen in Stein.',
-        'l5': 'Ein Name auf Papier.',
-        'l6': 'Eine Stimme im Radio.',
-        'l7': 'Ein Gesicht auf dem Bildschirm.',
-        'l8': 'Immer|mit|demselben|Wunsch:',
+        'l3': 'Eine *Hand* an der Höhlenwand.',
+        'l4': 'Ein *Zeichen* in Stein.',
+        'l5': 'Ein *Name* auf Papier.',
+        'l6': 'Eine *Stimme* im Radio.',
+        'l7': 'Ein *Gesicht* auf dem Bildschirm.',
+        'l8': 'Immer|mit|demselben|*Wunsch*:',
         'l9': 'Gesehen zu *werden*.',
         'l10': 'Heute ist deine Spur/deine *Website*.',
         'l11': 'Die meisten Websites *schweigen*.',
@@ -70,14 +71,14 @@ T = {
         'url': 'NEMISTUDIO.AT',
     },
     'en': {
-        'l1': 'Ever since there have been people,',
+        'l1': 'Ever since there have been *people*,',
         'l2': 'we have|left|*traces*.',
-        'l3': 'A hand on a cave wall.',
-        'l4': 'A sign in stone.',
-        'l5': 'A name on paper.',
-        'l6': 'A voice on the radio.',
-        'l7': 'A face on a screen.',
-        'l8': 'Always|with the|same|wish:',
+        'l3': 'A *hand* on a cave wall.',
+        'l4': 'A *sign* in stone.',
+        'l5': 'A *name* on paper.',
+        'l6': 'A *voice* on the radio.',
+        'l7': 'A *face* on a screen.',
+        'l8': 'Always|with the|same|*wish*:',
         'l9': 'To be *seen*.',
         'l10': 'Today your trace/is your *website*.',
         'l11': 'Most websites stay *silent*.',
@@ -483,8 +484,8 @@ def layout(cue):
     widths = []
     for line in lines:
         x = 0.0
-        for part in line.replace('*', '\0*').split('\0'):
-            it = part.startswith('*')
+        for part in re.split(r'(\*[^*]+\*)', line):
+            it = len(part) > 1 and part[0] == part[-1] == '*'
             txt = part.strip('*').replace('|', ' ')
             x += font('serif-italic' if it else 'serif', base).getlength(txt)
         widths.append(x)
@@ -499,10 +500,10 @@ def layout(cue):
     for li, line in enumerate(lines):
         x = (W - widths[li]) / 2 if cue['pos'] == 'c' else x_left
         y = y0 + li * lh
-        for part in line.replace('*', '\0*').split('\0'):
+        for part in re.split(r'(\*[^*]+\*)', line):
             if not part:
                 continue
-            it = part.startswith('*')
+            it = len(part) > 1 and part[0] == part[-1] == '*'
             f = font('serif-italic' if it else 'serif', base)
             txt = part.strip('*')
             for ch in txt:
@@ -513,7 +514,7 @@ def layout(cue):
                     word += 1
                 g = Glyph()
                 g.ch, g.x, g.y, g.word, g.line, g.idx = ch, x, y, word, li, idx
-                g.accent = it and cue.get('accent', False)
+                g.accent = it and cue.get('accent', True)  # every key word in the signal colour
                 adv = f.getlength(ch)
                 g.w = adv
                 if ch.strip():

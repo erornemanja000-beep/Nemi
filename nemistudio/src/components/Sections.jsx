@@ -128,7 +128,7 @@ export function Process() {
         {FACTS.map((f, i) => (
           <Up key={i} className="fact" delay={i * 80}>
             <b>{L(f.v)}</b><span>{L(f.u)}</span>
-            <p>{L(f.d)}</p>
+            <p><Rich text={L(f.d)} /></p>
           </Up>
         ))}
       </div>

@@ -23,9 +23,17 @@ export function Words({ lines, start = 0 }) {
   ));
 }
 
-// body text: `*word*` becomes a highlighted key word
+// body text: `*word*` becomes a highlighted key word, underlined once it scrolls into view
+let kwIO;
+const watch = (el) => {
+  if (!el || el.classList.contains('on')) return;
+  kwIO = kwIO || new IntersectionObserver((es) => es.forEach((e) => {
+    if (e.isIntersecting) { e.target.classList.add('on'); kwIO.unobserve(e.target); }
+  }), { rootMargin: '0px 0px -12% 0px' });
+  kwIO.observe(el);
+};
 export function Rich({ text }) {
-  return text.split(/(\*[^*]+\*)/).filter(Boolean).map((part, i) => (part.startsWith('*') ? <em className="kw" key={i}>{part.slice(1, -1)}</em> : part));
+  return text.split(/(\*[^*]+\*)/).filter(Boolean).map((part, i) => (part.startsWith('*') ? <em className="kw" ref={watch} key={i}>{part.slice(1, -1)}</em> : part));
 }
 
 // a heading that reveals when it scrolls into view (outside the film)

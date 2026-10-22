@@ -35,7 +35,7 @@ img { display: block; max-width: 100%; }
 .h-xl, .h-xxl { font-family: var(--serif); font-weight: 400; margin: 0; letter-spacing: -0.015em; line-height: 0.98; }
 .h-xl { font-size: clamp(40px, 5.4vw, 92px); }
 .h-xxl { font-size: clamp(52px, 8.4vw, 150px); line-height: 0.92; }
-.h-xl em, .h-xxl em { font-style: italic; }
+.h-xl em, .h-xxl em { font-style: italic; color: var(--signal); }
 .ln { display: block; }
 .lead { font-size: clamp(15px, 1.15vw, 18px); line-height: 1.55; color: var(--dim); max-width: 34em; margin: 22px 0 0; }
 .lead.c { margin-inline: auto; text-align: center; }
@@ -66,9 +66,9 @@ img { display: block; max-width: 100%; }
 .logo { display: inline-flex; align-items: baseline; gap: 8px; }
 .logo-w { font-family: var(--sans); font-weight: 600; font-size: 24px; letter-spacing: -0.05em; line-height: 1; }
 .logo-i { position: relative; }
-/* key words in body text: the accent of the headlines, in small */
-.kw { font-family: var(--serif); font-style: italic; font-size: 1.12em; line-height: 1; color: var(--bone); }
-.lead .kw { color: var(--signal); }
+/* key words in body text: the accent of the headlines, in small; a thin line draws under them on reveal */
+.kw { font-family: var(--serif); font-style: italic; font-size: 1.14em; line-height: 1; color: var(--signal); background: linear-gradient(currentColor, currentColor) no-repeat 0 100% / 0% 1px; transition: background-size 0.9s var(--ease) 0.25s; }
+.kw.on { background-size: 100% 1px; }
 .logo-i i { position: absolute; left: 50%; top: -0.06em; width: 0.2em; height: 0.2em; border-radius: 50%; background: var(--signal); transform: translateX(-50%); }
 .logo-s { font-family: var(--mono); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--dim); }
 .logo.sm .logo-w { font-size: 18px; }

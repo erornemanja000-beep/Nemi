@@ -349,7 +349,7 @@ export default function WorldFilm({ world, progress, index }) {
       </div>
       {world.chapters.map((c, i) => (
         <div className={`wf-block wf-${POS[i]}${i === 0 ? ' in' : ''}`} key={`${lang}-${i}`} ref={(el) => { blocks.current[i] = el; }}>
-          <p className="wf-eye">0{i + 1} — {L(world.sense).split(' · ')[i % 2 === 0 ? 0 : 1] || L(world.sense)}</p>
+          <p className="wf-eye">0{i + 1} — <b>{L(world.sense).split(' · ')[i % 2 === 0 ? 0 : 1] || L(world.sense)}</b></p>
           <h2 className="wf-h"><Letters text={L(c.h)} /></h2>
           {c.p && <p className="wf-p"><Rich text={L(c.p)} /></p>}
         </div>

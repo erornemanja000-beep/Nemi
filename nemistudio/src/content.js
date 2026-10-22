@@ -103,9 +103,9 @@ export const PROCESS = {
 };
 
 export const FACTS = [
-  { v: { de: 'Dein', en: 'Your' }, u: { de: 'Tempo', en: 'pace' }, d: { de: 'Zeitplan je nach Projekt, gemeinsam festgelegt', en: 'timeline depends on the project, set together' } },
-  { v: '0', u: { de: 'Baukasten', en: 'templates' }, d: { de: 'jede Seite ist eigener Code', en: 'every page is hand-written code' } },
-  { v: '30', u: { de: 'Minuten', en: 'minutes' }, d: { de: 'Erstgespräch, kostenlos', en: 'first call, free of charge' } },
+  { v: { de: 'Dein', en: 'Your' }, u: { de: 'Tempo', en: 'pace' }, d: { de: 'Zeitplan *je nach Projekt*, gemeinsam festgelegt', en: 'timeline depends on *the project*, set together' } },
+  { v: '0', u: { de: 'Baukasten', en: 'templates' }, d: { de: 'jede Seite ist *eigener Code*', en: 'every page is *hand-written code*' } },
+  { v: '30', u: { de: 'Minuten', en: 'minutes' }, d: { de: 'Erstgespräch, *kostenlos*', en: 'first call, *free of charge*' } },
   { v: 'DE·EN', u: '', d: { de: 'und weitere Sprachen', en: 'and more languages' } },
 ];
 

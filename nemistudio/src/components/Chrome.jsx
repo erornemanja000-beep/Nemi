@@ -40,7 +40,7 @@ export function VideoIntro({ onDone }) {
   const [out, setOut] = useState(false);
   const [portrait] = useState(() => innerWidth / innerHeight < 0.9);
   const base = import.meta.env.BASE_URL;
-  const src = `${base}v/intro-${portrait ? '9x16' : '16x9'}${lang === 'en' ? '-en' : ''}.mp4`;
+  const src = `${base}v/intro-${portrait ? '9x16' : '16x9'}${lang === 'en' ? '-en' : ''}.mp4?v=3`;
   const done = useRef(false);
   const finish = () => {
     if (done.current) return;
@@ -65,8 +65,8 @@ export function VideoIntro({ onDone }) {
   return (
     <div className={`vi${out ? ' out' : ''}`} role="dialog" aria-label="Intro">
       <video
-        ref={ref} src={src} poster={`${base}v/intro.jpg`} muted playsInline preload="auto"
-        onTimeUpdate={(e) => setPct(e.target.currentTime / (e.target.duration || 23))}
+        ref={ref} src={src} poster={`${base}v/intro.jpg?v=3`} muted playsInline preload="auto"
+        onTimeUpdate={(e) => setPct(e.target.currentTime / (e.target.duration || 33))}
         onEnded={finish} onError={finish}
       />
       {blocked && (

@@ -23,7 +23,7 @@ export function goSite(id) {
 }
 
 // ---------------------------------------------------------------- video intro
-const KEY = 'nemi-intro-v5';
+const KEY = 'nemi-intro-v6';
 // any button can ask the app to play the film again
 export const replayIntro = () => dispatchEvent(new Event('nemi:intro'));
 export function ReplayButton({ className = '' }) {
@@ -50,7 +50,7 @@ export function VideoIntro({ onDone }) {
   const [out, setOut] = useState(false);
   const [portrait] = useState(() => innerWidth / innerHeight < 0.9);
   const base = import.meta.env.BASE_URL;
-  const src = `${base}v/intro-${portrait ? '9x16' : '16x9'}${lang === 'en' ? '-en' : ''}.mp4?v=5`;
+  const src = `${base}v/intro-${portrait ? '9x16' : '16x9'}${lang === 'en' ? '-en' : ''}.mp4?v=6`;
   const done = useRef(false);
   const finish = () => {
     if (done.current) return;
@@ -75,7 +75,7 @@ export function VideoIntro({ onDone }) {
   return (
     <div className={`vi${out ? ' out' : ''}`} role="dialog" aria-label="Intro">
       <video
-        ref={ref} src={src} poster={`${base}v/intro.jpg?v=5`} muted playsInline preload="auto"
+        ref={ref} src={src} poster={`${base}v/intro.jpg?v=6`} muted playsInline preload="auto"
         onTimeUpdate={(e) => setPct(e.target.currentTime / (e.target.duration || 25))}
         onEnded={finish} onError={finish}
       />

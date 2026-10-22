@@ -3,7 +3,11 @@
 
     npm run build
     python3 build_pages.py <gh-pages-folder>
+
+The same branch feeds Cloudflare (nemistudio.at): wrangler.jsonc and cloudflare/ go to its root,
+with the byte sizes of the films for the Worker that answers range requests.
 """
+import json
 import pathlib
 import shutil
 import sys
@@ -18,4 +22,10 @@ if site.exists():
     shutil.rmtree(site)
 shutil.copytree(dist, site)
 (out / '.nojekyll').write_text('')
+cf = out / 'cloudflare'
+cf.mkdir(exist_ok=True)
+shutil.copy(root / 'cloudflare' / 'worker.js', cf / 'worker.js')
+shutil.copy(root / 'cloudflare' / 'wrangler.jsonc', out / 'wrangler.jsonc')
+sizes = {'/' + p.relative_to(site).as_posix(): p.stat().st_size for p in sorted((site / 'v').glob('*.mp4'))}
+(cf / 'sizes.json').write_text(json.dumps(sizes, indent=1) + '\n')
 print(site, sum(1 for p in site.rglob('*') if p.is_file()), 'files')

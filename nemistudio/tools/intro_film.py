@@ -88,7 +88,8 @@ T = {
 
 # ---------------------------------------------------------------- shots
 # src: 'v:<id>' video, 'i:<name>' still, 'black', 'end'
-# t: source start (s), n: frames, sp: playback speed (negative = reverse), z0/z1: zoom, c: focus (0..1)
+# t: source start (s), n: frames, sp: playback speed (negative = reverse), z0/z1: zoom, c: focus (0..1),
+# rc: focus for the 9:16 crop when the subject sits off-centre
 def sh(src, t=0.0, n=2, sp=1.0, z0=1.0, z1=None, c=(0.5, 0.5), **kw):
     d = dict(src=src, t=t, n=n, sp=sp, z0=z0, z1=z0 * 1.05 if z1 is None else z1, c=c)
     d.update(kw)
@@ -131,7 +132,7 @@ cues.append(dict(key='l2', a=mark['drop'], b=here() - 1, fx='slam', pos='c'))
 # D) a hand on a cave wall
 mark['hand'] = here()
 flashes([('i:cave', 0, 3), ('v:52312', 6, 2), ('i:hands', 0, 2), ('i:cave', 0, 2)])
-add(sh('i:hands', 0, 47, 1.0, 1.04, 1.16, (0.55, 0.5)))
+add(sh('i:hands', 0, 47, 1.0, 1.04, 1.16, (0.55, 0.5), rc=(0.68, 0.55)))
 cues.append(dict(key='l3', a=mark['hand'] + 8, b=here() - 2, fx='mask', pos='bl'))
 years.append((mark['hand'], here(), '−40.000'))
 # E) a sign in stone
@@ -155,7 +156,7 @@ years.append((mark['radio'], here(), '1925'))
 # H) a face on a screen
 mark['screen'] = here()
 flashes([('v:4143', 2, 2), ('i:tv', 0, 2), ('v:46291', 3, 2), ('i:street', 0, 2)])
-add(sh('v:47911', 2.0, 47, 0.8, 1.04, 1.14, (0.45, 0.5)))
+add(sh('v:47911', 2.0, 47, 0.8, 1.04, 1.14, (0.45, 0.5), rc=(0.2, 0.5)))
 cues.append(dict(key='l7', a=mark['screen'] + 8, b=here() - 2, fx='glitch', pos='bl'))
 years.append((mark['screen'], here(), '1955'))
 # I) every era at once: always with the same wish
@@ -736,7 +737,7 @@ def render_shot_frame(idx, i):
     if s['src'] == 'end':
         return end_frame(i, n)
     z = s['z0'] + (s['z1'] - s['z0']) * ease(s.get('ease', 'lin'), u)
-    img = place(src_frame(s, i, idx), z, s['c'])
+    img = place(src_frame(s, i, idx), z, s.get('rc', s['c']) if REEL else s['c'])
     img = sharpen(img)
     img = grade(img)
     img = halation(img)

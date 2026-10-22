@@ -10,7 +10,8 @@ Pregled uživo: https://erornemanja000-beep.github.io/Nemi/nemistudio/
    - Kraj: „Hinterlass eine, die bleibt.“, zatim logo nemi.
    - Svaki red ima svoj efekat teksta: zamućenje, udarac, maska, dleto, pisaća mašina, radio-talas, glitch, razmicanje slova, nestajanje.
    - Slika „putuje kroz vreme“: oko je današnje i oštro; prošlost je u sepiji, sa ogrebotinama i treperenjem; do „gesehen zu werden“ slika postaje čista i u boji.
-   - Oko je izoštreno AI uvećanjem (Real-ESRGAN x2).
+   - Tri glavna kadra su izoštrena AI uvećanjem (Real-ESRGAN x2, 2560 px): oko na početku, ekran u oku i lice sa naočarima.
+   - Verzija 9:16 za Instagram ima posebno kadriranje kad je motiv van centra (šaka, oko).
 2. **Početak**: zamućen laptop, „Websites, die man spürt.“ Skrol izoštri i uleti u ekran.
 3. **Četiri sveta, svaki je jedno čulo.** Bez imena firmi i cena; u ekranu piše „Dein Café / Deine Kanzlei …“.
    - Kafić: miris i ukus (para, zrna, espreso, latte art, hleb, peciva). Slova se dižu kao para.

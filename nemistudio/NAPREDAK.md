@@ -28,7 +28,7 @@ Pregled uživo: https://erornemanja000-beep.github.io/Nemi/nemistudio/
 8. **Futer**: veliko „nemi“; tačka iznad „i“ se pretvori u narandžastog leptira i odleti, „i“ se istopi (ponavlja se pri svakom dolasku do dna).
 
 Ključne reči u tekstu su istaknute (`*reč*` u content.js/worlds.js): kurziv, narandžasto u uvodnim pasusima, u svetovima u boji tog sveta.
-Svetla dnevna svetla u kancelariji (žena, rukovanje, ugovor, potpis) dobila su tamniji filmski kolor (`GRADE` u tools/world_frames.py); poslednji kadar teretane je nova borkinja u crveno-plavom svetlu (40988).
+Svetli dnevni snimci u kancelariji (žena, rukovanje, ugovor, potpis) dobili su tamniji filmski kolor (`GRADE` u tools/world_frames.py); poslednji kadar teretane je nova borkinja u crveno-plavom svetlu (40988).
 
 ## Alati
 - Uvodni film: `python3 tools/intro_film.py <klipovi> <slike> <izlaz.mp4> [--format reel] [--lang en] --music <mp3> --sr <AI-klipovi>`

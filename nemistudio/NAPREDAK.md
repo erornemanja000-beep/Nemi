@@ -1,10 +1,11 @@
 # Nemi Studio: novi sajt (nemistudio.at)
 
 Pregled uživo: https://erornemanja000-beep.github.io/Nemi/nemistudio/
-(`?intro=0` preskače uvodni film, `?intro=1` ga uvek pušta, `?lang=en` engleski)
+(`?intro=0` preskače uvodni film, `?intro=1` ga uvek pušta, `?lang=en` engleski; dugme „Intro ansehen“ na početku, u meniju i u futeru ga pušta ponovo)
 
 ## v4: čula („sajt u sajtu“, po principu referentnih reelova)
-1. **Uvodni film** (33 s, DE/EN, 16:9 i 9:16): priča o tragovima.
+1. **Uvodni film** (25 s, DE/EN, 16:9 i 9:16): priča o tragovima. Svaka scena počinje na udarac muzike.
+   - Oko se otvori sa zenicom tačno u centru kadra i kamera odmah, bez reza, uleti u zenicu.
    - „Seit es Menschen gibt, hinterlassen wir Spuren.“ Zatim šaka u pećini, znak u kamenu, ime na papiru, glas na radiju i lice na ekranu.
    - „Immer mit demselben Wunsch: gesehen zu werden.“, pa „Heute ist deine Spur deine Website.“, pa „Die meisten Websites schweigen.“
    - Kraj: „Hinterlass eine, die bleibt.“, zatim logo nemi.
@@ -18,9 +19,9 @@ Pregled uživo: https://erornemanja000-beep.github.io/Nemi/nemistudio/
    - Kancelarija: osećaj u stomaku i sluh (pogled, potpis, razgovor, rukovanje, ugovor). Slova se „dekodiraju“.
    - Teretana: dodir i puls (zavoji, senka boksera, udarci, girja, znoj, dah). Ekran pulsira kao srce, a reči udaraju.
    - Hotel: vid i sluh (lan na prozoru, jezero, trava, bazen, terasa, zvezde). Slika se izoštrava kao objektiv.
-4. Svaki svet je **film koji se skroluje** (WebGL): 6 poglavlja po 30 kadrova, kao na referentnim sajtovima.
+4. Svaki svet je **film koji se skroluje** (WebGL): 6 poglavlja po 40 kadrova, kao na referentnim sajtovima.
+   - Brzi snimci su skraćeni ili zamenjeni (bokser: usporeni snimak 40966, rukovanje: 46755) da skrol bude gladak.
    - Prelazi: svetlosni prelaz, pikseli, gorenje, zum kroz kadar, trake.
-   - Kad staneš sa skrolovanjem, kamera se zaustavi na poglavlju.
 5. **Zum nazad**: „Fünf Sinne. Und ein sechster.“
 6. **Šesto čulo**: rečenica se dekodira iz šuma. „Nemi“ znači nem; dobar sajt govori bez reči.
 7. Na kraju: usluge, postupak, FAQ, kontakt.

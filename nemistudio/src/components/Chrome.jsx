@@ -24,6 +24,16 @@ export function goSite(id) {
 
 // ---------------------------------------------------------------- video intro
 const KEY = 'nemi-intro-v3';
+// any button can ask the app to play the film again
+export const replayIntro = () => dispatchEvent(new Event('nemi:intro'));
+export function ReplayButton({ className = '' }) {
+  const { L } = useLang();
+  return (
+    <button className={`replay ${className}`} onClick={replayIntro}>
+      <span className="replay-i" aria-hidden="true">▶</span>{L(UI.replay)}
+    </button>
+  );
+}
 export function shouldPlayIntro() {
   const q = new URLSearchParams(location.search).get('intro');
   if (q === '1') return true;
@@ -147,6 +157,7 @@ export function NemiBar({ show }) {
             {NAV.map((n, i) => (
               <a key={n.id} href={`#${n.id}`} onClick={jump(() => scrollToId(n.id))} style={{ '--i': i + 4 }}>{L(n)}</a>
             ))}
+            <a href="#top" className="idx-replay" onClick={jump(replayIntro)} style={{ '--i': NAV.length + 4 }}><span aria-hidden="true">▶ </span>{L(UI.replay)}</a>
           </nav>
           <div className="idx-lang">
             <button className={lang === 'de' ? 'act' : ''} onClick={() => setLang('de')}>Deutsch</button>

@@ -4,7 +4,7 @@ import { initScroll, scrollToY, stop, resume } from './scroll.js';
 import { useLang } from './i18n.jsx';
 import { OPEN, PORTAL } from './content.js';
 import { WORLDS, FILM_VH } from './worlds.js';
-import { NemiBar, VideoIntro, shouldPlayIntro } from './components/Chrome.jsx';
+import { NemiBar, VideoIntro, ReplayButton, shouldPlayIntro } from './components/Chrome.jsx';
 import { Words } from './components/Reveal.jsx';
 import Portal from './components/Portal.jsx';
 import WorldFilm from './components/WorldFilm.jsx';
@@ -19,7 +19,10 @@ function Opening({ ready }) {
       <p className="eye"><span className="dot" />{L(OPEN.eye)}</p>
       <h1 className="h-xxl"><Words lines={L(OPEN.h)} /></h1>
       <p className="lead">{L(OPEN.p)}</p>
-      <span className="open-cue" aria-hidden="true"><i />{L(OPEN.scroll)}</span>
+      <div className="open-row">
+        <span className="open-cue" aria-hidden="true"><i />{L(OPEN.scroll)}</span>
+        <ReplayButton />
+      </div>
     </div>
   );
 }
@@ -44,7 +47,7 @@ function World({ w, i, introDone }) {
   return (
     <div className="site-wrap" data-site={i + 1}>
       <Portal
-        id={w.id} device={w.device} label={w.id} film={FILM_VH} progress={progress} snap={w.chapters.length}
+        id={w.id} device={w.device} label={w.id} film={FILM_VH} progress={progress}
         caption={i === 0 ? <Opening ready={introDone} /> : <Next i={i} />} dim={i === 0}
       >
         <WorldFilm world={w} progress={progress} index={i} />
@@ -54,8 +57,15 @@ function World({ w, i, introDone }) {
 }
 
 export default function App() {
-  const [intro] = useState(shouldPlayIntro);
+  const [intro, setIntro] = useState(shouldPlayIntro);
   const [introDone, setIntroDone] = useState(!intro);
+  const [run, setRun] = useState(0);
+  // "Intro ansehen": back to the top and play the film again
+  useEffect(() => {
+    const again = () => { scrollToY(0, true); setRun((r) => r + 1); setIntro(true); setIntroDone(false); };
+    addEventListener('nemi:intro', again);
+    return () => removeEventListener('nemi:intro', again);
+  }, []);
   useEffect(() => {
     if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
     scrollToY(0, true);
@@ -67,11 +77,11 @@ export default function App() {
     if (!introDone) return;
     document.documentElement.classList.add('is-ready');
     ScrollTrigger.refresh();
-    if (location.hash) setTimeout(() => { const el = document.querySelector(location.hash); if (el) scrollToY(el.getBoundingClientRect().top + scrollY, true); }, 300);
+    if (location.hash && !run) setTimeout(() => { const el = document.querySelector(location.hash); if (el) scrollToY(el.getBoundingClientRect().top + scrollY, true); }, 300);
   }, [introDone]);
   return (
     <>
-      {intro && !introDone && <VideoIntro onDone={() => setIntroDone(true)} />}
+      {intro && !introDone && <VideoIntro key={run} onDone={() => setIntroDone(true)} />}
       <main id="top">
         {WORLDS.map((w, i) => <World w={w} i={i} key={w.id} introDone={introDone} />)}
         <Outro />

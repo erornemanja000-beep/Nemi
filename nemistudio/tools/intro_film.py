@@ -1,17 +1,17 @@
 #!/usr/bin/env python3
-"""Nemi Studio intro film v3: a story told in traces, cut in the grammar of the reference reel (r8).
+"""Nemi Studio intro film v4 (25 s): a story told in traces, cut in the grammar of the reference reel (r8).
 
-The eye opens -> the pupil widens -> dive -> fire ("Seit es Menschen gibt,") -> the drop: footprints
+The eye opens and the camera flies straight into the centre of the pupil -> fire ("Seit es Menschen gibt,") -> the drop: footprints
 ("hinterlassen wir Spuren.") -> a hand on a cave wall -> a sign in stone -> a name on paper -> a voice
 on the radio -> a face on a screen -> a burst through every era ("Immer mit demselben Wunsch:") ->
 "Gesehen zu werden." -> today ("Heute ist deine Spur deine Website.") -> night city ("Die meisten
 Websites schweigen.") -> the eye closes -> "Hinterlass eine, die bleibt." -> nemi.
 
 Each line of the story has its own type animation (blur, slam, mask, chisel, typewriter, radio wave,
-glitch, tracking, dissolve) and lands on the beat of the music.
+glitch, tracking, dissolve) and every section starts on a beat of the music.
 
     python3 tools/intro_film.py <clips-dir> <images-dir> <out.mp4> [--format web|reel] [--lang de|en]
-                                [--preview N] [--width 1920] [--music path] [--music-at 20.0]
+                                [--preview N] [--width 1920] [--music path] [--music-at s]
 
 clips-dir:  Mixkit clips named <id>.mp4 (1080p where available)
 images-dir: stills named hands, cave, hiero, statue, greek, papyrus, type, ship, street, radio, tv, fire (.jpg)
@@ -40,7 +40,7 @@ ap.add_argument('--preview', type=int, default=0, help='only render every Nth fr
 ap.add_argument('--frames', default='', help='preview only these frames, comma separated')
 ap.add_argument('--width', type=int, default=1920)
 ap.add_argument('--music', default='')
-ap.add_argument('--music-at', type=float, default=20.0, help='track time that plays at film time 0')
+ap.add_argument('--music-at', type=float, default=None, help='track time at film time 0 (default: the drop of the track lands on the drop of the film)')
 ap.add_argument('--crf', type=int, default=18)
 ap.add_argument('--sr', default='', help='folder with AI-upscaled versions of some clips (used first)')
 args = ap.parse_args()
@@ -95,7 +95,6 @@ def sh(src, t=0.0, n=2, sp=1.0, z0=1.0, z1=None, c=(0.5, 0.5), **kw):
     d.update(kw)
     return d
 
-PUPIL = (0.44, 0.59)
 shots = []
 mark = {}
 cues = []      # text cues: dict(key, a, b, fx, pos, size, ...)
@@ -113,65 +112,75 @@ def flashes(items):
     for src, t, n in items:
         add(sh(src, t, n, 1.0, 1.08, 1.14))
 
-# A) the eye opens, no pause: the pupil widens at once and we dive in
+# The film sits on the beat grid of the music: the drop of the track lands on frame DROP and every
+# later section starts on a beat, so no cut is ever off the music.
+DROP = 83
+TRACK_DROP = 24.6  # seconds into the track (Mixkit 543)
+
+def beat(b):
+    return int(DROP + b * BEAT + 0.5)
+
+def hero(src, t, sp, z0, z1, c=(0.5, 0.5), to=0, **kw):
+    """the main shot of a section, running until frame `to`"""
+    add(sh(src, t, to - here(), sp, z0, z1, c, **kw))
+
+# A) the eye opens with the pupil in the centre of the frame, and the moment it is open the camera
+# flies straight into it: one continuous move, no cut
+PUPIL = (0.437, 0.594)
 mark['eye'] = here()
-add(sh('v:48017', 0.95, 10, 1.0, 1.0, 1.06, PUPIL, fadein=4, era=1.0))
-add(sh('v:48017', 3.4, 12, -2.6, 1.06, 1.9, PUPIL, ease='in', era=1.0))
-add(sh('v:48017', 1.6, 10, 0.0, 1.9, 22.0, PUPIL, ease='expo', radial=0.35, era=1.0, burn=True))
+add(sh('v:48017', 0.98, 11, 1.0, 1.28, 1.45, PUPIL, fadein=3, era=1.0))
+add(sh('v:48017', 0.98 + 11 / FPS, 14, 0.85, 1.45, 24.0, PUPIL, ease='expo', radial=0.35, era=1.0, burn=0.78))
 add(sh('black', n=2))
 # B) fire: since there have been people
 mark['fire'] = here()
-add(sh('v:52312', 2.0, 52, 0.6, 1.1, 1.22, (0.5, 0.5), fadein=10))
-add(sh('v:3463', 1.0, 26, 0.7, 1.0, 1.08))
-add(sh('v:45676', 3.0, 26, 0.8, 1.1, 1.2))
-cues.append(dict(key='l1', a=mark['fire'] + 10, b=here() - 2, fx='blur', pos='c'))
+add(sh('v:52312', 2.0, 24, 0.6, 1.1, 1.18, (0.5, 0.5), fadein=6))
+add(sh('v:3463', 1.0, 16, 0.7, 1.0, 1.05))
+hero('v:45676', 3.0, 0.8, 1.1, 1.16, to=DROP)
+cues.append(dict(key='l1', a=mark['fire'] + 2, b=here() - 2, fx='blur', pos='c'))
 # C) the drop: footprints in the sand
 mark['drop'] = here()
-add(sh('v:1013', 1.0, 50, 0.8, 1.05, 1.16, (0.5, 0.62), flash_in=4))
-cues.append(dict(key='l2', a=mark['drop'], b=here() - 1, fx='slam', pos='c'))
+hero('v:1013', 1.0, 0.8, 1.05, 1.13, (0.5, 0.62), to=beat(3), flash_in=4)
+cues.append(dict(key='l2', a=mark['drop'], b=here() - 1, fx='slam', pos='c', step=BEAT * 2 / 3))
 # D) a hand on a cave wall
 mark['hand'] = here()
-flashes([('i:cave', 0, 3), ('v:52312', 6, 2), ('i:hands', 0, 2), ('i:cave', 0, 2)])
-add(sh('i:hands', 0, 47, 1.0, 1.04, 1.16, (0.55, 0.5), rc=(0.68, 0.55)))
-cues.append(dict(key='l3', a=mark['hand'] + 8, b=here() - 2, fx='mask', pos='bl'))
+flashes([('i:cave', 0, 2), ('v:52312', 6, 2)])
+hero('i:hands', 0, 1.0, 1.04, 1.14, (0.55, 0.5), to=beat(6.25), rc=(0.68, 0.55))
+cues.append(dict(key='l3', a=mark['hand'] + 4, b=here() - 2, fx='mask', pos='bl'))
 years.append((mark['hand'], here(), '−40.000'))
 # E) a sign in stone
 mark['stone'] = here()
-flashes([('i:greek', 0, 2), ('i:papyrus', 0, 2), ('i:statue', 0, 2), ('i:cave', 0, 2)])
-add(sh('i:hiero', 0, 48, 1.0, 1.05, 1.2, (0.5, 0.45)))
-cues.append(dict(key='l4', a=mark['stone'] + 8, b=here() - 2, fx='chisel', pos='bl'))
+flashes([('i:greek', 0, 2), ('i:statue', 0, 2)])
+hero('i:hiero', 0, 1.0, 1.05, 1.17, (0.5, 0.45), to=beat(9.5))
+cues.append(dict(key='l4', a=mark['stone'] + 4, b=here() - 2, fx='chisel', pos='bl'))
 years.append((mark['stone'], here(), '−3.200'))
 # F) a name on paper
 mark['paper'] = here()
-flashes([('i:type', 0, 2), ('v:49557', 3, 2), ('i:papyrus', 0, 2), ('v:50700', 4, 2)])
-add(sh('v:50705', 1.0, 51, 0.9, 1.04, 1.12, (0.5, 0.5)))
-cues.append(dict(key='l5', a=mark['paper'] + 8, b=here() - 2, fx='type', pos='bl'))
+flashes([('i:type', 0, 2), ('v:49557', 3, 2)])
+hero('v:50705', 1.0, 0.9, 1.04, 1.11, to=beat(12.75))
+cues.append(dict(key='l5', a=mark['paper'] + 4, b=here() - 2, fx='type', pos='bl'))
 years.append((mark['paper'], here(), '1450'))
-# G) a voice on the radio (second phrase of the music)
+# G) a voice on the radio
 mark['radio'] = here()
-flashes([('i:radio', 0, 2), ('v:43370', 4, 2), ('v:48533', 3, 2)])
-add(sh('v:31957', 2.0, 50, 0.8, 1.05, 1.14, (0.5, 0.5)))
-cues.append(dict(key='l6', a=mark['radio'] + 6, b=here() - 2, fx='wave', pos='bl'))
+flashes([('i:radio', 0, 2), ('v:43370', 4, 2)])
+hero('v:31957', 2.0, 0.8, 1.05, 1.12, to=beat(16))
+cues.append(dict(key='l6', a=mark['radio'] + 4, b=here() - 2, fx='wave', pos='bl'))
 years.append((mark['radio'], here(), '1925'))
-# H) a face on a screen
+# H) a face on a screen (second phrase of the music)
 mark['screen'] = here()
-flashes([('v:4143', 2, 2), ('i:tv', 0, 2), ('v:46291', 3, 2), ('i:street', 0, 2)])
-add(sh('v:47911', 2.0, 47, 0.8, 1.04, 1.14, (0.45, 0.5), rc=(0.2, 0.5)))
-cues.append(dict(key='l7', a=mark['screen'] + 8, b=here() - 2, fx='glitch', pos='bl'))
+flashes([('v:4143', 2, 2), ('i:tv', 0, 2)])
+hero('v:47911', 2.0, 0.8, 1.04, 1.12, (0.45, 0.5), to=beat(19.25), rc=(0.2, 0.5))
+cues.append(dict(key='l7', a=mark['screen'] + 4, b=here() - 2, fx='glitch', pos='bl'))
 years.append((mark['screen'], here(), '1955'))
 # I) every era at once: always with the same wish
 mark['burst'] = here()
-B = [('i:fire', 0), ('i:hands', 0), ('v:1013', 2), ('i:cave', 0), ('i:hiero', 0), ('i:statue', 0), ('i:greek', 0),
-     ('i:papyrus', 0), ('v:50700', 2), ('i:type', 0), ('v:49557', 5), ('i:ship', 0), ('v:18288', 2), ('i:street', 0),
-     ('v:43370', 6), ('i:radio', 0), ('v:31957', 4), ('v:48533', 5), ('i:tv', 0), ('v:4143', 4), ('v:46291', 1),
-     ('v:47911', 4), ('v:33490', 2), ('v:52285', 2), ('v:3463', 3), ('v:50705', 3), ('i:hands', 0), ('v:45676', 6),
-     ('i:hiero', 0), ('v:41858', 3), ('v:242', 2), ('v:4915', 3), ('v:52088', 5), ('v:23222', 22), ('v:4196', 4),
-     ('v:43222', 3), ('v:47555', 6), ('v:4982', 2), ('v:39500', 4), ('v:33328', 2), ('v:5015', 4), ('v:22240', 3),
-     ('v:46635', 4)]
-LENS = [2] * 36 + [3, 3, 4, 4, 5, 6, 14]
-YEARS = ['−40.000', '−32.000', '−17.000', '−12.000', '−3.200', '−480', '−400', '−100', '800', '1200', '1450', '1492',
-         '1569', '1650', '1700', '1810', '1876', '1902', '1920', '1925', '1937', '1955', '1962', '1971', '1979', '1984',
-         '1991', '1995', '1998', '2001', '2004', '2007', '2010', '2012', '2014', '2016', '2018', '2020', '2022', '2024',
+B = [('i:fire', 0), ('v:1013', 2), ('i:hiero', 0), ('i:statue', 0), ('v:50700', 2), ('i:type', 0), ('v:49557', 5),
+     ('i:ship', 0), ('i:street', 0), ('i:radio', 0), ('v:31957', 4), ('v:48533', 5), ('i:tv', 0), ('v:4143', 4),
+     ('v:47911', 4), ('v:52285', 2), ('v:50705', 3), ('v:45676', 6), ('v:41858', 3), ('v:242', 2), ('v:52088', 5),
+     ('v:23222', 22), ('v:43222', 3), ('v:47555', 6), ('v:39500', 4), ('v:5015', 4), ('v:22240', 3), ('v:46635', 4)]
+LENS = [2] * 24 + [3, 4, 4]
+LENS.append(beat(24) - mark['burst'] - sum(LENS))
+YEARS = ['−40.000', '−17.000', '−3.200', '−480', '800', '1200', '1450', '1492', '1650', '1810', '1876', '1902',
+         '1920', '1925', '1955', '1971', '1984', '1995', '2001', '2004', '2010', '2012', '2016', '2018', '2022',
          '2025', '2026', '2026']
 acc = here()
 for (src, t), n, y in zip(B, LENS, YEARS):
@@ -179,32 +188,34 @@ for (src, t), n, y in zip(B, LENS, YEARS):
     years.append((acc, acc + n, y))
     acc += n
 cues.append(dict(key='l8', a=mark['burst'] + 2, b=here() - 1, fx='flash', pos='c'))
-# J) to be seen (third phrase)
+# J) to be seen
 mark['seen'] = here()
-add(sh('v:46635', 2.0, 99, 0.55, 1.05, 1.16, (0.62, 0.42), letterbox=True))
+hero('v:46635', 2.0, 0.55, 1.05, 1.15, (0.62, 0.42), to=beat(30), letterbox=True)
 cues.append(dict(key='l9', a=mark['seen'] + 6, b=here() - 3, fx='track', pos='bl', size=1.2))
-# K) today: industries, then hands on a laptop
+# K) today: industries, then hands on a laptop (third phrase)
 mark['today'] = here()
 B2 = [('v:41858', 3.0), ('v:4982', 2.0), ('v:47555', 6.0), ('v:43222', 3.0), ('v:33328', 2.0), ('v:39500', 4.0),
       ('v:52088', 6.0), ('v:23222', 22.0), ('v:22240', 4.0), ('v:4196', 6.0), ('v:5015', 6.0), ('v:41858', 8.5),
-      ('v:4915', 2.0), ('v:52088', 2.0), ('v:39500', 10.0), ('v:4196', 2.0), ('v:43222', 8.0)]
-LEN2 = [2] * 14 + [3, 4, 5]
+      ('v:43222', 8.0)]
+LEN2 = [2] * 12
+LEN2.append(beat(32) - mark['today'] - sum(LEN2))
 for (src, t), n in zip(B2, LEN2):
     add(sh(src, t, n, 1.0, 1.05, 1.1))
 mark['web'] = here()
-add(sh('v:242', 3.0, 82, 0.7, 1.04, 1.12, (0.5, 0.5)))
+hero('v:242', 3.0, 0.7, 1.04, 1.1, to=beat(36.5))
 cues.append(dict(key='l10', a=mark['web'] + 4, b=here() - 3, fx='mask', pos='bl', accent=True))
-# L) most websites stay silent (fourth phrase)
+# L) most websites stay silent
 mark['night'] = here()
-add(sh('v:49845', 12.0, 60, 1.0, 1.02, 1.12, (0.5, 0.5), letterbox=True))
+hero('v:49845', 12.0, 1.0, 1.02, 1.1, to=beat(40.5), letterbox=True)
 cues.append(dict(key='l11', a=mark['night'] + 4, b=here() - 1, fx='dissolve', pos='bl'))
 # M) the eye closes
 mark['blink'] = here()
-add(sh('v:4257', 3.85, 18, 0.8, 1.12, 1.24, (0.5, 0.55)))
-add(sh('black', n=4))
+add(sh('v:4257', 3.85, beat(41.75) - here() - 3, 0.8, 1.12, 1.22, (0.5, 0.55)))
+add(sh('black', n=3))
 # N) leave one that lasts -> nemi
 mark['end'] = here()
-add(sh('end', n=106))
+END_SPLIT = 44  # frames of the last line before the wordmark
+add(sh('end', n=90))
 TOTAL = here()
 
 # how old the picture looks: 0 = oldest film, 1 = today. The look ages back after the dive into the
@@ -232,7 +243,7 @@ TRANS = [
     ('whip', mark['today'], 4),
     ('xfade', mark['night'], 3),
 ]
-DROPS = [mark['drop'], mark['radio'], mark['seen'], mark['night']]  # light bump on the big beats
+DROPS = [mark['drop'], mark['screen'], mark['seen'], mark['web']]  # light bump on the big beats
 
 # ---------------------------------------------------------------- media
 _cache = {}
@@ -451,7 +462,7 @@ def wrap(text, base, pos):
         for tok in tokens:
             trial = cur + tok
             if cur.strip() and tok.strip(' |') and f.getlength(trial.replace('*', '').replace('|', ' ')) * 1.04 > limit:
-                out.append(cur.rstrip(' '))
+                out.append(cur.rstrip(' |'))  # a '|' at the break would count the word gap twice
                 cur = tok.lstrip(' ')
             else:
                 cur = trial
@@ -527,8 +538,16 @@ def layout(cue):
     m = cv2.GaussianBlur(m, (0, 0), base * 0.9)
     cue['scrim'] = m[..., None]
 
+# letters arrive at their own pace, but every line is complete by the middle of its cue
+STAGGER = {'blur': (1.1, 12), 'chisel': (1.4, 6), 'type': (1.25, 0), 'wave': (0.7, 8), 'glitch': (0.5, 6), 'dissolve': (0.9, 10)}
+def pace(cue):
+    if cue['fx'] in STAGGER:
+        rate, tail = STAGGER[cue['fx']]
+        cue['spd'] = max(1.0, (rate * (len(cue['glyphs']) - 1) + tail) / (0.5 * (cue['b'] - cue['a'])))
+
 for c in cues:
     layout(c)
+    pace(c)
 
 def smooth(u):
     u = min(1.0, max(0.0, u))
@@ -543,17 +562,19 @@ def glyph_state(cue, g, t, n):
     fx = cue['fx']
     a, dx, dy, sc, bl, fl = 1.0, 0.0, 0.0, 1.0, 0.0, 0.0
     base = cue['base']
+    gi = g.idx / cue.get('spd', 1.0)  # letter order, compressed for short cues
+    step = cue.get('step', BEAT)       # frames between word groups (slam, flash)
     if fx == 'blur':
-        u = smooth((t - g.idx * 1.1) / 12)
+        u = smooth((t - gi * 1.1) / 12)
         a, bl, dy = u, (1 - u) * 14 * S, (1 - u) * base * 0.18
     elif fx == 'slam':
-        k = t - g.word * BEAT
+        k = t - g.word * step
         u = out_expo(k / 6)
         a = 1.0 if k >= 0 else 0.0
         sc = 1 + (1 - u) * 0.55
         bl = (1 - u) * 10 * S
     elif fx == 'flash':
-        k = t - g.word * BEAT
+        k = t - g.word * step
         a = 1.0 if k >= 0 else 0.0
         sc = 1 + (1 - out_expo(k / 4)) * 0.3
         fl = max(0.0, 1 - k / 5) if k >= 0 else 0.0
@@ -562,7 +583,7 @@ def glyph_state(cue, g, t, n):
         a = 1.0 if u > 0.001 else 0.0
         dy = (1 - u) * base * 1.05
     elif fx == 'chisel':
-        k = t - g.idx * 1.4
+        k = t - gi * 1.4
         a = 1.0 if k >= 0 else 0.0
         u = out_expo(k / 5)
         sc = 1 + (1 - u) * 0.35
@@ -571,13 +592,13 @@ def glyph_state(cue, g, t, n):
             r = np.random.default_rng(g.idx * 31 + int(k))
             dx, dy = r.normal(0, 3 * S), r.normal(0, 3 * S)
     elif fx == 'type':
-        a = 1.0 if t >= g.idx * 1.25 else 0.0
+        a = 1.0 if t >= gi * 1.25 else 0.0
     elif fx == 'wave':
-        u = smooth((t - g.idx * 0.7) / 8)
+        u = smooth((t - gi * 0.7) / 8)
         a = u
-        dy = math.sin(t * 0.55 + g.idx * 0.75) * base * 0.16 * math.exp(-max(0, t - g.idx * 0.7) / 18)
+        dy = math.sin(t * 0.55 + g.idx * 0.75) * base * 0.16 * math.exp(-max(0, t - gi * 0.7) / 18)
     elif fx == 'glitch':
-        u = smooth((t - g.idx * 0.5) / 6)
+        u = smooth((t - gi * 0.5) / 6)
         a = u * (0.35 if (t < 16 and (t * 7 + g.idx) % 5 == 0) else 1.0)
         if t < 14:
             r = np.random.default_rng(int(t) * 97 + g.line)
@@ -589,13 +610,14 @@ def glyph_state(cue, g, t, n):
         dx = (1 - u) * (g.idx - len(cue['glyphs']) / 2) * base * 0.14
         bl = (1 - u) * 12 * S
     elif fx == 'dissolve':
-        u = smooth((t - g.idx * 0.9) / 10)
+        u = smooth((t - gi * 0.9) / 10)
         a, bl, dy = u, (1 - u) * 10 * S, (1 - u) * base * 0.15
         # the last word falls silent before the cut
         last = cue['nwords'] - 1
-        if g.word >= last - 0 and n - t < 22:
+        fw = min(22, 0.42 * n)
+        if g.word >= last and n - t < fw:
             r = np.random.default_rng(g.idx)
-            k = smooth((22 - (n - t) - r.uniform(0, 8)) / 10)
+            k = smooth((fw - (n - t) - r.uniform(0, 8)) / 10)
             a *= 1 - k
             bl += k * 16 * S
             dy -= k * base * 0.25
@@ -678,17 +700,17 @@ def year_layer(img, label):
     return cv2.cvtColor(np.asarray(pil), cv2.COLOR_RGB2BGR)
 
 # ---------------------------------------------------------------- end card
-END_LINE = dict(key='l12', a=0, b=0, fx='blur', pos='c')
+END_LINE = dict(key='l12', a=0, b=END_SPLIT, fx='blur', pos='c')
 layout(END_LINE)
+pace(END_LINE)
 
 def end_frame(k, n):
     img = np.full((H, W, 3), (11, 11, 12), np.uint8)
     # phase 1: the last line of the story
-    if k < 52:
-        END_LINE['a'], END_LINE['b'] = 0, 52
+    if k < END_SPLIT:
         return render_cue(img, END_LINE, k)
     # phase 2: the wordmark
-    u = (k - 52) / (n - 52)
+    u = (k - END_SPLIT) / (n - END_SPLIT)
     a1 = smooth(u / 0.35)
     pil = Image.new('RGBA', (W, H), (0, 0, 0, 0))
     d = ImageDraw.Draw(pil)
@@ -742,8 +764,11 @@ def render_shot_frame(idx, i):
     img = grade(img)
     img = halation(img)
     img = vintage(img, s.get('era', 1.0), FRAME[0])
-    if s.get('burn') and u > 0.55:
-        img = burn(img, (u - 0.55) / 0.45)
+    b0 = s.get('burn')
+    if b0:
+        b0 = 0.55 if b0 is True else b0  # where in the shot the film burn starts
+        if u > b0:
+            img = burn(img, (u - b0) / (1 - b0))
     if s.get('radial'):
         img = radial_blur(img, s['radial'] * u)
     if s.get('fadein') and i < s['fadein']:
@@ -816,7 +841,8 @@ def main():
     cmd = ['ffmpeg', '-y', '-v', 'error', '-f', 'rawvideo', '-pix_fmt', 'bgr24', '-s', f'{W}x{H}', '-r', str(FPS), '-i', '-']
     if args.music:
         dur = TOTAL / FPS
-        cmd += ['-ss', str(args.music_at), '-t', f'{dur:.3f}', '-i', args.music,
+        at = args.music_at if args.music_at is not None else TRACK_DROP - DROP / FPS
+        cmd += ['-ss', f'{at:.3f}', '-t', f'{dur:.3f}', '-i', args.music,
                 '-af', f'afade=t=in:d=0.4,afade=t=out:st={dur - 2.2:.3f}:d=2.2', '-c:a', 'aac', '-b:a', '192k', '-shortest']
     cmd += ['-c:v', 'libx264', '-preset', 'slow', '-crf', str(args.crf), '-pix_fmt', 'yuv420p', '-movflags', '+faststart', args.out]
     p = subprocess.Popen(cmd, stdin=subprocess.PIPE)

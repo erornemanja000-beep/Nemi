@@ -17,6 +17,7 @@ export const UI = {
   sound: { de: 'Ton an', en: 'Sound on' },
   mute: { de: 'Ton aus', en: 'Sound off' },
   play: { de: 'Film abspielen', en: 'Play the film' },
+  replay: { de: 'Intro ansehen', en: 'Watch the intro' },
   scroll: { de: 'Scrollen', en: 'Scroll' },
   silent: { de: 'Stumm', en: 'Silent' },
   live: { de: 'Laut', en: 'Live' },
@@ -102,7 +103,7 @@ export const PROCESS = {
 };
 
 export const FACTS = [
-  { v: '2–3', u: { de: 'Wochen', en: 'weeks' }, d: { de: 'bis eine One-Page-Website online ist', en: 'until a one-page website is live' } },
+  { v: { de: 'Dein', en: 'Your' }, u: { de: 'Tempo', en: 'pace' }, d: { de: 'Zeitplan je nach Projekt, gemeinsam festgelegt', en: 'timeline depends on the project, set together' } },
   { v: '0', u: { de: 'Baukasten', en: 'templates' }, d: { de: 'jede Seite ist eigener Code', en: 'every page is hand-written code' } },
   { v: '30', u: { de: 'Minuten', en: 'minutes' }, d: { de: 'Erstgespräch, kostenlos', en: 'first call, free of charge' } },
   { v: 'DE·EN', u: '', d: { de: 'und weitere Sprachen', en: 'and more languages' } },
@@ -114,7 +115,7 @@ export const FAQ = {
   p: { de: 'Deine Frage ist nicht dabei? Schreib uns einfach.', en: 'Your question isn’t here? Just write to us.' },
   items: [
     { q: { de: 'Was kostet eine Website?', en: 'How much does a website cost?' }, a: { de: 'Das hängt vom Umfang ab. Nach dem ersten Gespräch bekommst du ein klares Angebot mit Fixpreis, ohne versteckte Kosten.', en: 'It depends on the scope. After the first call you get a clear, fixed-price quote with no hidden costs.' } },
-    { q: { de: 'Wie lange dauert es?', en: 'How long does it take?' }, a: { de: 'Eine One-Page-Website ist oft in zwei bis drei Wochen online. Größere Projekte brauchen länger, den Zeitplan legen wir gemeinsam fest.', en: 'A one-page website is often live in two to three weeks. Bigger projects take longer, and we set the schedule together.' } },
+    { q: { de: 'Wie lange dauert es?', en: 'How long does it take?' }, a: { de: 'Das hängt vom Projekt ab: vom Umfang, von den Inhalten und davon, wann Texte und Bilder bereitstehen. Den Zeitplan legen wir im Erstgespräch gemeinsam fest, und über einen Vorschau-Link siehst du jeden Fortschritt.', en: 'It depends on the project: its scope, the content and when texts and images are ready. We set the timeline together in the first call, and a preview link shows you every step.' } },
     { q: { de: 'Für welche Branchen arbeitet ihr?', en: 'Which industries do you work for?' }, a: { de: 'Für alle. Ob Café, Kanzlei, Werkstatt oder Hotel: Jede Branche hat ihre eigene Sprache, und genau die finden wir für dich.', en: 'All of them. Café, law firm, workshop or hotel, every industry has its own language, and we find the right one for you.' } },
     { q: { de: 'Was brauche ich von meiner Seite?', en: 'What do I need to provide?' }, a: { de: 'Vor allem dein Wissen über dein Unternehmen. Logo, Texte und Fotos sind willkommen. Was fehlt, organisieren wir.', en: 'Mostly your knowledge of your business. Logo, texts and photos are welcome. Whatever is missing, we take care of.' } },
     { q: { de: 'Kann ich später Inhalte ändern lassen?', en: 'Can I have content changed later?' }, a: { de: 'Ja. Öffnungszeiten, Preise oder neue Bilder ändern wir schnell für dich, auf Wunsch im Rahmen einer monatlichen Betreuung.', en: 'Yes. We update opening hours, prices or new images quickly, on request as part of a monthly care plan.' } },

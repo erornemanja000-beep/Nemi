@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import PORTALS from '../portals.json';
-import { reduced, vhPx, lenis } from '../scroll.js';
+import { reduced, vhPx } from '../scroll.js';
 
 // "Site in a site": a photo of a device whose screen shows the next website (the real hero,
 // live). Scrolling flies the camera into the screen until the screen is the viewport, then the
@@ -71,7 +71,7 @@ function layout(name, W, H) {
   return { s, pw, ph, ox, oy, quad, covers: pw >= W - 1 && ph >= H - 1 };
 }
 
-export default function Portal({ id, device, label, children, caption, dim = false, film = 0, progress = null, snap = 0 }) {
+export default function Portal({ id, device, label, children, caption, dim = false, film = 0, progress = null }) {
   const sec = useRef();
   const stage = useRef();
   const screen = useRef();
@@ -152,30 +152,6 @@ export default function Portal({ id, device, label, children, caption, dim = fal
     raf = requestAnimationFrame(frame);
     return () => cancelAnimationFrame(raf);
   }, [vp, name]);
-
-  // like the reference films: when you stop scrolling inside a film, the camera settles on the
-  // chapter whose line is fully on screen (desktop only, touch keeps its own momentum)
-  useEffect(() => {
-    if (!snap || reduced || !matchMedia('(pointer: fine)').matches) return;
-    let timer;
-    const settle = () => {
-      const r = sec.current.getBoundingClientRect();
-      const H = vp.H;
-      const zoom = ZOOM * H;
-      const len = film * H;
-      const q = (-r.top - zoom) / len;
-      if (q <= 0.01 || q >= 0.97) return;
-      const x = q * snap;
-      const target = (Math.floor(x) + 0.42) / snap;
-      if (Math.abs(target - q) * len < H * 0.35 && Math.abs(target - q) * len > 4 && lenis) {
-        lenis.scrollTo(scrollY + (target - q) * len, { duration: 0.9, easing: (t) => 1 - Math.pow(1 - t, 3) });
-      }
-    };
-    const on = () => { clearTimeout(timer); timer = setTimeout(settle, 220); };
-    addEventListener('wheel', on, { passive: true });
-    addEventListener('keyup', on);
-    return () => { clearTimeout(timer); removeEventListener('wheel', on); removeEventListener('keyup', on); };
-  }, [vp, snap, film]);
 
   const base = import.meta.env.BASE_URL;
   const img = `${base}portals/${name}.webp`;

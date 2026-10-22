@@ -3,7 +3,7 @@ import { useLang } from '../i18n.jsx';
 import { SERVICES, PROCESS, FACTS, FAQ, CONTACT, FOOT, INDUSTRIES, UI, SIXTH } from '../content.js';
 import { reduced } from '../scroll.js';
 import { RevealHeading, Up } from './Reveal.jsx';
-import { Logo } from './Chrome.jsx';
+import { Logo, replayIntro } from './Chrome.jsx';
 import { scrollToId, scrollToY } from '../scroll.js';
 
 const BASE = import.meta.env.BASE_URL;
@@ -127,7 +127,7 @@ export function Process() {
       <div className="wrap facts">
         {FACTS.map((f, i) => (
           <Up key={i} className="fact" delay={i * 80}>
-            <b>{f.v}</b><span>{L(f.u)}</span>
+            <b>{L(f.v)}</b><span>{L(f.u)}</span>
             <p>{L(f.d)}</p>
           </Up>
         ))}
@@ -233,6 +233,7 @@ export function Footer() {
         <a href={`${BASE}impressum.html`}>{L(FOOT.legal)}</a>
         <a href={`${BASE}datenschutz.html`}>{L(FOOT.privacy)}</a>
         <button onClick={() => setCredits(!credits)}>{L(FOOT.credits)}</button>
+        <button onClick={replayIntro}>▶ {L(UI.replay)}</button>
         <button onClick={() => scrollToY(0)}>{L(FOOT.top)} ↑</button>
       </div>
       {credits && <p className="wrap foot-credits">{L(FOOT.creditText)}</p>}

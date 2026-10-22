@@ -127,7 +127,7 @@ export const CONTACT = {
   eye: { de: 'Kontakt', en: 'Contact' },
   h: { de: ['Lass uns deiner Marke', 'eine *Stimme* geben.'], en: ['Let’s give your brand', 'a *voice*.'] },
   p: { de: 'Erzähl uns kurz von deinem Vorhaben. Wir melden uns persönlich bei dir, meist am selben Tag.', en: 'Tell us briefly about your project. We’ll get back to you personally, usually the same day.' },
-  mail: 'hallo@nemistudio.at',
+  mail: 'nemistudio7@gmail.com',
   direct: { de: 'Oder direkt per E-Mail', en: 'Or email us directly' },
   copy: { de: 'Kopieren', en: 'Copy' },
   copied: { de: 'Kopiert', en: 'Copied' },

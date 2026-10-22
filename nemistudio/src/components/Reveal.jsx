@@ -23,6 +23,11 @@ export function Words({ lines, start = 0 }) {
   ));
 }
 
+// body text: `*word*` becomes a highlighted key word
+export function Rich({ text }) {
+  return text.split(/(\*[^*]+\*)/).filter(Boolean).map((part, i) => (part.startsWith('*') ? <em className="kw" key={i}>{part.slice(1, -1)}</em> : part));
+}
+
 // a heading that reveals when it scrolls into view (outside the film)
 export function RevealHeading({ as: Tag = 'h2', lines, className = '' }) {
   const ref = useRef();

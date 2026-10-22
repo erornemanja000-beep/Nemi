@@ -66,6 +66,9 @@ img { display: block; max-width: 100%; }
 .logo { display: inline-flex; align-items: baseline; gap: 8px; }
 .logo-w { font-family: var(--sans); font-weight: 600; font-size: 24px; letter-spacing: -0.05em; line-height: 1; }
 .logo-i { position: relative; }
+/* key words in body text: the accent of the headlines, in small */
+.kw { font-family: var(--serif); font-style: italic; font-size: 1.12em; line-height: 1; color: var(--bone); }
+.lead .kw { color: var(--signal); }
 .logo-i i { position: absolute; left: 50%; top: -0.06em; width: 0.2em; height: 0.2em; border-radius: 50%; background: var(--signal); transform: translateX(-50%); }
 .logo-s { font-family: var(--mono); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--dim); }
 .logo.sm .logo-w { font-size: 18px; }
@@ -147,7 +150,45 @@ img { display: block; max-width: 100%; }
 /* footer */
 .foot { background: var(--ink); padding-top: clamp(100px, 16vh, 170px); overflow: hidden; }
 .foot-top { display: flex; justify-content: space-between; align-items: flex-end; gap: 30px; flex-wrap: wrap; }
-.foot-mark { font-family: var(--sans); font-weight: 600; font-size: 39vw; letter-spacing: -0.075em; line-height: 0.75; text-align: center; margin: 70px 0 -0.05em; color: var(--ink-3); user-select: none; }
+.foot-mark { font-family: var(--sans); font-weight: 600; font-size: 39vw; letter-spacing: -0.075em; line-height: 0.75; text-align: center; margin: 70px 0 -0.05em; color: var(--bone); user-select: none; position: relative; }
+/* the letters fade into the floor; the overlay leaves the dot and the butterfly untouched */
+.foot-mark::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 62%; background: linear-gradient(rgba(11, 11, 12, 0), rgba(11, 11, 12, 0.85)); pointer-events: none; }
+.fm-i { position: relative; display: inline-block; }
+.fm-stem { display: inline-block; }
+.fm-dot { position: absolute; left: 50%; top: -0.01em; width: 0.17em; height: 0.17em; margin-left: -0.05em; border-radius: 50%; background: var(--signal); }
+.fm-fly { position: absolute; left: 50%; top: 0.075em; width: 0.34em; height: 0.34em; margin: -0.17em 0 0 -0.135em; opacity: 0; z-index: 2; pointer-events: none; }
+.bf { display: block; width: 100%; height: 100%; overflow: visible; filter: drop-shadow(0 0.02em 0.04em rgba(0, 0, 0, 0.45)); }
+.bf-w { transform-box: view-box; transform-origin: 50% 50%; }
+.foot-mark.fly .bf-w { animation: bf-flap 0.17s ease-in-out infinite alternate; }
+.foot-mark.fly .bf-r { animation-delay: 0.02s; }
+.foot-mark.fly .fm-dot { animation: fm-dot 0.45s cubic-bezier(0.5, 0, 0.75, 0) forwards; }
+.foot-mark.fly .fm-fly { animation: fm-fly 5.2s cubic-bezier(0.45, 0.05, 0.4, 1) 0.15s forwards; }
+.foot-mark.fly .fm-stem { animation: fm-melt 1.4s var(--ease) 0.35s forwards; }
+@keyframes bf-flap { from { transform: scaleX(1); } to { transform: scaleX(0.16); } }
+@keyframes fm-dot { to { transform: scale(0.2); opacity: 0; } }
+@keyframes fm-melt { to { opacity: 0; filter: blur(0.05em); transform: translateY(0.06em) scaleY(0.85); } }
+@keyframes fm-fly {
+  0% { opacity: 0; transform: translate(0, 0) scale(0.35) rotate(0deg); }
+  6% { opacity: 1; transform: translate(0, -0.03em) scale(0.75) rotate(-6deg); }
+  22% { transform: translate(-0.22em, -0.26em) scale(0.9) rotate(-18deg); }
+  40% { transform: translate(0.02em, -0.46em) scale(0.95) rotate(10deg); }
+  58% { transform: translate(-0.2em, -0.7em) scale(1) rotate(-12deg); }
+  76% { opacity: 1; transform: translate(0.22em, -0.92em) scale(1) rotate(16deg); }
+  100% { opacity: 0; transform: translate(0.8em, -1.22em) scale(0.9) rotate(30deg); }
+}
+@media (max-width: 800px) {
+  .fm-fly { width: 0.5em; height: 0.5em; margin: -0.25em 0 0 -0.215em; }
+  .foot-mark.fly .fm-fly { animation-name: fm-fly-m; }
+}
+@keyframes fm-fly-m {
+  0% { opacity: 0; transform: translate(0, 0) scale(0.3) rotate(0deg); }
+  6% { opacity: 1; transform: translate(0, -0.05em) scale(0.7) rotate(-6deg); }
+  24% { transform: translate(-0.7em, -0.7em) scale(0.9) rotate(-18deg); }
+  44% { transform: translate(-0.25em, -1.35em) scale(1) rotate(10deg); }
+  64% { transform: translate(-1em, -2em) scale(1) rotate(-14deg); }
+  82% { opacity: 1; transform: translate(-0.4em, -2.6em) scale(0.95) rotate(12deg); }
+  100% { opacity: 0; transform: translate(0.4em, -3.2em) scale(0.85) rotate(24deg); }
+}
 .foot-bar { display: flex; align-items: center; gap: 28px; padding: 26px 0 110px; border-top: 1px solid var(--line); font-size: 13px; color: var(--dim); flex-wrap: wrap; }
 .foot-bar > :first-child { margin-right: auto; }
 .foot-bar a:hover, .foot-bar button:hover { color: var(--bone); }

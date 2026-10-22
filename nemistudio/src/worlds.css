@@ -33,6 +33,11 @@
 .wf-block.in .wf-ch { opacity: 1; transform: none; filter: blur(0); }
 .wf-block.out .wf-ch { opacity: 0; transform: translateY(-0.3em); filter: blur(8px); transition-delay: calc(var(--i) * 8ms); transition-duration: 0.45s; }
 .wf-h em { font-style: italic; color: var(--wf-accent); }
+.wf-p .kw { font-family: var(--serif); font-style: italic; font-size: 1.14em; line-height: 1; color: var(--wf-accent); }
+.wf-cafe .wf-p .kw { font-family: 'Fraunces Variable', Georgia, serif; }
+.wf-law .wf-p .kw { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 1.22em; }
+.wf-gym .wf-p .kw { font-family: inherit; font-style: normal; font-weight: 600; font-size: 1em; }
+.wf-hotel .wf-p .kw { font-family: 'Bodoni Moda Variable', Didot, Georgia, serif; }
 
 /* café: smell. Warm serif; the letters drift like steam and evaporate upwards */
 .wf-cafe { --wf-accent: #f2b48d; }

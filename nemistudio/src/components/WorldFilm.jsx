@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useLang } from '../i18n.jsx';
 import { frameUrl } from '../worlds.js';
 import { reduced } from '../scroll.js';
+import { Rich } from './Reveal.jsx';
 
 // A sense world: a scroll film on a WebGL canvas (two chapters, each blended from two neighbouring
 // frames, with a transition between them) and one short line per chapter on top.
@@ -350,7 +351,7 @@ export default function WorldFilm({ world, progress, index }) {
         <div className={`wf-block wf-${POS[i]}${i === 0 ? ' in' : ''}`} key={`${lang}-${i}`} ref={(el) => { blocks.current[i] = el; }}>
           <p className="wf-eye">0{i + 1} — {L(world.sense).split(' · ')[i % 2 === 0 ? 0 : 1] || L(world.sense)}</p>
           <h2 className="wf-h"><Letters text={L(c.h)} /></h2>
-          {c.p && <p className="wf-p">{L(c.p)}</p>}
+          {c.p && <p className="wf-p"><Rich text={L(c.p)} /></p>}
         </div>
       ))}
       <span className="wf-index" aria-hidden="true">0{index + 1}</span>

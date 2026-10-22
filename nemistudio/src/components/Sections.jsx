@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useLang } from '../i18n.jsx';
 import { SERVICES, PROCESS, FACTS, FAQ, CONTACT, FOOT, INDUSTRIES, UI, SIXTH } from '../content.js';
 import { reduced } from '../scroll.js';
-import { RevealHeading, Up } from './Reveal.jsx';
+import { RevealHeading, Up, Rich } from './Reveal.jsx';
 import { Logo, replayIntro } from './Chrome.jsx';
 import { scrollToId, scrollToY } from '../scroll.js';
 
@@ -56,7 +56,7 @@ export function Sixth() {
             return em ? <em key={pi}>{words}</em> : <span key={pi}>{words}</span>;
           })}
         </h2>
-        <Up as="p" className="lead sx-p" delay={400}>{L(SIXTH.p)}</Up>
+        <Up as="p" className="lead sx-p" delay={400}><Rich text={L(SIXTH.p)} /></Up>
       </div>
     </section>
   );
@@ -88,7 +88,7 @@ export function Services() {
             <Up as="li" key={s.n} delay={i * 60} className="svc-row" onPointerEnter={() => setImg(s.img)}>
               <span className="svc-n">{s.n}</span>
               <span className="svc-t">{L(s.t)}</span>
-              <span className="svc-d">{L(s.d)}</span>
+              <span className="svc-d"><Rich text={L(s.d)} /></span>
               <span className="svc-arr">↗</span>
             </Up>
           ))}
@@ -118,7 +118,7 @@ export function Process() {
               <span className="proc-n">{String(i + 1).padStart(2, '0')}</span>
               <div>
                 <h3>{L(s.t)}</h3>
-                <p>{L(s.d)}</p>
+                <p><Rich text={L(s.d)} /></p>
               </div>
             </Up>
           ))}
@@ -145,7 +145,7 @@ export function Faq() {
         <div>
           <p className="eye">{L(FAQ.eye)}</p>
           <RevealHeading lines={L(FAQ.h)} className="h-xl" />
-          <p className="lead">{L(FAQ.p)}</p>
+          <p className="lead"><Rich text={L(FAQ.p)} /></p>
         </div>
         <div className="faq-list">
           {FAQ.items.map((f, i) => (
@@ -153,7 +153,7 @@ export function Faq() {
               <button onClick={() => setOpen(open === i ? -1 : i)} aria-expanded={open === i}>
                 <span>{L(f.q)}</span><i />
               </button>
-              <div className="faq-a"><p>{L(f.a)}</p></div>
+              <div className="faq-a"><p><Rich text={L(f.a)} /></p></div>
             </div>
           ))}
         </div>
@@ -190,7 +190,7 @@ export function Contact() {
         <div>
           <p className="eye">{L(CONTACT.eye)}</p>
           <RevealHeading lines={L(CONTACT.h)} className="h-xl" />
-          <p className="lead">{L(CONTACT.p)}</p>
+          <p className="lead"><Rich text={L(CONTACT.p)} /></p>
           <div className="mail">
             <small>{L(CONTACT.direct)}</small>
             <a href={`mailto:${CONTACT.mail}`}>{CONTACT.mail}</a>
@@ -217,6 +217,56 @@ export function Contact() {
   );
 }
 
+// the footer wordmark: the dot of the i unfolds into a butterfly and flies away, the i melts
+function Butterfly() {
+  // one left wing pair; the right pair is its mirror
+  const wing = (
+    <>
+      <path d="M-1.5 -3 C -6 -22 -22 -44 -40 -42 C -52 -40 -50 -22 -42 -12 C -32 -1 -14 0 -1.5 1 Z" fill="url(#bf-up)" stroke="#5a1804" strokeWidth="1.6" />
+      <path d="M-1.5 2 C -12 3 -30 8 -33 20 C -36 31 -26 38 -17 33 C -9 28 -4 16 -1 6 Z" fill="url(#bf-lo)" stroke="#5a1804" strokeWidth="1.6" />
+      <path d="M-3 -2 C -14 -14 -26 -26 -38 -34 M-3 -1 C -16 -8 -30 -14 -44 -18 M-3 3 C -14 8 -22 14 -28 24" stroke="#7a2306" strokeWidth="0.9" fill="none" opacity="0.7" />
+      <circle cx="-41" cy="-33" r="1.9" fill="#fff4ec" />
+      <circle cx="-45" cy="-25" r="1.6" fill="#fff4ec" />
+      <circle cx="-34" cy="-38" r="1.4" fill="#fff4ec" />
+      <circle cx="-30" cy="29" r="1.3" fill="#fff4ec" />
+    </>
+  );
+  return (
+    <svg className="bf" viewBox="-50 -50 100 100" aria-hidden="true">
+      <defs>
+        <radialGradient id="bf-up" cx="0.9" cy="0.85" r="1"><stop offset="0" stopColor="#ff8a4a" /><stop offset="0.6" stopColor="#ff5a24" /><stop offset="1" stopColor="#c23a10" /></radialGradient>
+        <radialGradient id="bf-lo" cx="0.9" cy="0.1" r="1"><stop offset="0" stopColor="#ff7a3a" /><stop offset="1" stopColor="#d4441a" /></radialGradient>
+      </defs>
+      <g className="bf-w">{wing}</g>
+      <g className="bf-w bf-r"><g transform="scale(-1 1)">{wing}</g></g>
+      <ellipse cx="0" cy="3" rx="2.4" ry="14" fill="#7a2306" />
+      <circle cx="0" cy="-12" r="2.6" fill="#7a2306" />
+      <path d="M-1 -14 C -3 -22 -6 -27 -10 -30 M1 -14 C 3 -22 6 -27 10 -30" stroke="#b8441a" strokeWidth="1.1" fill="none" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function FootMark() {
+  const ref = useRef();
+  const [fly, setFly] = useState(false);
+  useEffect(() => {
+    if (reduced) return;
+    let t;
+    const io = new IntersectionObserver(([e]) => {
+      clearTimeout(t);
+      if (e.isIntersecting) t = setTimeout(() => setFly(true), 600);
+      else setFly(false);
+    }, { threshold: 0.55 });
+    io.observe(ref.current);
+    return () => { clearTimeout(t); io.disconnect(); };
+  }, []);
+  return (
+    <div className={`foot-mark${fly ? ' fly' : ''}`} ref={ref} aria-hidden="true">
+      nem<span className="fm-i"><span className="fm-stem">ı</span><span className="fm-dot" /><span className="fm-fly"><Butterfly /></span></span>
+    </div>
+  );
+}
+
 export function Footer() {
   const { L } = useLang();
   const [credits, setCredits] = useState(false);
@@ -226,7 +276,7 @@ export function Footer() {
         <RevealHeading lines={L(FOOT.big)} className="h-xxl" />
         <a className="btn btn-signal" href="#kontakt" onClick={(e) => { e.preventDefault(); scrollToId('kontakt'); }}>{L(UI.start)}<span>→</span></a>
       </div>
-      <div className="foot-mark" aria-hidden="true">nemi</div>
+      <FootMark />
       <div className="wrap foot-bar">
         <Logo small />
         <span>© 2026 Nemi Studio</span>

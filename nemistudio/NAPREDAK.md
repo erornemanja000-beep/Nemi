@@ -5,7 +5,7 @@ Pregled uživo: https://erornemanja000-beep.github.io/Nemi/nemistudio/
 
 ## v4: čula („sajt u sajtu“, po principu referentnih reelova)
 1. **Uvodni film** (25 s, DE/EN, 16:9 i 9:16): priča o tragovima. Svaka scena počinje na udarac muzike.
-   - Oko se otvori sa zenicom tačno u centru kadra i kamera odmah, bez reza, uleti u zenicu.
+   - Oko se otvori sa zenicom tačno u centru kadra; kamera kreće od prvog kadra i bez reza, sve brže, uleti u zenicu.
    - „Seit es Menschen gibt, hinterlassen wir Spuren.“ Zatim šaka u pećini, znak u kamenu, ime na papiru, glas na radiju i lice na ekranu.
    - „Immer mit demselben Wunsch: gesehen zu werden.“, pa „Heute ist deine Spur deine Website.“, pa „Die meisten Websites schweigen.“
    - Kraj: „Hinterlass eine, die bleibt.“, zatim logo nemi.
@@ -22,9 +22,13 @@ Pregled uživo: https://erornemanja000-beep.github.io/Nemi/nemistudio/
 4. Svaki svet je **film koji se skroluje** (WebGL): 6 poglavlja po 40 kadrova, kao na referentnim sajtovima.
    - Brzi snimci su skraćeni ili zamenjeni (bokser: usporeni snimak 40966, rukovanje: 46755) da skrol bude gladak.
    - Prelazi: svetlosni prelaz, pikseli, gorenje, zum kroz kadar, trake.
-5. **Zum nazad**: „Fünf Sinne. Und ein sechster.“
+5. **Zum nazad**: „Das war kein Film. Das waren Websites.“
 6. **Šesto čulo**: rečenica se dekodira iz šuma. „Nemi“ znači nem; dobar sajt govori bez reči.
 7. Na kraju: usluge, postupak, FAQ, kontakt.
+8. **Futer**: veliko „nemi“; tačka iznad „i“ se pretvori u narandžastog leptira i odleti, „i“ se istopi (ponavlja se pri svakom dolasku do dna).
+
+Ključne reči u tekstu su istaknute (`*reč*` u content.js/worlds.js): kurziv, narandžasto u uvodnim pasusima, u svetovima u boji tog sveta.
+Svetla dnevna svetla u kancelariji (žena, rukovanje, ugovor, potpis) dobila su tamniji filmski kolor (`GRADE` u tools/world_frames.py); poslednji kadar teretane je nova borkinja u crveno-plavom svetlu (40988).
 
 ## Alati
 - Uvodni film: `python3 tools/intro_film.py <klipovi> <slike> <izlaz.mp4> [--format reel] [--lang en] --music <mp3> --sr <AI-klipovi>`

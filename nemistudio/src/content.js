@@ -1,4 +1,4 @@
-// All copy, German first. `*word*` marks the one italic accent word of a headline.
+// All copy, German first. `*word*` marks the italic accent word of a headline, or a key word in body text.
 // Every string is { de, en }; L(x) picks the active language.
 
 export const NAV = [
@@ -34,8 +34,8 @@ export const OPEN = {
   eye: { de: 'Nemi Studio · Webdesign aus Österreich', en: 'Nemi Studio · web design from Austria' },
   h: { de: ['Websites, die', 'man *spürt*.'], en: ['Websites you', 'can *feel*.'] },
   p: {
-    de: 'Riechen, fühlen, sehen, hören. Und der sechste Sinn. Scroll in den Bildschirm.',
-    en: 'Smell, touch, sight, sound. And the sixth sense. Scroll into the screen.',
+    de: 'Riechen, fühlen, sehen, hören. Und der *sechste Sinn*. Scroll in den Bildschirm.',
+    en: 'Smell, touch, sight, sound. And the *sixth sense*. Scroll into the screen.',
   },
   scroll: { de: 'Scrollen', en: 'Scroll' },
 };
@@ -53,10 +53,10 @@ export const BAR = {
 
 export const OUTRO = {
   eye: { de: 'Showroom', en: 'Showroom' },
-  h: { de: ['Fünf Sinne.', 'Und ein *sechster*.'], en: ['Five senses.', 'And a *sixth*.'] },
+  h: { de: ['Das war kein Film.', 'Das waren *Websites*.'], en: ['That wasn’t a film.', 'Those were *websites*.'] },
   p: {
-    de: 'Eine gute Website riecht man, spürt man, hört man. Jede Branche klingt anders, und genau diesen Ton finden wir.',
-    en: 'You can smell a good website, feel it, hear it. Every industry sounds different, and we find exactly that tone.',
+    de: 'Vier Branchen, vier Sinne. So kann sich *deine Website* anfühlen. Jede Branche klingt anders, und genau diesen *Ton* finden wir.',
+    en: 'Four industries, four senses. This is how *your website* can feel. Every industry sounds different, and we find exactly that *tone*.',
   },
   open: { de: 'Ansehen', en: 'View' },
 };
@@ -68,8 +68,8 @@ export const SIXTH = {
     en: 'A website that knows what you are looking for *before* you ask.',
   },
   p: {
-    de: 'Nemi heißt auf Serbisch „stumm“. Wir bauen Websites, die ohne Worte sprechen: mit Bild, Bewegung und Gefühl.',
-    en: 'Nemi is Serbian for “silent”. We build websites that speak without words: with image, motion and feeling.',
+    de: 'Nemi heißt auf Serbisch „*stumm*“. Wir bauen Websites, die *ohne Worte* sprechen: mit Bild, Bewegung und Gefühl.',
+    en: 'Nemi is Serbian for “*silent*”. We build websites that speak *without words*: with image, motion and feeling.',
   },
 };
 
@@ -82,12 +82,12 @@ export const SERVICES = {
   eye: { de: 'Leistungen', en: 'Services' },
   h: { de: ['Alles, was deine Website', 'zum *Sprechen* bringt.'], en: ['Everything that makes', 'your website *speak*.'] },
   items: [
-    { n: '01', img: 'w/cafe/1/d/15.webp', t: { de: 'Scroll-Storytelling', en: 'Scroll storytelling' }, d: { de: 'Deine Seite erzählt beim Scrollen eine Geschichte. Jede Bewegung führt zum nächsten Schritt.', en: 'Your page tells a story as people scroll. Every movement leads to the next step.' } },
-    { n: '02', img: 'w/cafe/4/d/15.webp', t: { de: 'Animation & Effekte', en: 'Animation & effects' }, d: { de: 'Übergänge, Hover-Effekte, Text-Reveals und 3D, die sich hochwertig anfühlen und nie stören.', en: 'Transitions, hover effects, text reveals and 3D that feel premium and never get in the way.' } },
-    { n: '03', img: 'w/hotel/2/d/15.webp', t: { de: 'Bild, Video & KI', en: 'Images, video & AI' }, d: { de: 'Passende Fotos, Videos und KI-Visuals. Ausgewählt, bearbeitet oder neu erstellt für deine Marke.', en: 'The right photos, video and AI visuals. Chosen, edited or created for your brand.' } },
-    { n: '04', img: 'w/law/4/d/15.webp', t: { de: 'Texte & Mehrsprachig', en: 'Copy & multilingual' }, d: { de: 'Klare Texte auf Deutsch, Englisch und weiteren Sprachen. Sauber übersetzt und für Google eingerichtet.', en: 'Clear copy in German, English and more. Properly translated and set up for Google.' } },
-    { n: '05', img: 'w/gym/2/d/15.webp', t: { de: 'Schnell & auffindbar', en: 'Fast & findable' }, d: { de: 'Schlanker Code, kurze Ladezeiten und SEO-Grundlagen ab dem ersten Tag.', en: 'Lean code, short loading times and SEO basics from day one.' } },
-    { n: '06', img: 'w/hotel/5/d/15.webp', t: { de: 'Hosting & Betreuung', en: 'Hosting & care' }, d: { de: 'Domain, Hosting und Änderungen aus einer Hand. Du hast immer denselben Ansprechpartner.', en: 'Domain, hosting and updates from one place. You always talk to the same person.' } },
+    { n: '01', img: 'w/cafe/1/d/15.webp', t: { de: 'Scroll-Storytelling', en: 'Scroll storytelling' }, d: { de: 'Deine Seite erzählt beim Scrollen eine *Geschichte*. Jede Bewegung führt zum nächsten Schritt.', en: 'Your page tells a *story* as people scroll. Every movement leads to the next step.' } },
+    { n: '02', img: 'w/cafe/4/d/15.webp', t: { de: 'Animation & Effekte', en: 'Animation & effects' }, d: { de: 'Übergänge, Hover-Effekte, Text-Reveals und 3D, die sich *hochwertig* anfühlen und nie stören.', en: 'Transitions, hover effects, text reveals and 3D that feel *premium* and never get in the way.' } },
+    { n: '03', img: 'w/hotel/2/d/15.webp', t: { de: 'Bild, Video & KI', en: 'Images, video & AI' }, d: { de: 'Passende Fotos, Videos und KI-Visuals. Ausgewählt, bearbeitet oder *neu erstellt* für deine Marke.', en: 'The right photos, video and AI visuals. Chosen, edited or *created* for your brand.' } },
+    { n: '04', img: 'w/law/4/d/15.webp', t: { de: 'Texte & Mehrsprachig', en: 'Copy & multilingual' }, d: { de: 'Klare Texte auf Deutsch, Englisch und weiteren Sprachen. Sauber übersetzt und *für Google* eingerichtet.', en: 'Clear copy in German, English and more. Properly translated and set up *for Google*.' } },
+    { n: '05', img: 'w/gym/2/d/15.webp', t: { de: 'Schnell & auffindbar', en: 'Fast & findable' }, d: { de: 'Schlanker Code, *kurze Ladezeiten* und SEO-Grundlagen ab dem ersten Tag.', en: 'Lean code, *short loading times* and SEO basics from day one.' } },
+    { n: '06', img: 'w/hotel/5/d/15.webp', t: { de: 'Hosting & Betreuung', en: 'Hosting & care' }, d: { de: 'Domain, Hosting und Änderungen aus einer Hand. Du hast immer *denselben Ansprechpartner*.', en: 'Domain, hosting and updates from one place. You always talk to *the same person*.' } },
   ],
 };
 
@@ -95,10 +95,10 @@ export const PROCESS = {
   eye: { de: 'Ablauf', en: 'Process' },
   h: { de: ['Vom ersten Gespräch', 'bis *online*.'], en: ['From the first call', 'to *launch*.'] },
   steps: [
-    { t: { de: 'Kennenlernen', en: 'Getting to know you' }, d: { de: 'Ein Gespräch, 30 Minuten, kostenlos. Du erzählst von deinem Unternehmen, wir hören zu und stellen die richtigen Fragen.', en: 'One call, 30 minutes, free. You tell us about your business, we listen and ask the right questions.' } },
-    { t: { de: 'Konzept', en: 'Concept' }, d: { de: 'Moodboard, Schriften, Farben und ein erster Entwurf. Du siehst die Richtung, bevor eine Zeile Code entsteht.', en: 'Moodboard, typefaces, colours and a first draft. You see the direction before a single line of code.' } },
-    { t: { de: 'Gestaltung & Entwicklung', en: 'Design & build' }, d: { de: 'Wir bauen deine Website von Grund auf, ohne Baukasten. Über einen Vorschau-Link siehst du jeden Fortschritt.', en: 'We build your website from scratch, without templates. A preview link shows you every step.' } },
-    { t: { de: 'Launch & Betreuung', en: 'Launch & care' }, d: { de: 'Domain, Hosting, Google. Wir bringen alles online und bleiben auch danach für dich da.', en: 'Domain, hosting, Google. We take everything live and stay with you afterwards.' } },
+    { t: { de: 'Kennenlernen', en: 'Getting to know you' }, d: { de: 'Ein Gespräch, 30 Minuten, *kostenlos*. Du erzählst von deinem Unternehmen, wir *hören zu* und stellen die richtigen Fragen.', en: 'One call, 30 minutes, *free*. You tell us about your business, we *listen* and ask the right questions.' } },
+    { t: { de: 'Konzept', en: 'Concept' }, d: { de: 'Moodboard, Schriften, Farben und ein erster Entwurf. Du siehst die Richtung, *bevor* eine Zeile Code entsteht.', en: 'Moodboard, typefaces, colours and a first draft. You see the direction *before* a single line of code.' } },
+    { t: { de: 'Gestaltung & Entwicklung', en: 'Design & build' }, d: { de: 'Wir bauen deine Website *von Grund auf*, ohne Baukasten. Über einen Vorschau-Link siehst du *jeden Fortschritt*.', en: 'We build your website *from scratch*, without templates. A preview link shows you *every step*.' } },
+    { t: { de: 'Launch & Betreuung', en: 'Launch & care' }, d: { de: 'Domain, Hosting, Google. Wir bringen alles online und *bleiben* auch danach für dich da.', en: 'Domain, hosting, Google. We take everything live and *stay with you* afterwards.' } },
   ],
 };
 
@@ -112,21 +112,21 @@ export const FACTS = [
 export const FAQ = {
   eye: { de: 'FAQ', en: 'FAQ' },
   h: { de: ['Gute', '*Fragen*.'], en: ['Good', '*questions*.'] },
-  p: { de: 'Deine Frage ist nicht dabei? Schreib uns einfach.', en: 'Your question isn’t here? Just write to us.' },
+  p: { de: 'Deine Frage ist nicht dabei? *Schreib uns* einfach.', en: 'Your question isn’t here? Just *write to us*.' },
   items: [
-    { q: { de: 'Was kostet eine Website?', en: 'How much does a website cost?' }, a: { de: 'Das hängt vom Umfang ab. Nach dem ersten Gespräch bekommst du ein klares Angebot mit Fixpreis, ohne versteckte Kosten.', en: 'It depends on the scope. After the first call you get a clear, fixed-price quote with no hidden costs.' } },
-    { q: { de: 'Wie lange dauert es?', en: 'How long does it take?' }, a: { de: 'Das hängt vom Projekt ab: vom Umfang, von den Inhalten und davon, wann Texte und Bilder bereitstehen. Den Zeitplan legen wir im Erstgespräch gemeinsam fest, und über einen Vorschau-Link siehst du jeden Fortschritt.', en: 'It depends on the project: its scope, the content and when texts and images are ready. We set the timeline together in the first call, and a preview link shows you every step.' } },
-    { q: { de: 'Für welche Branchen arbeitet ihr?', en: 'Which industries do you work for?' }, a: { de: 'Für alle. Ob Café, Kanzlei, Werkstatt oder Hotel: Jede Branche hat ihre eigene Sprache, und genau die finden wir für dich.', en: 'All of them. Café, law firm, workshop or hotel, every industry has its own language, and we find the right one for you.' } },
-    { q: { de: 'Was brauche ich von meiner Seite?', en: 'What do I need to provide?' }, a: { de: 'Vor allem dein Wissen über dein Unternehmen. Logo, Texte und Fotos sind willkommen. Was fehlt, organisieren wir.', en: 'Mostly your knowledge of your business. Logo, texts and photos are welcome. Whatever is missing, we take care of.' } },
-    { q: { de: 'Kann ich später Inhalte ändern lassen?', en: 'Can I have content changed later?' }, a: { de: 'Ja. Öffnungszeiten, Preise oder neue Bilder ändern wir schnell für dich, auf Wunsch im Rahmen einer monatlichen Betreuung.', en: 'Yes. We update opening hours, prices or new images quickly, on request as part of a monthly care plan.' } },
-    { q: { de: 'Funktioniert die Website auch am Handy?', en: 'Does the website work on phones?' }, a: { de: 'Ja. Wir gestalten zuerst für das Handy und testen auf allen gängigen Geräten. Animationen passen sich an und respektieren die Einstellung für reduzierte Bewegung.', en: 'Yes. We design for phones first and test on all common devices. Animations adapt and respect the reduced-motion setting.' } },
+    { q: { de: 'Was kostet eine Website?', en: 'How much does a website cost?' }, a: { de: 'Das hängt vom Umfang ab. Nach dem ersten Gespräch bekommst du ein klares Angebot mit *Fixpreis*, ohne versteckte Kosten.', en: 'It depends on the scope. After the first call you get a clear, *fixed-price* quote with no hidden costs.' } },
+    { q: { de: 'Wie lange dauert es?', en: 'How long does it take?' }, a: { de: 'Das hängt *vom Projekt* ab: vom Umfang, von den Inhalten und davon, wann Texte und Bilder bereitstehen. Den Zeitplan legen wir im Erstgespräch gemeinsam fest, und über einen Vorschau-Link siehst du jeden Fortschritt.', en: 'It depends on *the project*: its scope, the content and when texts and images are ready. We set the timeline together in the first call, and a preview link shows you every step.' } },
+    { q: { de: 'Für welche Branchen arbeitet ihr?', en: 'Which industries do you work for?' }, a: { de: 'Für *alle*. Ob Café, Kanzlei, Werkstatt oder Hotel: Jede Branche hat ihre eigene Sprache, und genau die finden wir für dich.', en: '*All* of them. Café, law firm, workshop or hotel, every industry has its own language, and we find the right one for you.' } },
+    { q: { de: 'Was brauche ich von meiner Seite?', en: 'What do I need to provide?' }, a: { de: 'Vor allem *dein Wissen* über dein Unternehmen. Logo, Texte und Fotos sind willkommen. Was fehlt, organisieren wir.', en: 'Mostly *your knowledge* of your business. Logo, texts and photos are welcome. Whatever is missing, we take care of.' } },
+    { q: { de: 'Kann ich später Inhalte ändern lassen?', en: 'Can I have content changed later?' }, a: { de: 'Ja. Öffnungszeiten, Preise oder neue Bilder ändern wir *schnell* für dich, auf Wunsch im Rahmen einer monatlichen Betreuung.', en: 'Yes. We update opening hours, prices or new images *quickly*, on request as part of a monthly care plan.' } },
+    { q: { de: 'Funktioniert die Website auch am Handy?', en: 'Does the website work on phones?' }, a: { de: 'Ja. Wir gestalten *zuerst für das Handy* und testen auf allen gängigen Geräten. Animationen passen sich an und respektieren die Einstellung für reduzierte Bewegung.', en: 'Yes. We design *for phones first* and test on all common devices. Animations adapt and respect the reduced-motion setting.' } },
   ],
 };
 
 export const CONTACT = {
   eye: { de: 'Kontakt', en: 'Contact' },
   h: { de: ['Lass uns deiner Marke', 'eine *Stimme* geben.'], en: ['Let’s give your brand', 'a *voice*.'] },
-  p: { de: 'Erzähl uns kurz von deinem Vorhaben. Wir melden uns persönlich bei dir, meist am selben Tag.', en: 'Tell us briefly about your project. We’ll get back to you personally, usually the same day.' },
+  p: { de: 'Erzähl uns kurz von deinem Vorhaben. Wir melden uns *persönlich* bei dir, meist *am selben Tag*.', en: 'Tell us briefly about your project. We’ll get back to you *personally*, usually *the same day*.' },
   mail: 'nemistudio7@gmail.com',
   direct: { de: 'Oder direkt per E-Mail', en: 'Or email us directly' },
   copy: { de: 'Kopieren', en: 'Copy' },

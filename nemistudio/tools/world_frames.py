@@ -12,6 +12,7 @@ import os
 import sys
 
 import cv2
+import numpy as np
 
 SRC, OUT, MANIFEST = sys.argv[1], sys.argv[2], sys.argv[3]
 N = 40            # frames per chapter
@@ -42,7 +43,7 @@ WORLDS = {
         ('40966', 6.5, 10.0, 0.6),
         ('52097', 2.8, 4.6, 0.55),
         ('52084', 1.0, 6.0, 0.5),
-        ('coverr-contemplative-woman-with-windswept-hair', 9.0, 14.0, 0.62),
+        ('40988', 6.6, 8.8, 0.52),
     ],
     'hotel': [
         ('coverr-woman-posing-by-the-window-6038', 4.2, 9.0, 0.5),
@@ -53,6 +54,29 @@ WORLDS = {
         ('1704', 1.0, 6.0, 0.5),
     ],
 }
+
+# a cinematic grade for daylight footage, so it sits in the dark look of the site:
+# exp = exposure, con = contrast, sat = saturation, warm = gold in the highlights, vig = vignette
+GRADE = {
+    ('law', 1): dict(exp=0.46, con=1.25, sat=0.62, warm=0.08, vig=0.75),
+    ('law', 4): dict(exp=0.42, con=1.25, sat=0.62, warm=0.08, vig=0.75),
+    ('law', 5): dict(exp=0.26, con=1.3, sat=0.6, warm=0.09, vig=0.78),
+    ('law', 6): dict(exp=0.5, con=1.2, sat=0.65, warm=0.08, vig=0.7),
+}
+
+def grade(img, exp, sat, warm, vig, con=1.0):
+    f = (img.astype(np.float32) / 255) ** 2.2 * exp
+    f = np.clip(f * (2.51 * f + 0.03) / (f * (2.43 * f + 0.59) + 0.14), 0, 1) ** (1 / 2.2)  # filmic: whites roll off
+    f = f ** con  # deeper mids
+    lum = f @ np.float32([0.114, 0.587, 0.299])
+    f = lum[..., None] + (f - lum[..., None]) * sat
+    f += np.float32([-1, 0.25, 1]) * warm * lum[..., None] ** 2           # gold highlights (BGR)
+    f += np.float32([0.5, 0.15, -0.2]) * 0.06 * (1 - lum[..., None]) ** 3  # cool, deep shadows
+    h, w = f.shape[:2]
+    yy, xx = np.mgrid[0:h, 0:w].astype(np.float32)
+    r = ((xx - w / 2) / (w / 2)) ** 2 + ((yy - h / 2) / (h / 2)) ** 2
+    f *= (1 - vig * np.clip(r / 2, 0, 1) ** 1.3)[..., None]
+    return (np.clip(f, 0, 1) * 255 + 0.5).astype(np.uint8)
 
 def cover(img, size, fx=0.5, fy=0.5):
     h, w = img.shape[:2]
@@ -88,6 +112,8 @@ for world, chapters in WORLDS.items():
             for k, idx in enumerate(want):
                 f = frames[idx] if idx in frames else frames[max(frames)]
                 img = cover(f, size, fx if kind == 'm' else 0.5)
+                if (world, ci + 1) in GRADE:
+                    img = grade(img, **GRADE[(world, ci + 1)])
                 cv2.imwrite(os.path.join(d, f'{k + 1:02d}.webp'), img, [cv2.IMWRITE_WEBP_QUALITY, q])
         manifest[world].append({'n': N, 'src': clip})
         print(world, ci + 1, clip, len(frames))

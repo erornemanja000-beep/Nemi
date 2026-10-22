@@ -2,7 +2,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useLang } from '../i18n.jsx';
 import { OUTRO } from '../content.js';
 import { WORLDS } from '../worlds.js';
-import { Words } from './Reveal.jsx';
+import { Words, Rich } from './Reveal.jsx';
 import { goSite } from './Chrome.jsx';
 import { reduced, vhPx } from '../scroll.js';
 
@@ -59,7 +59,7 @@ export default function Outro() {
         <div className="outro-head rv" ref={head}>
           <p className="eye"><span className="dot" />{L(OUTRO.eye)}</p>
           <h2 className="h-xl"><Words lines={L(OUTRO.h)} /></h2>
-          <p className="lead">{L(OUTRO.p)}</p>
+          <p className="lead"><Rich text={L(OUTRO.p)} /></p>
         </div>
         <div className="outro-grid" ref={grid}>
           {WORLDS.map((s, i) => (

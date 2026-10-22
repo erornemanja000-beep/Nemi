@@ -124,12 +124,11 @@ def hero(src, t, sp, z0, z1, c=(0.5, 0.5), to=0, **kw):
     """the main shot of a section, running until frame `to`"""
     add(sh(src, t, to - here(), sp, z0, z1, c, **kw))
 
-# A) the eye opens with the pupil in the centre of the frame, and the moment it is open the camera
-# flies straight into it: one continuous move, no cut
+# A) the eye opens with the pupil in the centre of the frame and the camera is already moving: one
+# continuous, accelerating move straight into the pupil, no cut
 PUPIL = (0.437, 0.594)
 mark['eye'] = here()
-add(sh('v:48017', 0.98, 11, 1.0, 1.28, 1.45, PUPIL, fadein=3, era=1.0))
-add(sh('v:48017', 0.98 + 11 / FPS, 14, 0.85, 1.45, 24.0, PUPIL, ease='expo', radial=0.35, era=1.0, burn=0.78))
+add(sh('v:48017', 0.98, 25, 1.0, 1.3, 24.0, PUPIL, ease='dive', radial=0.35, rp=2, fadein=3, era=1.0, burn=0.8))
 add(sh('black', n=2))
 # B) fire: since there have been people
 mark['fire'] = here()
@@ -728,8 +727,8 @@ def end_frame(k, n):
         r = size * 0.06 * (1 + 0.6 * (1 - dot))
         cx, cy = bbox[2] + iw * 0.18 + size * 0.06, y + size * 0.16
         d.ellipse([cx - r, cy - r, cx + r, cy + r], fill=(255, 90, 36, int(255 * dot)))
-    f3 = font('mono', 24 * S)
-    d.text(((W - d.textlength(T['url'], font=f3)) / 2, H / 2 + size * 0.5), T['url'], font=f3, fill=(239, 234, 226, int(170 * smooth((u - 0.3) / 0.3))))
+    f3 = font('mono', 34 * S)
+    d.text(((W - d.textlength(T['url'], font=f3)) / 2, H / 2 + size * 0.5), T['url'], font=f3, fill=(239, 234, 226, int(235 * smooth((u - 0.3) / 0.3))))
     a = np.asarray(pil, np.float32)
     blur = (1 - a1) * 16 * S
     if blur > 0.5:
@@ -758,7 +757,10 @@ def render_shot_frame(idx, i):
         return img
     if s['src'] == 'end':
         return end_frame(i, n)
-    z = s['z0'] + (s['z1'] - s['z0']) * ease(s.get('ease', 'lin'), u)
+    if s.get('ease') == 'dive':  # zoom in log space: moving from the first frame, faster every frame
+        z = s['z0'] * (s['z1'] / s['z0']) ** (u ** 1.5)
+    else:
+        z = s['z0'] + (s['z1'] - s['z0']) * ease(s.get('ease', 'lin'), u)
     img = place(src_frame(s, i, idx), z, s.get('rc', s['c']) if REEL else s['c'])
     img = sharpen(img)
     img = grade(img)
@@ -770,7 +772,7 @@ def render_shot_frame(idx, i):
         if u > b0:
             img = burn(img, (u - b0) / (1 - b0))
     if s.get('radial'):
-        img = radial_blur(img, s['radial'] * u)
+        img = radial_blur(img, s['radial'] * u ** s.get('rp', 1))
     if s.get('fadein') and i < s['fadein']:
         img = (img.astype(np.float32) * (i / s['fadein'])).astype(np.uint8)
     if s.get('flash_in') and i < s['flash_in']:

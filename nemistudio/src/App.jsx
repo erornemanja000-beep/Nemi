@@ -5,7 +5,7 @@ import { useLang } from './i18n.jsx';
 import { OPEN, PORTAL } from './content.js';
 import { WORLDS, FILM_VH } from './worlds.js';
 import { NemiBar, VideoIntro, ReplayButton, shouldPlayIntro } from './components/Chrome.jsx';
-import { Words } from './components/Reveal.jsx';
+import { Words, Rich } from './components/Reveal.jsx';
 import Portal from './components/Portal.jsx';
 import WorldFilm from './components/WorldFilm.jsx';
 import Outro from './components/Outro.jsx';
@@ -18,7 +18,7 @@ function Opening({ ready }) {
     <div className={`opening rv${ready ? ' on' : ''}`}>
       <p className="eye"><span className="dot" />{L(OPEN.eye)}</p>
       <h1 className="h-xxl"><Words lines={L(OPEN.h)} /></h1>
-      <p className="lead">{L(OPEN.p)}</p>
+      <p className="lead"><Rich text={L(OPEN.p)} /></p>
       <div className="open-row">
         <span className="open-cue" aria-hidden="true"><i />{L(OPEN.scroll)}</span>
         <ReplayButton />

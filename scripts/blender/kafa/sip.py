@@ -374,9 +374,9 @@ def mat_stoneware(body, seed=7, look=None):
 
     # --- glazura: ovsena sivo-zelena; oblaci, gvožđe, reljef gline kroz tanku glazuru, krem kapljice
     gv = N.noise(P, 55.0, detail=5, rough=0.62)
-    glaze = N.mix(N.ramp(gv, 0.36, 0.64), (0.072, 0.083, 0.060), (0.222, 0.282, 0.218))
+    glaze = N.mix(N.ramp(gv, 0.36, 0.64), (0.070, 0.085, 0.058), (0.218, 0.296, 0.214))
     cloud = N.ramp(N.noise(P, 30.0, detail=4, distortion=0.5), 0.48, 0.72)
-    glaze = N.mix(N.mul(cloud, K['cloud']), glaze, (0.14, 0.105, 0.075))         # smeđi oblaci
+    glaze = N.mix(N.mul(cloud, K['cloud']), glaze, (0.13, 0.110, 0.070))         # maslinasto-smeđi oblaci
     top_tone = N.ramp(z, GLAZE_Z + 0.010, RIM_Z - 0.002)                      # ka obodu glazura je tanja
     glaze = N.mix(N.mul(top_tone, 0.15), glaze, (0.21, 0.140, 0.085))
     # smeđe pruge od oboda naniže (glazura se pri pečenju tanji i curi): šum izdužen po visini
@@ -396,14 +396,14 @@ def mat_stoneware(body, seed=7, look=None):
     spot_d, spot_c = N.voronoi(P, 150.0)
     sr, sg, _ = N.split(spot_c)
     spot_r = N.math('MULTIPLY_ADD', N.mul(sg, sg), 0.20, 0.10)                  # poluprečnik u ćelijama
-    spots = N.mul(N.ramp(N.sub(spot_d, spot_r), 0.02, -0.03), N.ramp(sr, 0.22, 0.32))
-    spots = N.mul(spots, N.ramp(N.noise(P, 40.0, detail=2), 0.20, 0.40, 0.65, 1.0))
-    glaze = N.mix(N.mul(spots, 0.85 * K['spots']), glaze, (0.050, 0.026, 0.013))
+    spots = N.mul(N.ramp(N.sub(spot_d, spot_r), 0.02, -0.03), N.ramp(sr, 0.15, 0.25))
+    spots = N.mul(spots, N.ramp(N.noise(P, 40.0, detail=2), 0.15, 0.35, 0.75, 1.0))
+    glaze = N.mix(N.mul(spots, 0.95 * K['spots']), glaze, (0.040, 0.020, 0.010))
     sp2_d, sp2_c = N.voronoi(P, 300.0)                                         # drugi sloj, sitnije (0,4-1 mm)
     sp2 = N.mul(N.ramp(sp2_d, N.math('MULTIPLY_ADD', N.split(sp2_c)[1], 0.12, 0.10), 0.06),
                 N.ramp(N.split(sp2_c)[0], 0.45, 0.55))
     sp2 = N.mul(sp2, N.ramp(N.noise(P, 22.0, detail=2), 0.35, 0.60, 0.25, 1.0))
-    glaze = N.mix(N.mul(sp2, 0.75 * K['spots']), glaze, (0.060, 0.032, 0.016))
+    glaze = N.mix(N.mul(sp2, 0.90 * K['spots']), glaze, (0.050, 0.026, 0.013))
     blot = N.mul(N.ramp(N.noise(P, 24.0, detail=3, distortion=0.6), 0.64, 0.76), N.sub(1.0, inner))
     glaze = N.mix(N.mul(blot, 0.55 * K['spots']), glaze, (0.085, 0.050, 0.028))   # mekane smeđe mrlje
     fleck_d, _ = N.voronoi(P, 650.0)
@@ -412,7 +412,8 @@ def mat_stoneware(body, seed=7, look=None):
     glaze = N.mix(N.mul(edge_in, K['edge']), glaze, (0.21, 0.115, 0.060))       # tanka ivica -> karamel
     thin = N.mul(N.ramp(nd, 0.0008, 0.0060, 1.0, 0.0), N.ramp(N.noise(P, 48.0, detail=3), 0.35, 0.62, 0.25, 0.75))
     glaze = N.mix(N.mul(N.mul(thin, K['thin']), N.sub(1.0, inner)), glaze, (0.13, 0.080, 0.046))   # tanji pojas
-    cream = N.math('MAXIMUM', dome, N.mul(lip, 0.6))
+    lip_edge = N.mul(N.ramp(nd, 0.0, 0.0009), N.ramp(nd, 0.0009, 0.0034, 1.0, 0.0))   # samo zadebljan rub
+    cream = N.math('MAXIMUM', dome, N.mul(lip_edge, 0.6))
     glaze = N.mix(N.mul(cream, K['drip']), glaze, (0.40, 0.39, 0.32))           # debela kapljica = krem
     rim_brk = N.mul(N.ramp(z, RIM_Z - 0.0085, RIM_Z - 0.0025), N.ramp(N.noise(P, 300.0), 0.25, 0.6, 0.6, 1.0))
     glaze = N.mix(N.mul(rim_brk, 0.92), glaze, (0.10, 0.050, 0.026))         # obod: glazura puca u smeđe
@@ -727,8 +728,9 @@ def parse_args(argv):
     ap.add_argument('--dist', type=float, default=0.60)
     ap.add_argument('--frame-z', dest='frame_z', type=float, default=0.050)
     ap.add_argument('--key', type=float, default=70.0, help='key prozor (area 0,6x0,9 m), W')
-    ap.add_argument('--strip', type=float, default=10.0, help='svaka od dve trake pozadi, W (svetle samo šolju)')
-    ap.add_argument('--reflector', type=float, default=1.7,
+    ap.add_argument('--strip', type=float, default=3.0,
+                    help='svaka od dve trake pozadi, W (svetle samo šolju; na 10 W su jače od key-a i peru glazuru)')
+    ap.add_argument('--reflector', type=float, default=1.0,
                     help='niska blenda levo-napred, W (samo odsjaj na šolji; 0 = bez)')
     ap.add_argument('--sun', type=float, default=5.0, help='sunce na zidu (gobo), W/m²')
     ap.add_argument('--sun-spot', dest='sun_spot', default='{},{}'.format(*C.STUDIO['sun_spot']),

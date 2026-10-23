@@ -62,6 +62,9 @@ const groupLabel: Record<ShopGroupId, L> = {
   equipment: F.type.options.find((o) => o.id === 'equipment')!.label,
 }
 
+/** Koliko dugo mreža posle filtera zadržava staru visinu: fade (360 ms) + Lenis skok do prodavnice (~1,2 s). */
+const HOLD_MS = 1600
+
 /** Trajanje tokena u ms (--dur-base je 1ms u reduced motion). */
 function tokenMs(name: string, fallback: number): number {
   const value = parseFloat(getComputedStyle(document.documentElement).getPropertyValue(name))
@@ -79,12 +82,16 @@ export function Shop() {
   const active = hasActiveFilters(filters)
   const revealRef = useReveal<HTMLDivElement>()
   const gridRef = useRef<HTMLDivElement>(null)
+  const titleRef = useRef<HTMLHeadingElement>(null)
 
-  // filter iz drugih sekcija (Brew guide): ostale grupe se brišu, kao pri otvaranju sa ?brew=
+  // filter iz drugih sekcija (Brew guide): ostale grupe se brišu, kao pri otvaranju sa ?brew=.
+  // Fokus prelazi na naslov prodavnice (skrol radi pošiljalac), da tastatura nastavi odavde.
   useEffect(() => {
     const onFilter = (e: Event) => {
       const next = filtersFromEvent((e as CustomEvent<unknown>).detail)
-      if (next) setFilters(next)
+      if (!next) return
+      setFilters(next)
+      titleRef.current?.focus({ preventScroll: true })
     }
     window.addEventListener(SHOP_FILTER_EVENT, onFilter)
     return () => window.removeEventListener(SHOP_FILTER_EVENT, onFilter)
@@ -99,14 +106,41 @@ export function Shop() {
     if (brew) setFilters({ ...EMPTY_FILTERS, brew: [brew] })
   }
 
-  // fade mreže posle promene filtera ili sortiranja (pre iscrtavanja, da nova mreža ne trepne)
+  // Posle promene filtera ili sortiranja (pre iscrtavanja, da nova mreža ne trepne):
+  //  - mreža koja se smanjuje zadržava staru visinu (min-height) HOLD_MS, pa se ne pomera ništa ispod
+  //    prodavnice dok traje skok na #find-your-cup (Lenis iz Brew guide-a) ili fade;
+  //  - fade mreže (samo opacity, --dur-base; u reduced motion bez fade-a).
   const key = filterKey(filters, sort)
   const lastKey = useRef(key)
-  useLayoutEffect(() => {
-    if (key === lastKey.current) return
-    lastKey.current = key
+  // poslednja iscrtana visina mreže (ResizeObserver; prati i jezik, širinu i zadržanu visinu)
+  const shownHeight = useRef(0)
+  const holdTimer = useRef(0)
+  useEffect(() => {
     const el = gridRef.current
-    if (!el || isReducedMotion() || typeof el.animate !== 'function') return
+    if (!el || typeof ResizeObserver === 'undefined') return
+    const ro = new ResizeObserver(() => {
+      shownHeight.current = el.offsetHeight
+    })
+    ro.observe(el)
+    return () => {
+      ro.disconnect()
+      window.clearTimeout(holdTimer.current)
+    }
+  }, [])
+  useLayoutEffect(() => {
+    const el = gridRef.current
+    if (!el || key === lastKey.current) return
+    lastKey.current = key
+    const shown = shownHeight.current
+    el.style.minHeight = ''
+    if (el.offsetHeight < shown) {
+      el.style.minHeight = `${shown}px`
+      window.clearTimeout(holdTimer.current)
+      holdTimer.current = window.setTimeout(() => {
+        el.style.minHeight = ''
+      }, HOLD_MS)
+    }
+    if (isReducedMotion() || typeof el.animate !== 'function') return
     el.animate([{ opacity: 0 }, { opacity: 1 }], { duration: tokenMs('--dur-base', 360), easing: 'cubic-bezier(0.22, 1, 0.36, 1)' })
   }, [key])
 
@@ -126,7 +160,7 @@ export function Shop() {
         {/* naslov i SHOP-1 */}
         <div className="mt-s5 grid gap-s5 lg:mt-s6 lg:grid-cols-12 lg:items-center lg:gap-s7">
           <div className="lg:col-span-7">
-            <h2 id="t-shop" tabIndex={-1} className="type-display m-0 text-h2 leading-none focus:outline-none">
+            <h2 ref={titleRef} id="t-shop" tabIndex={-1} className="type-display m-0 text-h2 leading-none focus:outline-none">
               {tx(shop.title)}
             </h2>
             <p className="m-0 mt-s3 max-w-[34rem] text-[1.125rem] leading-snug font-semibold">{tx(shop.subtitle)}</p>

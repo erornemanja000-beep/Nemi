@@ -11,8 +11,8 @@ import { site } from '../content/site'
 import type { Product } from '../content/types'
 import { useLang } from '../i18n/LangContext'
 import { Button } from './Button'
-import { Overlay } from './CartDrawer'
 import { Icon } from './Icon'
+import { Overlay } from './Overlay'
 import { Price } from './Price'
 
 /** Mala slova, bez akcenata i umlauta (ä → a, ú → u), ß → ss. */

@@ -1,5 +1,7 @@
 // Jezik (uzor: RealEstates/src/i18n/LangContext.tsx). Podrazumevano EN, izbor se pamti u
-// localStorage (storageKeys.lang). Pri promeni jezika menja <html lang>, document.title i meta description.
+// localStorage (storageKeys.lang). Pri promeni jezika menja <html lang> i meta description.
+// document.title upisuje svaka ruta sama: početna (Home.tsx) naslov sajta, pravne stranice i Credits svoj
+// (PageMeta u Legal.tsx), pa promena jezika na /impressum ne upisuje naslov početne.
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
 import { fill, storageKeys } from '../config/site'
 import { site } from '../content/site'
@@ -31,7 +33,6 @@ export function LangProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     document.documentElement.lang = lang
-    document.title = fill(site.seo.title[lang])
     document.querySelector('meta[name="description"]')?.setAttribute('content', fill(site.seo.description[lang]))
   }, [lang])
 

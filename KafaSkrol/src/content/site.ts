@@ -1,5 +1,5 @@
 // Sadržaj sajta: SEO, header, skip linkovi, pretraga, chat, demo napomena (tekstovi.md sa dopunama Z3).
-// vite.config.ts čita site.seo.title.en, site.seo.description.en, site.h1.en i site.demo.en (ili site.noscript.en).
+// vite.config.ts čita site.seo.title.en, site.seo.description.en, site.h1.en i site.noscript.en.
 // Oznake {brand}, {email}… menja fill(); {n} broj, {q} upit pretrage.
 import type { L, Link } from './types.ts'
 

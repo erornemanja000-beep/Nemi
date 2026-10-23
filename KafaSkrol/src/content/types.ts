@@ -41,6 +41,11 @@ export type SipCard = {
   line: L
   /** Kraće ime za telefon (npr. „Pink Bourbon"). */
   shortName?: L
+  /**
+   * Note na kartici, tačno kao tabela SIP kartica u tekstovi.md. Bez ovoga važe note proizvoda; razlika je
+   * Huila na DE („Panela" na kartici, „Panela (Vollrohrzucker)" u prodavnici).
+   */
+  notes?: L<string[]>
 }
 
 export type ProductKind = 'coffee' | 'gear' | 'set'
@@ -114,6 +119,15 @@ export type PhotoEntry = {
 
 export type ImageSize = { src: string; width: number; height: number }
 
+/**
+ * Pun kadar i isečak u jedinicama S (stranica kvadrata kadra), od gornjeg levog ugla punog kadra.
+ * Isti oblik i brojevi kao `full` i `crop` u seq.json (SeqGeometry u src/lib/sequence.ts).
+ */
+export type SeqMediaGeometry = {
+  full: { W: number; H: number }
+  crop: { x0: number; y0: number; w: number; h: number }
+}
+
 /** Sekvenca kadrova (public/media/seq/<id>), detalji su u seq.json (plan, Interfejs 4). */
 export type SeqMedia = {
   id: ChapterId
@@ -123,8 +137,18 @@ export type SeqMedia = {
   manifest: string
   /** Poster po nivou: d = desktop, m = telefon (plan, Interfejs 3). */
   poster: { d: ImageSize; m: ImageSize }
+  /**
+   * Geometrija pre seq.json (i u reduced motion, kad se seq.json ne traži): poster stoji na mestu
+   * isečka, pa zamena prvim kadrom nema skoka. Kad seq.json stigne, važi njegov `full` i `crop`.
+   */
+  geometry: SeqMediaGeometry
   /** true tek kad postoji seq.json (Z2 privremeni kadrovi, kasnije pravi renderi). */
   ready: boolean
+  /**
+   * Isto kao `placeholder` u seq.json: true za privremene kadrove (Z2). Credits prikazuje red
+   * „Until the final renders are in…" dok bar jedna sekvenca nema `placeholder: false`.
+   */
+  placeholder?: boolean
 }
 
 export type VideoSource = { src: string; type: string }
@@ -166,4 +190,28 @@ export type LegalPage = {
   intro: L
   /** Naslovi onoga što bi stajalo u pravom projektu (`[FEHLT]` spiskovi iz tekstovi.md). */
   items: L<string[]>
+}
+
+/** Stavka spiska pravne stranice: naslov, a umesto čipa „not in demo" demo tekst ili link na drugu stranicu. */
+export type LegalEntry = {
+  title: L
+  /** demo tekst (npr. Versand: dostava iz prodavnice) */
+  text?: L
+  /** link na drugu rutu (npr. Datenschutz → /cookies) */
+  href?: string
+  /** onemogućeno dugme uz tekst (Widerruf: „Confirm withdrawal") */
+  action?: L
+}
+
+/** LegalPage + polja stranice (src/content/legal.ts). `items` (naslovi) se pravi iz `entries`. */
+export type LegalPageContent = LegalPage & {
+  /** document.title, do 60 znakova; {brand} menja fill() */
+  docTitle: L
+  /** podnaslov ispod naslova (AGB) */
+  subtitle?: L
+  /** tekst stranice ispod zajedničkog legal.text (Datenschutz), ili umesto njega uz `bodyReplacesText` */
+  body?: L
+  /** true: `body` stoji umesto zajedničkog legal.text (Cookies) */
+  bodyReplacesText?: boolean
+  entries: LegalEntry[]
 }

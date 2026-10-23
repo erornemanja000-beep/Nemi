@@ -150,6 +150,8 @@
     -webkit-text-size-adjust: 100%;
     color-scheme: light;
     background: var(--pp-cream);
+    /* mesto za klizač ostaje i kad lockScroll (meni, korpa, modal) sakrije klizač: raspored se ne pomera */
+    scrollbar-gutter: stable;
   }
   body {
     margin: 0;
@@ -203,7 +205,7 @@ html.lenis body {
 .lenis.lenis-stopped {
   overflow: clip;
 }
-/* paneli koji se sami skroluju (korpa, meni, modal) dobijaju data-lenis-prevent */
+/* paneli koji se sami skroluju (korpa, meni, pretraga, modal) dobijaju data-lenis-prevent (Overlay.tsx) */
 .lenis [data-lenis-prevent] {
   overscroll-behavior: contain;
 }

@@ -238,12 +238,24 @@ def transmission_card(scene, hex_color, center, radius=4.0):
 
 # ---------------------------------------------------------------- svetlo
 
-def lights(scene, which, subjects, stream_objs, key=70.0, strip=10.0, stream_key=None):
-    """Foto-studio iz common.py oko LIGHT_TARGET (POUR: 1 S niže). Mlevena kafa ne prima key ove scene,
-    nego StreamKey na istom mestu u obe scene (između dva key-a), pa se mlaz na šavu ne menja."""
+def lights(scene, which, subjects, stream_objs, key=70.0, strip=6.0, refl=3.0, stream_key=None):
+    """Foto-studio iz common.py oko LIGHT_TARGET (POUR: 1 S niže) + blenda „Odsjaj“: velika bela ploča
+    levo-napred, nisko, vidljiva samo u odsjaju predmeta (subjects): prednja strana inoksa dobija svetao
+    meki odsjaj, a crna zastava desno tamnu traku (kontrast kao na product fotografiji).
+    Mlevena kafa ne prima key ove scene, nego StreamKey na istom mestu u obe scene (između dva key-a),
+    pa se mlaz na šavu ne menja."""
     dz = 0.0 if which == 'grind' else -S
     tgt = LIGHT_TARGET + Vector((0.0, 0.0, dz))
     ls = C.photo_studio_lights(tuple(tgt), subjects, None, key=key, strip=strip, flags=True)
+    if refl > 0:
+        only = bpy.data.collections.new('OdsjajPrima')
+        for ob in subjects:
+            only.objects.link(ob)
+        pos = tgt + 0.85 * C.direction(-138.0, 4.0)
+        ro = C.area_light('Odsjaj', tuple(pos), tuple(tgt), (0.55, 0.75), refl, 6000)
+        C.ray_visibility(ro, camera=False, diffuse=False, glossy=True, transmission=False, scatter=False)
+        ro.light_linking.receiver_collection = only
+        ls.append(ro)
     if not stream_objs:
         return ls
     k = next(o for o in ls if o.name == 'Key')
@@ -272,7 +284,7 @@ def mat_grounds():
     """Mlevena kafa: mat, malo svetlija od zrna, svaka mrvica druge nijanse."""
     m, nt, b, N = C.new_material('MlevenaKafa')
     oi = N.new('ShaderNodeObjectInfo')
-    col = N.mix(N.ramp(oi.outputs['Random'], 0.0, 1.0), (0.050, 0.025, 0.013), (0.120, 0.066, 0.036))
+    col = N.mix(N.ramp(oi.outputs['Random'], 0.0, 1.0), (0.026, 0.013, 0.007), (0.075, 0.040, 0.021))
     N.put(col, b.inputs['Base Color'])
     b.inputs['Roughness'].default_value = 0.85
     b.inputs['Specular IOR Level'].default_value = 0.3
@@ -449,13 +461,13 @@ def mat_bean():
     P = tc.outputs['Object']
     oi = N.new('ShaderNodeObjectInfo')
     rnd = oi.outputs['Random']
-    base = N.mix(N.ramp(rnd, 0.0, 1.0), (0.034, 0.016, 0.008), (0.072, 0.036, 0.018))
+    base = N.mix(N.ramp(rnd, 0.0, 1.0), (0.020, 0.0095, 0.0048), (0.046, 0.023, 0.0115))
     mott = N.noise(P, 700.0, detail=3, rough=0.55)
     base = N.mix(N.ramp(mott, 0.35, 0.70), N.tint(base, (0.80, 0.78, 0.76)), N.tint(base, (1.18, 1.15, 1.10)))
     chaff = N.new('ShaderNodeAttribute', attribute_type='GEOMETRY', attribute_name='chaff').outputs['Fac']
     breakup = N.ramp(N.noise(P, 1400.0, detail=2), 0.30, 0.62)
     cm = N.mul(N.ramp(chaff, 0.25, 0.75), N.math('MULTIPLY_ADD', breakup, 0.8, 0.2))
-    col = N.mix(cm, base, (0.36, 0.26, 0.15))
+    col = N.mix(cm, base, (0.27, 0.19, 0.11))
     N.put(col, b.inputs['Base Color'])
     N.put(N.mixf(cm, N.math('MULTIPLY_ADD', N.noise(P, 220.0, detail=2), 0.16, 0.34), 0.80), b.inputs['Roughness'])
     b.inputs['Specular IOR Level'].default_value = 0.5
@@ -601,16 +613,17 @@ def mat_steel(name, rough=0.22, color=(0.62, 0.61, 0.59), aniso=0.65, spun=False
         streak = N.noise(N.xyz(N.mul(r, 2600.0), 0.0, 0.0), 1.0, detail=3)
     else:
         streak = N.noise(N.vmath('MULTIPLY', P, (35.0, 35.0, 2600.0)), 1.0, detail=3)
-    sm = N.mul(N.ramp(N.noise(P, 16.0, detail=4, distortion=0.5), 0.56, 0.78), smudge)
+    sm = N.mul(N.ramp(N.noise(P, 16.0, detail=4, distortion=0.5), 0.60, 0.82), smudge)
     marks = sm
-    if prints:
+    if prints:                  # otisak = mrlja nepravilne ivice, a ne disk (na 1200 px šare se ne vide)
+        grain = N.noise(P, 260.0, detail=2, distortion=0.8)
         for c, ax in PRINTS:
             q = N.vmath('DIVIDE', N.vmath('SUBTRACT', P, c), ax)
-            d = N.add(N.vmath('LENGTH', q), N.mul(N.sub(N.noise(P, 700.0, detail=1), 0.5), 0.5))
-            marks = N.math('MAXIMUM', marks, N.mul(N.ramp(d, 1.0, 0.55), 0.85))
-    rgh = N.add(N.math('MULTIPLY_ADD', N.sub(streak, 0.5), 0.10, rough), N.mul(marks, 0.11))
+            d = N.add(N.vmath('LENGTH', q), N.mul(N.sub(grain, 0.5), 0.9))
+            marks = N.math('MAXIMUM', marks, N.mul(N.ramp(d, 1.0, 0.45), 0.7))
+    rgh = N.add(N.math('MULTIPLY_ADD', N.sub(streak, 0.5), 0.10, rough), N.mul(marks, 0.045))
     N.put(rgh, b.inputs['Roughness'])
-    N.put(N.mul(N.math('MULTIPLY_ADD', marks, -0.45, 1.0), aniso), b.inputs['Anisotropic'])
+    N.put(N.mul(N.math('MULTIPLY_ADD', marks, -0.20, 1.0), aniso), b.inputs['Anisotropic'])
     bump = N.new('ShaderNodeBump')
     bump.inputs['Distance'].default_value = 1.0
     N.put(N.mul(streak, 0.0000025), bump.inputs['Height'])
@@ -618,13 +631,13 @@ def mat_steel(name, rough=0.22, color=(0.62, 0.61, 0.59), aniso=0.65, spun=False
     return m
 
 
-def mat_plastic(name, color=(0.016, 0.016, 0.016), rough=0.40):
+def mat_plastic(name, color=(0.012, 0.012, 0.012), rough=0.52, spec=0.32):
     m, nt, b, N = C.new_material(name)
     tc = N.new('ShaderNodeTexCoord')
     P = tc.outputs['Object']
     b.inputs['Base Color'].default_value = (*color, 1.0)
     N.put(N.math('MULTIPLY_ADD', N.noise(P, 60.0, detail=3), 0.12, rough - 0.06), b.inputs['Roughness'])
-    b.inputs['Specular IOR Level'].default_value = 0.45
+    b.inputs['Specular IOR Level'].default_value = spec
     return m
 
 
@@ -656,7 +669,7 @@ def build_grinder(M):
     steel_pol = mat_steel('InoxPolirani', rough=0.13, aniso=0.45, prints=False, smudge=0.6)
     steel_spun = mat_steel('InoxTockic', rough=0.17, aniso=0.75, spun=True, prints=False, smudge=0.7)
     black = mat_plastic('CrnaPlastika')
-    rubber = mat_plastic('Guma', color=(0.012, 0.012, 0.012), rough=0.62)
+    rubber = mat_plastic('Guma', color=(0.010, 0.010, 0.010), rough=0.70, spec=0.25)
     mark = mat_plastic('Oznake', color=(0.03, 0.03, 0.03), rough=0.55)
     glass = mat_glass('StakloLevka')
     objs = []
@@ -1036,12 +1049,13 @@ def parse():
     p.add_argument('--rot', type=float, default=-25.0, help='okret mlina oko otvora (stepeni)')
     p.add_argument('--fstop', type=float, default=FSTOP)
     p.add_argument('--key', type=float, default=70.0)
-    p.add_argument('--strip', type=float, default=10.0)
+    p.add_argument('--strip', type=float, default=6.0)
     p.add_argument('--punjenje', type=int, default=1450, help='zrna u levku pre G1')
     p.add_argument('--tok', type=float, default=4.0, help='zrna po kadru u mlazu odozgo')
     p.add_argument('--traka', type=float, default=0.6, help='brzina zrna pri puštanju, m/s (stvarno vreme)')
     p.add_argument('--odvod', type=float, default=0.06, help='koliko se klip u grlu spusti G50-G96 (m)')
-    p.add_argument('--mleveno', type=int, default=170, help='čestica mlevene kafe po kadru')
+    p.add_argument('--mleveno', type=int, default=320, help='čestica mlevene kafe po kadru')
+    p.add_argument('--odsjaj', type=float, default=3.0, help='blenda levo-napred (samo odsjaj), W')
     p.add_argument('--podkoraci', type=int, default=10)
     p.add_argument('--seed', type=int, default=SEED)
     p.add_argument('--poster', action='store_true', help='poster.png = G1')
@@ -1069,7 +1083,7 @@ def build(a):
     parts = build_grinder(M)
     beans = place_beans(shape, pos, quat, frames, rel, M, render_meshes)
     em, crumbs = build_grounds(sc, a.mleveno, end_g=G_GRIND[1] + 1)
-    lights(sc, 'grind', parts + beans, crumbs, key=a.key, strip=a.strip)
+    lights(sc, 'grind', parts, crumbs, key=a.key, strip=a.strip, refl=a.odsjaj)   # trake bi zrna isprale u sivo
     bake_particles(sc)
     return sc, cam, M
 

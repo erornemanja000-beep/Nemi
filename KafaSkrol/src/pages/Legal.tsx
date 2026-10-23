@@ -1,29 +1,24 @@
 // Jedna stranica za sve pravne slugove iz legal.ts (demo stub, Z3 tačka 3). Naslov, podnaslov (AGB),
 // uvod „Konzept / Demo", zajednički tekst (Cookies ga menja svojim, Datenschutz dodaje svoj ispod),
 // pa spisak „What goes here": svaka stavka ima demo tekst, link, onemogućeno dugme ili čip „not in demo".
-// [FEHLT] se ne prikazuje doslovno. Ispod je footer (linkovi na ostale pravne stranice).
+// [FEHLT] se ne prikazuje doslovno. Footer (linkovi na ostale pravne stranice) dodaje App.tsx.
 // PageMeta (deli ga i Credits.tsx): naslov kartice, header u stanju „page", vrh stranice i fokus na H1.
 import { useEffect, useLayoutEffect, useRef, type RefObject } from 'react'
 import { Link, Navigate } from 'react-router-dom'
 import { Button } from '../components/Button'
 import { fill } from '../config/site'
-import { legal, legalPages, type LegalEntry } from '../content/legal'
-import { site } from '../content/site'
-import type { LegalSlug } from '../content/types'
+import { legal, legalPages } from '../content/legal'
+import type { LegalEntry, LegalSlug } from '../content/types'
 import { useLang } from '../i18n/LangContext'
 import { setActiveChapter } from '../lib/chapterStore'
 import { scrollToTarget } from '../lib/motion'
-import { Footer } from '../sections/Footer'
 
 /**
  * Za stranice van početne: document.title, header u stanju „page" i skok na vrh (BrowserRouter ne
- * vraća skrol sam). Naslov se upisuje u sledećem kadru, jer LangProvider (roditelj) posle promene
- * jezika upisuje naslov početne, a efekti roditelja idu posle efekata deteta. Pri izlasku se vraća
- * naslov početne. `heading` dobija fokus, da čitač ekrana pročita novu stranicu.
+ * vraća skrol sam). Naslov piše samo ova stranica (LangProvider ne piše naslov), a početna upisuje svoj
+ * kad se na nju vrati. `heading` dobija fokus, da čitač ekrana pročita novu stranicu.
  */
 export function PageMeta({ title, heading }: { title: string; heading: RefObject<HTMLElement | null> }) {
-  const { lang } = useLang()
-
   useLayoutEffect(() => {
     setActiveChapter('page')
     scrollToTarget(0, true)
@@ -32,14 +27,8 @@ export function PageMeta({ title, heading }: { title: string; heading: RefObject
   }, [heading])
 
   useEffect(() => {
-    const frame = requestAnimationFrame(() => {
-      document.title = title
-    })
-    return () => {
-      cancelAnimationFrame(frame)
-      document.title = fill(site.seo.title[lang])
-    }
-  }, [title, lang])
+    document.title = title
+  }, [title])
 
   return null
 }
@@ -77,7 +66,7 @@ export default function Legal({ slug }: { slug: LegalSlug }) {
   const page = legalPages.find((p) => p.slug === slug)
   if (!page) return <Navigate to="/" replace />
   // Cookies: svoj tekst umesto zajedničkog; ostale (Datenschutz) dodaju svoj ispod zajedničkog (legal.ts)
-  const ownTextOnly = page.slug === 'cookies'
+  const ownTextOnly = Boolean(page.body && page.bodyReplacesText)
 
   return (
     <>
@@ -104,7 +93,6 @@ export default function Legal({ slug }: { slug: LegalSlug }) {
           </Button>
         </article>
       </main>
-      <Footer />
     </>
   )
 }

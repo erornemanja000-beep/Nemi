@@ -1,6 +1,6 @@
 // Formati za cene, Grundpreis, grame, visinu i datume, tačno kao u tekstovi.md:
-//   DE „€ 17,90", „€ 71,60/kg", „1.950–2.200 m", „23.10.2026"
-//   EN „€17.90",  „€71.60/kg",  „1,950–2,200 m"
+//   DE „€ 17,90", „€ 71,60/kg", „1.950–2.200 m", „20.10.2026"
+//   EN „€17.90",  „€71.60/kg",  „1,950–2,200 m", „Oct 20, 2026"
 // Separatori su ručni (ne Intl), da izlaz bude isti u svakom pregledaču i u Node-u.
 // Bez DOM-a: fajl proverava scripts/check-data.ts (`npm run check`).
 import type { Lang } from '../content/types.ts'
@@ -63,13 +63,14 @@ export function formatAltitude(altitude: { min: number; max?: number }, lang: La
 const MONTHS_EN = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
 /**
- * Datum: DE „23.10.2026". EN „23 Oct 2026" je privremen: konačan EN format daje Z3 (tekstovi.md).
+ * Datum (tekstovi.md, „Format datuma"): DE „20.10.2026" (kao de-AT), EN „Oct 20, 2026" (kao en-US sa
+ * kratkim mesecom). Razmaci u EN datumu su nelomljivi, da se datum ne prelomi u dva reda.
  */
 export function formatDate(date: CalendarDate, lang: Lang): string {
   if (lang === 'de') {
     return `${String(date.day).padStart(2, '0')}.${String(date.month).padStart(2, '0')}.${date.year}`
   }
-  return `${date.day}${NBSP}${MONTHS_EN[date.month - 1]}${NBSP}${date.year}`
+  return `${MONTHS_EN[date.month - 1]}${NBSP}${date.day},${NBSP}${date.year}`
 }
 
 /** Današnji datum u Beču (Europe/Vienna), bez obzira na zonu pregledača. */

@@ -8,9 +8,9 @@ import { site } from '../content/site'
 import { useLang } from '../i18n/LangContext'
 import { lockScroll } from '../lib/motion'
 import { Button } from './Button'
-import { Overlay } from './CartDrawer'
 import { Icon } from './Icon'
 import { LangSwitch } from './LangSwitch'
+import { Overlay } from './Overlay'
 import { SearchBox } from './SearchPanel'
 
 type Props = { open: boolean; onClose: () => void }

@@ -56,13 +56,17 @@ const items: Chapter[] = [
   },
 ]
 
-/** Tri staklene kartice u SIP-u. Note, cena i datum prženja dolaze iz proizvoda (products.ts). */
+/**
+ * Tri staklene kartice u SIP-u. Cena i datum prženja dolaze iz proizvoda (products.ts). Note su tačno
+ * iz tabele SIP kartica u tekstovi.md (Huila na DE: „Panela", a u prodavnici „Panela (Vollrohrzucker)").
+ */
 const sipCards: SipCard[] = [
   {
     label: { en: 'Origin', de: 'Herkunft' },
     sub: { en: 'Where it grows', de: 'Wo er wächst' },
     product: 'guji',
     line: { en: 'Ethiopia · 1,950–2,200\u00a0m', de: 'Äthiopien · 1.950–2.200\u00a0m' },
+    notes: { en: ['Jasmine', 'Bergamot', 'White peach'], de: ['Jasmin', 'Bergamotte', 'Weißer Pfirsich'] },
   },
   {
     label: { en: 'Flavor', de: 'Geschmack' },
@@ -70,12 +74,14 @@ const sipCards: SipCard[] = [
     product: 'huila-pink-bourbon',
     line: { en: 'Colombia · Limited lot', de: 'Kolumbien · Limitiertes Lot' },
     shortName: { en: 'Pink Bourbon', de: 'Pink Bourbon' },
+    notes: { en: ['Hibiscus', 'Pink grapefruit', 'Panela'], de: ['Hibiskus', 'Rosa Grapefruit', 'Panela'] },
   },
   {
     label: { en: 'Roast', de: 'Röstung' },
     sub: { en: 'How dark we go', de: 'Wie dunkel wir rösten' },
     product: 'on-repeat',
     line: { en: 'House blend · Medium-dark', de: 'Hausmischung · Mittel-dunkel' },
+    notes: { en: ['Milk chocolate', 'Hazelnut', 'Caramel'], de: ['Milchschokolade', 'Haselnuss', 'Karamell'] },
   },
 ]
 

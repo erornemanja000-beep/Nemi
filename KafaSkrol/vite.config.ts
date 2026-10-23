@@ -27,7 +27,7 @@ const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replac
 
 /**
  * Upisuje u index.html ime brenda i SEO (EN) iz src/config/site.ts i src/content/site.ts, i pravi
- * <noscript> (skriven H1, tri poglavlja na EN, GRIND poster, demo red). index.html zato nema brend.
+ * <noscript> (skriven H1, tri poglavlja na EN, GRIND poster, red site.noscript). index.html zato nema brend.
  */
 function siteHtml(): Plugin {
   const title = fill(site.seo.title.en)
@@ -52,7 +52,7 @@ function siteHtml(): Plugin {
     `          <img src="${poster.m.src}" width="${poster.m.width}" height="${poster.m.height}" alt="${esc(grindAlt)}" />`,
     '        </picture>',
     ...chapters.items.map((c) => `        <h2>${esc(c.title.en)}</h2>\n        <p>${esc(fill(c.text.en))}</p>`),
-    `        <p class="noscript__demo">${esc(fill(site.demo.en))}</p>`,
+    `        <p class="noscript__demo">${esc(fill(site.noscript.en))}</p>`,
     '      </div>',
     '    </noscript>',
   ].join('\n')

@@ -732,8 +732,9 @@ def parse():
     p.add_argument('--adaptive', type=float, default=0.02)
     p.add_argument('--fstop', type=float, default=GR.FSTOP)
     p.add_argument('--key', type=float, default=70.0)
-    p.add_argument('--strip', type=float, default=10.0)
-    p.add_argument('--mleveno', type=int, default=170, help='čestica mlevene kafe po kadru (isto kao GRIND)')
+    p.add_argument('--strip', type=float, default=6.0)
+    p.add_argument('--mleveno', type=int, default=320, help='čestica mlevene kafe po kadru (isto kao GRIND)')
+    p.add_argument('--odsjaj', type=float, default=3.0, help='blenda levo-napred (samo odsjaj), W')
     p.add_argument('--poster', action='store_true', help='poster.png = G150')
     p.add_argument('--bez-zamucenja', dest='bez_zamucenja', action='store_true')
     p.add_argument('--ponovo-peci', dest='ponovo_peci', action='store_true', help='ponovo ispeci mape')
@@ -801,7 +802,7 @@ def build(a):
     catcher.visible_glossy = False
 
     em, crumbs = GR.build_grounds(sc, a.mleveno, end_g=GR.G_POUR[1])
-    GR.lights(sc, 'pour', subjects, crumbs, key=a.key, strip=a.strip)
+    GR.lights(sc, 'pour', subjects, crumbs, key=a.key, strip=a.strip, refl=a.odsjaj)
 
     # ---------------- animacija po kadru G
     dt = GR.SLOW / GR.FPS

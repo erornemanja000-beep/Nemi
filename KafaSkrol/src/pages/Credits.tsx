@@ -3,8 +3,8 @@
 // licencom iz photo.credit i natpisima iz legal.ts (credits.photos). Para: media.steamCredit.
 // Desktop: tabela (Foto · Urheber · Quelle · Lizenz). Telefon: isti redovi kao lista, bez tabele od
 // četiri kolone na 390 px. Spoljni linkovi imaju rel="noopener noreferrer".
-// Red o privremenim kadrovima: dok media.ts nema polje SeqMedia.placeholder (dodaje ga Z13), red stoji;
-// kad sve sekvence dobiju placeholder: false, nestaje sam.
+// Red o privremenim kadrovima stoji dok bar jedna sekvenca u media.ts nema `placeholder: false`
+// (SeqMedia.placeholder, isto kao seq.json); kad pravi renderi stignu, nestaje sam. Footer dodaje App.tsx.
 import { useRef, type ReactNode } from 'react'
 import { Button } from '../components/Button'
 import { Icon } from '../components/Icon'
@@ -13,7 +13,6 @@ import { credits } from '../content/legal'
 import { media, steamCredit } from '../content/media'
 import type { L } from '../content/types'
 import { useLang } from '../i18n/LangContext'
-import { Footer } from '../sections/Footer'
 import { PageMeta } from './Legal'
 
 type RowText = { photo: L; usedIn: L; source: string }
@@ -56,7 +55,7 @@ if (media.steam.pour.ready || media.steam.sip.ready) {
   })
 }
 
-const hasPlaceholders = Object.values(media.seq).some((s) => !('placeholder' in s) || s.placeholder !== false)
+const hasPlaceholders = Object.values(media.seq).some((s) => s.placeholder !== false)
 
 const linkClass = 'inline-flex min-h-tap items-center gap-1 underline underline-offset-[3px] hover:text-accent-text'
 
@@ -183,7 +182,6 @@ export default function Credits() {
           </Button>
         </article>
       </main>
-      <Footer />
     </>
   )
 }

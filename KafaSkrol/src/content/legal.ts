@@ -1,30 +1,9 @@
 // Pravne stranice kao demo stub i stranica Credits (tekstovi.md, Z3 tačke 2 i 3). Sadržaj se ne izmišlja:
 // svaka stranica ima isti uvod i spisak onoga što bi stajalo u pravom projektu. Stavka bez teksta i linka
 // dobija čip legal.missing („not in demo"); [FEHLT] se na stranici ne prikazuje doslovno.
-import type { L, LegalPage } from './types.ts'
+// Tipovi LegalEntry i LegalPageContent su u types.ts.
+import type { L, LegalEntry, LegalPageContent } from './types.ts'
 import { shop } from './shop.ts'
-
-/** Stavka spiska: naslov, a umesto čipa „not in demo" demo tekst ili link na drugu stranicu. */
-export type LegalEntry = {
-  title: L
-  /** demo tekst (npr. Versand: dostava iz prodavnice) */
-  text?: L
-  /** link na drugu rutu (npr. Datenschutz → /cookies) */
-  href?: string
-  /** onemogućeno dugme uz tekst (Widerruf: „Confirm withdrawal") */
-  action?: L
-}
-
-/** LegalPage iz types.ts + polja stranice. `items` (naslovi) se pravi iz `entries`. */
-export type LegalPageContent = LegalPage & {
-  /** document.title, do 60 znakova; {brand} menja fill() */
-  docTitle: L
-  /** podnaslov ispod naslova (AGB) */
-  subtitle?: L
-  /** tekst stranice umesto zajedničkog legal.text (Cookies) ili ispod njega (Datenschutz) */
-  body?: L
-  entries: LegalEntry[]
-}
 
 /** Zajedničko za svih šest stranica (Z3 tačka 3). */
 export const legal = {
@@ -140,7 +119,9 @@ export const legalPages: LegalPageContent[] = [
     slug: 'cookies',
     title: { en: 'Cookies', de: 'Cookies' },
     docTitle: { en: 'Cookies | {brand}', de: 'Cookies | {brand}' },
-    // ključevi moraju da budu isti kao storageKeys u src/config/site.ts (proverava check-content.ts)
+    // svoj tekst umesto zajedničkog legal.text; ključevi moraju da budu isti kao storageKeys u
+    // src/config/site.ts (proverava check-content.ts)
+    bodyReplacesText: true,
     body: {
       en: "This demo doesn't use cookies. Your language and cart are saved only in your browser (localStorage) and are never sent to us. There are two entries: kafa-lang (language) and kafa-cart (cart). To remove them, clear this site's data in your browser.",
       de: 'Diese Demo verwendet keine Cookies. Sprache und Warenkorb werden nur in deinem Browser gespeichert (localStorage) und nicht an uns geschickt. Es sind zwei Einträge: kafa-lang (Sprache) und kafa-cart (Warenkorb). Löschen kannst du sie, indem du die Websitedaten dieser Seite in deinem Browser löschst.',

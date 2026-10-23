@@ -116,13 +116,24 @@ function gear(id: 'grinder' | 'dripper' | 'kettle', alt: ProductImage['alt']): P
 }
 
 /** Sekvenca kadrova; `ready` tek kad postoji seq.json (Z2, kasnije pravi renderi). */
-function seq(id: ChapterId, poster: SeqMedia['poster'], ready: boolean): SeqMedia {
+function seq(id: ChapterId, poster: SeqMedia['poster'], geometry: SeqMedia['geometry']): SeqMedia {
   const base = `/media/seq/${id}`
-  return { id, base, manifest: `${base}/seq.json`, poster, ready }
+  return { id, base, manifest: `${base}/seq.json`, poster, geometry, ready: SEQ_READY[id], placeholder: SEQ_PLACEHOLDER[id] }
 }
 
 // seq.json postoji za sve tri (Z2 privremeni kadrovi, 23.10.2026)
-const SEQ_READY = { grind: true, pour: true, sip: true }
+const SEQ_READY: Record<ChapterId, boolean> = { grind: true, pour: true, sip: true }
+// isto kao `placeholder` u seq.json; pravi render (Z21) ima false, pa red o privremenim kadrovima u Credits nestaje
+const SEQ_PLACEHOLDER: Record<ChapterId, boolean> = { grind: true, pour: true, sip: true }
+
+/**
+ * Pun kadar i isečak u jedinicama S (Z5), isto kao `full` i `crop` u seq.json. Pravi render koji ih
+ * promeni menja i ove brojeve (SeqCanvas u dev-u upozorava kad se razlikuju).
+ */
+const geo = (W: number, H: number, x0: number, y0: number, w: number, h: number): SeqMedia['geometry'] => ({
+  full: { W, H },
+  crop: { x0, y0, w, h },
+})
 
 /** Para: odluka direktora 4. webm je prvi izvor, mp4 drugi; A ide u POUR, B u SIP. */
 function steam(name: 'steam-cup-a' | 'steam-cup-b', width: number, height: number): SteamMedia {
@@ -146,17 +157,17 @@ export const media: MediaManifest = {
     grind: seq('grind', {
       d: { src: '/media/seq/grind/d/0001.webp', width: 672, height: 1500 },
       m: { src: '/media/seq/grind/m/0001.webp', width: 448, height: 1000 },
-    }, SEQ_READY.grind),
+    }, geo(1, 1.25, 0.22, 0, 0.56, 1.25)),
     // poster POUR = G150, isečak 0,72 × 1 S
     pour: seq('pour', {
       d: { src: '/media/seq/pour/poster-d.webp', width: 864, height: 1200 },
       m: { src: '/media/seq/pour/poster-m.webp', width: 576, height: 800 },
-    }, SEQ_READY.pour),
+    }, geo(1, 1, 0.26, 0, 0.72, 1)),
     // poster SIP = S64, isečak 0,64 × 0,86 S (Z2 seq.json; pravi render može da ga promeni)
     sip: seq('sip', {
       d: { src: '/media/seq/sip/d/0064.webp', width: 768, height: 1032 },
       m: { src: '/media/seq/sip/poster-m.webp', width: 512, height: 688 },
-    }, SEQ_READY.sip),
+    }, geo(1, 1, 0.2, 0, 0.64, 0.86)),
   },
   steam: {
     pour: steam('steam-cup-a', 1200, 660),

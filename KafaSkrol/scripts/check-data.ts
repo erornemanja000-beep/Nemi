@@ -1,6 +1,7 @@
 // Provera formata (npm run check): node --experimental-strip-types scripts/check-data.ts
 // Izlazi moraju biti tačno kao u studio/kafa-skrol/tekstovi.md (plan, Z1 „Gotovo kad").
-// Z11 dodaje scripts/check-content.ts (Grundpreis svakog proizvoda, L polja, slugovi, brend).
+// Sadržaj (Grundpreis svakog proizvoda, L polja, slugovi, brend, mediji) proverava scripts/check-content.ts;
+// `npm run check` pokreće oba.
 import {
   bestBefore,
   formatAltitude,
@@ -61,7 +62,16 @@ eq('lastRoastDate 20.10.2026 (utorak)', roast('2026-10-20T10:00:00Z'), '20.10.20
 eq('lastRoastDate zona Beča', roast('2026-10-22T23:30:00Z'), '23.10.2026')
 // posle prelaska na zimsko vreme (25.10.2026): 26.10. u 23:30 UTC je 27.10. u Beču (utorak)
 eq('lastRoastDate posle DST', roast('2026-10-26T23:30:00Z'), '27.10.2026')
-eq('datum EN (privremen format)', formatDate({ year: 2026, month: 10, day: 23 }, 'en'), n('23 Oct 2026'))
+// EN datum kao en-US sa kratkim mesecom (tekstovi.md, „Format datuma"); DE kao de-AT
+eq('datum EN', formatDate({ year: 2026, month: 10, day: 20 }, 'en'), n('Oct 20, 2026'))
+eq('datum EN, jednocifren dan', formatDate({ year: 2027, month: 9, day: 1 }, 'en'), n('Sep 1, 2027'))
+eq('datum DE, jednocifren dan i mesec', formatDate({ year: 2027, month: 3, day: 2 }, 'de'), '02.03.2027')
+// ručni format mora da bude isti kao Intl en-US u Node-u, za svaki mesec (razmaci su nelomljivi)
+const intlEn = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' })
+for (let month = 1; month <= 12; month++) {
+  const date = { year: 2026, month, day: 20 }
+  eq(`datum EN = Intl en-US, mesec ${month}`, formatDate(date, 'en'), n(intlEn.format(Date.UTC(2026, month - 1, 20, 12))))
+}
 
 // MHD: dok korisnik ne odluči, nema vrednosti (red „Best before" se ne prikazuje)
 eq('bestBefore bez pravila', bestBefore({ year: 2026, month: 10, day: 23 }), null)

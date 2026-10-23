@@ -18,13 +18,14 @@
 // - p = 0: ravna linija tačno na startY (amplituda 0), pa se tanka tamna linija pojavi do p ≈ 0,03.
 // - 0–0,12: gornja ivica se diže, a tečnost se razliva nadole do dna ekrana; ispod nje je još POUR.
 // - 0,12–0,3: donja ivica ulazi odozdo, ispod nje je čist SIP. Iznad gornje ivice je POUR.
-// - 0,3–0,7: traka debljine 18–35 % visine prolazi sredinom; kroz nju se vidi živ SIP (scale 1,04;
-//   ton daje providna ćilibarna ispuna, bez CSS filtera na SIP-u, vidi niže).
+// - 0,3–0,7: traka je sočivo (Z15/Z20: jedan veliki talas, donja ivica u suprotnoj fazi; ~35 % visine u
+//   sredini, 8–10 % na krajevima) i prolazi sredinom; kroz nju se vidi živ SIP (scale 1,08; ton daje
+//   providna ćilibarna ispuna, bez CSS filtera na SIP-u, vidi niže). Oblik je u waveMath.ts.
 // Varijante: desktop 36 segmenata ivice i 5 odsjaja, telefon 24 i 3. Nijedna nema displacement ni
 // backdrop-filter (izmereno: ni desktop nema rezerve u 16,7 ms za to).
 // - 0,7–1: traka izlazi gore, ostaje SIP. Na p = 1 POUR je isečen iznad ekrana (ostaje tako).
 import { useEffect, useImperativeHandle, useRef, useState, type Ref, type RefObject } from 'react'
-import { baselines } from './waveMath'
+import { baselines, clamp01, edgeWaves, edgeY, smooth, TAU, waveMargin } from './waveMath'
 import './wave.css'
 
 export type WaveVariant = 'desktop' | 'phone'
@@ -65,49 +66,8 @@ type WaveProps = {
   ref?: Ref<WaveHandle>
 }
 
-// ---------- Geometrija (storyboard 5) ----------
-const TAU = Math.PI * 2
-/** Amplitude ivice u jedinicama U = min(H, 0,9·W): na desktopu je to 4 % i 1,5 % vh. */
-const A1 = 0.04
-const A2 = 0.015
-/** Talasne dužine u širinama ekrana (1,2 i 0,45 vw). */
-const L1 = 1.2
-const L2 = 0.45
-
-const clamp01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v)
-const smooth = (a: number, b: number, v: number) => {
-  const t = clamp01((v - a) / (b - a))
-  return t * t * (3 - 2 * t)
-}
+// ---------- Geometrija: waveMath.ts (oblik, faze, osnovne linije) ----------
 const frac = (v: number) => v - Math.floor(v)
-
-type EdgeWave = { ph1: number; ph2: number; tilt: number; amp: number }
-
-function edgeWaves(p: number) {
-  const env = smooth(0, 0.12, p)
-  const top: EdgeWave = {
-    ph1: 0.9 + TAU * 0.55 * p,
-    ph2: 2.3 - TAU * 1.3 * p,
-    tilt: 0.08 * Math.sin(Math.PI * p),
-    amp: env,
-  }
-  const bottom: EdgeWave = {
-    ph1: 3.4 + TAU * 0.7 * p,
-    ph2: 0.4 - TAU * 1.05 * p,
-    tilt: -0.025 * Math.sin(Math.PI * p),
-    amp: env * 0.85,
-  }
-  return { top, bottom }
-}
-
-/** Ivica = osnovna linija + zbir dve sinusoide (faza klizi sa p) + blag nagib. */
-function edgeY(x: number, base: number, w: EdgeWave, W: number, U: number) {
-  return (
-    base +
-    w.amp * U * (A1 * Math.sin((TAU * x) / (L1 * W) + w.ph1) + A2 * Math.sin((TAU * x) / (L2 * W) + w.ph2)) +
-    w.amp * w.tilt * U * (x / W - 0.5)
-  )
-}
 
 // odsjaji koji klize duž gornje ivice: početak (u širinama), brzina (širina po celom talasu), dužina (px)
 const GLINTS = [
@@ -149,7 +109,7 @@ function createEngine(els: Els, variant: WaveVariant, pourRef: WaveProps['pourCl
     lensH: 0,
     pourW: 0,
     pourH: 0,
-    lensScale: 1.04,
+    lensScale: 1.08,
   }
   let measured = false
   let dirty = true
@@ -193,7 +153,7 @@ function createEngine(els: Els, variant: WaveVariant, pourRef: WaveProps['pourCl
       geo.lensH = lr.height
     }
     const cs = getComputedStyle(els.root)
-    geo.lensScale = num(cs, '--wave-lens-scale', 1.04)
+    geo.lensScale = num(cs, '--wave-lens-scale', 1.08)
     if (geo.W > 0 && geo.H > 0) for (const svg of els.svgs) svg.setAttribute('viewBox', `0 0 ${f1(geo.W)} ${f1(geo.H)}`)
     measured = geo.W > 0 && geo.H > 0
     dirty = false
@@ -212,7 +172,11 @@ function createEngine(els: Els, variant: WaveVariant, pourRef: WaveProps['pourCl
   function setMode(next: WaveState['phase']) {
     if (next === mode) return
     const on = next === 'flood' || next === 'band'
-    for (const r of els.roots) r.style.visibility = on ? 'visible' : 'hidden'
+    for (const r of els.roots) {
+      r.style.visibility = on ? 'visible' : 'hidden'
+      // poseban sloj na kompozitoru samo dok talas traje (van talasa su koreni skriveni)
+      r.style.willChange = on ? 'transform' : ''
+    }
     const lens = lensRef.current
     if (!on) {
       if (lens) {
@@ -233,7 +197,7 @@ function createEngine(els: Els, variant: WaveVariant, pourRef: WaveProps['pourCl
     const waveTop = layout?.waveTop ?? geo.top
     const sLocal = startY - waveTop
     const s = H > 0 ? sLocal / H : 0
-    const margin = ((A1 + A2) * U * 1.6) / Math.max(H, 1) + 0.03
+    const margin = waveMargin(U, H)
     const base = baselines(p, s, margin)
     const waves = edgeWaves(p)
     const yT = base.yT * H
@@ -371,7 +335,10 @@ function createEngine(els: Els, variant: WaveVariant, pourRef: WaveProps['pourCl
     },
     dispose() {
       resetTargets()
-      for (const r of els.roots) r.style.visibility = ''
+      for (const r of els.roots) {
+        r.style.visibility = ''
+        r.style.willChange = ''
+      }
     },
   }
 }
@@ -478,12 +445,15 @@ export function Wave({ pourClip, sipLens, variant, className = '', ref }: WavePr
 // ---------- Statična ivica (reduced motion) ----------
 // Rez između POUR i SIP bloka sa dekorativnom trakom boje talasa (storyboard 5: „nema talasa").
 const STATIC_W = 1440
+/** talasne dužine statične ivice (oblik iz Z6, ne menja se sa živim talasom) */
+const STATIC_L1 = 1.2
+const STATIC_L2 = 0.45
 const STATIC_H = 120
 function staticEdge(base: number, a1: number, a2: number, ph1: number, ph2: number) {
   const pts: [number, number][] = []
   for (let i = 0; i <= 48; i++) {
     const x = (i / 48) * STATIC_W
-    pts.push([x, base + a1 * Math.sin((TAU * x) / (L1 * STATIC_W) + ph1) + a2 * Math.sin((TAU * x) / (L2 * STATIC_W) + ph2)])
+    pts.push([x, base + a1 * Math.sin((TAU * x) / (STATIC_L1 * STATIC_W) + ph1) + a2 * Math.sin((TAU * x) / (STATIC_L2 * STATIC_W) + ph2)])
   }
   return pts
 }

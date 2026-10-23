@@ -1,12 +1,12 @@
 /* Talas kafe POUR → SIP i para (Z6). Storyboard 5, plan Interfejs 6.
 
-   Boje talasa nisu u tokenima (otvoreno pitanje 12). Ovo je PREDLOG izveden iz palete u tokens.css,
-   ocenjuje ga recenzent, a potvrđuje korisnik posle talasa 3:
-   - svetla ćilibarna = med između --pp-crema (#F7E6C6) i --pp-terracotta (#915439), zasićenija;
-   - ćilibarna       = terakota posvetljena ka narandžastoj (sredina trake);
-   - tamna kafa      = 55 % --pp-espresso (#6E3A27) + 45 % --pp-ink-deep (#1B150D);
-   - meniskus        = još tamnija kafa, skoro --pp-ink-deep;
-   - odsjaj          = --pp-crema ka beloj, 50 % (storyboard: bela 50 %).
+   Boje talasa nisu u tokenima (otvoreno pitanje 12). Z20 ih je podesio po recenziji Z15 i referenci
+   (kadrovi 121–149, pregled/z15/f137crop.png): sjajno ćilibarno sočivo, ne mutna kakao traka.
+   - telo u referenci #5A2010–#6A2008, osvetljeno dno #B35915–#C77A2E, gornji odsjaj #AF6F40;
+   - gradijent je obrnut: gore tamna kafa (0,72), sredina ćilibar (0,6), dole svetli ćilibar (0,5),
+     jer svetlo prolazi kroz tečnost i pada na dno sočiva;
+   - odsjaji su jači (sjaj dna 28 px / 0,45, gornji odsjaj 3 px / 0,8), meniskus mekši (0,6).
+   Statična ivica (reduced motion) zadržava boje i oblik iz Z6 (blok .wave-static niže).
    Brojeve pokreta (amplitude, talasne dužine, putanju trake) drži Wave.tsx, jer ih računa JS.
 
    Sve je u @layer components, pa Tailwind klase (utilities) iz className imaju prednost. */
@@ -18,19 +18,20 @@
        čitljiv (svetla boja bi ga zamaglila). Odozgo svetla ćilibarna, dole tamna kafa (~0,88 najviše).
        Normalno mešanje, ne multiply: multiply traži dodatni prolaz preko cele scene (izmereno: +8–9 ms
        po kadru na 1440 u Playwright-u bez GPU-a). */
-    --wave-amber-light: #c27a2e;
-    --wave-amber: #9a5220;
-    --wave-coffee: #3d1d0d;
-    --wave-fill-top: 0.3;
-    --wave-fill-mid: 0.46;
-    --wave-fill-bottom: 0.8;
+    --wave-amber-light: #c9732a;
+    --wave-amber: #8e3f15;
+    --wave-coffee: #4a1c0b;
+    /* obrnut gradijent (Z15): gore tamna kafa, dole svetli ćilibar */
+    --wave-fill-top: 0.72;
+    --wave-fill-mid: 0.6;
+    --wave-fill-bottom: 0.5;
     /* ivice i odsjaji (normalno mešanje) */
     --wave-meniscus: #24130b;
     --wave-shine: #fff4e0;
     --wave-sheen: #ffe6bf; /* blag sjaj površine odmah ispod gornje ivice */
-    --wave-glow: #f0b266;
+    --wave-glow: #f0a04b;
     /* sočivo: živ SIP sloj iza trake se uveća oko sredine trake (Wave čita vrednost pri merenju) */
-    --wave-lens-scale: 1.04;
+    --wave-lens-scale: 1.08;
     /* pozadine za statičnu ivicu (reduced motion): POUR gore, SIP dole */
     --wave-pour: var(--pp-terracotta);
     --wave-sip: var(--pp-espresso);
@@ -46,8 +47,7 @@
     inset: 0;
     pointer-events: none;
     overflow: hidden;
-    visibility: hidden; /* Wave ga pali samo za 0 < p < 1 */
-    will-change: transform;
+    visibility: hidden; /* Wave ga pali samo za 0 < p < 1, zajedno sa will-change (sloj samo tokom talasa) */
   }
   .wave--tint { mix-blend-mode: var(--wave-tint-blend, normal); }
   .wave__svg {
@@ -57,9 +57,9 @@
     height: 100%;
     overflow: visible;
   }
-  .wave__stop--top { stop-color: var(--wave-amber-light); stop-opacity: var(--wave-fill-top); }
+  .wave__stop--top { stop-color: var(--wave-coffee); stop-opacity: var(--wave-fill-top); }
   .wave__stop--mid { stop-color: var(--wave-amber); stop-opacity: var(--wave-fill-mid); }
-  .wave__stop--bottom { stop-color: var(--wave-coffee); stop-opacity: var(--wave-fill-bottom); }
+  .wave__stop--bottom { stop-color: var(--wave-amber-light); stop-opacity: var(--wave-fill-bottom); }
 
   .wave__line {
     fill: none;
@@ -68,14 +68,14 @@
   }
   /* gornja ivica: tamni meniskus 1,5 px, ispod njega svetao odsjaj 2 px pomeren 3 px.
      Blur 2 px je lažan (široka bleda linija ispod uske), jer pravi blur filter košta u svakom kadru. */
-  .wave__meniscus { stroke: var(--wave-meniscus); stroke-width: 1.5; stroke-opacity: 0.92; }
-  .wave__shine { stroke: var(--wave-shine); stroke-width: 2; stroke-opacity: 0.5; }
-  .wave__shine-soft { stroke: var(--wave-shine); stroke-width: 6; stroke-opacity: 0.12; }
+  .wave__meniscus { stroke: var(--wave-meniscus); stroke-width: 1.5; stroke-opacity: 0.6; }
+  .wave__shine { stroke: var(--wave-shine); stroke-width: 3; stroke-opacity: 0.8; }
+  .wave__shine-soft { stroke: var(--wave-shine); stroke-width: 12; stroke-opacity: 0.22; }
   /* sjaj površine: široka bleda linija odmah ispod ivice (kao potez, ne ispuna: manja površina za crtanje) */
   .wave__sheen { stroke: var(--wave-sheen); stroke-width: 26; stroke-opacity: 0.07; }
   /* donja ivica: tanka tamna linija i topao sjaj iznad nje (svetlo koje prolazi kroz tečnost) */
   .wave__under { stroke: var(--wave-meniscus); stroke-width: 1; stroke-opacity: 0.55; }
-  .wave__glow { stroke: var(--wave-glow); stroke-width: 16; stroke-opacity: 0.2; }
+  .wave__glow { stroke: var(--wave-glow); stroke-width: 28; stroke-opacity: 0.45; }
   .wave__glint { fill: var(--wave-shine); }
 
   /* ---------- Statična ivica (reduced motion): rez sa dekorativnom trakom boje talasa ---------- */
@@ -89,12 +89,20 @@
   .wave-static svg { display: block; width: 100%; height: 100%; }
   .wave-static__pour { fill: var(--wave-pour); }
   .wave-static__sip { fill: var(--wave-sip); }
-  /* statična traka nema živ SIP iza sebe, pa je punija od žive (samo dekor) */
+  /* statična traka nema živ SIP iza sebe, pa je punija od žive (samo dekor). Boje, smer gradijenta i
+     linije su iz Z6 i ne prate živi talas (Z15: „statična ivica ostaje"). */
   .wave-static {
+    --wave-amber-light: #c27a2e;
+    --wave-amber: #9a5220;
+    --wave-coffee: #3d1d0d;
     --wave-fill-top: 0.95;
     --wave-fill-mid: 0.9;
     --wave-fill-bottom: 0.85;
   }
+  .wave-static .wave__stop--top { stop-color: var(--wave-amber-light); }
+  .wave-static .wave__stop--bottom { stop-color: var(--wave-coffee); }
+  .wave-static .wave__meniscus { stroke-opacity: 0.92; }
+  .wave-static .wave__shine { stroke-width: 2; stroke-opacity: 0.5; }
   .wave-static .wave__meniscus,
   .wave-static .wave__shine,
   .wave-static .wave__under { vector-effect: non-scaling-stroke; }

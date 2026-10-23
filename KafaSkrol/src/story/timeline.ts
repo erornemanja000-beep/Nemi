@@ -91,7 +91,7 @@ export const DESK_NAV: Record<ChapterId, number> = { grind: 0, pour: 300, sip: 6
  */
 export const DESK_POUR_DRIFT = { vh: 22, from: 0.55 } as const
 
-/** kartice SIP uleću na 45–80 % SIP opsega (540–790 vh), redom 2 → 1 → 0 (Z7) */
+/** kartice SIP uleću na 45–80 % SIP opsega (540–790 vh), redom 1 → 2 → 0 (Z15) */
 export const CARD_RANGE = [0.45, 0.8] as const
 
 // =====================================================================================
@@ -144,13 +144,15 @@ export const TEXT_IN = {
 
 /**
  * Ulet kartica (desktop): početni pomeraj (udeo širine/visine ekrana), okret oko Y i Z i veličina.
- * Kartice uleću redom 2 → 1 → 0, svaka u svom delu CARD_RANGE (start, kraj u udelu opsega).
- * Krivu daje --ease-settle (mali odskok), a providnost raste linearno u prvoj trećini.
+ * Kartice uleću redom 1 → 2 → 0 (Z15): puna Origin kartica sleće poslednja. Svaka ima svoj deo
+ * CARD_RANGE (start, kraj u udelu opsega). Krivu daje --ease-settle (mali odskok), a providnost raste
+ * linearno u prvoj trećini. Pravci prate raspored oko šolje: Flavor (1) gore, Roast (2) dole levo,
+ * Origin (0) desno.
  */
 export const CARD_FLIGHT: Record<0 | 1 | 2, { at: readonly [number, number]; x: number; y: number; ry: number; rz: number; s: number }> = {
-  2: { at: [0, 0.55], x: 0.34, y: -0.3, ry: 115, rz: 28, s: 0.7 },
-  1: { at: [0.2, 0.75], x: 0.3, y: 0.34, ry: -105, rz: -24, s: 0.72 },
-  0: { at: [0.45, 1], x: -0.3, y: 0.36, ry: 100, rz: 18, s: 0.74 },
+  1: { at: [0, 0.55], x: 0.26, y: -0.34, ry: 115, rz: 26, s: 0.7 },
+  2: { at: [0.2, 0.75], x: -0.22, y: 0.4, ry: -105, rz: -22, s: 0.72 },
+  0: { at: [0.45, 1], x: 0.3, y: 0.3, ry: 100, rz: 18, s: 0.74 },
 }
 
 // =====================================================================================

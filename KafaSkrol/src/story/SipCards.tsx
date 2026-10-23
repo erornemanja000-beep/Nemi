@@ -3,8 +3,9 @@
 // PDV daje Price, „Geröstet am" je lastRoastDate(). Kartica je link na /p/<slug> (rastegnut preko cele
 // kartice), a dugme „+" stavlja 250 g (cela zrna) u korpu.
 // Omotač <li data-anim="card" data-sip-card="0|1|2"> pomera Story (Z12, ulet); nagib je na <article>.
-// Raspored (chapters.css): u .ch-layer na desktopu špil uz dršku šolje, a na telefonu i van scene
-// horizontalna traka sa scroll-snap-om, tačkicama koje prate traku i „Swipe for more".
+// Raspored (chapters.css): u .ch-layer na desktopu špil uz dršku šolje, na širokom desktopu (od 80rem ×
+// 53,75rem) kartice oko šolje, gde su 1 i 2 kompaktne (glass-card--compact, Z15), a na telefonu i van
+// scene horizontalna traka sa scroll-snap-om, tačkicama koje prate traku i „Swipe for more".
 // Nepostojeći slug ili proizvod bez pakovanja: kartica se ne prikazuje (u dev-u console.warn).
 // `loadImages={false}` (Story, Z12): slike kesa se još ne traže (storyboard 8: kese tek na 60 % POUR-a),
 // a do tada stoji CSS kesa.
@@ -53,7 +54,7 @@ function GlassCard({ entry, roast, loadImage }: { entry: Entry; roast: string; l
   const notes = card.notes ?? product.notes
 
   return (
-    <article className="glass-card" aria-labelledby={titleId}>
+    <article className={`glass-card ${entry.index === 0 ? '' : 'glass-card--compact'}`} aria-labelledby={titleId}>
       <div className="glass-card__head">
         <p className="glass-card__label">
           {tx(card.label)}

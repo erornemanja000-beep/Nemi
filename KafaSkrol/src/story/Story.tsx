@@ -32,7 +32,7 @@ import { Sparkle } from './Sparkle'
 import { Steam } from './Steam'
 import * as T from './timeline'
 import { Wave, WaveEdgeStatic, type WaveHandle } from './Wave'
-import { waveTopAt } from './waveMath'
+import { waveTopMin } from './waveMath'
 import './story.css'
 
 const IDS: readonly ChapterId[] = ['grind', 'pour', 'sip']
@@ -517,8 +517,13 @@ function LiveStory({ phone }: { phone: boolean }) {
           card.style.transform = ''
           card.style.opacity = ''
           card.style.pointerEvents = ''
+          delete card.dataset.flying
           return
         }
+        // u letu staklo nema backdrop-filter (zamućenje bi se računalo iznova u svakom kadru, pod okretom
+        // u 3D); pali se kad kartica sleti. Providna podloga stakla ostaje ista, pa se prelaz jedva vidi.
+        if (t > 0) card.dataset.flying = ''
+        else delete card.dataset.flying
         const e = settle(t)
         const k = 1 - e
         card.style.transform =
@@ -536,11 +541,11 @@ function LiveStory({ phone }: { phone: boolean }) {
       setSteam('pour', oPour)
       setSteam('sip', oSip)
 
-      // header: granica sloja preko linije headera
+      // header: granica sloja (ili najviša tačka ivice talasa) preko linije headera
       const line = m.line
       let chapter: ActiveChapter = 'grind'
       if (scroll - m.rootTop >= ((T.DESK.end + 100) / 100) * vh - line) chapter = 'page'
-      else if (p >= 1 || (p > 0 && waveTopAt(p, startY / vh) * vh <= line)) chapter = 'sip'
+      else if (p >= 1 || (p > 0 && waveTopMin(p, startY / vh, m.W, vh) <= line)) chapter = 'sip'
       else if (vh - seam * vh <= line) chapter = 'pour'
       setChapter(chapter)
 
@@ -605,7 +610,7 @@ function LiveStory({ phone }: { phone: boolean }) {
       const line = m.line
       let chapter: ActiveChapter = 'grind'
       if (m.sipBottom - scroll <= line) chapter = 'page'
-      else if (p >= 1 || B <= line || (p > 0 && waveTopAt(p, startY / H) * H <= line)) chapter = 'sip'
+      else if (p >= 1 || B <= line || (p > 0 && waveTopMin(p, startY / H, m.W, H) <= line)) chapter = 'sip'
       else if (m.pourTop - scroll <= line) chapter = 'pour'
       setChapter(chapter)
 
@@ -719,11 +724,11 @@ function LiveStory({ phone }: { phone: boolean }) {
                 const H = m.vh
                 const scroll = m.pourBottom - (T.PHONE.waveFrom + (T.PHONE.waveTo - T.PHONE.waveFrom) * p) * H
                 const startY = m.pourCanvasTop - scroll + kafa(177 + p * 15) * m.S
-                if (m.pourBottom - scroll <= line || (p > 0 && waveTopAt(p, startY / H) * H <= line)) return scroll
+                if (m.pourBottom - scroll <= line || (p > 0 && waveTopMin(p, startY / H, m.W, H) <= line)) return scroll
               } else {
                 const shift = m.vh + (T.DESK_POUR_DRIFT.vh / 100) * m.vh * T.smooth(T.DESK_POUR_DRIFT.from, 1, p)
                 const startY = m.vh - shift + m.pourFrameTop + kafa(177 + p * 15) * m.S
-                if (p > 0 && waveTopAt(p, startY / m.vh) * m.vh <= line) return vhPx(T.DESK.wave[0] + p * 100)
+                if (p > 0 && waveTopMin(p, startY / m.vh, m.W, m.vh) <= line) return vhPx(T.DESK.wave[0] + p * 100)
               }
             }
             return NaN
@@ -768,6 +773,7 @@ function LiveStory({ phone }: { phone: boolean }) {
         c.style.transform = ''
         c.style.opacity = ''
         c.style.pointerEvents = ''
+        delete c.dataset.flying
       }
       for (const id of IDS) {
         const w = words[id]

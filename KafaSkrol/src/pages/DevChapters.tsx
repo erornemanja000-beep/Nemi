@@ -37,7 +37,7 @@ const objects: Record<ChapterId, { label: string; className: string }[]> = {
   sip: [
     {
       label: 'Tasse 520 × 470',
-      className: 'top-[4.5rem] left-[4%] w-[15.5rem] aspect-[520/470] desk:top-[37%] desk:left-[37.5%] desk:w-[min(36vw,32.5rem)]',
+      className: 'top-[4.5rem] left-[4%] w-[15.5rem] aspect-[520/470] desk:top-[37%] desk:left-[40%] desk:w-[min(30vw,27rem)]',
     },
   ],
 }

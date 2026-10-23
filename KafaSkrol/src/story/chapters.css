@@ -263,7 +263,7 @@
     padding: 2px 6px;
     border-radius: var(--radius-pill);
     border: 1px solid currentColor;
-    font: 700 10px/1.2 var(--font-label);
+    font: 700 12px/1.2 var(--font-label);
     letter-spacing: 0.08em;
     vertical-align: 3px;
   }
@@ -380,6 +380,8 @@
       padding: var(--space-3) var(--space-4) var(--space-4);
     }
     .glass-card__pack { height: 5.5rem; }
+    /* Z15: podnatpis na telefonu 13 px (12 px je sitno uz staklo) */
+    .glass-card__sub { font-size: 0.8125rem; }
   }
 }
 
@@ -477,6 +479,41 @@
     .glass-card { width: 16.25rem; }
 
     .film-grain { opacity: 0.04; }
+  }
+}
+
+/* ======= Široki desktop (od 80rem × 53,75rem): kartice OKO šolje (Z15, pregled/z15/proto-sip-1440-en.png) =======
+   Kartica 0 (Origin) je puna, desno preko drške; 1 (Flavor) gore i 2 (Roast) dole levo su kompaktne
+   (bez reda sa poreklom i notama i bez datuma prženja; cena, Grundpreis i „inkl. MwSt." ostaju).
+   Šolja je zato malo levlje nego mlin (--axis u sloju SIP; story.css). Ispod ovog upita ostaje špil. */
+@media (min-width: 80rem) and (min-height: 53.75rem) {
+  @layer components {
+    .ch-layer .sip-card-slot[data-sip-card="0"] {
+      --card-tilt: -6deg;
+      left: min(68.5%, 100% - var(--gutter) - 3.75rem - 16.25rem - 6px);
+      top: clamp(var(--header-h) + 1rem, 31%, 100% - 27rem);
+      z-index: 4;
+    }
+    .ch-layer .sip-card-slot[data-sip-card="1"] {
+      --card-tilt: 5deg;
+      left: 44%;
+      top: max(var(--header-h) + 0.75rem, 12%);
+      z-index: 3;
+    }
+    .ch-layer .sip-card-slot[data-sip-card="2"] {
+      --card-tilt: -3deg;
+      left: 33.5%;
+      top: min(61%, 100% - 20rem);
+      z-index: 4;
+    }
+    .ch-layer .sip-card-slot:hover,
+    .ch-layer .sip-card-slot:focus-within { z-index: 5; }
+    .ch-layer .glass-card--compact { width: 12.5rem; }
+    .ch-layer .glass-card--compact .glass-card__pack { height: 5.5rem; }
+    .ch-layer .glass-card--compact .glass-card__meta,
+    .ch-layer .glass-card--compact .glass-card__roast { display: none; }
+
+    .ch-stage .sparkle { left: 62%; top: 17%; }
   }
 }
 

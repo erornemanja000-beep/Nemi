@@ -61,7 +61,10 @@
     bottom: 0;
     left: var(--crop-l, 0%);
     width: var(--crop-w, 100%);
-    background: linear-gradient(var(--color-bg), transparent);
+    background: linear-gradient(var(--color-bg) var(--solid, 0px), transparent);
+    /* levo i desno se pretapa, da se ivica isečka ne vidi preko svetla iz ugla (SceneBackdrop) */
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 18%, #000 82%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 18%, #000 82%, transparent);
   }
 
   /* para: omotač kome Story menja opacity (steam-host = screen, wave.css); mere u S iz timeline.ts */
@@ -88,6 +91,12 @@
   .story--live [data-anim="text"][data-in="0"] {
     opacity: 0;
     transform: translate3d(0, 24px, 0);
+  }
+
+  /* kartica u letu (Story, desktop): bez backdrop-filter-a do sletanja */
+  .sip-card-slot[data-flying] .glass-card {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
   }
 
   /* zvezdica ne treperi dok je SIP pokriven ili van ekrana */
@@ -181,11 +190,16 @@
       inset: 0;
     }
 
-    /* šav: POUR kadar počinje tačno na granici, pa se ne bledi. GRIND bledi samo kad je S < 100 vh
-       (vrh kadra je tada ispod vrha ekrana); na 1440 × 900 je visina 0. */
+    /* šav: POUR kadar počinje tačno na granici, pa se ne bledi.
+       GRIND: kad kadar počinje na vrhu ekrana (S = 100 vh), zrna padaju iza providnog menija. Zato je ispod
+       menija podloga boje sloja (pun ton do ~0,85 visine headera), pa prelaz u providno (Z15: meni ostaje
+       čitljiv i na pravim, tamnim zrnima). Kad je S < 100 vh (vrh kadra je ispod menija), vrh kadra samo
+       bledi na 0,12 S, kao do sada. --solid je pun ton u px od vrha kadra. */
     .layer-pour .story-fade { display: none; }
     .layer-grind .story-fade {
-      height: min(0.12 * var(--s), max(0px, (100cqh - var(--s)) * 1000));
+      --ft: calc(100cqh - var(--s));
+      --solid: max(0px, var(--header-h) * 0.85 - var(--ft));
+      height: max(var(--solid) + 3rem, min(0.12 * var(--s), max(0px, var(--ft) * 1000)));
     }
 
     /* ---------- Zakačena scena ---------- */
@@ -210,6 +224,20 @@
   }
 }
 
+/* široki desktop: kartice stoje OKO šolje (chapters.css), pa je šolja bliže sredini (~56 %), kao u
+   prototipu Z15; ne prelazi kolonu teksta. Para i platno SIP prate --axis sloja. */
+@media (min-width: 80rem) and (min-height: 53.75rem) {
+  @layer components {
+    .story .layer-sip { --axis: max(var(--text-r) + 0.2 * var(--s), 56cqw); }
+    /* para iz šolje bi išla gore levo, iza kartice Flavor: preslikana ide gore desno, između Flavor i
+       Origin (izvor pare je na ~16 % širine preslikanog snimka) */
+    .story .story-steam--sip {
+      left: calc(var(--axis) - 0.08 * var(--s));
+      transform: scaleX(-1);
+    }
+  }
+}
+
 /* stari pregledači bez container query jedinica: S iz ekrana (traka za skrol pravi grešku od ~15 px) */
 @supports not (width: 1cqw) {
   @media (min-width: 64rem) and (min-height: 600px) {
@@ -218,7 +246,7 @@
         --s: min(100vh, (100vw - 1rem - var(--text-r)) / 0.71);
         --axis: clamp(var(--text-r) + 0.25 * var(--s), 61.5vw, 100vw - 1rem - 0.46 * var(--s));
       }
-      .layer-grind .story-fade { height: 0; }
+      .layer-grind .story-fade { --solid: calc(var(--header-h) * 0.85); height: calc(var(--header-h) * 0.85 + 3rem); }
     }
   }
 }

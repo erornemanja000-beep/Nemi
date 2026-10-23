@@ -4,12 +4,13 @@
 import type { L } from '../content/types.ts'
 
 export const brand = {
-  /** Privremeno radno ime (tekstovi.md). Promena imena = ovaj red + ponovni render kesa (etiketa). */
-  name: 'POUR / PLAY',
+  /** Izmišljeno ime za demo (korisnik, 23.10.2026): zrno i kuvalo, kao u priči. Proverom nije nađena firma tog imena.
+   *  Promena imena = ovaj red + etiketa (studio/kafa-skrol/dizajn/etiketa.html) + ponovni render kesa. */
+  name: 'KORN / KANNE',
   sub: { en: 'Specialty Coffee · Vienna', de: 'Specialty Coffee · Wien' } satisfies L,
   /** Domen .example je rezervisan, pa poruka ne stiže nikome (demo). */
-  email: 'hallo@pourplay.example',
-  wholesale: 'wholesale@pourplay.example',
+  email: 'hallo@kornkanne.example',
+  wholesale: 'wholesale@kornkanne.example',
   /** Demo broj (tekstovi.md), nije stvaran. */
   phone: '+43 1 000 00 00',
   phoneHref: 'tel:+4310000000',

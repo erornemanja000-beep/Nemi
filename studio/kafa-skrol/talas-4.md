@@ -158,6 +158,10 @@ Snimci su u `pregled/z15/`:
 ## Stanje
 
 - **Z18 + Z19:** gotovo (commit „section, footer and config fixes"). rolldown je 1.2.14 (isti integrity kao u RealEstates), a `npm audit` daje 0.
+- **Z17:** gotovo (commit „header, cart and shop fixes"). Na 16 kombinacija nema nalaza.
 - **Ostaci za sledeći krug:**
+  - EN „2–4 working days" bez preloma (`2–⁠4`) u `shop.ts`;
+  - klizač panela modala na desktopu viri preko zaobljenog ugla (`.pm-panel`, `scrollbar-color` / `scrollbar-gutter`);
+  - tester proverava: toast iznad lepljive trake modala na telefonu, nestanak toast-a pri otvaranju korpe, dugme modala na 1024×768;
   - na 390 DE se dugme „Probierset in den Warenkorb" (`Subscription.tsx`) lomi u 2 reda;
   - `tekstopisac` treba da potvrdi `credits.standIn` u `legal.ts` („Zubereitung, Schritt 3 (bis das Rendering da ist)").

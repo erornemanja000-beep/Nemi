@@ -22,7 +22,7 @@ npm run dev          # http://localhost:5173 (dev rute: /dev/seq, /dev/wave, /de
 ```bash
 npm run build        # tsc -b && vite build → dist/
 npm run lint         # oxlint
-npm run check        # formati cena, Grundpreisa, grama, visine i datuma (scripts/check-data.ts)
+npm run check        # formati (scripts/check-data.ts) i sadržaj: cene, L polja, linkovi, mediji (scripts/check-content.ts)
 npx vite preview     # http://localhost:4173, sa istim zaglavljima (CSP, X-Robots-Tag) kao Netlify
 node scripts/shots.mjs <folder> [url] [--reduced]   # snimci na 390 i 1440 + greške, zahtevi, skrol
 ```
@@ -56,7 +56,8 @@ public/
   media/              sekvence (seq/), para (steam/), fotografije (photos/), kese (bags/)
   licenses/           OFL licence fontova
 scripts/
-  check-data.ts       npm run check
+  check-data.ts       npm run check: formati cena, Grundpreisa, grama, visine i datuma
+  check-content.ts    npm run check: sadržaj prema tekstovi.md, brend, mediji sa ready: true
   shots.mjs           snimci i provera u Playwright-u
   placeholder_seq.py  privremeni kadrovi sekvenci (Z2)
 src/
@@ -65,7 +66,7 @@ src/
   content/media.ts    putanje do medija i zastavice `ready`
   i18n/LangContext    jezik (EN podrazumevano), tx() i tf()
   lib/                motion (GSAP, Lenis), useMedia, format, reveal, chapterStore, cart
-  components/         Header, korpa, dugmad, ikonice, cena, fotografija …
+  components/         Header, Overlay (ljuska korpe, menija, pretrage i modala), korpa, dugmad, ikonice …
   story/              priča GRIND → POUR → SIP (sekvence, talas, para, kartice)
   sections/           prodavnica i sekcije ispod priče
   pages/              početna, modal proizvoda, pravne stranice, Credits, dev harness-i
@@ -89,7 +90,10 @@ Kod čita medije samo preko `src/content/media.ts`. Novi renderi ulaze bez izmen
    `0001.webp` …, posteri i `seq.json` po planu, Interfejs 4). Pravi render ima `"placeholder": false`,
    pa ga skripta za privremene kadrove više ne prepisuje.
 2. U `media.ts` prebaci `ready` (`SEQ_READY`, kese, oprema) na `true` tek kad fajlovi postoje.
-   Medij sa `ready: false` se ne traži: umesto njega stoji obojena kutija iste razmere.
+   Medij sa `ready: false` se ne traži: umesto njega stoji obojena kutija iste razmere. Za sekvence
+   `SEQ_PLACEHOLDER` i `geometry` moraju da budu isti kao `placeholder`, `full` i `crop` u `seq.json`
+   (poster stoji na mestu isečka pre `seq.json`; red o privremenim kadrovima u Credits nestaje kad su
+   sve tri `false`).
 3. Para (`public/media/steam/`): webm je prvi izvor, mp4 drugi. Fotografije: `<id>-sm.webp` i
    `<id>-lg.webp`. Izvor, autor, licenca i sha256 svakog stock fajla su u `studio/kafa-skrol/izvori.md`.
 

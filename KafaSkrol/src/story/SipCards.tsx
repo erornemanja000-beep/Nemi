@@ -6,6 +6,8 @@
 // Raspored (chapters.css): u .ch-layer na desktopu špil uz dršku šolje, a na telefonu i van scene
 // horizontalna traka sa scroll-snap-om, tačkicama koje prate traku i „Swipe for more".
 // Nepostojeći slug ili proizvod bez pakovanja: kartica se ne prikazuje (u dev-u console.warn).
+// `loadImages={false}` (Story, Z12): slike kesa se još ne traže (storyboard 8: kese tek na 60 % POUR-a),
+// a do tada stoji CSS kesa.
 import { useEffect, useId, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Button } from '../components/Button'
@@ -37,7 +39,7 @@ const entries: Entry[] = chapters.sipCards.flatMap((card, index) => {
   return [{ card, product, size, index }]
 })
 
-function GlassCard({ entry, roast }: { entry: Entry; roast: string }) {
+function GlassCard({ entry, roast, loadImage }: { entry: Entry; roast: string; loadImage: boolean }) {
   const { lang, tx, tf } = useLang()
   const titleId = useId()
   const { card, product, size } = entry
@@ -68,7 +70,7 @@ function GlassCard({ entry, roast }: { entry: Entry; roast: string }) {
       </div>
       <p className="glass-card__sub">{tx(card.sub)}</p>
       <div className="glass-card__pack" aria-hidden="true">
-        {bag?.ready ? (
+        {bag?.ready && loadImage ? (
           <img
             src={bag.srcs.find((s) => s.width === 600)?.src ?? bag.srcs[0].src}
             srcSet={bag.srcs.map((s) => `${s.src} ${s.width}w`).join(', ')}
@@ -125,9 +127,9 @@ function GlassCard({ entry, roast }: { entry: Entry; roast: string }) {
   )
 }
 
-type Props = { className?: string }
+type Props = { className?: string; loadImages?: boolean }
 
-export function SipCards({ className = '' }: Props) {
+export function SipCards({ className = '', loadImages = true }: Props) {
   const { lang, tx } = useLang()
   const roastDate = useMemo(() => lastRoastDate(), [])
   const strip = useRef<HTMLUListElement>(null)
@@ -175,7 +177,7 @@ export function SipCards({ className = '' }: Props) {
       <ul ref={strip} role="list" className="sip-cards__strip">
         {entries.map((entry) => (
           <li key={entry.card.product} data-anim="card" data-sip-card={entry.index} className="sip-card-slot">
-            <GlassCard entry={entry} roast={roast} />
+            <GlassCard entry={entry} roast={roast} loadImage={loadImages} />
           </li>
         ))}
       </ul>

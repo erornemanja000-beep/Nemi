@@ -16,14 +16,20 @@ import { scrollToTarget } from '../lib/motion'
 /**
  * Za stranice van početne: document.title, header u stanju „page" i skok na vrh (BrowserRouter ne
  * vraća skrol sam). Naslov piše samo ova stranica (LangProvider ne piše naslov), a početna upisuje svoj
- * kad se na nju vrati. `heading` dobija fokus, da čitač ekrana pročita novu stranicu.
+ * kad se na nju vrati. `heading` dobija fokus, da čitač ekrana pročita novu stranicu (i da fokus ne
+ * ostane na linku u footeru, koji je isti na svim stranicama).
  */
 export function PageMeta({ title, heading }: { title: string; heading: RefObject<HTMLElement | null> }) {
   useLayoutEffect(() => {
     setActiveChapter('page')
     scrollToTarget(0, true)
-    heading.current?.focus({ preventScroll: true })
     return () => scrollToTarget(0, true)
+  }, [])
+
+  // fokus u običnom efektu: PageMeta stoji pre <h1> u stablu, pa u njegovom layout efektu ref naslova
+  // još nije postavljen (React postavlja ref-ove redom, posle layout efekata ranijih komponenti)
+  useEffect(() => {
+    heading.current?.focus({ preventScroll: true })
   }, [heading])
 
   useEffect(() => {

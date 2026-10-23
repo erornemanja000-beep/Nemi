@@ -6,6 +6,10 @@
 //   Veličina se pamti iz ResizeObserver-a; u petlji se ne čita layout.
 // - DPR najviše 2, i nikad više piksela nego što fajl nivoa ima.
 // - Reduced motion i Save-Data: samo poster, bez platna i bez zahteva za kadrove.
+// - `active` (Story, Z12): platno je u ekranu, ali pokriveno (SIP ispod POUR-a pre talasa, POUR isečen
+//   posle talasa), pa ne crta i ne traži kadrove. IntersectionObserver ne vidi pokrivenost.
+// - `deferPoster` (Story, Z12): poster se još ne traži (prvi ekran ostaje u budžetu); umesto njega
+//   stoji prazna kutija sa istim alt tekstom (role="img").
 // - Bez `geometry` i bez manifesta (reduced motion, Save-Data, pre seq.json) poster popunjava kutiju
 //   (object-contain). Zato Story prosleđuje `geometry` (isti brojevi kao full i crop u seq.json).
 import { useEffect, useRef, type CSSProperties } from 'react'
@@ -28,13 +32,17 @@ type Props = {
   geometry?: SeqGeometry
   /** poziva se jednom, kad platno prvi put zameni poster */
   onFirstFrame?: () => void
+  /** false: platno ne crta (pokriveno drugim slojem); podrazumevano true */
+  active?: boolean
+  /** true: poster se još ne učitava (vidi gore) */
+  deferPoster?: boolean
   className?: string
   style?: CSSProperties
 }
 
 const pct = (v: number) => `${v * 100}%`
 
-export function SeqCanvas({ seq, clock, poster, geometry, onFirstFrame, className = '', style }: Props) {
+export function SeqCanvas({ seq, clock, poster, geometry, onFirstFrame, active = true, deferPoster = false, className = '', style }: Props) {
   const reduced = useReducedMotion()
   const saveData = useSaveData()
   const live = !reduced && !saveData && seq !== null && clock !== null
@@ -54,10 +62,25 @@ export function SeqCanvas({ seq, clock, poster, geometry, onFirstFrame, classNam
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const posterRef = useRef<HTMLImageElement>(null)
   const firstFrame = useRef(onFirstFrame)
+  /** poster je sakriven ispod nacrtanog platna (važi i za poster koji se pojavi kasnije, deferPoster) */
+  const covered = useRef(false)
+  const activeRef = useRef(active)
+  /** efekt platna menja ovo, da `active` ne pravi platno iznova */
+  const onActive = useRef<() => void>(() => {})
 
   useEffect(() => {
     firstFrame.current = onFirstFrame
   })
+
+  useEffect(() => {
+    activeRef.current = active
+    onActive.current()
+  }, [active])
+
+  const posterMounted = (img: HTMLImageElement | null) => {
+    posterRef.current = img
+    if (img) img.style.opacity = covered.current ? '0' : ''
+  }
 
   useEffect(() => {
     const root = rootRef.current
@@ -65,7 +88,6 @@ export function SeqCanvas({ seq, clock, poster, geometry, onFirstFrame, classNam
     if (!live || !root || !canvas || !seq || !clock) return
     const ctx = canvas.getContext('2d')
     if (!ctx) return
-    const img = posterRef.current
     const fileW = seq.info.w
     let cssW = 0
     let cssH = 0
@@ -73,13 +95,24 @@ export function SeqCanvas({ seq, clock, poster, geometry, onFirstFrame, classNam
     let detach: (() => void) | null = null
     let drawn: number | null = null
     let fresh = true // platno je prazno (novo ili promenjena veličina)
-    let covered = false // poster je sakriven
     let announced = false
 
     const showPoster = (on: boolean) => {
-      covered = !on
+      covered.current = !on
+      const img = posterRef.current
       if (img) img.style.opacity = on ? '' : '0'
     }
+
+    // u ekranu i nije pokriveno: sat drži kadrove oko trenutnog i zove draw
+    const sync = () => {
+      const want = visible && activeRef.current
+      if (want && !detach) detach = clock.attach(seq, draw)
+      else if (!want && detach) {
+        detach()
+        detach = null
+      }
+    }
+    onActive.current = sync
 
     const draw = () => {
       if (!visible || !cssW) return
@@ -92,7 +125,7 @@ export function SeqCanvas({ seq, clock, poster, geometry, onFirstFrame, classNam
       drawn = g
       fresh = false
       if (SEQ_DEBUG) canvas.dataset.g = String(g)
-      if (!covered) showPoster(false)
+      if (!covered.current) showPoster(false)
       if (!announced) {
         announced = true
         firstFrame.current?.()
@@ -113,7 +146,7 @@ export function SeqCanvas({ seq, clock, poster, geometry, onFirstFrame, classNam
       fresh = true
       draw()
       // nova veličina briše platno; dok se kadar ne nacrta ponovo, vidi se poster
-      if (fresh && covered) showPoster(true)
+      if (fresh && covered.current) showPoster(true)
     }
 
     const ro = new ResizeObserver((entries) => {
@@ -141,11 +174,7 @@ export function SeqCanvas({ seq, clock, poster, geometry, onFirstFrame, classNam
     const inView = new IntersectionObserver(
       (entries) => {
         visible = entries[entries.length - 1].isIntersecting
-        if (visible && !detach) detach = clock.attach(seq, draw)
-        else if (!visible && detach) {
-          detach()
-          detach = null
-        }
+        sync()
       },
       { rootMargin: '-1px 0px' },
     )
@@ -164,6 +193,7 @@ export function SeqCanvas({ seq, clock, poster, geometry, onFirstFrame, classNam
       nearView.disconnect()
       ro.disconnect()
       dprQuery?.removeEventListener('change', onDpr)
+      onActive.current = () => {}
       detach?.()
       seq.release()
       showPoster(true)
@@ -188,17 +218,21 @@ export function SeqCanvas({ seq, clock, poster, geometry, onFirstFrame, classNam
       className={`[contain:layout] ${className}`}
       style={geo ? { aspectRatio: `${geo.full.W} / ${geo.full.H}`, ...style } : style}
     >
-      <img
-        ref={posterRef}
-        src={poster.src}
-        alt={poster.alt}
-        decoding="async"
-        loading={poster.priority ? 'eager' : 'lazy'}
-        fetchPriority={poster.priority ? 'high' : 'auto'}
-        draggable={false}
-        className={geo ? 'absolute block max-w-none select-none' : 'block h-full w-full select-none object-contain'}
-        style={rect}
-      />
+      {deferPoster ? (
+        <span role="img" aria-label={poster.alt} className={geo ? 'absolute block' : 'block h-full w-full'} style={rect} />
+      ) : (
+        <img
+          ref={posterMounted}
+          src={poster.src}
+          alt={poster.alt}
+          decoding="async"
+          loading={poster.priority ? 'eager' : 'lazy'}
+          fetchPriority={poster.priority ? 'high' : 'auto'}
+          draggable={false}
+          className={geo ? 'absolute block max-w-none select-none' : 'block h-full w-full select-none object-contain'}
+          style={rect}
+        />
+      )}
       {live && <canvas ref={canvasRef} aria-hidden="true" className="pointer-events-none absolute block" style={rect} />}
     </div>
   )

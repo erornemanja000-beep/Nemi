@@ -1,0 +1,224 @@
+/* Priča GRIND → POUR → SIP (Z12): raspored po režimima. Brojevi skrola su u timeline.ts.
+
+   Režimi (klasa na #top, bira ih Story.tsx po istom upitu kao `desk` u index.css):
+   - .story--pinned  desktop: jedna lepljiva scena (100 vh) kroz kontejner od 890 vh. GRIND i POUR su
+                     jedan ispod drugog u .story__track (šav), SIP je ispod njih, talas iznad.
+   - .story--flow    telefon (živ i miran): slojevi jedan ispod drugog, bez pina i bez šava.
+   - .story--still   reduced motion: bez platna, posteri, između POUR i SIP statična ivica talasa.
+   - .story--live    nije reduced motion (tekst ulazi, kartice uleću ili se pojavljuju).
+
+   Platno, para i bleđenje stoje u .ch-stage po istom pravilu: kvadrat kadra ima stranicu --s, osa je
+   --axis, a vrh punog kadra je --frame-top (u px kutije .ch-stage, koja je na desktopu ceo sloj).
+   - Desktop: S i osa računaju se iz kutije sloja (container query jedinice): S = 100 vh dok staje,
+     a na užem ekranu (1024 px) S se smanji, da mlin ne pređe kolonu teksta (Z7) i da kuvalo stane.
+     GRIND kvadrat je dnom uz dno sloja, POUR vrhom uz vrh sloja (šav), SIP po sredini.
+   - Telefon: S = min(100vw, 62svh, 28rem), osa na sredini; GRIND i POUR kvadrat dnom uz dno scene,
+     SIP vrhom uz vrh scene (kartice idu preko podnožja šolje).
+
+   Story menja samo transform i opacity (omotači sa data-anim, slojevi, omotači pare) i atribute
+   data-in (tekst, kartice na telefonu) i data-sip-live (zvezdica ne treperi dok je SIP pokriven).
+   Sve je u @layer components, posle chapters.css, pa Tailwind klase imaju prednost. */
+
+@layer properties, theme, base, components, utilities;
+
+@layer components {
+  .story {
+    position: relative;
+    /* telefon i podrazumevano */
+    --s: min(100vw, 62svh, 28rem);
+    --axis: 50%;
+    /* telefon: koliko SIP sloj zalazi ispod POUR-a; to se otkriva kad ivica talasa prođe granicu */
+    --wave-ov: 26svh;
+  }
+
+  /* ---------- Platno, bleđenje i para (oba režima) ---------- */
+  .story-canvas {
+    position: absolute;
+    left: calc(var(--axis) - var(--s) / 2);
+    top: var(--frame-top, 0px);
+    width: var(--s);
+    z-index: var(--z-object);
+    pointer-events: none;
+  }
+  .layer-grind { --frame-top: calc(100% - var(--s)); }
+  .layer-pour { --frame-top: calc(100% - var(--s)); }
+  .layer-sip { --frame-top: 0px; }
+
+  /* gornja ivica kadra bledi u pozadinu sloja (zrna i mlaz se „pojave", ne seku se ravnom linijom) */
+  .story-fade {
+    position: absolute;
+    left: calc(var(--axis) - var(--s) / 2);
+    top: var(--frame-top, 0px);
+    width: var(--s);
+    height: calc(0.12 * var(--s));
+    z-index: var(--z-object);
+    pointer-events: none;
+  }
+  .story-fade::before {
+    content: "";
+    position: absolute;
+    top: -1px;
+    bottom: 0;
+    left: var(--crop-l, 0%);
+    width: var(--crop-w, 100%);
+    background: linear-gradient(var(--color-bg), transparent);
+  }
+
+  /* para: omotač kome Story menja opacity (steam-host = screen, wave.css); mere u S iz timeline.ts */
+  .story-steam {
+    position: absolute;
+    left: calc(var(--axis) + var(--steam-x) * var(--s));
+    top: calc(var(--frame-top, 0px) + var(--steam-y) * var(--s));
+    width: calc(var(--steam-w) * var(--s));
+    z-index: var(--z-object);
+    pointer-events: none;
+    opacity: 0;
+  }
+
+  /* POUR: pozadina je u .layer-pour__clip, da isečen deo (talas) otkrije SIP ispod (Z6) */
+  .story .layer-pour { background: none; }
+  .layer-pour__clip { background: var(--color-bg); }
+
+  /* ---------- Tekst ulazi: fade + 24 px (dizajn.md 6, tokeni) ---------- */
+  .story--live [data-anim="text"] {
+    transition:
+      opacity var(--dur-slow) var(--ease-out),
+      transform var(--dur-slow) var(--ease-out);
+  }
+  .story--live [data-anim="text"][data-in="0"] {
+    opacity: 0;
+    transform: translate3d(0, 24px, 0);
+  }
+
+  /* zvezdica ne treperi dok je SIP pokriven ili van ekrana */
+  .story[data-sip-live="0"] .sparkle__icon { animation-play-state: paused; }
+
+  /* ======================= Telefon: slojevi u toku stranice ======================= */
+  .story--flow .ch-stage {
+    flex: 1 0 var(--stage-h, 28rem);
+    height: auto;
+  }
+  /* POUR: sloj je samo omotač, raspored (kolona) nosi .layer-pour__clip, koga talas seče */
+  .story--flow .layer-pour {
+    z-index: 2;
+    display: block;
+    padding: 0;
+  }
+  .story--flow .layer-pour__clip {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 100svh;
+    padding: calc(var(--header-h) + var(--space-5)) var(--gutter) 0;
+  }
+  /* SIP: tekst i scena su u sočivu (.layer-sip__lens), kartice i tačkice su direktna deca sloja */
+  .story--flow .layer-sip {
+    z-index: 1;
+    display: block;
+    padding: 0;
+  }
+  .story--flow .layer-sip__lens {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: calc(var(--header-h) + var(--space-5)) var(--gutter) 0;
+  }
+  .story--flow .layer-sip > .sip-cards { padding-inline: var(--gutter); }
+
+  /* živ telefon: SIP zalazi --wave-ov ispod POUR-a (visina toka se ne menja: −margin, +padding) */
+  .story--flow.story--live .layer-sip { margin-top: calc(-1 * var(--wave-ov)); }
+  .story--flow.story--live .layer-sip__lens {
+    padding-top: calc(var(--wave-ov) + var(--header-h) + var(--space-5));
+  }
+  /* talas: fiksni omotač preko ekrana (vidljiv samo dok talas traje), slojevi klize ispod */
+  .story__wave-fixed {
+    position: fixed;
+    inset: 0;
+    z-index: 5;
+    pointer-events: none;
+  }
+
+  /* kartice na telefonu se samo pojavljuju (mapa-skrola), redom sleva, razmak 60 ms */
+  .story--flow.story--live .sip-card-slot {
+    transition:
+      opacity var(--dur-slow) var(--ease-out),
+      transform var(--dur-slow) var(--ease-out);
+  }
+  .story--flow.story--live .sip-card-slot:nth-child(2) { transition-delay: 60ms; }
+  .story--flow.story--live .sip-card-slot:nth-child(3) { transition-delay: 120ms; }
+  .story--flow.story--live .sip-cards[data-in="0"] .sip-card-slot {
+    opacity: 0;
+    transform: translate3d(0, 16px, 0);
+  }
+
+  /* statična ivica talasa (reduced motion) između POUR i SIP bloka */
+  .story__edge {
+    position: relative;
+    z-index: 1;
+  }
+}
+
+/* ================= Desktop (od 64rem širine i 600 px visine) ================= */
+@media (min-width: 64rem) and (min-height: 600px) {
+  @layer components {
+    /* svaki sloj je kontejner (100 % × 100 vh), pa S i osa ne zavise od trake za skrol */
+    .story .ch-layer { container-type: size; }
+    .story {
+      /* desna ivica kolone teksta + razmak */
+      --text-r: calc(var(--chapter-inset) + var(--text-measure) + 1.5rem);
+      /* mlin (±0,25 S) ne prelazi kolonu teksta, kuvalo (do +0,46 S) staje do desne ivice */
+      --s: min(100cqh, (100cqw - 1rem - var(--text-r)) / 0.71);
+      /* osa kao u mockup-u (mlin na 46,5–77 %, ~61,5 %), pomerena udesno kad je ekran uzak */
+      --axis: clamp(var(--text-r) + 0.25 * var(--s), 61.5cqw, 100cqw - 1rem - 0.46 * var(--s));
+    }
+    .layer-grind { --frame-top: calc(100% - var(--s)); }
+    .layer-pour { --frame-top: 0px; }
+    .layer-sip { --frame-top: calc((100% - var(--s)) / 2); }
+
+    .layer-pour__clip,
+    .layer-sip__lens {
+      position: absolute;
+      inset: 0;
+    }
+
+    /* šav: POUR kadar počinje tačno na granici, pa se ne bledi. GRIND bledi samo kad je S < 100 vh
+       (vrh kadra je tada ispod vrha ekrana); na 1440 × 900 je visina 0. */
+    .layer-pour .story-fade { display: none; }
+    .layer-grind .story-fade {
+      height: min(0.12 * var(--s), max(0px, (100cqh - var(--s)) * 1000));
+    }
+
+    /* ---------- Zakačena scena ---------- */
+    .story__stage {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow: hidden;
+    }
+    .story__track {
+      position: absolute;
+      inset: 0 0 auto;
+      z-index: 2;
+      will-change: transform;
+    }
+    .story--pinned .layer-sip {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+    }
+    .story--pinned .wave { z-index: 3; }
+  }
+}
+
+/* stari pregledači bez container query jedinica: S iz ekrana (traka za skrol pravi grešku od ~15 px) */
+@supports not (width: 1cqw) {
+  @media (min-width: 64rem) and (min-height: 600px) {
+    @layer components {
+      .story {
+        --s: min(100vh, (100vw - 1rem - var(--text-r)) / 0.71);
+        --axis: clamp(var(--text-r) + 0.25 * var(--s), 61.5vw, 100vw - 1rem - 0.46 * var(--s));
+      }
+      .layer-grind .story-fade { height: 0; }
+    }
+  }
+}

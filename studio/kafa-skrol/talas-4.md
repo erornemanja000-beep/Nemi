@@ -23,6 +23,16 @@ Nema kritičnih, visokih ni srednjih nalaza. Prošlo je:
 | 5 | Datenschutz: stavka o hostingu je [FEHLT] (`legal.ts`, red 87–88) | Za demo ostaje. Za pravog klijenta upisati Netlify kao obrađivača. | posle, pravi klijent |
 | 6 | U `Credits.tsx` (red 54) nema linka na Mixkit licencu | Dodati link na Mixkit Free licencu | Z18 |
 
+## Z13: ostaci (programer)
+
+| Nalaz | Ko popravlja |
+|---|---|
+| `cart.ts`: konstante dostave zameniti sa `shop.shipping.feeCents` i `freeFromCents` | Z17 |
+| Zastareli komentar „Overlay iz CartDrawer.tsx" u `src/components/chrome.css` (red 46) | Z17 |
+| Isti komentar u `src/pages/ProductModal.tsx` (red 2) i `src/sections/shop.css` (oko reda 328) | Z17 |
+| `scripts/check-content.ts`: porediti `media.seq[*].geometry` i `placeholder` sa `seq.json` | Z19 |
+| SIP poster u `#sip` bez rezervisane visine, pa `#find-your-cup` na 390 staje 74–94 px prekratko | Z12 (poslato), proverava Z20 |
+
 ## Z14: sekcije ispod priče (tester)
 
 Čeka izveštaj.

@@ -185,15 +185,5 @@ export const PHONE_LOAD_AT = { grind: 1 + 0.3 * 95, pourPin: 97, pour60: 65 + 0.
 /** dekodirano najviše ±16 kadrova oko trenutnog (odluka direktora: ~4 MB po d kadru) */
 export const RETAIN = 16
 
-// =====================================================================================
-// Geometrija pre seq.json (Z5): isto kao full/crop u seq.json. Koristi se samo dok media.ts nema
-// `geometry` (Z13); posle toga važi media.ts, a čim stigne seq.json, važi on.
-// =====================================================================================
-export const FALLBACK_GEOMETRY: Record<ChapterId, { full: { W: number; H: number }; crop: { x0: number; y0: number; w: number; h: number } }> = {
-  grind: { full: { W: 1, H: 1.25 }, crop: { x0: 0.22, y0: 0, w: 0.56, h: 1.25 } },
-  pour: { full: { W: 1, H: 1 }, crop: { x0: 0.26, y0: 0, w: 0.72, h: 1 } },
-  sip: { full: { W: 1, H: 1 }, crop: { x0: 0.2, y0: 0, w: 0.64, h: 0.86 } },
-}
-
 /** Sidra pre seq.json (seq.json ih zamenjuje): pult, sto i nivo kafe u bokalu na G177. */
 export const FALLBACK_ANCHORS = { pult_y: 0.95, sto_y: 0.78, kafa_y: 0.848 } as const

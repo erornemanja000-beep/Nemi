@@ -431,7 +431,12 @@
     .ch-layer .sip-cards {
       --stack-dx: 1rem;
       --stack-dy: 4.5rem;
-      --stack-x: min(68.5%, 100% - var(--gutter) - 3.75rem - 16.25rem - 2 * var(--stack-dx) - 6px);
+      /* Z12: na uskom desktopu (1024) špil ne sme da pokrije celu šolju, pa ide bar do ose šolje
+         (--axis iz story.css), i preko onemogućene strelice „dalje" ako mora */
+      --stack-x: max(
+        min(68.5%, 100% - var(--gutter) - 3.75rem - 16.25rem - 2 * var(--stack-dx) - 6px),
+        min(var(--axis, 61.5%), 100% - 16.25rem - 2 * var(--stack-dx) - 0.5rem)
+      );
       --stack-y: clamp(var(--header-h) + 2 * var(--stack-dy) + 0.5rem, 31%, 100% - 27rem);
       position: absolute;
       inset: 0;

@@ -1,5 +1,5 @@
 // Tri staklene kartice u SIP-u (mockup .glass-card, tekstovi.md „SIP: staklene kartice").
-// Podaci: chapters.sipCards (natpis, podnatpis, red) + proizvod (ime, note, cena 250 g). Grundpreis i
+// Podaci: chapters.sipCards (natpis, podnatpis, red, note) + proizvod (ime, note ako ih kartica nema, cena 250 g). Grundpreis i
 // PDV daje Price, „Geröstet am" je lastRoastDate(). Kartica je link na /p/<slug> (rastegnut preko cele
 // kartice), a dugme „+" stavlja 250 g (cela zrna) u korpu.
 // Omotač <li data-anim="card" data-sip-card="0|1|2"> pomera Story (Z12, ulet); nagib je na <article>.
@@ -49,6 +49,8 @@ function GlassCard({ entry, roast, loadImage }: { entry: Entry; roast: string; l
   // {place} je prvi deo reda kartice („Ethiopia", „Colombia", „House blend"), chapters.card.aria
   const place = tx(card.line).split(' · ')[0]
   const bag = media.bags[product.image]
+  // note sa kartice (tekstovi.md, tabela SIP kartica); bez njih važe note proizvoda
+  const notes = card.notes ?? product.notes
 
   return (
     <article className="glass-card" aria-labelledby={titleId}>
@@ -97,10 +99,10 @@ function GlassCard({ entry, roast, loadImage }: { entry: Entry; roast: string; l
       </h3>
       <p className="glass-card__meta">
         {tx(card.line)}
-        {product.notes && (
+        {notes && (
           <>
             <br />
-            {tx(product.notes).join(' · ')}
+            {tx(notes).join(' · ')}
           </>
         )}
       </p>

@@ -39,11 +39,8 @@ const IDS: readonly ChapterId[] = ['grind', 'pour', 'sip']
 const byId = Object.fromEntries(chapters.items.map((c) => [c.id, c])) as Record<ChapterId, Chapter>
 const pct = (v: number) => `${(v * 100).toFixed(4)}%`
 
-/** Geometrija pre seq.json: media.ts (Z13 dodaje `geometry`), a dok je nema, timeline.ts. */
-function geometryOf(id: ChapterId): SeqGeometry {
-  const entry: { geometry?: SeqGeometry } = media.seq[id]
-  return entry.geometry ?? T.FALLBACK_GEOMETRY[id]
-}
+/** Geometrija pre seq.json (i u reduced motion): media.ts, isto kao full/crop u seq.json (Z5, Z13). */
+const geometryOf = (id: ChapterId): SeqGeometry => media.seq[id].geometry
 
 /** Zbir offsetTop do pretka (ili do vrha dokumenta). Ne zavisi od transform-a (talas skalira sočivo). */
 function offsetWithin(el: HTMLElement | null, ancestor: HTMLElement | null) {
@@ -349,6 +346,7 @@ function LiveStory({ phone }: { phone: boolean }) {
     const steamSip = q('[data-steam="sip"]')
     const boxes = { grind: q('.story-canvas--grind'), pour: q('.story-canvas--pour'), sip: q('.story-canvas--sip') }
     const settle = easeFromToken('--ease-settle', [0.34, 1.4, 0.64, 1])
+    const trackEl = track.current
 
     // 1. početna stanja PRE prvog čitanja layout-a (inače bi tekst prvo bio vidljiv, pa izbledeo)
     if (texts.grind) texts.grind.dataset.in = '1'
@@ -479,8 +477,8 @@ function LiveStory({ phone }: { phone: boolean }) {
       // traka GRIND + POUR (šav), pa POUR ide gore sporije od talasa
       const drift = (T.DESK_POUR_DRIFT.vh / 100) * vh * T.smooth(T.DESK_POUR_DRIFT.from, 1, p)
       const shift = Math.round((seam * vh + drift) * 100) / 100
-      if (shift !== lastShift && track.current) {
-        track.current.style.transform = `translate3d(0, ${-shift}px, 0)`
+      if (shift !== lastShift && trackEl) {
+        trackEl.style.transform = `translate3d(0, ${-shift}px, 0)`
         lastShift = shift
       }
 
@@ -744,7 +742,7 @@ function LiveStory({ phone }: { phone: boolean }) {
       el.removeEventListener('focusin', onFocus)
       refreshRef.current = () => {}
       if (SEQ_DEBUG) delete window.__story
-      if (track.current) track.current.style.transform = ''
+      if (trackEl) trackEl.style.transform = ''
       for (const c of cards) {
         c.style.transform = ''
         c.style.opacity = ''

@@ -9,7 +9,7 @@
   - Jedan fajl, bez spoljnih zavisnosti.
   - Tasteri: N = sakrij/prikaži napomene (isprekidani okviri).
   - Tonovi pozadine (svetla / srednja / tamna) samo pokazuju smenu sekcija; boje bira dizajner.
-  - Tekstovi su PRIVREMENI (studio/kafa-skrol/tekstovi.md ne postoji). Preuzima tekstopisac.
+  - Tekstovi su iz studio/kafa-skrol/tekstovi.md (EN prvi; DE ide preko DE/EN prekidača). [FEHLT] = tekstopisac nema podatak.
   - Pin sekcije su ovde prikazane kao jedan ekran (100vh) + traka sa leve strane koja kaže koliko se skrola zakačeno.
     Tačne visine su u mapa-skrola.md.
 -->
@@ -95,9 +95,10 @@ html.shot .hdr{position:absolute}
 .arrow{position:absolute;top:50%;margin-top:-26px;width:52px;height:52px;border-radius:50%;border:2px solid var(--g5);background:#fff;color:var(--g6);display:flex;align-items:center;justify-content:center;font-size:26px;line-height:1;z-index:6}
 .arrow.l{left:34px}.arrow.r{right:20px}
 .arrow[disabled]{opacity:.4}
-.bgword{position:absolute;left:38%;right:0;bottom:-2vh;font:italic 700 clamp(150px,21vw,320px)/.8 serif;color:rgba(0,0,0,.075);white-space:nowrap;pointer-events:none;z-index:0;overflow:hidden;text-align:center}
+.bgword{position:absolute;left:30%;right:-3%;bottom:-2vh;font:italic 700 clamp(120px,15.5vw,290px)/.85 serif;color:rgba(0,0,0,.075);white-space:nowrap;pointer-events:none;z-index:0;overflow:hidden;text-align:center}
 .s-pour .bgword{color:rgba(0,0,0,.12)}
-.bgnote{position:absolute;left:var(--pad);bottom:48px;z-index:2}
+.s-sip .bgword{color:rgba(255,255,255,.08);left:36%;bottom:4vh}
+.bgnote{position:absolute;left:var(--pad);bottom:76px;z-index:2}
 
 /* GRIND: mlin */
 .grind-anim{height:calc(var(--vh) - var(--hh) - 150px);min-height:480px}
@@ -122,29 +123,34 @@ html.shot .hdr{position:absolute}
 .cup-anim .o-cup{left:12%;right:12%;top:30%;height:44%}
 .cup-anim .o-glaze{left:30%;right:30%;top:20%;height:11%}
 .cards{display:contents}
-.gcard{position:absolute;width:232px;border:2px solid #ddd;background:rgba(255,255,255,.18);backdrop-filter:blur(1px);padding:10px;color:#f4f4f4;z-index:3}
-.gcard .ph{min-height:78px;margin-bottom:8px;font-size:10.5px;background-color:rgba(230,230,230,.35)}
+.gcard{position:absolute;width:244px;border:2px solid #ddd;background:rgba(255,255,255,.18);backdrop-filter:blur(1px);padding:10px;color:#f4f4f4;z-index:3}
+.gcard .ph{min-height:54px;margin-bottom:8px;font-size:10.5px;background-color:rgba(230,230,230,.35)}
+.gcard .sub{font-size:12px;opacity:.85;margin-bottom:2px}
+.gcard .view{display:block;margin-top:8px;font-size:12px;font-weight:700;border-top:1px solid rgba(255,255,255,.4);padding-top:6px}
 .gcard .k{font-size:11px;letter-spacing:.24em;text-transform:uppercase;font-weight:700}
 .gcard h3{font-size:19px;margin:3px 0 2px}
-.gcard p{font-size:13px;opacity:.95}
+.gcard p{font-size:12.5px;opacity:.95}
 .gcard .pr{margin-top:6px;font-weight:700;font-size:15px}
 .gcard .pr small{display:block;font-weight:400;font-size:12px}
 .c-origin{left:0;top:5%}
 .c-flavor{right:0;top:17%}
 .c-roast{left:2%;bottom:8%}
 .star{position:absolute;right:6%;bottom:6%;width:34px;height:34px;color:#f2f2f2;z-index:3}
-.dots{position:absolute;left:50%;transform:translateX(-50%);bottom:0;display:flex;gap:12px;align-items:center;z-index:3}
+.cdots{position:absolute;left:var(--pad);bottom:38px;display:flex;gap:12px;align-items:center;z-index:6}
+.cdots i{display:block;width:12px;height:12px;border-radius:50%;border:2px solid currentColor}
+.cdots i.on{background:currentColor}
+.dots{display:none;position:absolute;left:50%;transform:translateX(-50%);bottom:0;gap:12px;align-items:center;z-index:3}
 .dots i{display:block;width:12px;height:12px;border-radius:50%;border:2px solid #f2f2f2}
 .dots i.on{background:#f2f2f2}
 .s-sip .ruler span{color:#222}
-.sipnote{position:relative;z-index:5;margin-top:14px;align-self:flex-start}
+.sipnote{position:absolute;z-index:5;top:calc(var(--hh) + 6px);right:12px;max-width:470px}
 
 /* ---------- prelazi (sav) ---------- */
 .seam{position:relative;height:0;z-index:8}
 .seamlabel{position:absolute;left:0;right:0;top:0;border-top:2px dashed #000;height:0}
 .seamlabel>span{position:absolute;left:24px;top:-1px;transform:translateY(-100%);background:#000;color:#fff;font:11px/1.3 var(--mono);padding:3px 9px;white-space:nowrap}
 .bridge{position:absolute;left:61.3%;width:16%;top:-20vh;height:40vh;border:2px dashed #000;background:rgba(120,120,120,.28);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;padding:8px}
-.bridge .note{position:absolute;right:calc(100% + 14px);top:50%;transform:translateY(-50%);width:310px;text-align:right;font-size:11px}
+.bridge .note{position:absolute;right:calc(100% + 14px);top:66%;transform:translateY(-50%);width:310px;text-align:right;font-size:11px}
 .bridge .down{font-size:30px;line-height:1}
 .wave{position:absolute;left:0;right:0;top:-27vh;height:27vh;display:flex;align-items:flex-end;justify-content:center}
 .wave svg{position:absolute;inset:0;width:100%;height:100%}
@@ -198,16 +204,20 @@ html.shot .hdr{position:absolute}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:28px}
 .hbox{display:grid;grid-template-columns:150px 1fr;gap:20px;background:#fff;border:2px solid var(--g5);padding:20px;align-items:center}
 .hbox .ph{min-height:150px;align-self:start}
-.hbox h3{font-size:30px;font-weight:900;text-transform:uppercase;margin-bottom:6px}
+.hbox h3{font-size:25px;font-weight:900;text-transform:uppercase;margin-bottom:6px;line-height:1}
+.hbox .small{font-size:13px}
+.hbox .lnk{margin-left:14px;font-weight:600;font-size:14px}
 .hbox p{font-size:15px;margin-bottom:10px}
-.hbox .opt{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
-.hbox .pr{font-size:15px;margin-bottom:12px}
-.hbox .pr b{font-size:24px}
+.hbox .opt{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.hbox .pr{font-size:14px;margin-bottom:10px}
+.hbox .pr b{font-size:22px}
 
 .s-about{background:#f0f0f0}
 .about{display:grid;grid-template-columns:6fr 5fr;gap:56px;align-items:center}
 .about .ph{min-height:420px}
-.about p{margin-top:16px;max-width:480px}
+.about p{margin-top:14px;max-width:500px}
+.about .sub,.s-brew .sub,.contact .sub,.sec-head .sub{font-weight:700;margin-top:12px;font-size:18px}
+.about .demoline{font:12px var(--mono);border-top:1px dashed var(--g4);padding-top:8px;margin:16px 0}
 .facts{margin-top:18px;list-style:none;display:grid;gap:8px;max-width:480px}
 .facts li{border-top:1px dashed var(--g4);padding-top:8px;font-size:15px;font-weight:600}
 .s-brew{background:#dedede}
@@ -217,6 +227,8 @@ html.shot .hdr{position:absolute}
 .step .n{font:700 13px var(--mono)}
 .step h3{font-size:28px;font-weight:900;text-transform:uppercase}
 .step .lnk{margin-top:auto;border-top:1px dashed var(--g4);padding-top:8px;font-size:14px;font-weight:600}
+.brewmeta{display:flex;flex-wrap:wrap;gap:6px 28px;margin-top:14px;font-size:14px;max-width:900px}
+.brewfoot{display:flex;flex-wrap:wrap;gap:12px 28px;align-items:center;margin-top:26px;font-size:14px}
 
 .s-contact{background:#ececec}
 .contact{display:grid;grid-template-columns:5fr 6fr;gap:56px;align-items:stretch}
@@ -235,14 +247,20 @@ html.shot .hdr{position:absolute}
 .ftr .bar{margin-top:44px;padding-top:20px;border-top:1px solid #666;display:flex;flex-wrap:wrap;gap:14px 22px;align-items:center;justify-content:space-between;font-size:13px}
 .ftr .demo{background:transparent;color:#fff;border-color:#fff}
 .guar{border:2px solid #ddd;padding:8px 14px;font-size:13px;display:inline-block}
+.nl{display:grid;grid-template-columns:1fr 1.4fr;gap:36px;align-items:center;padding-bottom:36px;margin-bottom:36px;border-bottom:1px solid #666}
+.nl h3{font-size:26px;font-weight:900;text-transform:uppercase;color:#fff;line-height:1}
+.nl .frow{display:flex;gap:10px;flex-wrap:wrap}
+.nl .field{flex:1 1 220px;border:2px solid #ddd;border-radius:999px;padding:12px 18px;font-size:14px;color:#ccc}
+.nl .chk{flex-basis:100%;font-size:13px;display:flex;gap:10px;align-items:flex-start}
+.nl .chk i{flex:0 0 18px;height:18px;border:2px solid #ddd;margin-top:2px}
 .ftr .btn.ghost{color:#fff}
 
 /* chat balon (fiksan) */
 .chat{position:fixed;right:24px;bottom:24px;width:60px;height:60px;border-radius:50%;background:var(--g6);color:#fff;border:3px solid #fff;display:flex;align-items:center;justify-content:center;z-index:55;box-shadow:0 0 0 2px var(--g6)}
 .chat svg{width:28px;height:28px}
 html.shot .chat{position:absolute;bottom:auto;top:calc(var(--vh) - 84px)}
-.chatnote{position:fixed;right:24px;bottom:92px;z-index:54;width:128px;text-align:right}
-html.shot .chatnote{position:absolute;bottom:auto;top:calc(var(--vh) - 142px)}
+.chatnote{position:fixed;right:24px;bottom:96px;z-index:54;width:150px;text-align:right}
+html.shot .chatnote{position:absolute;bottom:auto;top:calc(var(--vh) - 172px)}
 
 /* dodaci */
 .extras{background:#fff;padding:56px var(--pad);border-top:3px dashed #000}
@@ -285,10 +303,16 @@ html.shot .chatnote{position:absolute;bottom:auto;top:calc(var(--vh) - 142px)}
   .h-ch{font-size:76px;margin-bottom:14px}
   .eyebrow{font-size:12px;margin-bottom:8px}
   .copy p.lead{font-size:16px;margin-bottom:20px}
-  .bgword{left:0;right:0;font-size:36vw;bottom:-1vw}
+  .bgword{left:-4%;right:-4%;font-size:25vw;bottom:-1vw}
+  .s-sip .bgword{display:none}
   .bgnote{display:none}
   .grind-anim{height:calc(var(--vh) - 530px);min-height:250px}
-  .grind-anim .cap{font-size:10.5px}
+  .grind-anim .cap{font-size:10px}
+  .grind-anim .o-beans{top:23%;height:7%}
+  .grind-anim .o-hopper{top:31%;height:15%}
+  .grind-anim .o-body{top:47%;height:31%}
+  .grind-anim .o-ground{top:80%;height:8%}
+  .sipnote{position:relative;top:auto;right:auto;max-width:none;margin-top:14px}
   .pour-anim{height:540px;min-height:0}
   .pour-anim .cap.left{width:auto;right:8px}
   .pour-anim .o-kettle{top:17%;height:13%;width:38%}
@@ -302,7 +326,9 @@ html.shot .chatnote{position:absolute;bottom:auto;top:calc(var(--vh) - 142px)}
   .cup-anim{position:relative;left:auto;transform:none;top:auto;width:100%;height:290px}
   .cards{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:6px;margin-right:calc(var(--pad) * -1);padding-right:var(--pad)}
   .gcard{position:static;flex:0 0 232px;scroll-snap-align:start}
-  .dots{position:static;transform:none;justify-content:center}
+  .dots{display:flex;position:static;transform:none;justify-content:center}
+  .cdots{display:none}
+  .nl{grid-template-columns:1fr;gap:18px}
   .star{position:absolute;right:0;top:-6px;width:26px;height:26px}
   .seam{height:auto}
   .seamlabel{position:static;border-top:0;height:auto}
@@ -337,7 +363,7 @@ html.shot .chatnote{position:absolute;bottom:auto;top:calc(var(--vh) - 142px)}
   .row2{grid-template-columns:1fr;gap:16px}
   .hbox{grid-template-columns:96px 1fr;padding:14px;gap:14px}
   .hbox .ph{min-height:96px}
-  .hbox h3{font-size:24px}
+  .hbox h3{font-size:22px}
   .about,.contact{grid-template-columns:1fr;gap:26px}
   .about .ph,.contact .ph{min-height:240px}
   .steps{grid-template-columns:1fr;gap:14px}
@@ -361,8 +387,8 @@ html.shot .chatnote{position:absolute;bottom:auto;top:calc(var(--vh) - 142px)}
 
 <!-- =========== 1. HEADER (fiksan) =========== -->
 <header class="hdr" id="top">
-  <a class="logo" href="#top" aria-label="POUR / PLAY, Specialty Coffee, Startseite">
-    <b>POUR / PLAY</b><small>Specialty Coffee</small>
+  <a class="logo" href="#top" aria-label="POUR / PLAY, home">
+    <b>POUR / PLAY</b><small>Specialty Coffee · Vienna</small>
   </a>
   <nav aria-label="Main">
     <ul class="nav">
@@ -375,15 +401,15 @@ html.shot .chatnote{position:absolute;bottom:auto;top:calc(var(--vh) - 142px)}
   </nav>
   <div class="hright">
     <a class="btn sm" href="#find-your-cup">Shop now</a>
-    <button class="icon s" type="button" aria-label="Search">
+    <button class="icon s" type="button" aria-label="Open search">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="10" cy="10" r="6"/><path d="M15 15l6 6"/></svg>
     </button>
-    <button class="lang" type="button" aria-label="Language: Deutsch / English">DE <span>|</span> EN</button>
+    <button class="lang" type="button" aria-label="Language: English. Switch to Deutsch">EN <span>|</span> DE</button>
     <button class="icon" type="button" aria-label="Cart, 2 items">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M5 8h14l-1 12H6L5 8z"/><path d="M9 8a3 3 0 0 1 6 0"/></svg>
       <span class="badge">2</span>
     </button>
-    <button class="icon hamb" type="button" aria-label="Menu" aria-expanded="false" aria-controls="mpanel">
+    <button class="icon hamb" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mpanel">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
     </button>
   </div>
@@ -393,22 +419,22 @@ html.shot .chatnote{position:absolute;bottom:auto;top:calc(var(--vh) - 142px)}
   <a href="#find-your-cup">Shop</a><a href="#find-your-cup">Coffees</a><a href="#brew-guide">Brew guide</a><a href="#about">About</a><a href="#contact">Contact</a>
 </div>
 
-<h1 class="sr">POUR / PLAY – Specialty Coffee, Vienna</h1>
+<h1 class="sr">POUR / PLAY – specialty coffee roastery in Vienna</h1>
 
 <main>
 <!-- =========== 2. GRIND =========== -->
 <section class="frame s-grind" id="grind" aria-labelledby="h-grind">
   <div class="ruler" aria-hidden="true"><span>PIN · +120 vh skrola · pozadina: svetla</span></div>
   <div class="ftag note" aria-hidden="true"><b>2 · POGLAVLJE 1 · GRIND</b> · video 0,0–0,8 s · <span class="d">pin 120 vh</span><span class="m">bez pina</span></div>
-  <button class="arrow l" type="button" aria-label="Previous" disabled>&#8249;</button>
-  <button class="arrow r" type="button" aria-label="Next chapter">&#8250;</button>
-  <div class="bgword" aria-hidden="true">Fresh</div>
-  <div class="note bgnote" aria-hidden="true">pozadinska reč: privremeno · iza mlina (z 0) · polako se pomera</div>
+  <button class="arrow l" type="button" aria-label="Previous section" disabled>&#8249;</button>
+  <button class="arrow r" type="button" aria-label="Next section">&#8250;</button>
+  <div class="bgword" aria-hidden="true">Longberry</div>
+  <div class="note bgnote" aria-hidden="true">pozadinska reč „Longberry“ · iza mlina (z 0) · polako klizi</div>
   <div class="fr-in">
     <div class="copy">
       <p class="eyebrow">Section 1</p>
       <h2 class="h-ch" id="h-grind">Grind</h2>
-      <p class="lead">Every cup starts with whole beans. Pick a coffee, grind it fresh, or let us grind it for the way you brew.</p>
+      <p class="lead">It all starts with a whole bean. We roast twice a week in Vienna and grind to order: for espresso, filter, French press or moka pot. Or keep it whole and grind it fresh at home.</p>
       <a class="btn" href="#find-your-cup">Shop beans <span aria-hidden="true">&rarr;</span></a>
     </div>
     <div class="anim grind-anim">
@@ -420,6 +446,7 @@ html.shot .chatnote{position:absolute;bottom:auto;top:calc(var(--vh) - 142px)}
       <div class="dropmark out">▼ otvor mlina = početak prelaza 1</div>
     </div>
   </div>
+  <div class="cdots" role="group" aria-label="Go to section {n} of 3" aria-hidden="true"><i class="on"></i><i></i><i></i></div>
 </section>
 
 <div class="seam" id="prelaz-1" aria-hidden="true">
@@ -435,15 +462,15 @@ html.shot .chatnote{position:absolute;bottom:auto;top:calc(var(--vh) - 142px)}
 <section class="frame s-pour" id="pour" aria-labelledby="h-pour">
   <div class="ruler" aria-hidden="true"><span>PIN · +400 vh skrola · pozadina: srednja</span></div>
   <div class="ftag note" aria-hidden="true"><b>4 · POGLAVLJE 2 · POUR</b> · video 1,5–4,4 s · <span class="d">pin 400 vh (najduže)</span><span class="m">bez pina</span></div>
-  <button class="arrow l" type="button" aria-label="Previous chapter">&#8249;</button>
-  <button class="arrow r" type="button" aria-label="Next chapter">&#8250;</button>
-  <div class="bgword" aria-hidden="true">Slowly</div>
-  <div class="note bgnote" aria-hidden="true">pozadinska reč: privremeno · iza drippera</div>
+  <button class="arrow l" type="button" aria-label="Previous section">&#8249;</button>
+  <button class="arrow r" type="button" aria-label="Next section">&#8250;</button>
+  <div class="bgword" aria-hidden="true">Percolate</div>
+  <div class="note bgnote" aria-hidden="true">pozadinska reč „Percolate“ · iza drippera</div>
   <div class="fr-in">
     <div class="copy">
       <p class="eyebrow">Section 2</p>
       <h2 class="h-ch" id="h-pour">Pour</h2>
-      <p class="lead">Hot water, a slow circle, three minutes. Watch the brew rise and learn the recipe, step by step.</p>
+      <p class="lead">Pour-over takes its time: 18 g of coffee, water at 93 °C, three minutes. Let it bloom, pour in slow circles, then wait for the last drop. Our guide walks you through it.</p>
       <a class="btn" href="#brew-guide">Brew guide <span aria-hidden="true">&rarr;</span></a>
     </div>
     <div class="anim pour-anim">
@@ -457,6 +484,7 @@ html.shot .chatnote{position:absolute;bottom:auto;top:calc(var(--vh) - 142px)}
       <div class="obj soft o-beanpile">par zrna</div>
     </div>
   </div>
+  <div class="cdots" role="group" aria-label="Go to section {n} of 3" aria-hidden="true"><i></i><i class="on"></i><i></i></div>
 </section>
 
 <div class="seam" id="prelaz-2" aria-hidden="true">
@@ -474,11 +502,14 @@ html.shot .chatnote{position:absolute;bottom:auto;top:calc(var(--vh) - 142px)}
 <section class="frame s-sip" id="sip" aria-labelledby="h-sip">
   <div class="ruler" aria-hidden="true"><span>PIN · +200 vh skrola · pozadina: tamna</span></div>
   <div class="ftag note" aria-hidden="true"><b>6 · POGLAVLJE 3 · SIP</b> · video 5,8–7,2 s · <span class="d">pin 200 vh</span><span class="m">bez pina</span></div>
+  <button class="arrow l" type="button" aria-label="Previous section">&#8249;</button>
+  <button class="arrow r" type="button" aria-label="Next section" disabled>&#8250;</button>
+  <div class="bgword" aria-hidden="true">Frother</div>
   <div class="fr-in sip-in">
     <div class="copy" style="align-self:center">
       <p class="eyebrow">Section 3</p>
       <h2 class="h-ch" id="h-sip">Sip</h2>
-      <p class="lead">Three ways into the right bag: where it grew, how it tastes, how dark it is roasted. Pick one and we will find your cup.</p>
+      <p class="lead">Fruity, chocolaty or somewhere in between? Find your cup by origin, flavor or roast: from a floral Ethiopian to our house espresso. Every bag shows its roast date.</p>
       <a class="btn light" href="#find-your-cup">Find your cup <span aria-hidden="true">&rarr;</span></a>
     </div>
     <div class="stage">
@@ -488,33 +519,43 @@ html.shot .chatnote{position:absolute;bottom:auto;top:calc(var(--vh) - 142px)}
         <div class="obj o-cup">šolja</div>
       </div>
       <div class="cards">
-        <article class="gcard c-origin" aria-label="Origin: Morgentau">
-          <div class="ph"><span>[SLIKA: pakovanje 250 g, render]</span></div>
+        <article class="gcard c-origin" aria-label="Origin: Guji">
+          <div class="ph"><span>[SLIKA: pakovanje 250 g]</span></div>
           <div class="k">Origin</div>
-          <h3>Morgentau</h3>
-          <p>Ethiopia · washed</p>
-          <div class="pr">€ 17,90 · 250 g<small>€ 71,60 / kg</small></div>
+          <div class="sub">Where it grows</div>
+          <h3>Guji</h3>
+          <p>Ethiopia · 1,950–2,200 m</p>
+          <p>Jasmine · Bergamot · White peach</p>
+          <div class="pr">€17.90 · 250 g<small>€71.60/kg</small></div>
+          <span class="view">View &rarr;</span>
         </article>
-        <article class="gcard c-flavor" aria-label="Flavor: Samt">
-          <div class="ph"><span>[SLIKA: pakovanje 250 g, render]</span></div>
+        <article class="gcard c-flavor" aria-label="Flavor: Huila Pink Bourbon">
+          <div class="ph"><span>[SLIKA: pakovanje 250 g]</span></div>
           <div class="k">Flavor</div>
-          <h3>Samt</h3>
-          <p>caramel · hazelnut</p>
-          <div class="pr">€ 15,90 · 250 g<small>€ 63,60 / kg</small></div>
+          <div class="sub">What you taste</div>
+          <h3><span class="d">Huila Pink Bourbon</span><span class="m">Pink Bourbon</span></h3>
+          <p>Colombia · Limited lot</p>
+          <p>Hibiscus · Pink grapefruit · Panela</p>
+          <div class="pr">€26.00 · 250 g<small>€104.00/kg</small></div>
+          <span class="view">View &rarr;</span>
         </article>
-        <article class="gcard c-roast" aria-label="Roast: Grätzl Blend">
-          <div class="ph"><span>[SLIKA: pakovanje 250 g, render]</span></div>
+        <article class="gcard c-roast" aria-label="Roast: On Repeat">
+          <div class="ph"><span>[SLIKA: pakovanje 250 g]</span></div>
           <div class="k">Roast</div>
-          <h3>Grätzl Blend</h3>
-          <p>dark roast · espresso</p>
-          <div class="pr">€ 12,90 · 250 g<small>€ 51,60 / kg</small></div>
+          <div class="sub">How dark we go</div>
+          <h3>On Repeat</h3>
+          <p>House blend · Medium-dark</p>
+          <p>Milk chocolate · Hazelnut · Caramel</p>
+          <div class="pr">€13.50 · 250 g<small>€54.00/kg</small></div>
+          <span class="view">View &rarr;</span>
         </article>
       </div>
       <svg class="star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1 L14.2 9.8 L23 12 L14.2 14.2 L12 23 L9.8 14.2 L1 12 L9.8 9.8 Z" fill="currentColor"/></svg>
-      <div class="dots" role="tablist" aria-label="Cards"><i class="on"></i><i></i><i></i></div>
+      <div class="dots" aria-label="Cards"><i class="on" style="background:#f2f2f2"></i><i></i><i></i></div>
     </div>
   </div>
-  <div class="note sipnote" aria-hidden="true"><span class="d">3 kartice uleću (3D rotacija, staklo) i staju oko šolje · zvezdica treperi na kraju · tačkice = koja je kartica u fokusu · kartica je link na proizvod</span><span class="m">kartice se prelaze prstom (snap), tačkice prate karticu · zvezdica gore desno</span></div>
+  <div class="cdots" role="group" aria-label="Go to section {n} of 3" aria-hidden="true"><i></i><i></i><i class="on"></i></div>
+  <div class="note sipnote" aria-hidden="true"><span class="d">3 kartice uleću (3D rotacija, staklo) i staju oko šolje · zvezdica treperi na kraju · kartica je link na proizvod · tačkice = poglavlja</span><span class="m">kartice se prelaze prstom (snap), tačkice prate karticu · zvezdica gore desno</span></div>
 </section>
 
 <!-- =========== 7. PRODAVNICA =========== -->
@@ -523,162 +564,164 @@ html.shot .chatnote{position:absolute;bottom:auto;top:calc(var(--vh) - 142px)}
   <div class="sec-head">
     <div>
       <h2 class="t" id="h-shop">Find your cup</h2>
-      <p>Filter by origin, flavor and roast. Every bag shows roast date, best-before date and the price per kilo.</p>
+      <p class="sub">Roasted in Vienna every Tuesday and Friday. Whole bean or ground the way you brew.</p>
+      <p style="margin-top:8px">Not sure where to start? <a href="#tasting-set"><b>Try the tasting set</b> &rarr;</a></p>
     </div>
-    <div class="demo">Konzept / Demo – keine echten Bestellungen</div>
+    <div class="demo">Konzept / Demo<br>Concept / demo — not a real shop</div>
   </div>
 
   <div class="filters" role="group" aria-label="Filters">
     <div class="fg"><span class="lbl">Origin</span>
-      <div class="chips"><button type="button" aria-pressed="true">All</button><button type="button" aria-pressed="false">Ethiopia</button><button type="button" aria-pressed="false">Kenya</button><button type="button" aria-pressed="false">Colombia</button><button type="button" aria-pressed="false">Brazil</button><button type="button" aria-pressed="false">Blend</button></div></div>
+      <div class="chips"><button type="button" aria-pressed="true">All</button><button type="button" aria-pressed="false">Ethiopia</button><button type="button" aria-pressed="false">Kenya</button><button type="button" aria-pressed="false">Colombia</button><button type="button" aria-pressed="false">Costa Rica</button><button type="button" aria-pressed="false">Blend</button></div></div>
     <div class="fg"><span class="lbl">Flavor</span>
-      <div class="chips"><button type="button" aria-pressed="true">All</button><button type="button" aria-pressed="false">Fruity</button><button type="button" aria-pressed="false">Sweet</button><button type="button" aria-pressed="false">Nutty &amp; chocolate</button></div></div>
+      <div class="chips"><button type="button" aria-pressed="true">All</button><button type="button" aria-pressed="false">Fruity &amp; floral</button><button type="button" aria-pressed="false">Chocolate &amp; nuts</button></div></div>
     <div class="fg"><span class="lbl">Roast</span>
-      <div class="chips"><button type="button" aria-pressed="true">All</button><button type="button" aria-pressed="false">Light</button><button type="button" aria-pressed="false">Medium</button><button type="button" aria-pressed="false">Dark</button></div></div>
+      <div class="chips"><button type="button" aria-pressed="true">All</button><button type="button" aria-pressed="false">Light</button><button type="button" aria-pressed="false">Medium</button><button type="button" aria-pressed="false">Medium-dark</button></div></div>
   </div>
 
   <div class="grindbar" id="grind-select">
-    <span class="lbl">Your grind</span>
-    <div class="chips" role="group" aria-label="Grind">
-      <button type="button" aria-pressed="true">Whole beans</button><button type="button" aria-pressed="false">Espresso</button><button type="button" aria-pressed="false">Moka pot</button><button type="button" aria-pressed="false">AeroPress</button><button type="button" aria-pressed="false">V60</button><button type="button" aria-pressed="false">Filter machine</button><button type="button" aria-pressed="false">French press</button>
-    </div>
-    <small class="note">izbor važi za sve kartice (i može se promeniti na svakoj) · dugme „Shop beans“ iz GRIND-a vodi ovde · 7 opcija</small>
+    <span class="lbl">Grind</span>
+    <div class="chips" role="group" aria-label="Grind"><button type="button" aria-pressed="true">Whole bean</button><button type="button" aria-pressed="false">Espresso</button><button type="button" aria-pressed="false">Filter</button><button type="button" aria-pressed="false">French press</button><button type="button" aria-pressed="false">Moka pot</button></div>
+    <small>Whole beans keep their aroma longest. We grind on the day we ship. <span class="note">izbor važi za sve kartice i menja se na svakoj · „Shop beans“ iz GRIND-a vodi ovde</span></small>
   </div>
 
-  <div class="countrow"><p class="count">Coffees · 6 <span class="note">slike = render iz Blendera</span></p><div class="sortbox">Sort: Featured &#9662;</div></div>
+  <div class="countrow"><p class="count">Coffee · 6 <span class="note">slike = render iz Blendera</span></p><div class="sortbox">Sort: Newest roast &#9662;</div></div>
   <div class="grid3">
     <article class="card">
       <div class="ph"><span>[SLIKA: pakovanje 250 g]</span></div>
+      <div class="tags"><span>Medium-dark</span><span>Espresso</span><span>House blend</span></div>
+      <h4>On Repeat</h4>
+      <p class="meta">Brazil + Colombia · natural + washed</p>
+      <p class="notes hm">Milk chocolate · Hazelnut · Caramel</p>
+      <p class="roasted hm">Roasted on 20.10.2026 · Best before [MHD]</p>
+      <div class="size hm"><button type="button" aria-pressed="true">250 g</button><button type="button" aria-pressed="false">1 kg</button></div>
+      <div class="price"><b>€13.50</b><span class="sz">250 g</span><span class="gp">€54.00/kg</span></div>
+      <div class="sel hm"><span>Grind: Whole bean</span><span>&#9662;</span></div>
+      <button class="btn" type="button">Add to cart</button>
+    </article>
+    <article class="card">
+      <div class="ph"><span>[SLIKA: pakovanje 250 g]</span></div>
       <div class="tags"><span>Light</span><span>Filter</span></div>
-      <h4>Morgentau</h4>
-      <p class="meta">Ethiopia · washed</p>
-      <p class="notes hm">jasmine, peach, bergamot</p>
-      <p class="roasted hm">Roasted 21.10.2026 · best before 21.04.2027</p>
+      <h4>Guji</h4>
+      <p class="meta">Ethiopia, Guji · washed</p>
+      <p class="notes hm">Jasmine · Bergamot · White peach</p>
+      <p class="roasted hm">Roasted on 20.10.2026 · Best before [MHD]</p>
       <div class="size hm"><button type="button" aria-pressed="true">250 g</button><button type="button" aria-pressed="false">1 kg</button></div>
-      <div class="price"><b>€ 17,90</b><span class="sz">250 g</span><span class="gp">€ 71,60 / kg</span></div>
-      <div class="sel hm"><span>Grind: Whole beans</span><span>&#9662;</span></div>
+      <div class="price"><b>€17.90</b><span class="sz">250 g</span><span class="gp">€71.60/kg</span></div>
+      <div class="sel hm"><span>Grind: Whole bean</span><span>&#9662;</span></div>
       <button class="btn" type="button">Add to cart</button>
     </article>
     <article class="card">
       <div class="ph"><span>[SLIKA: pakovanje 250 g]</span></div>
-      <div class="tags"><span>Light–medium</span><span>Filter</span></div>
-      <h4>Bergsonne</h4>
-      <p class="meta">Kenya · washed</p>
-      <p class="notes hm">blackcurrant, grapefruit, brown sugar</p>
-      <p class="roasted hm">Roasted 21.10.2026 · best before 21.04.2027</p>
+      <div class="tags"><span>Light</span><span>Filter</span></div>
+      <h4>Nyeri</h4>
+      <p class="meta">Kenya, Nyeri · washed</p>
+      <p class="notes hm">Blackcurrant · Blood orange · Cane sugar</p>
+      <p class="roasted hm">Roasted on 20.10.2026 · Best before [MHD]</p>
       <div class="size hm"><button type="button" aria-pressed="true">250 g</button><button type="button" aria-pressed="false">1 kg</button></div>
-      <div class="price"><b>€ 19,90</b><span class="sz">250 g</span><span class="gp">€ 79,60 / kg</span></div>
-      <div class="sel hm"><span>Grind: Whole beans</span><span>&#9662;</span></div>
+      <div class="price"><b>€19.50</b><span class="sz">250 g</span><span class="gp">€78.00/kg</span></div>
+      <div class="sel hm"><span>Grind: Whole bean</span><span>&#9662;</span></div>
       <button class="btn" type="button">Add to cart</button>
     </article>
     <article class="card">
       <div class="ph"><span>[SLIKA: pakovanje 250 g]</span></div>
-      <div class="tags"><span>Medium</span><span>All-round</span></div>
-      <h4>Samt</h4>
-      <p class="meta">Colombia · honey</p>
-      <p class="notes hm">caramel, hazelnut, red apple</p>
-      <p class="roasted hm">Roasted 21.10.2026 · best before 21.04.2027</p>
+      <div class="tags"><span>Light-medium</span><span>Filter &amp; espresso</span><span>Limited lot</span></div>
+      <h4>Huila Pink Bourbon</h4>
+      <p class="meta">Colombia, Huila · washed</p>
+      <p class="notes hm">Hibiscus · Pink grapefruit · Panela</p>
+      <p class="roasted hm">Roasted on 20.10.2026 · Best before [MHD]</p>
       <div class="size hm"><button type="button" aria-pressed="true">250 g</button><button type="button" aria-pressed="false">1 kg</button></div>
-      <div class="price"><b>€ 15,90</b><span class="sz">250 g</span><span class="gp">€ 63,60 / kg</span></div>
-      <div class="sel hm"><span>Grind: Whole beans</span><span>&#9662;</span></div>
+      <div class="price"><b>€26.00</b><span class="sz">250 g</span><span class="gp">€104.00/kg</span></div>
+      <div class="sel hm"><span>Grind: Whole bean</span><span>&#9662;</span></div>
       <button class="btn" type="button">Add to cart</button>
     </article>
     <article class="card">
       <div class="ph"><span>[SLIKA: pakovanje 250 g]</span></div>
-      <div class="tags"><span>Medium</span><span>Espresso</span></div>
-      <h4>Mondschein</h4>
-      <p class="meta">Brazil · natural</p>
-      <p class="notes hm">milk chocolate, almond, dried fig</p>
-      <p class="roasted hm">Roasted 21.10.2026 · best before 21.04.2027</p>
+      <div class="tags"><span>Medium</span><span>Espresso &amp; filter</span></div>
+      <h4>Tarrazú Honey</h4>
+      <p class="meta">Costa Rica, Tarrazú · honey</p>
+      <p class="notes hm">Apricot · Honey · Almond</p>
+      <p class="roasted hm">Roasted on 20.10.2026 · Best before [MHD]</p>
       <div class="size hm"><button type="button" aria-pressed="true">250 g</button><button type="button" aria-pressed="false">1 kg</button></div>
-      <div class="price"><b>€ 13,90</b><span class="sz">250 g</span><span class="gp">€ 55,60 / kg</span></div>
-      <div class="sel hm"><span>Grind: Whole beans</span><span>&#9662;</span></div>
+      <div class="price"><b>€18.50</b><span class="sz">250 g</span><span class="gp">€74.00/kg</span></div>
+      <div class="sel hm"><span>Grind: Whole bean</span><span>&#9662;</span></div>
       <button class="btn" type="button">Add to cart</button>
     </article>
     <article class="card">
       <div class="ph"><span>[SLIKA: pakovanje 250 g]</span></div>
-      <div class="tags"><span>Dark</span><span>Espresso</span></div>
-      <h4>Grätzl Blend</h4>
-      <p class="meta">House blend · Brazil + Colombia</p>
-      <p class="notes hm">dark chocolate, toasted nuts, spice</p>
-      <p class="roasted hm">Roasted 21.10.2026 · best before 21.04.2027</p>
+      <div class="tags"><span>Medium</span><span>Espresso &amp; filter</span><span>Decaf</span></div>
+      <h4>Pause</h4>
+      <p class="meta">Colombia, Caldas · sugarcane decaf</p>
+      <p class="notes hm">Date · Milk chocolate · Hazelnut</p>
+      <p class="roasted hm">Roasted on 20.10.2026 · Best before [MHD]</p>
       <div class="size hm"><button type="button" aria-pressed="true">250 g</button><button type="button" aria-pressed="false">1 kg</button></div>
-      <div class="price"><b>€ 12,90</b><span class="sz">250 g</span><span class="gp">€ 51,60 / kg</span></div>
-      <div class="sel hm"><span>Grind: Whole beans</span><span>&#9662;</span></div>
-      <button class="btn" type="button">Add to cart</button>
-    </article>
-    <article class="card">
-      <div class="ph"><span>[SLIKA: pakovanje 250 g]</span></div>
-      <div class="tags"><span>Medium</span><span>Decaf</span></div>
-      <h4>Nachtfalter</h4>
-      <p class="meta">Colombia · decaf</p>
-      <p class="notes hm">cocoa, orange peel, toffee</p>
-      <p class="roasted hm">Roasted 21.10.2026 · best before 21.04.2027</p>
-      <div class="size hm"><button type="button" aria-pressed="true">250 g</button><button type="button" aria-pressed="false">1 kg</button></div>
-      <div class="price"><b>€ 16,90</b><span class="sz">250 g</span><span class="gp">€ 67,60 / kg</span></div>
-      <div class="sel hm"><span>Grind: Whole beans</span><span>&#9662;</span></div>
+      <div class="price"><b>€19.00</b><span class="sz">250 g</span><span class="gp">€76.00/kg</span></div>
+      <div class="sel hm"><span>Grind: Whole bean</span><span>&#9662;</span></div>
       <button class="btn" type="button">Add to cart</button>
     </article>
   </div>
 
-  <div class="gearhead"><span>Brewing gear · 3</span><span class="note">oprema nema Grundpreis (komad) · vezana za korake iz Brew guide-a</span></div>
+  <div class="gearhead"><span>Equipment · 3</span><span class="note">oprema nema Grundpreis (komad) · cena mlina i drippera: [FEHLT] u tekstovi.md</span></div>
   <div class="grid3 gear">
     <article class="card">
-      <div class="ph"><span>[SLIKA: ručni mlin, render]</span></div>
-      <h4>Hand grinder</h4>
-      <p class="notes hm">Stainless steel, 40 clicks, 25 g hopper</p>
-      <div class="price"><b>€ 89,00</b><span class="sz">incl. VAT</span></div>
+      <div class="ph"><span>[SLIKA: burr grinder, render]</span></div>
+      <h4>Burr Grinder</h4>
+      <p class="notes hm">Electric, stainless steel, glass hopper. Espresso fine to French press coarse.</p>
+      <div class="price"><b>€ [FEHLT]</b><span class="sz">incl. VAT, plus shipping</span></div>
       <button class="btn" type="button">Add to cart</button>
     </article>
     <article class="card">
-      <div class="ph"><span>[SLIKA: V60 dripper + filteri, render]</span></div>
-      <h4>V60 dripper</h4>
-      <p class="notes hm">Ceramic, size 02, with 40 paper filters</p>
-      <div class="price"><b>€ 29,00</b><span class="sz">incl. VAT</span></div>
+      <div class="ph"><span>[SLIKA: ceramic dripper, render]</span></div>
+      <h4>Ceramic Dripper</h4>
+      <p class="notes hm">Cone with a 60° angle, for 1–2 cups. Fits size 02 paper filters.</p>
+      <div class="price"><b>€ [FEHLT]</b><span class="sz">incl. VAT, plus shipping</span></div>
       <button class="btn" type="button">Add to cart</button>
     </article>
     <article class="card">
-      <div class="ph"><span>[SLIKA: gooseneck kuvalo, render]</span></div>
-      <h4>Gooseneck kettle</h4>
-      <p class="notes hm">0,9 l, stainless steel, thin spout</p>
-      <div class="price"><b>€ 79,00</b><span class="sz">incl. VAT</span></div>
+      <div class="ph"><span>[SLIKA: gooseneck kettle, render]</span></div>
+      <h4>Gooseneck Kettle</h4>
+      <p class="notes hm">Electric, set to the degree. Holds 93 °C while you pour.</p>
+      <div class="price"><b>€169.00</b><span class="sz">incl. VAT, plus shipping</span></div>
       <button class="btn" type="button">Add to cart</button>
     </article>
   </div>
 
   <div class="infostrip">
-    <div><b>Shipping</b>Austria € 4,90, free from € 45. EU from € 9,90.</div>
-    <div><b>Delivery</b>2–4 working days after roasting.</div>
-    <div><b>Prices</b>Incl. 20 % VAT. Price per kg shown on every coffee.</div>
+    <div><b>Shipping</b>Free within Austria from €45, otherwise €4.50. Pickup at the café is free.</div>
+    <div><b>Delivery</b>We roast Tue &amp; Fri and ship within 1 working day. 2–4 working days in Austria.</div>
+    <div><b>Prices</b>All prices incl. VAT, plus shipping. Price per kg on every coffee. <a href="#">Shipping &amp; payment</a></div>
     <div><b>Your rights</b><a href="#widerruf">Right of withdrawal</a> · 2-year legal guarantee</div>
   </div>
 </section>
 
 <!-- =========== 8. PRETPLATA / PROBIERSET =========== -->
-<section class="sec s-subs" aria-label="Subscription and tasting set">
+<section class="sec s-subs" id="tasting-set" aria-label="Subscription and tasting set">
   <div class="note" style="position:absolute;left:var(--pad);top:12px" aria-hidden="true"><b>8 · PRETPLATA + PROBIERSET</b> · <span class="d">jedan red</span><span class="m">2 kartice jedna ispod druge</span></div>
   <div class="row2">
     <article class="hbox">
       <div class="ph"><span>[SLIKA: kutija / kese]</span></div>
       <div>
-        <h3>Coffee on repeat</h3>
-        <p>Your favorite bag, delivered. Pause, skip or cancel at any time.</p>
-        <div class="opt chips"><button type="button" aria-pressed="true">Every 2 weeks</button><button type="button" aria-pressed="false">Monthly</button></div>
-        <p class="pr"><b>from € 14,31</b> per delivery · 10 % off · shipping incl.</p>
-        <a class="btn sm" href="#">Start subscription</a>
+        <h3>Never run out of beans</h3>
+        <p>Fresh from the roastery, every 2 or 4 weeks.</p>
+        <div class="opt chips" role="group" aria-label="Plan"><button type="button" aria-pressed="true">Your coffee</button><button type="button" aria-pressed="false">Surprise me</button></div>
+        <div class="opt chips" role="group" aria-label="Rhythm"><button type="button" aria-pressed="true">Every 2 weeks</button><button type="button" aria-pressed="false">Every 4 weeks</button></div>
+        <p class="pr"><b>−10 %</b> on every delivery · Surprise me: €38.00 for 2 × 250 g (€76.00/kg), plus €4.50 shipping</p>
+        <p class="small">Pause, skip or cancel before any delivery. You'll see price and rhythm again before you pay.</p>
+        <p style="margin-top:10px"><a class="btn sm" href="#">Start a subscription</a><a class="lnk" href="#">Give as a gift</a></p>
       </div>
     </article>
     <article class="hbox">
-      <div class="ph"><span>[SLIKA: 3 male kese]</span></div>
+      <div class="ph"><span>[SLIKA: 4 male kese]</span></div>
       <div>
-        <h3>Tasting set</h3>
-        <p><span class="d">Three coffees, 100 g each: Morgentau, Samt, Grätzl Blend. </span><span class="m">3 × 100 g. </span>DE: Probierset.</p>
-        <p class="pr"><b>€ 19,90</b> · 3 × 100 g · € 66,33 / kg</p>
-        <a class="btn sm" href="#">Get the set</a>
+        <h3><span class="d">Not sure yet? Try four.</span><span class="m">Try four.</span></h3>
+        <p>Tasting set: 4 × 100 g filter coffee</p>
+        <p class="d">Guji, Nyeri, Huila Pink Bourbon and Tarrazú Honey side by side, with a card for your notes.</p>
+        <p class="pr"><b>€29.00</b> · 4 × 100 g · €72.50/kg · incl. VAT, plus shipping</p>
+        <a class="btn sm" href="#">Add tasting set</a>
       </div>
     </article>
   </div>
-  <p class="note" style="margin-top:12px" aria-hidden="true">pretplata: učestalost, cena i otkazivanje moraju biti vidljivi pre plaćanja</p>
+  <p class="note" style="margin-top:12px" aria-hidden="true">DE: Probierset · pretplata: učestalost, cena i otkazivanje moraju biti vidljivi pre plaćanja</p>
 </section>
 
 <!-- =========== 9. O NAMA + BREW GUIDE =========== -->
@@ -687,63 +730,69 @@ html.shot .chatnote{position:absolute;bottom:auto;top:calc(var(--vh) - 142px)}
   <div class="about">
     <div class="ph"><span>[SLIKA: pržionica u Beču, kadar iz Blendera ili fotografija]</span></div>
     <div>
-      <h2 class="t" id="h-about">About</h2>
-      <p>We roast in small batches in our roastery in Vienna. Come by the café, watch the roaster work and take a bag home.</p>
-      <ul class="facts">
-        <li>Roasted in small batches, in Vienna</li>
-        <li>Café with a view of the roaster</li>
-        <li>Cupping on the first Saturday of the month</li>
-      </ul>
+      <h2 class="t" id="h-about">A roastery with chairs</h2>
+      <p class="sub">Small roastery, café up front.</p>
+      <p>POUR / PLAY is a small roastery with a café in Vienna's 7th district. Our roaster sits right behind the counter, so you can watch the beans turn brown while your coffee cools. In Vienna you stay as long as your cup lasts, often longer. We're fine with that. On every bag you'll find the farm, the altitude, the process and the day we roasted it.</p>
+      <p class="demoline">Concept: the brand, café and farms are made up.</p>
+      <a class="btn" href="#contact">Visit the café <span aria-hidden="true">&rarr;</span></a>
     </div>
   </div>
 </section>
 <section class="sec s-brew" id="brew-guide" aria-labelledby="h-brew">
   <div class="note" style="position:absolute;left:var(--pad);top:14px" aria-hidden="true"><b>9b · BREW GUIDE</b> · 3 koraka = 3 poglavlja</div>
-  <h2 class="t" id="h-brew">Brew guide</h2>
-  <p style="margin-top:12px;max-width:460px">A V60 at home, in three steps. 15 g coffee, 240 g water.</p>
+  <h2 class="t" id="h-brew"><span class="d">Three steps, three minutes</span><span class="m">3 steps, 3 minutes</span></h2>
+  <p class="sub" style="font-weight:700;margin-top:12px">Pour-over for one big cup: 18 g coffee, 288 g water (1:16), 93 °C.</p>
+  <div class="brewmeta"><span><b>You need:</b> Dripper, paper filter, scale, kettle, timer.</span></div>
   <div class="steps">
     <article class="step">
       <span class="n">01 · GRIND</span>
       <div class="ph"><span>[SLIKA: kadar iz GRIND sekvence]</span></div>
       <h3>Grind</h3>
-      <p>15 g of beans, medium-fine, like sea salt.</p>
-      <a class="lnk" href="#find-your-cup">&rarr; Hand grinder · € 89,00</a>
+      <p>Grind 18 g of coffee medium-fine, about like table salt. Rinse the paper filter with hot water and pour that water away.</p>
+      <a class="lnk" href="#find-your-cup">&rarr; Burr Grinder</a>
     </article>
     <article class="step">
       <span class="n">02 · POUR</span>
       <div class="ph"><span>[SLIKA: kadar iz POUR sekvence]</span></div>
       <h3>Pour</h3>
-      <p>240 g water at 94 °C, slow circles, about 3 minutes.</p>
-      <a class="lnk" href="#find-your-cup">&rarr; V60 dripper · € 29,00 · Kettle · € 79,00</a>
+      <p>Start the timer. Pour 50 g of water at 93 °C and let it bloom for 45 seconds. Then pour slowly in circles until the scale shows 288 g.</p>
+      <a class="lnk" href="#find-your-cup">&rarr; Ceramic Dripper · Gooseneck Kettle</a>
     </article>
     <article class="step">
       <span class="n">03 · SIP</span>
       <div class="ph"><span>[SLIKA: kadar iz SIP sekvence]</span></div>
       <h3>Sip</h3>
-      <p>Let it cool for a minute. Taste, then taste again.</p>
+      <p>Let it drip through. At about 3:00 it's done. Swirl the carafe once and pour.</p>
       <a class="lnk" href="#find-your-cup">&rarr; Find your cup</a>
     </article>
+  </div>
+  <div class="brewfoot">
+    <span><b>Tip:</b> Too sour? Grind finer. Too bitter? Grind coarser.</span>
+    <span>Works well with Guji, Nyeri and Tarrazú Honey.</span>
+    <a class="btn sm" href="#find-your-cup">Shop filter coffee</a>
   </div>
 </section>
 
 <!-- =========== 10. KONTAKT =========== -->
 <section class="sec s-contact" id="contact" aria-labelledby="h-contact">
-  <div class="note" style="position:absolute;left:var(--pad);top:14px" aria-hidden="true"><b>10 · KONTAKT</b> · adresa i vreme su izmišljeni</div>
+  <div class="note" style="position:absolute;left:var(--pad);top:14px" aria-hidden="true"><b>10 · KONTAKT</b> · adresa, vreme i telefon su izmišljeni</div>
   <div class="contact">
     <div>
-      <h2 class="t" id="h-contact">Contact</h2>
+      <h2 class="t" id="h-contact">Come by</h2>
+      <p class="sub">Café, beans to go and cupping in 1070 Vienna.</p>
       <address>
-        POUR / PLAY Rösterei &amp; Café<br>
-        Musterstraße 12, 1070 Wien<br>
-        +43 1 000 00 00<br>
-        hello@pourplay.example
+        Röstergasse 18, 1070 Wien <span class="note">demo adresa</span><br>
+        +43 1 000 00 00 · hallo@pourplay.example
       </address>
       <table class="hours" aria-label="Opening hours">
-        <tr><td>Mon–Fri</td><td>08:00–18:00</td></tr>
-        <tr><td>Saturday</td><td>09:00–17:00</td></tr>
-        <tr><td>Sunday</td><td>closed</td></tr>
+        <tr><td>Mon–Fri</td><td>8:00–18:00</td></tr>
+        <tr><td>Saturday</td><td>9:00–17:00</td></tr>
+        <tr><td>Sunday &amp; public holidays</td><td>closed</td></tr>
       </table>
-      <a class="btn" href="#">Get directions <span aria-hidden="true">&rarr;</span></a>
+      <p style="font-size:14px;margin-bottom:6px">We roast on Tuesdays and Fridays. Come by in the morning and watch.</p>
+      <p style="font-size:14px;margin-bottom:6px">Cupping: first Saturday of the month, 10:00, €29 per person. Book by email.</p>
+      <p style="font-size:14px;margin-bottom:20px">For offices and restaurants: wholesale@pourplay.example</p>
+      <a class="btn" href="#">Write to us <span aria-hidden="true">&rarr;</span></a>
     </div>
     <div class="ph"><span>[SLIKA: statična mapa, bez iframe-a]</span></div>
   </div>
@@ -752,39 +801,47 @@ html.shot .chatnote{position:absolute;bottom:auto;top:calc(var(--vh) - 142px)}
 
 <!-- =========== 11. FOOTER =========== -->
 <footer class="ftr" id="footer">
+  <div class="nl">
+    <h3>New coffees, once a month</h3>
+    <div class="frow">
+      <div class="field">Email</div>
+      <button class="btn light sm" type="button">Sign up</button>
+      <div class="chk"><i></i><span>Yes, I'd like to get the newsletter. I can unsubscribe at any time. More in the privacy policy.</span></div>
+    </div>
+  </div>
   <div class="cols">
     <div>
-      <a class="logo" href="#top"><b>POUR / PLAY</b><small>Specialty Coffee</small></a>
+      <a class="logo" href="#top"><b>POUR / PLAY</b><small>Specialty Coffee · Vienna</small></a>
       <p>Specialty coffee, roasted in Vienna.</p>
-      <button class="lang" type="button" style="color:#222;margin-top:14px" aria-label="Language: Deutsch / English">DE <span>|</span> EN</button>
+      <button class="lang" type="button" style="color:#222;margin-top:14px" aria-label="Language: English. Switch to Deutsch">EN <span>|</span> DE</button>
     </div>
     <div>
       <h4>Shop</h4>
-      <ul><li><a href="#find-your-cup">Coffees</a></li><li><a href="#find-your-cup">Brewing gear</a></li><li><a href="#find-your-cup">Subscription</a></li><li><a href="#find-your-cup">Tasting set</a></li><li><a href="#find-your-cup">Shipping &amp; payment</a></li></ul>
+      <ul><li><a href="#find-your-cup">Coffee</a></li><li><a href="#find-your-cup">Equipment</a></li><li><a href="#tasting-set">Subscription</a></li><li><a href="#tasting-set">Tasting set</a></li></ul>
     </div>
     <div>
-      <h4>Info</h4>
-      <ul><li><a href="#brew-guide">Brew guide</a></li><li><a href="#about">About</a></li><li><a href="#contact">Contact</a></li></ul>
+      <h4>POUR / PLAY</h4>
+      <ul><li><a href="#about">About</a></li><li><a href="#brew-guide">Brew guide</a></li><li><a href="#contact">Café &amp; contact</a></li><li><a href="#contact">Wholesale</a></li></ul>
     </div>
     <div>
       <h4>Legal</h4>
-      <ul id="widerruf"><li><a href="#">Impressum</a></li><li><a href="#">AGB</a></li><li><a href="#">Widerruf</a></li><li><a href="#">Datenschutz</a></li></ul>
+      <ul id="widerruf"><li><a href="#">Impressum</a></li><li><a href="#">AGB</a></li><li><a href="#">Widerruf</a></li><li><a href="#">Datenschutz</a></li><li><a href="#">Shipping &amp; payment</a></li><li><a href="#">Cookie settings</a></li></ul>
     </div>
   </div>
   <div class="bar">
-    <span>&copy; 2026 POUR / PLAY (fiktives Beispiel)</span>
-    <span class="demo">Konzept / Demo – keine echten Bestellungen</span>
+    <span>&copy; 2026 POUR / PLAY (Konzept / Concept)</span>
+    <span class="demo"><b>Konzept / Demo</b> — kein echter Shop. Concept / demo — not a real shop.</span>
     <span class="guar">2 Jahre gesetzliche Gewährleistung · 2-year legal guarantee</span>
     <a class="btn ghost sm" href="#">Vertrag widerrufen</a>
   </div>
-  <p class="note" style="margin-top:14px" aria-hidden="true"><b>11 · FOOTER</b> · Gewährleistungslabel na DE i EN · „Vertrag widerrufen“ = Widerrufsbutton (FAGG § 13a) · Impressum/AGB/Widerruf/Datenschutz = zasebne stranice</p>
+  <p class="note" style="margin-top:14px" aria-hidden="true"><b>11 · FOOTER</b> · Gewährleistungslabel: zvanični predložak, DE i EN · „Vertrag widerrufen“ = Widerrufsbutton (FAGG § 13a) · Impressum / AGB / Widerruf / Datenschutz = zasebne stranice · newsletter: posebna kućica, nije unapred štiklirana</p>
 </footer>
 
 <!-- chat balon -->
 <button class="chat" type="button" aria-label="Open chat">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 5h16v11H10l-5 4v-4H4z"/></svg>
 </button>
-<span class="chatnote note" aria-hidden="true">chat balon · fiksan dole desno</span>
+<span class="chatnote note" aria-hidden="true">chat balon · fiksan dole desno · tooltip „Questions? Ask us.“</span>
 
 <!-- =========== DODACI (nisu deo stranice) =========== -->
 <section class="extras" aria-label="Dodaci skici">
@@ -796,7 +853,7 @@ html.shot .chatnote{position:absolute;bottom:auto;top:calc(var(--vh) - 142px)}
       <div class="mock">
         <div class="mh"><b>POUR / PLAY</b><span>[korpa] [X]</span></div>
         <ul><li>Shop</li><li>Coffees</li><li>Brew guide</li><li>About</li><li>Contact</li></ul>
-        <div class="mf"><div class="field">Search</div><span class="lang" style="text-align:center">DE | EN</span><a class="btn" href="#find-your-cup">Shop now</a></div>
+        <div class="mf"><div class="field">Search coffee, origin or gear</div><span class="lang" style="text-align:center">EN | DE</span><a class="btn" href="#find-your-cup">Shop now</a></div>
       </div>
     </div>
     <div>

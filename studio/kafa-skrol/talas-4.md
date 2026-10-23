@@ -35,7 +35,14 @@ Nema kritičnih, visokih ni srednjih nalaza. Prošlo je:
 
 ## Z14: sekcije ispod priče (tester)
 
-Čeka izveštaj.
+Testiran je commit `741a892` na kopiji iz `git archive`, na 390 i 1440, normalno i reduced, EN i DE. To je 196 provera. Prošlo je 20 od 21 stavke: build, lint, check, header, pretraga, korpa, prodavnica, modal, pretplata, sekcije, footer, pravne rute, sidra (±0,5 px), jezik, horizontalni skrol, konzola, CSP, reduced motion i izmene Z13.
+
+| Nalaz | Ko popravlja |
+|---|---|
+| **NIJE PROŠLO (minorno):** kratki footer linkovi su uži od 44 px: „Terms" 43, „Abo" 30–31 i „AGB" 32–34 px (`Footer.tsx:26`, `linkClass`). Popravka je `min-w-tap` ili horizontalni padding. | Z18 (već na spisku iz Z15) |
+| Toast na 390 (`Toast.tsx:44`, z-index iznad korpe): ako se korpa otvori u roku od 4 s posle „Add to cart", toast pokriva traku besplatne dostave i dugme za porudžbinu. Spustiti ga ispod panela ili ga sakriti dok je korpa otvorena. | Z17 |
+
+**Za sve agente talasa 4:** zajednički `KafaSkrol/dist` su tokom Z14 više puta prebrisali drugi agenti, pa su se javljali lažni 404. Zato svako pravi build u svoj folder (`npx vite build --outDir <scratchpad>/...`) i koristi svoj port.
 
 ## Z15: vizuelni pregled (recenzent)
 

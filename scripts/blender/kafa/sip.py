@@ -261,8 +261,11 @@ LOOK = dict(
     handle_bump=0.40,  # reljef gline na dršci (0,4x)
     spots=1.0,         # smeđe pege kao u referenci
     streak=0.50,       # smeđe pruge od oboda naniže (glazura se tanji i curi)
-    inside=0.60,       # unutrašnjost tamni ka kafi (deblja glazura + senka; kafa ne ogleda svetao zid)
+    inside=0.80,       # unutrašnjost tamni ka kafi (deblja glazura + senka; kafa ne ogleda svetao zid)
 )
+
+
+CLAY_SPEC = 0.15       # spekular gole gline (bilo 0,30: sivi sjaj je prekrivao smeđu boju)
 
 
 def mat_stoneware(body, seed=7, look=None):
@@ -360,16 +363,17 @@ def mat_stoneware(body, seed=7, look=None):
     peb_top = N.ramp(pebble, 0.55, 0.05)                        # 1 na vrhu zrnca
     grain = N.noise(P, 2600.0, detail=1)
     clay_var = N.noise(P, 90.0, detail=4)
-    clay = N.mix(clay_var, (0.0085, 0.0042, 0.0027), (0.0175, 0.0088, 0.0054))
-    clay = N.mix(N.mul(peb_top, 0.55), clay, (0.042, 0.023, 0.015))
+    # albedo 2-5 %: ispod toga sivi spekular nadjača boju i glina izgleda siva (storyboard ~#3B2A22)
+    clay = N.mix(clay_var, (0.020, 0.0100, 0.0062), (0.042, 0.0215, 0.0130))
+    clay = N.mix(N.mul(peb_top, 0.55), clay, (0.075, 0.042, 0.027))
     grog_d, _ = N.voronoi(P, 520.0)
-    clay = N.mix(N.mul(N.ramp(grog_d, 0.10, 0.04), 0.7), clay, (0.10, 0.062, 0.040))
-    clay = N.mix(N.mul(ring, N.mul(ring_env, 0.30)), clay, (0.036, 0.019, 0.012))   # grebeni malo svetliji
+    clay = N.mix(N.mul(N.ramp(grog_d, 0.10, 0.04), 0.7), clay, (0.13, 0.085, 0.056))
+    clay = N.mix(N.mul(ring, N.mul(ring_env, 0.30)), clay, (0.060, 0.032, 0.020))   # grebeni malo svetliji
     clay = N.mix(N.mul(halo, 0.6), clay, (0.085, 0.036, 0.016))             # rđasti oreol oko glazure
 
     # --- glazura: ovsena sivo-zelena; oblaci, gvožđe, reljef gline kroz tanku glazuru, krem kapljice
     gv = N.noise(P, 55.0, detail=5, rough=0.62)
-    glaze = N.mix(N.ramp(gv, 0.36, 0.64), (0.090, 0.104, 0.076), (0.285, 0.362, 0.280))
+    glaze = N.mix(N.ramp(gv, 0.36, 0.64), (0.072, 0.083, 0.060), (0.222, 0.282, 0.218))
     cloud = N.ramp(N.noise(P, 30.0, detail=4, distortion=0.5), 0.48, 0.72)
     glaze = N.mix(N.mul(cloud, K['cloud']), glaze, (0.14, 0.105, 0.075))         # smeđi oblaci
     top_tone = N.ramp(z, GLAZE_Z + 0.010, RIM_Z - 0.002)                      # ka obodu glazura je tanja
@@ -397,13 +401,13 @@ def mat_stoneware(body, seed=7, look=None):
     thin = N.mul(N.ramp(nd, 0.0008, 0.0060, 1.0, 0.0), N.ramp(N.noise(P, 48.0, detail=3), 0.35, 0.62, 0.25, 0.75))
     glaze = N.mix(N.mul(N.mul(thin, K['thin']), N.sub(1.0, inner)), glaze, (0.13, 0.080, 0.046))   # tanji pojas
     cream = N.math('MAXIMUM', dome, N.mul(lip, 0.6))
-    glaze = N.mix(N.mul(cream, K['drip']), glaze, (0.48, 0.47, 0.40))           # debela kapljica = krem
+    glaze = N.mix(N.mul(cream, K['drip']), glaze, (0.40, 0.39, 0.32))           # debela kapljica = krem
     rim_brk = N.mul(N.ramp(z, RIM_Z - 0.0085, RIM_Z - 0.0025), N.ramp(N.noise(P, 300.0), 0.25, 0.6, 0.6, 1.0))
     glaze = N.mix(N.mul(rim_brk, 0.92), glaze, (0.10, 0.050, 0.026))         # obod: glazura puca u smeđe
     craze_d, _ = N.voronoi(N.vmath('MULTIPLY', P, (1.0, 1.0, 0.7)), 140.0, feature='DISTANCE_TO_EDGE')
     craze = N.mul(N.ramp(craze_d, 0.0, 0.03, 1.0, 0.0), N.ramp(N.noise(P, 20.0), 0.45, 0.6))
     glaze = N.mix(N.mul(craze, 0.30), glaze, (0.12, 0.075, 0.045))            # krakelir (fine pukotine)
-    deep = N.mul(inner, N.ramp(z, RIM_Z - 0.0030, COFFEE_Z + 0.0005))
+    deep = N.mul(inner, N.ramp(z, RIM_Z - 0.0025, COFFEE_Z + 0.0020))
     glaze = N.mix(N.mul(deep, K['inside']), glaze, (0.060, 0.055, 0.038))     # unutra tamnije ka kafi
     # mokar trag kafe iznad nivoa, unutra
     wet = N.mul(inner, N.ramp(z, COFFEE_Z + 0.0004, COFFEE_Z + 0.0022, 1.0, 0.0))
@@ -423,7 +427,7 @@ def mat_stoneware(body, seed=7, look=None):
     rough = N.mixf(mask, k_rough, N.mixf(wet, g_rough, 0.08))
     coat_rough = N.mixf(mask, 0.40, c_rough)
     N.put(rough, bsdf.inputs['Roughness'])
-    N.put(N.mixf(mask, 0.30, 0.5), bsdf.inputs['Specular IOR Level'])
+    N.put(N.mixf(mask, CLAY_SPEC, 0.5), bsdf.inputs['Specular IOR Level'])
     N.put(N.mixf(mask, 0.10, 0.25), bsdf.inputs['Coat Weight'])
     N.put(coat_rough, bsdf.inputs['Coat Roughness'])
     # bez subsurface-a: na 1,2 mm i težini 0,12 se nije videlo, a random walk je bio najskuplji deo kadra
@@ -466,7 +470,7 @@ def mat_stoneware_baked(imgs):
     N.put(alb, bsdf.inputs['Base Color'])
     N.put(rough, bsdf.inputs['Roughness'])
     N.put(coat_rough, bsdf.inputs['Coat Roughness'])
-    N.put(N.mixf(mask, 0.30, 0.5), bsdf.inputs['Specular IOR Level'])
+    N.put(N.mixf(mask, CLAY_SPEC, 0.5), bsdf.inputs['Specular IOR Level'])
     N.put(N.mixf(mask, 0.10, 0.25), bsdf.inputs['Coat Weight'])
     for h, sock in ((bump_h, 'Normal'), (coat_h, 'Coat Normal')):
         b = N.new('ShaderNodeBump')
@@ -488,7 +492,7 @@ def stoneware(body, bake=True, rebake=False, samples=4):
     if not bake:
         return src
     _, _, height = mug_atlas()
-    key = C.source_key(mat_stoneware, mug_profile_parts, mug_atlas, handle_mesh, build_mug, LOOK,
+    key = C.source_key(mat_stoneware, mug_profile_parts, mug_atlas, handle_mesh, build_mug, LOOK, CLAY_SPEC,
                        (TEX_W, height, TEX_DENSITY, HIDDEN_DENSITY, HANDLE_ROWS, samples))
     paths = {k: CACHE / f'stoneware_{key}_{k}.exr' for k in maps}
     if rebake or not all(p.exists() for p in paths.values()):

@@ -1,0 +1,433 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>POUR / PLAY · Specialty Coffee – Mockup (Konzept)</title>
+<link rel="stylesheet" href="tokens.css">
+<style>
+/* Fontovi: lokalno iz repoa (sajt/src/assets/fonts, OFL 1.1, Fontsource). Bez CDN-a.
+   Archivo (naslovi) je PREDLOG; dok ga `bezbednost` ne odobri, stack pada na Inter Display / Figtree. */
+@font-face{font-family:"Fraunces";font-style:normal;font-display:swap;font-weight:100 900;src:url(../../../sajt/src/assets/fonts/fraunces-latin-full-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Fraunces";font-style:normal;font-display:swap;font-weight:100 900;src:url(../../../sajt/src/assets/fonts/fraunces-latin-ext-full-normal.woff2) format("woff2");unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+1E00-1E9F,U+20A0-20AB,U+20AD-20C0,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:"Figtree";font-style:normal;font-display:swap;font-weight:300 900;src:url(../../../sajt/src/assets/fonts/figtree-latin-wght-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Figtree";font-style:normal;font-display:swap;font-weight:300 900;src:url(../../../sajt/src/assets/fonts/figtree-latin-ext-wght-normal.woff2) format("woff2");unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+1E00-1E9F,U+20A0-20AB,U+20AD-20C0,U+2C60-2C7F,U+A720-A7FF}
+
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--pp-cream);color:var(--color-text);font:400 var(--fs-body)/var(--lh-body) var(--font-text);-webkit-font-smoothing:antialiased}
+img,svg{display:block;max-width:100%}
+a{color:inherit}
+button{font:inherit;color:inherit}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+:focus-visible{outline:2px solid var(--color-focus);outline-offset:3px;border-radius:var(--radius-xs)}
+.skip{position:absolute;left:var(--gutter);top:-100px;z-index:100;display:inline-flex;align-items:center;min-height:var(--tap);background:var(--pp-ink-deep);color:var(--pp-cream-light);padding:0 18px;border-radius:var(--radius-pill);font:700 var(--fs-label)/1 var(--font-label);letter-spacing:var(--tracking-button);text-transform:uppercase;text-decoration:none}
+.skip:focus{top:12px}
+
+/* ---------------- Header ---------------- */
+/* Mockup: header je absolute u svakom poglavlju (pregled stanja). Produkcija: jedan
+   position:fixed header, data-chapter se menja skrolom. */
+.site-header{position:absolute;inset:0 0 auto 0;z-index:var(--z-header);height:var(--header-h);
+  display:flex;align-items:center;gap:var(--space-4);padding:0 var(--gutter);color:var(--color-text)}
+.logo{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;min-height:var(--tap);text-decoration:none;line-height:1;margin-right:auto}
+.logo__mark{font:600 var(--fs-logo)/1 var(--font-text);letter-spacing:.01em;white-space:nowrap}
+.logo__sub{margin-top:.45em;font:700 var(--fs-logo-sub)/1 var(--font-label);letter-spacing:var(--tracking-logo-sub);text-transform:uppercase;padding-left:var(--tracking-logo-sub)}
+.nav{display:none}
+.nav ul{display:flex;gap:clamp(.5rem,1.4vw,1.75rem);list-style:none;margin:0;padding:0}
+.nav a{display:inline-flex;align-items:center;justify-content:center;min-height:var(--tap);padding-inline:.5rem;font:700 var(--fs-label)/1 var(--font-label);letter-spacing:var(--tracking-nav);text-transform:uppercase;text-decoration:none}
+.nav a:hover{text-decoration:underline;text-underline-offset:6px;text-decoration-thickness:1.5px}
+.actions{display:flex;align-items:center;gap:var(--space-1)}
+.icon-btn{position:relative;display:inline-grid;place-items:center;width:var(--tap);height:var(--tap);border:0;background:none;border-radius:var(--radius-pill);cursor:pointer;text-decoration:none}
+.icon-btn svg{width:22px;height:22px}
+.icon-btn--text{font:700 var(--fs-label)/1 var(--font-label);letter-spacing:var(--tracking-nav)}
+.badge{position:absolute;top:4px;right:2px;min-width:18px;height:18px;padding:0 5px;border-radius:var(--radius-pill);background:var(--color-pill-text);color:var(--color-bg);font:700 11px/18px var(--font-label);text-align:center}
+[data-chapter="grind"] .badge{background:var(--pp-ink-deep);color:var(--pp-cream-light)}
+[data-chapter="pour"] .badge,[data-chapter="sip"] .badge{background:var(--pp-cream-light);color:var(--pp-ink-deep)}
+.pill{display:none;align-items:center;justify-content:center;min-height:var(--tap);padding:0 1.6rem;margin:0 var(--space-3) 0 var(--space-2);border-radius:var(--radius-pill);
+  border:1.5px solid var(--color-pill-border);background:var(--color-pill-bg);color:var(--color-pill-text);
+  font:700 var(--fs-label)/1 var(--font-label);letter-spacing:var(--tracking-button);text-transform:uppercase;text-decoration:none;transition:background-color var(--dur-fast) var(--ease-out),color var(--dur-fast) var(--ease-out)}
+.hide-mobile{display:none}
+
+/* ---------------- Poglavlje: zajedničko ---------------- */
+.chapter{position:relative;overflow:hidden;background:var(--color-bg);color:var(--color-text);
+  min-height:100svh;display:flex;flex-direction:column;padding:calc(var(--header-h) + var(--space-5)) var(--gutter) 0}
+.chapter__content{position:relative;z-index:var(--z-content);max-width:34rem}
+.eyebrow{margin:0 0 var(--space-3);font:700 var(--fs-eyebrow)/1 var(--font-label);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase}
+.chapter__title{margin:0 0 var(--space-4);font-family:var(--font-display);font-weight:var(--font-display-wght);
+  font-variation-settings:"wdth" var(--font-display-wdth);font-size:var(--fs-chapter);line-height:var(--lh-chapter);
+  letter-spacing:var(--tracking-chapter);text-transform:uppercase}
+.chapter__text{margin:0 0 var(--space-5);max-width:var(--text-measure)}
+.btn{display:inline-flex;align-items:center;gap:.6em;min-height:3rem;padding:0 1.75rem;border-radius:var(--radius-pill);
+  background:var(--color-btn-bg);color:var(--color-btn-text);box-shadow:0 0 0 1px var(--color-btn-ring),var(--shadow-btn);
+  font:700 var(--fs-label)/1 var(--font-label);letter-spacing:var(--tracking-button);text-transform:uppercase;text-decoration:none;
+  transition:transform var(--dur-fast) var(--ease-out),background-color var(--dur-fast) var(--ease-out)}
+.btn:hover{transform:translateY(-1px)}
+.btn svg{width:16px;height:16px}
+
+.chapter__stage{position:relative;flex:1;min-height:26rem;margin:var(--space-5) calc(var(--gutter) * -1) 0}
+.word{position:absolute;z-index:var(--z-word);margin:0;white-space:nowrap;pointer-events:none;user-select:none;
+  font-family:var(--font-word);font-weight:var(--font-word-wght);font-variation-settings:var(--font-word-settings);
+  font-size:var(--fs-word);line-height:var(--lh-word);letter-spacing:-.02em;color:var(--color-word)}
+.obj{position:absolute;z-index:var(--z-object);margin:0}
+.obj svg{width:100%;height:auto;overflow:visible}
+.ph-fill{fill:var(--color-placeholder)}
+.ph-line{fill:none;stroke:var(--color-placeholder-line);stroke-width:2;stroke-dasharray:6 6}
+.ph-chip{position:absolute;left:50%;transform:translateX(-50%);white-space:nowrap;padding:6px 10px;border-radius:var(--radius-pill);
+  background:var(--pp-paper);color:var(--pp-ink);font:700 var(--fs-micro)/1 var(--font-label);letter-spacing:.08em;text-transform:uppercase;box-shadow:var(--shadow-soft)}
+
+.chat{position:absolute;z-index:var(--z-chat);right:var(--space-4);bottom:calc(var(--space-4) + env(safe-area-inset-bottom));
+  display:grid;place-items:center;width:3.25rem;height:3.25rem;border-radius:50%;background:var(--pp-ink-deep);color:var(--pp-cream-light);box-shadow:var(--shadow-float)}
+.chat svg{width:22px;height:22px}
+
+.arrow{display:none}
+
+/* ---------------- Scene na telefonu: fiksna visina, pozicije u px ---------------- */
+.chapter--grind .chapter__stage{flex:none;height:28rem}
+.chapter--grind .word{left:3%;bottom:1.5rem}
+.obj--grinder{left:50%;bottom:0;width:14.5rem;transform:translateX(-38%)}
+.obj--grinder .ph-chip{top:64%}
+
+.chapter--pour .chapter__stage{flex:none;height:30rem}
+.chapter--pour .word{left:-1%;top:12.5rem}
+.obj--kettle{left:calc(50% - 6px);top:0;width:18.75rem}          /* vrh izliva = sredina ekrana */
+.obj--dripper{left:50%;top:15.5rem;width:11.875rem;transform:translateX(-50%)}
+.obj--dripper .ph-chip{top:22%}
+.stream{position:absolute;z-index:var(--z-object);width:3px;border-radius:3px;background:linear-gradient(rgba(255,255,255,.65),rgba(255,255,255,.25))}
+.chapter--pour .stream{left:calc(50% - 1.5px);top:9.1rem;height:6.4rem}
+.steam{position:absolute;z-index:var(--z-object);border-radius:50%;background:rgba(255,255,255,.11);filter:blur(22px)}
+.chapter--pour .steam--1{left:34%;top:6rem;width:32%;height:10rem}
+.beans-pair{position:absolute;z-index:var(--z-object);display:flex;gap:6px}
+.beans-pair i{display:block;width:16px;height:11px;border-radius:50%;background:#4A2A1C;box-shadow:inset -2px -2px 0 rgba(0,0,0,.25)}
+.chapter--pour .beans-pair{right:16%;bottom:.75rem}
+
+.chapter--sip{background:linear-gradient(180deg,var(--color-bg) 0%,var(--color-bg) 58%,var(--color-floor) 70%,var(--color-floor-deep) 100%)}
+.chapter--sip .chapter__stage{flex:none;height:31rem}
+.chapter--sip .word{left:-4%;top:2.25rem}
+.obj--mug{left:4%;top:4.5rem;width:15.5rem}
+.obj--mug .ph-chip{top:30%}
+.sparkle{position:absolute;z-index:var(--z-object);color:var(--pp-crema)}
+.chapter--sip .sparkle{left:56%;top:2rem;width:22px}
+.cards{position:absolute;z-index:var(--z-card);right:calc(var(--gutter) - 4px);top:10.25rem}
+.dots{position:relative;z-index:var(--z-content);display:flex;justify-content:center;margin:var(--space-2) 0 var(--space-6)}
+.dots button{width:var(--tap);height:var(--tap);border:0;background:none;padding:0;display:grid;place-items:center;cursor:pointer}
+.dots button::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--color-text);opacity:.45;transition:opacity var(--dur-fast) var(--ease-out),transform var(--dur-fast) var(--ease-out)}
+.dots button[aria-current="true"]::before{opacity:1;transform:scale(1.25)}
+
+/* Staklena kartica */
+.glass-card{width:15.5rem;padding:var(--space-4);border-radius:var(--radius-card);background:var(--glass-bg);
+  -webkit-backdrop-filter:blur(var(--glass-blur)) saturate(var(--glass-saturate));backdrop-filter:blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  border:1px solid var(--glass-border);box-shadow:var(--glass-shadow);color:var(--glass-text);
+  transform:perspective(900px) rotateY(-8deg) rotateZ(var(--card-tilt));transform-origin:50% 60%}
+.glass-card__head{display:flex;align-items:center;justify-content:space-between;margin:-6px -8px 6px 0}
+.glass-card__label{margin:0;font-family:var(--font-display);font-weight:800;font-variation-settings:"wdth" var(--font-display-wdth);font-size:1.0625rem;letter-spacing:.04em;text-transform:uppercase}
+.glass-card__label small{margin-left:.5em;padding:2px 6px;border-radius:var(--radius-pill);border:1px solid currentColor;font:700 10px/1.2 var(--font-label);letter-spacing:.08em;vertical-align:3px}
+.glass-card__link{width:var(--tap);height:var(--tap);display:grid;place-items:center;border-radius:50%;text-decoration:none}
+.glass-card__link svg{width:16px;height:16px}
+.glass-card__pack{position:relative;height:8.25rem;border-radius:var(--radius-md);background:linear-gradient(160deg,#D9D2C8,#C5BDB2);display:grid;place-items:center;overflow:hidden}
+.pack{width:44%;height:84%;margin-top:8%;border-radius:6px 6px 10px 10px;background:linear-gradient(180deg,#B2A99E 0 14%,#A79D92 14% 100%);box-shadow:inset 0 -12px 0 rgba(0,0,0,.06),0 10px 18px -8px rgba(27,21,13,.45);position:relative}
+.pack::after{content:"";position:absolute;left:14%;right:14%;top:40%;height:22%;border-radius:3px;background:#E9E3DA}
+.glass-card__pack .ph-chip{bottom:8px;left:50%;top:auto}
+.glass-card__title{margin:var(--space-3) 0 2px;font:800 var(--fs-h3)/var(--lh-snug) var(--font-text)}
+.glass-card__meta{margin:0 0 var(--space-3);font-size:var(--fs-label);line-height:1.45;color:var(--glass-text-muted)}
+.glass-card__buy{display:flex;align-items:flex-end;justify-content:space-between;gap:var(--space-2)}
+.glass-card__price{margin:0;line-height:1.2}
+.glass-card__price strong{display:block;font:800 1.25rem/1.1 var(--font-text)}
+.glass-card__price span{display:block;margin-top:3px;font-size:var(--fs-micro);color:var(--glass-text-muted)}
+.glass-card__add{flex:none;width:var(--tap);height:var(--tap);border-radius:50%;border:0;background:var(--pp-ink-deep);color:var(--pp-cream-light);display:grid;place-items:center;cursor:pointer;box-shadow:var(--shadow-btn)}
+.glass-card__add svg{width:18px;height:18px}
+.glass-card__roast{margin:var(--space-3) 0 0;padding-top:var(--space-2);border-top:1px solid rgba(43,35,22,.16);font-size:var(--fs-micro);color:var(--glass-text-muted)}
+
+/* Najava sledeće sekcije (prodavnica, krem) */
+.peek{position:relative;background:var(--pp-cream);color:var(--pp-ink);padding:var(--space-6) var(--gutter) var(--space-7);text-align:center}
+.peek h2{margin:0;font-family:var(--font-display);font-weight:var(--font-display-wght);font-variation-settings:"wdth" var(--font-display-wdth);font-size:var(--fs-h2);line-height:1;text-transform:uppercase;letter-spacing:var(--tracking-chapter)}
+.peek p{margin:var(--space-2) auto 0;max-width:34rem;color:var(--color-text-muted);font-size:var(--fs-small)}
+
+/* ================= Desktop (od 64rem = 1024 px) ================= */
+@media (min-width:64rem){
+  .nav{display:block;position:absolute;left:50%;transform:translateX(-50%)}
+  .pill{display:inline-flex}
+  .hide-mobile{display:inline-grid}
+  .menu-btn{display:none}
+  .chapter{display:block;height:100svh;min-height:720px;padding:0}
+  .chapter__stage{position:absolute;inset:0;margin:0;min-height:0}
+  .chapter__content{position:absolute;left:var(--chapter-inset);top:49%;transform:translateY(-50%);width:var(--text-measure);max-width:none}
+  .chat{right:var(--gutter);bottom:var(--space-6);width:3.5rem;height:3.5rem}
+  .arrow{display:grid;place-items:center;position:absolute;z-index:var(--z-content);top:52%;transform:translateY(-50%);width:3.75rem;height:3.75rem;border-radius:50%;border:0;background:var(--color-control-bg);color:var(--color-text);cursor:pointer;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+  .arrow svg{width:20px;height:20px}
+  .arrow--prev{left:var(--gutter)}
+  .arrow--next{right:var(--gutter)}
+
+  /* GRIND: mlin 440×810 na 1440, desno od sredine, dole poravnat */
+  .chapter__stage,.chapter--grind .chapter__stage,.chapter--pour .chapter__stage,.chapter--sip .chapter__stage{height:auto}
+  .chapter--grind .word{left:76.5%;bottom:11%}
+  .obj--grinder{left:46.5%;bottom:10%;top:auto;width:30.5vw;max-width:27.5rem;transform:none}
+  .obj--grinder .ph-chip{top:68%}
+
+  /* POUR: kuvalo ispod headera (u videu ulazi u header, vidi dizajn.md), vrh izliva na 52 % */
+  .chapter--pour .word{left:4%;top:46%;font-size:var(--fs-word-xl)}
+  .obj--kettle{left:calc(52% - .68vw);top:max(4.1rem,7.4%);width:34vw;max-width:30.6rem}
+  .obj--dripper{left:52%;top:49%;width:26.4vw;max-width:23.75rem;transform:translateX(-50%)}
+  .obj--dripper .ph-chip{top:20%}
+  .chapter--pour .stream{left:calc(52% - 1.5px);top:calc(max(4.1rem,7.4%) + 16.5vw);height:calc(49% - max(4.1rem,7.4%) - 16.5vw)}
+  .chapter--pour .steam--1{left:44%;top:18%;width:14%;height:30%}
+  .chapter--pour .beans-pair{left:63.5%;right:auto;bottom:6%}
+
+  /* SIP: šolja u sredini, kartica desno preko drške, reč iza teksta */
+  .chapter--sip .word{left:4%;top:44%;font-size:var(--fs-word-xl)}
+  .obj--mug{left:37.5%;top:37%;width:36vw;max-width:32.5rem}
+  .obj--mug .ph-chip{top:54%}
+  .chapter--sip .sparkle{left:48.5%;top:24%;width:26px}
+  .cards{right:auto;left:68.5%;top:31%}
+  .glass-card{width:16.25rem}
+  .dots{position:absolute;left:50%;bottom:2.5%;transform:translateX(-50%);margin:0}
+}
+
+/* ================= Telefon: dodatna podešavanja (do 40rem) ================= */
+@media (max-width:40rem){
+  .chapter__title{margin-bottom:var(--space-3)}
+  .btn{min-height:3rem}
+  .glass-card{width:13.5rem;padding:var(--space-3) var(--space-4) var(--space-4);--card-tilt:-3deg}
+  .glass-card__pack{height:5.5rem}
+}
+
+/* ================= Mirna verzija ================= */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:1ms!important;animation-iteration-count:1!important;transition-duration:1ms!important;scroll-behavior:auto!important}
+  .btn:hover{transform:none}
+}
+@media (min-width:64rem) and (min-height:0){ /* bez efekta, mesto za pin u produkciji */ }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Zum Inhalt springen</a>
+<h1 class="sr-only">POUR / PLAY – Specialty Coffee aus Wien</h1>
+
+<main id="main">
+
+<!-- =========================== GRIND =========================== -->
+<section class="chapter chapter--grind" data-chapter="grind" aria-labelledby="t-grind">
+  <header class="site-header">
+    <a class="logo" href="#" aria-label="POUR / PLAY – Startseite">
+      <span class="logo__mark">POUR / PLAY</span>
+      <span class="logo__sub">Specialty Coffee</span>
+    </a>
+    <nav class="nav" aria-label="Hauptmenü">
+      <ul>
+        <li><a href="#">Kaffee</a></li>
+        <li><a href="#">Zubehör</a></li>
+        <li><a href="#">Abo</a></li>
+        <li><a href="#">Kurse</a></li>
+        <li><a href="#">Kontakt</a></li>
+      </ul>
+    </nav>
+    <div class="actions">
+      <a class="icon-btn icon-btn--text hide-mobile" href="#" lang="en" aria-label="English version">EN</a>
+      <a class="pill" href="#">Shop</a>
+      <button class="icon-btn hide-mobile" type="button" aria-label="Suche öffnen">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg>
+      </button>
+      <a class="icon-btn" href="#" aria-label="Warenkorb, 2 Artikel">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h14l-1 12H6L5 8Z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/></svg>
+        <span class="badge" aria-hidden="true">2</span>
+      </a>
+      <button class="icon-btn menu-btn" type="button" aria-label="Menü öffnen" aria-expanded="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 8h16M4 16h16"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <div class="chapter__content">
+    <p class="eyebrow">Kapitel 1</p>
+    <h2 class="chapter__title" id="t-grind">Grind</h2>
+    <p class="chapter__text">Gemahlen wird erst, wenn du bestellst. Wir rösten jede Woche in Wien und mahlen auf Wunsch genau für deine Methode, von Espresso bis French Press.</p>
+    <a class="btn" href="#">Bohnen entdecken</a>
+  </div>
+
+  <div class="chapter__stage">
+    <p class="word" aria-hidden="true">Longberry</p>
+    <figure class="obj obj--grinder" aria-hidden="true">
+      <!-- Siva silueta: mlin + zrna. Zamenjuje je 3D sekvenca iz Blendera iste veličine i položaja. -->
+      <svg viewBox="0 -240 440 810">
+        <g class="ph-fill" opacity=".75">
+          <ellipse cx="205" cy="-225" rx="11" ry="15" transform="rotate(20 205 -225)"/>
+          <ellipse cx="238" cy="-200" rx="11" ry="15" transform="rotate(-30 238 -200)"/>
+          <ellipse cx="188" cy="-178" rx="11" ry="15" transform="rotate(60 188 -178)"/>
+          <ellipse cx="226" cy="-150" rx="11" ry="15" transform="rotate(10 226 -150)"/>
+          <ellipse cx="262" cy="-128" rx="11" ry="15" transform="rotate(-50 262 -128)"/>
+          <ellipse cx="200" cy="-110" rx="11" ry="15" transform="rotate(35 200 -110)"/>
+          <ellipse cx="240" cy="-84" rx="11" ry="15" transform="rotate(-15 240 -84)"/>
+          <ellipse cx="214" cy="-58" rx="11" ry="15" transform="rotate(70 214 -58)"/>
+          <ellipse cx="256" cy="-36" rx="11" ry="15" transform="rotate(5 256 -36)"/>
+          <ellipse cx="228" cy="-12" rx="11" ry="15" transform="rotate(-40 228 -12)"/>
+          <ellipse cx="196" cy="4" rx="11" ry="15" transform="rotate(25 196 4)"/>
+        </g>
+        <g class="ph-fill">
+          <rect x="36" y="0" width="368" height="22" rx="7"/>
+          <path d="M52 22H388L352 188Q346 214 318 214H122Q94 214 88 188Z" opacity=".55"/>
+          <path d="M100 120H340L326 186Q322 204 304 204H136Q118 204 114 186Z" opacity=".55"/>
+          <rect x="116" y="214" width="208" height="30" rx="6"/>
+          <rect x="296" y="230" width="112" height="9" rx="4.5"/>
+          <rect x="148" y="244" width="144" height="22" rx="4"/>
+          <rect x="68" y="266" width="322" height="276" rx="24"/>
+          <rect x="84" y="270" width="62" height="26" rx="9" opacity=".8"/>
+          <rect x="88" y="542" width="282" height="26" rx="8" opacity=".85"/>
+        </g>
+        <circle cx="112" cy="420" r="64" fill="#fff" opacity=".22"/>
+        <circle cx="112" cy="420" r="44" fill="#fff" opacity=".18"/>
+        <rect class="ph-line" x="68" y="266" width="322" height="276" rx="24"/>
+      </svg>
+      <span class="ph-chip">3D · Mühle (Blender)</span>
+    </figure>
+  </div>
+
+  <button class="arrow arrow--prev" type="button" aria-label="Vorheriges Kapitel">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m14.5 5-7 7 7 7"/></svg>
+  </button>
+  <button class="arrow arrow--next" type="button" aria-label="Nächstes Kapitel">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9.5 5 7 7-7 7"/></svg>
+  </button>
+
+  <a class="chat" href="#" aria-label="Chat öffnen">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 12a7.5 7.5 0 1 1 3.4 6.3L4 19.5l1.3-3.6A7.4 7.4 0 0 1 4.5 12Z"/></svg>
+  </a>
+</section>
+
+<!-- =========================== POUR =========================== -->
+<section class="chapter chapter--pour" data-chapter="pour" aria-labelledby="t-pour">
+  <!-- Pregled stanja headera na terakoti (u produkciji isti fixed header). -->
+  <div class="site-header" aria-hidden="true" inert>
+    <span class="logo"><span class="logo__mark">POUR / PLAY</span><span class="logo__sub">Specialty Coffee</span></span>
+    <nav class="nav"><ul><li><a href="#">Kaffee</a></li><li><a href="#">Zubehör</a></li><li><a href="#">Abo</a></li><li><a href="#">Kurse</a></li><li><a href="#">Kontakt</a></li></ul></nav>
+    <div class="actions">
+      <span class="icon-btn icon-btn--text hide-mobile">EN</span>
+      <span class="pill">Shop</span>
+      <span class="icon-btn hide-mobile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg></span>
+      <span class="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M5 8h14l-1 12H6L5 8Z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/></svg><span class="badge">2</span></span>
+      <span class="icon-btn menu-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 8h16M4 16h16"/></svg></span>
+    </div>
+  </div>
+
+  <div class="chapter__content">
+    <p class="eyebrow">Kapitel 2</p>
+    <h2 class="chapter__title" id="t-pour">Pour</h2>
+    <p class="chapter__text">Langsam, in Kreisen, bei 93&nbsp;°C. 15&nbsp;g Kaffee auf 250&nbsp;ml Wasser und drei Minuten Geduld. Unser V60-Rezept führt dich Schritt für Schritt.</p>
+    <a class="btn" href="#">Zum Rezept</a>
+  </div>
+
+  <div class="chapter__stage">
+    <p class="word" aria-hidden="true">Pourover</p>
+    <div class="steam steam--1" aria-hidden="true"></div>
+    <figure class="obj obj--kettle" aria-hidden="true">
+      <!-- Siva silueta: gooseneck kuvalo, nagnuto, vrh izliva gore levo od drippera -->
+      <svg viewBox="0 0 600 420">
+        <g transform="rotate(-24 300 220)">
+          <path class="ph-fill" d="M200 140Q205 90 260 85H420Q470 90 475 140L500 330Q505 360 470 360H205Q170 360 175 330Z"/>
+          <ellipse class="ph-fill" cx="338" cy="84" rx="92" ry="14" opacity=".85"/>
+          <rect class="ph-fill" x="318" y="50" width="40" height="30" rx="10"/>
+          <path d="M475 150Q560 158 548 262Q538 322 496 332" fill="none" stroke="var(--color-placeholder)" stroke-width="22" stroke-linecap="round"/>
+          <path d="M190 300C120 300 110 200 60 170C40 158 22 160 8 168" fill="none" stroke="var(--color-placeholder)" stroke-width="13" stroke-linecap="round"/>
+          <path class="ph-line" d="M200 140Q205 90 260 85H420Q470 90 475 140L500 330Q505 360 470 360H205Q170 360 175 330Z"/>
+        </g>
+      </svg>
+      <span class="ph-chip" style="top:46%;left:60%">3D · Kessel</span>
+    </figure>
+    <div class="stream" aria-hidden="true"></div>
+    <figure class="obj obj--dripper" aria-hidden="true">
+      <!-- Siva silueta: V60 dripper sa filterom na staklenom bokalu -->
+      <svg viewBox="0 0 380 560">
+        <path class="ph-fill" d="M14 26H366L262 228H118Z" opacity=".9"/>
+        <path d="M40 26 L70 6 L310 6 L340 26Z" fill="#fff" opacity=".35"/>
+        <rect class="ph-fill" x="6" y="20" width="368" height="16" rx="8"/>
+        <rect class="ph-fill" x="104" y="228" width="172" height="16" rx="6"/>
+        <path class="ph-fill" d="M96 250H284Q300 250 300 268L320 468Q326 542 258 546H122Q54 542 60 468L80 268Q80 250 96 250Z" opacity=".6"/>
+        <path d="M66 430H314L320 470Q326 542 258 546H122Q54 542 60 470Z" fill="#3A1F14" opacity=".45"/>
+        <path d="M300 300Q372 300 366 382Q360 442 314 452" fill="none" stroke="var(--color-placeholder)" stroke-width="16" stroke-linecap="round" opacity=".7"/>
+        <path class="ph-line" d="M96 250H284Q300 250 300 268L320 468Q326 542 258 546H122Q54 542 60 468L80 268Q80 250 96 250Z"/>
+      </svg>
+      <span class="ph-chip">3D · Dripper + Karaffe</span>
+    </figure>
+    <div class="beans-pair" aria-hidden="true"><i></i><i style="transform:rotate(25deg)"></i></div>
+  </div>
+
+  <span class="chat" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M4.5 12a7.5 7.5 0 1 1 3.4 6.3L4 19.5l1.3-3.6A7.4 7.4 0 0 1 4.5 12Z"/></svg></span>
+</section>
+
+<!-- =========================== SIP =========================== -->
+<section class="chapter chapter--sip" data-chapter="sip" aria-labelledby="t-sip">
+  <div class="site-header" aria-hidden="true" inert>
+    <span class="logo"><span class="logo__mark">POUR / PLAY</span><span class="logo__sub">Specialty Coffee</span></span>
+    <nav class="nav"><ul><li><a href="#">Kaffee</a></li><li><a href="#">Zubehör</a></li><li><a href="#">Abo</a></li><li><a href="#">Kurse</a></li><li><a href="#">Kontakt</a></li></ul></nav>
+    <div class="actions">
+      <span class="icon-btn icon-btn--text hide-mobile">EN</span>
+      <span class="pill">Shop</span>
+      <span class="icon-btn hide-mobile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg></span>
+      <span class="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M5 8h14l-1 12H6L5 8Z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/></svg><span class="badge">2</span></span>
+      <span class="icon-btn menu-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 8h16M4 16h16"/></svg></span>
+    </div>
+  </div>
+
+  <div class="chapter__content">
+    <p class="eyebrow">Kapitel 3</p>
+    <h2 class="chapter__title" id="t-sip">Sip</h2>
+    <p class="chapter__text">Finde die Tasse, die zu dir passt: nach Herkunft, Geschmack oder Röstung. Jede Packung mit Röstdatum und Kilopreis.</p>
+    <a class="btn" href="#">Finde deine Tasse</a>
+  </div>
+
+  <div class="chapter__stage">
+    <p class="word" aria-hidden="true">Frother</p>
+    <svg class="sparkle" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 0c.6 6.2 5.8 11.4 12 12-6.2.6-11.4 5.8-12 12-.6-6.2-5.8-11.4-12-12C6.2 11.4 11.4 6.2 12 0Z"/></svg>
+    <figure class="obj obj--mug" aria-hidden="true">
+      <!-- Siva silueta: keramička šolja sa glazurom -->
+      <svg viewBox="0 0 520 470">
+        <ellipse cx="236" cy="452" rx="250" ry="16" fill="#1B150D" opacity=".28"/>
+        <path d="M418 112Q512 100 506 220Q500 332 408 332" fill="none" stroke="var(--color-placeholder)" stroke-width="34" stroke-linecap="round"/>
+        <path class="ph-fill" d="M40 40Q40 20 62 20H410Q432 20 432 40L414 398Q408 450 348 450H124Q64 450 58 398Z"/>
+        <path d="M40 40Q40 20 62 20H410Q432 20 432 40L426 160Q404 196 382 172Q356 224 320 186Q288 238 250 190Q214 232 180 184Q146 228 112 178Q84 214 46 168Z" fill="#fff" opacity=".2"/>
+        <ellipse cx="236" cy="30" rx="196" ry="20" fill="#2A1A12" opacity=".35"/>
+        <path class="ph-line" d="M40 40Q40 20 62 20H410Q432 20 432 40L414 398Q408 450 348 450H124Q64 450 58 398Z"/>
+      </svg>
+      <span class="ph-chip">3D · Tasse (Blender)</span>
+    </figure>
+
+    <div class="cards">
+      <article class="glass-card" aria-labelledby="card-1-title">
+        <div class="glass-card__head">
+          <p class="glass-card__label">Origin <small>Demo</small></p>
+          <a class="glass-card__link" href="#" aria-label="Huila Nordhang ansehen">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
+          </a>
+        </div>
+        <div class="glass-card__pack" aria-hidden="true"><div class="pack"></div><span class="ph-chip">Packung · Render</span></div>
+        <h3 class="glass-card__title" id="card-1-title">Huila Nordhang</h3>
+        <p class="glass-card__meta">Kolumbien · Washed · 1.750&nbsp;m<br>Kakao, rote Johannisbeere</p>
+        <div class="glass-card__buy">
+          <p class="glass-card__price"><strong>€&nbsp;17,90</strong><span>250&nbsp;g · €&nbsp;71,60/kg · inkl. MwSt.</span></p>
+          <button class="glass-card__add" type="button" aria-label="Huila Nordhang, 250 g, in den Warenkorb">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+          </button>
+        </div>
+        <p class="glass-card__roast">Geröstet am 14.10.2026</p>
+      </article>
+    </div>
+  </div>
+
+  <div class="dots" role="group" aria-label="Kaffees">
+    <button type="button" aria-label="Kaffee 1 von 5" aria-current="true"></button>
+    <button type="button" aria-label="Kaffee 2 von 5"></button>
+    <button type="button" aria-label="Kaffee 3 von 5"></button>
+    <button type="button" aria-label="Kaffee 4 von 5"></button>
+    <button type="button" aria-label="Kaffee 5 von 5"></button>
+  </div>
+
+  <span class="chat" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M4.5 12a7.5 7.5 0 1 1 3.4 6.3L4 19.5l1.3-3.6A7.4 7.4 0 0 1 4.5 12Z"/></svg></span>
+</section>
+
+<!-- Najava prodavnice (sledeća sekcija na kremu) -->
+<section class="peek" aria-labelledby="t-shop">
+  <h2 id="t-shop">Find your cup</h2>
+  <p>Konzept / Demo – keine echten Bestellungen.</p>
+</section>
+
+</main>
+</body>
+</html>

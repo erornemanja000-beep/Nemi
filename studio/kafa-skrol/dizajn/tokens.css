@@ -17,7 +17,7 @@
   --pp-terracotta:   #915439; /* POUR, iz videa, nepromenjena */
   --pp-espresso:     #6E3A27; /* SIP, iz videa */
   --pp-clay:         #7A4128; /* akcenat za tekst na kremu (5,97:1) */
-  --pp-crema:        #F3D9A4; /* zvezdica i sitni sjaj */
+  --pp-crema:        #F7E6C6; /* zvezdica, akcenat na obojenim poglavljima (4,84:1 POUR, 7,44:1 SIP) */
   --pp-mute:         #665847; /* prigušen tekst na kremu (5,11:1) */
 
   /* Pozadinske reči: ukras, aria-hidden, ne nose informaciju */
@@ -55,7 +55,7 @@
   --glass-blur:        16px;
   --glass-saturate:    140%;
   --glass-text:        var(--pp-ink);  /* 7,96:1 i u najgorem slučaju */
-  --glass-text-muted:  #4A3D2F;        /* 5,1:1 u najgorem slučaju */
+  --glass-text-muted:  #4A3D2F;        /* 5,40:1 u najgorem slučaju */
   --glass-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.65),
     0 24px 48px -18px rgba(27, 21, 13, 0.50),
@@ -77,7 +77,8 @@
   --font-label: var(--font-text);
 
   /* ---------- 5. Tipografska skala (fluidno 390 → 1440 px) ---------- */
-  --fs-word:     clamp(8.5rem, 5rem + 12vw, 15rem);      /* 136 → 240 px */
+  --fs-word:     clamp(8.5rem, 5rem + 12vw, 15rem);      /* 136 → 240 px (GRIND) */
+  --fs-word-xl:  clamp(9rem, 4rem + 17vw, 19.25rem);     /* 144 → 308 px (POUR, SIP: reč preko cele širine) */
   --fs-chapter:  clamp(4rem, 2.9rem + 4.4vw, 6rem);      /*  64 →  96 px */
   --fs-h2:       clamp(2rem, 1.5rem + 2vw, 3rem);        /*  32 →  48 px (prodavnica) */
   --fs-h3:       clamp(1rem, 0.95rem + 0.2vw, 1.125rem); /*  16 →  18 px (kartica) */
@@ -164,11 +165,11 @@
   --color-surface:     #84492F;
   --color-text:        var(--pp-cream-light);   /* 5,15:1 */
   --color-text-muted:  #EDE3D5;                 /* 4,69:1 */
-  --color-accent-text: var(--pp-crema);         /* 5,46:1 */
+  --color-accent-text: var(--pp-crema);         /* 4,84:1 */
   --color-line:        rgba(244, 238, 228, 0.22);
   --color-word:        var(--pp-word-pour);
   --color-focus:       var(--pp-cream-light);
-  --color-btn-ring:    rgba(244, 238, 228, 0.55);
+  --color-btn-ring:    rgba(244, 238, 228, 0.65); /* ≥ 3,15:1 prema svakoj podlozi */
   --color-pill-bg:     var(--pp-cream-light);
   --color-pill-text:   var(--pp-ink-deep);
   --color-pill-border: var(--pp-cream-light);
@@ -182,11 +183,13 @@
   --color-surface:     #5E3020;
   --color-text:        var(--pp-cream-light);   /* 7,92:1 */
   --color-text-muted:  #E3D6C6;                 /* 6,40:1 */
-  --color-accent-text: var(--pp-crema);         /* 6,65:1 */
+  --color-accent-text: var(--pp-crema);         /* 7,44:1 */
   --color-line:        rgba(244, 238, 228, 0.20);
   --color-word:        var(--pp-word-sip);
+  --color-floor:       #7C4532;                 /* sto ispod šolje, LT tekst 6,61:1 */
+  --color-floor-deep:  #74402D;
   --color-focus:       var(--pp-cream-light);
-  --color-btn-ring:    rgba(244, 238, 228, 0.55);
+  --color-btn-ring:    rgba(244, 238, 228, 0.65); /* ≥ 3,15:1 prema svakoj podlozi */
   --color-pill-bg:     var(--pp-cream-light);
   --color-pill-text:   var(--pp-ink-deep);
   --color-pill-border: var(--pp-cream-light);

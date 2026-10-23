@@ -278,35 +278,38 @@ def mat_stoneware(body, seed=7):
         bot = GLAZE_Z - length
         h = N.mul(r, N.vmath('LENGTH', N.vmath('SUBTRACT', u, (math.cos(a), math.sin(a), 0.0))))
         zc = N.math('MAXIMUM', N.math('MINIMUM', z, top), bot)
-        neck = N.sub(N.vmath('LENGTH', N.xyz(h, N.sub(z, zc), 0.0)), wid * 0.92)
-        bead = N.sub(N.vmath('LENGTH', N.xyz(h, N.sub(z, bot + wid * 0.35), 0.0)), wid * bead_k)
-        d = N.math('SMOOTH_MIN', d, N.math('MINIMUM', neck, bead), 0.0030)
+        # kap se sužava naniže (vrat), a na kraju se skuplja u kapljicu
+        taper = N.math('MULTIPLY_ADD', N.sub(zc, bot), 0.55 * wid / (top - bot), 0.72 * wid)
+        neck = N.sub(N.vmath('LENGTH', N.xyz(h, N.sub(z, zc), 0.0)), taper)
+        bead = N.sub(N.vmath('LENGTH', N.xyz(h, N.sub(z, bot + wid * 0.30), 0.0)), wid * bead_k * 0.9)
+        d = N.math('SMOOTH_MIN', d, N.math('MINIMUM', neck, bead), 0.0040)
     d = N.math('MULTIPLY_ADD', N.sub(N.noise(P, 240.0, detail=2), 0.5), 0.0018, d)   # neravna ivica
+    d = N.math('MULTIPLY_ADD', N.sub(N.noise(P, 800.0, detail=1), 0.5), 0.0007, d)
     d = N.math('MAXIMUM', d, N.sub(r, 0.0505))                 # drška ostaje gola osim spoja
     inner = N.new('ShaderNodeAttribute', attribute_type='GEOMETRY', attribute_name='inner').outputs['Fac']
     d = N.sub(d, N.mul(inner, 0.02))                            # unutrašnjost je sva glazirana
 
     mask = N.ramp(d, -0.00018, 0.00018, 1.0, 0.0)
-    thick = N.ramp(N.math('MULTIPLY', d, -1.0), 0.0, 0.0024)    # 0 na ivici -> 1 gde je glazura puna
     edge_in = N.ramp(N.math('MULTIPLY', d, -1.0), 0.0, 0.0016, 1.0, 0.0)
     halo = N.ramp(d, 0.0, 0.0022, 1.0, 0.0)
 
     # --- glina: zrnasta, sa sitnim svetlim i tamnim zrncima i tragovima kola
-    pebble, _ = N.voronoi(P, 1150.0, randomness=0.9)
+    pebble, _ = N.voronoi(P, 850.0, randomness=0.9)
     grain = N.noise(P, 2600.0, detail=1)
     clay_var = N.noise(P, 90.0, detail=4)
-    clay = N.mix(clay_var, (0.040, 0.026, 0.019), (0.070, 0.047, 0.036))
+    clay = N.mix(clay_var, (0.026, 0.017, 0.012), (0.048, 0.032, 0.023))
+    clay = N.mix(N.mul(N.ramp(pebble, 0.55, 0.05), 0.55), clay, (0.080, 0.058, 0.044))   # zrnca hvataju svetlo
     grog_d, _ = N.voronoi(P, 520.0)
-    clay = N.mix(N.ramp(grog_d, 0.10, 0.04), clay, (0.16, 0.12, 0.095))     # svetla zrnca šamota
-    clay = N.mix(N.mul(halo, 0.85), clay, (0.120, 0.055, 0.026))             # rđasti oreol oko glazure
+    clay = N.mix(N.ramp(grog_d, 0.10, 0.04), clay, (0.13, 0.095, 0.072))     # svetla zrnca šamota
+    clay = N.mix(N.mul(halo, 0.85), clay, (0.105, 0.045, 0.020))             # rđasti oreol oko glazure
 
     # --- glazura: krem-siva sa zelenkastim tonom, oblaci, tačke gvožđa, smeđa gde je tanka
     gv = N.noise(P, 55.0, detail=5, rough=0.62)
-    glaze = N.mix(N.ramp(gv, 0.30, 0.72), (0.215, 0.205, 0.165), (0.46, 0.415, 0.330))
+    glaze = N.mix(N.ramp(gv, 0.30, 0.72), (0.200, 0.172, 0.128), (0.430, 0.385, 0.300))
     cloud = N.ramp(N.noise(P, 30.0, detail=4, distortion=0.5), 0.50, 0.72)
-    glaze = N.mix(N.mul(cloud, 0.6), glaze, (0.27, 0.18, 0.115))              # smeđi oblaci
+    glaze = N.mix(N.mul(cloud, 0.6), glaze, (0.25, 0.155, 0.095))              # smeđi oblaci
     top_tone = N.ramp(z, GLAZE_Z + 0.012, RIM_Z - 0.002)                      # ka obodu glazura je tanja
-    glaze = N.mix(N.mul(top_tone, 0.45), glaze, (0.25, 0.19, 0.13))
+    glaze = N.mix(N.mul(top_tone, 0.45), glaze, (0.24, 0.165, 0.105))
     spot_d, _ = N.voronoi(P, 210.0)
     spots = N.mul(N.ramp(spot_d, 0.24, 0.10), N.ramp(N.noise(P, 45.0, detail=2), 0.42, 0.60))
     glaze = N.mix(N.mul(spots, 0.85), glaze, (0.105, 0.052, 0.026))           # tačke gvožđa
@@ -317,17 +320,20 @@ def mat_stoneware(body, seed=7):
     glaze = N.mix(rim_brk, glaze, (0.16, 0.080, 0.038))                       # obod: glazura puca u smeđe
 
     N.put(N.mix(mask, clay, glaze), bsdf.inputs['Base Color'])
-    N.put(N.mixf(mask, N.math('MULTIPLY_ADD', grain, 0.12, 0.70), N.math('MULTIPLY_ADD', gv, 0.10, 0.17)),
+    N.put(N.mixf(mask, N.math('MULTIPLY_ADD', grain, 0.12, 0.70), N.math('MULTIPLY_ADD', gv, 0.16, 0.20)),
           bsdf.inputs['Roughness'])
     N.put(N.mixf(mask, 0.30, 0.5), bsdf.inputs['Specular IOR Level'])
-    N.put(N.mixf(mask, 0.0, 0.45), bsdf.inputs['Coat Weight'])
-    bsdf.inputs['Coat Roughness'].default_value = 0.07
+    N.put(N.mixf(mask, 0.0, 0.35), bsdf.inputs['Coat Weight'])
+    bsdf.inputs['Coat Roughness'].default_value = 0.10
 
     # --- reljef (u metrima): zrnca gline, tragovi kola, debela ivica glazure, sitna „narandžina kora"
     ring = N.math('SINE', N.math('MULTIPLY_ADD', z, 2 * math.pi / 0.0066,
                                  N.mul(N.noise(P, 40.0), 2.5)))
     clay_h = N.add(N.mul(N.sub(1.0, pebble), 0.00016), N.mul(ring, 0.00003))
-    glaze_h = N.add(N.mul(thick, 0.00065), N.mul(grain, 0.000012))
+    lip = N.mul(N.ramp(N.math('MULTIPLY', d, -1.0), 0.0, 0.0010),
+                N.ramp(N.math('MULTIPLY', d, -1.0), 0.0010, 0.0032, 1.0, 0.55))      # zadebljana ivica glazure
+    pin, _ = N.voronoi(P, 1800.0)
+    glaze_h = N.add(N.add(N.mul(lip, 0.00075), N.mul(grain, 0.000012)), N.mul(N.ramp(pin, 0.12, 0.0), -0.000025))
     height = N.mixf(mask, clay_h, glaze_h)
     bump = N.new('ShaderNodeBump')
     bump.inputs['Strength'].default_value = 1.0
@@ -336,7 +342,7 @@ def mat_stoneware(body, seed=7):
     N.put(bump.outputs['Normal'], bsdf.inputs['Normal'])
     gbump = N.new('ShaderNodeBump')
     gbump.inputs['Distance'].default_value = 1.0
-    N.put(N.mul(thick, 0.00065), gbump.inputs['Height'])
+    N.put(N.mul(lip, 0.00075), gbump.inputs['Height'])
     N.put(gbump.outputs['Normal'], bsdf.inputs['Coat Normal'])
     return m
 
@@ -353,7 +359,8 @@ def mat_coffee(coffee):
                   N.mul(N.ramp(swirl, 0.60, 0.72), 0.55))
     col = N.mix(crema, (0.016, 0.0065, 0.0028), N.mix(swirl, (0.20, 0.090, 0.038), (0.32, 0.16, 0.07)))
     N.put(col, bsdf.inputs['Base Color'])
-    N.put(N.mixf(crema, 0.05, 0.32), bsdf.inputs['Roughness'])
+    N.put(N.mixf(crema, 0.10, 0.35), bsdf.inputs['Roughness'])
+    bsdf.inputs['Specular IOR Level'].default_value = 0.18   # tamna kafa, bez ogledala neba pod oštrim uglom
     bub, _ = N.voronoi(P, 2200.0)
     bump = N.new('ShaderNodeBump')
     bump.inputs['Distance'].default_value = 1.0
@@ -411,7 +418,7 @@ def build(args):
     scene.frame_start, scene.frame_end = 1, args.end
     scene.cycles.volume_step_rate = 2.0
     scene.view_settings.exposure = args.exposure   # common.studio_lights je jako za tamnu keramiku
-    C.world(scene, color=(0.78, 0.66, 0.56), strength=0.45)   # topla okolina, odsjaj u glazuri
+    C.world(scene, color=(0.36, 0.20, 0.12), strength=0.5)   # smeđa okolina kao sekcija SIP: odsjaj u glazuri
     C.studio_lights()
     C.shadow_catcher()
 
@@ -461,7 +468,7 @@ def main():
     ap.add_argument('--samples', type=int, default=64)
     ap.add_argument('--spin', type=float, default=28.0)
     ap.add_argument('--drop', type=float, default=0.045)
-    ap.add_argument('--exposure', type=float, default=-2.0)
+    ap.add_argument('--exposure', type=float, default=-1.7)
     ap.add_argument('--poster', action='store_true')
     ap.add_argument('--no-steam', dest='no_steam', action='store_true')
     args = ap.parse_args(C.args())

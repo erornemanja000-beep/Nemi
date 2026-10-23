@@ -104,32 +104,31 @@ export function Subscription() {
           </p>
         </article>
 
-        {/* ---------- Probierset ---------- */}
-        <article
-          id="tasting-set"
-          data-reveal
-          aria-labelledby="t-tasting-set"
-          className="scroll-mt-header rounded-card bg-surface p-s5 shadow-soft md:p-s6"
-        >
-          <h2 id="t-tasting-set" className="type-display m-0 text-h2 leading-none">
-            <span className="md:hidden">{tx(set.titleShort)}</span>
-            <span className="max-md:hidden">{tx(set.title)}</span>
-          </h2>
-          <p className="mt-s3 mb-0 font-bold">{tx(set.subtitle)}</p>
-          {setSize && (
-            <>
-              <p className="mt-s4 mb-0">
-                {withNodes(tx(set.text), {
-                  price: <strong className="whitespace-nowrap text-[1.25rem] font-extrabold">{price(setSize.priceCents)}</strong>,
-                  unit: nowrap(formatUnitPrice(setSize.priceCents, setSize.grams, lang)),
-                })}
-              </p>
-              <Button className="mt-s5" onClick={() => addToCart(set.product, setSize.grams, null)}>
-                {tx(set.button)}
-              </Button>
-            </>
-          )}
-        </article>
+        {/* ---------- Probierset ----------
+            id je na omotaču, ne na kartici sa data-reveal: pomeraj od 16 px pre pojavljivanja bi
+            pomerio i cilj sidra #tasting-set */}
+        <div id="tasting-set" className="scroll-mt-header">
+          <article data-reveal aria-labelledby="t-tasting-set" className="rounded-card bg-surface p-s5 shadow-soft md:p-s6">
+            <h2 id="t-tasting-set" className="type-display m-0 text-h2 leading-none">
+              <span className="md:hidden">{tx(set.titleShort)}</span>
+              <span className="max-md:hidden">{tx(set.title)}</span>
+            </h2>
+            <p className="mt-s3 mb-0 font-bold">{tx(set.subtitle)}</p>
+            {setSize && (
+              <>
+                <p className="mt-s4 mb-0">
+                  {withNodes(tx(set.text), {
+                    price: <strong className="whitespace-nowrap text-[1.25rem] font-extrabold">{price(setSize.priceCents)}</strong>,
+                    unit: nowrap(formatUnitPrice(setSize.priceCents, setSize.grams, lang)),
+                  })}
+                </p>
+                <Button className="mt-s5" onClick={() => addToCart(set.product, setSize.grams, null)}>
+                  {tx(set.button)}
+                </Button>
+              </>
+            )}
+          </article>
+        </div>
       </div>
     </section>
   )

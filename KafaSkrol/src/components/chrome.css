@@ -126,6 +126,12 @@
     transition: transform var(--dur-base) var(--ease-out);
   }
 
+  /* polje pretrage: bez plavog „×" pregledača (panel ima svoje dugme za zatvaranje) */
+  .chrome-search::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
   /* ---------- Toast ---------- */
   .chrome-toast {
     animation: chrome-toast-in var(--dur-base) var(--ease-out) backwards;

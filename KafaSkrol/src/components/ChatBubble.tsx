@@ -78,7 +78,7 @@ export function ChatBubble() {
           </div>
           <p className="m-0 mt-s1 pr-s3 text-small">
             {fill(before)}
-            <a href={`mailto:${brand.email}`} className="font-bold break-all text-accent-text underline underline-offset-2">
+            <a href={`mailto:${brand.email}`} className="font-bold whitespace-nowrap text-accent-text underline underline-offset-2">
               {brand.email}
             </a>
             {fill(after)}

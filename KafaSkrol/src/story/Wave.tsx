@@ -3,7 +3,7 @@
 // Ugovor sa Story (Z12):
 // - <Wave ref pourClip sipLens variant /> je sloj preko POUR i SIP scene (position: absolute, inset 0).
 // - ref.set(p, startY): p 0–1 je napredak talasa, startY je linija kafe u bokalu (kafa_y) u px viewporta.
-// - Wave menja SAMO: clip-path na pourClip (.layer-pour__clip), transform/filter/will-change na sipLens
+// - Wave menja SAMO: clip-path na pourClip (.layer-pour__clip), transform i will-change na sipLens
 //   (.layer-sip__lens) i svoj SVG. Ništa ne čita iz layout-a u petlji: dimenzije i položaji se mere pri
 //   promeni veličine (ResizeObserver), pri ulasku u talas i na ref.measure().
 // - Pozadina POUR-a mora biti UNUTAR pourClip (inače isečen deo ne otkriva SIP), a pozadina SIP-a
@@ -69,7 +69,6 @@ const L1 = 1.2
 const L2 = 0.45
 /** Do ovog p tečnost se razliva nadole; POUR je i ispod nje. */
 const P_FLOOD = 0.12
-const BIG = 10000
 
 const clamp01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v)
 const smooth = (a: number, b: number, v: number) => {
@@ -197,9 +196,9 @@ function createEngine(els: Els, variant: WaveVariant, pourRef: WaveProps['pourCl
     lensLeft: 0,
     lensW: 0,
     lensH: 0,
+    pourW: 0,
+    pourH: 0,
     lensScale: 1.04,
-    lensSepia: 0.22,
-    lensSaturate: 1.25,
   }
   let measured = false
   let dirty = true
@@ -227,6 +226,8 @@ function createEngine(els: Els, variant: WaveVariant, pourRef: WaveProps['pourCl
       const pr = pour.getBoundingClientRect()
       geo.pourTop = pr.top
       geo.pourLeft = pr.left
+      geo.pourW = pr.width
+      geo.pourH = pr.height
     }
     const lens = lensRef.current
     if (lens) {
@@ -242,8 +243,6 @@ function createEngine(els: Els, variant: WaveVariant, pourRef: WaveProps['pourCl
     }
     const cs = getComputedStyle(els.root)
     geo.lensScale = num(cs, '--wave-lens-scale', 1.04)
-    geo.lensSepia = num(cs, '--wave-lens-sepia', 0.22)
-    geo.lensSaturate = num(cs, '--wave-lens-saturate', 1.25)
     if (geo.W > 0 && geo.H > 0) for (const svg of els.svgs) svg.setAttribute('viewBox', `0 0 ${f1(geo.W)} ${f1(geo.H)}`)
     measured = geo.W > 0 && geo.H > 0
     dirty = false
@@ -255,7 +254,6 @@ function createEngine(els: Els, variant: WaveVariant, pourRef: WaveProps['pourCl
     if (pour) pour.style.removeProperty('clip-path')
     if (lens) {
       lens.style.removeProperty('transform')
-      lens.style.removeProperty('filter')
       lens.style.removeProperty('will-change')
     }
   }
@@ -268,7 +266,6 @@ function createEngine(els: Els, variant: WaveVariant, pourRef: WaveProps['pourCl
     if (!on) {
       if (lens) {
         lens.style.removeProperty('transform')
-        lens.style.removeProperty('filter')
         lens.style.removeProperty('will-change')
       }
       if (next === 'before') pourRef.current?.style.removeProperty('clip-path')
@@ -319,18 +316,23 @@ function createEngine(els: Els, variant: WaveVariant, pourRef: WaveProps['pourCl
     if (phase === 'before') return
 
     // ---- POUR: vidljiv iznad gornje ivice (i ispod tečnosti dok se razliva) ----
+    // Poligon je u koordinatama pourClip i ograničen na njegovu kutiju (±1 px): manja maska je jeftinija,
+    // a sve van kutije je tokom talasa ionako isečeno.
     const pour = pourRef.current
     if (pour) {
       const dy = waveTop - (layout?.pourTop ?? geo.pourTop)
       const dx = geo.left - geo.pourLeft
-      const pts: string[] = [`${-BIG}px ${-BIG}px`, `${W + BIG}px ${-BIG}px`, `${W + BIG}px ${f1(top[n - 1] + dy)}px`]
+      const L = -1
+      const R = f1(geo.pourW + 1)
+      const B = f1(geo.pourH + 1)
+      const pts: string[] = [`${L}px ${L}px`, `${R}px ${L}px`, `${R}px ${f1(top[n - 1] + dy)}px`]
       for (let i = n - 1; i >= 0; i--) pts.push(`${f1(xs[i] + dx)}px ${f1(top[i] + dy)}px`)
-      pts.push(`${-BIG}px ${f1(top[0] + dy)}px`)
+      pts.push(`${L}px ${f1(top[0] + dy)}px`)
       if (phase === 'flood') {
-        // „prorez" na x = −BIG je van ekrana, pa su gornji i donji deo jedan poligon
-        pts.push(`${-BIG}px ${f1(bottom[0] + dy)}px`)
+        // „prorez" levo od kutije nema površinu, pa su gornji i donji deo jedan poligon
+        pts.push(`${L}px ${f1(bottom[0] + dy)}px`)
         for (let i = 0; i < n; i++) pts.push(`${f1(xs[i] + dx)}px ${f1(bottom[i] + dy)}px`)
-        pts.push(`${W + BIG}px ${f1(bottom[n - 1] + dy)}px`, `${W + BIG}px ${H + BIG}px`, `${-BIG}px ${H + BIG}px`)
+        pts.push(`${R}px ${f1(bottom[n - 1] + dy)}px`, `${R}px ${B}px`, `${L}px ${B}px`)
       }
       pour.style.setProperty('clip-path', `polygon(${pts.join(',')})`)
     }
@@ -371,7 +373,8 @@ function createEngine(els: Els, variant: WaveVariant, pourRef: WaveProps['pourCl
       el.setAttribute('opacity', (lineAlpha * 0.85 * Math.pow(Math.sin(Math.PI * t), 0.6)).toFixed(2))
     })
 
-    // ---- SIP sočivo: scale oko sredine trake + ton (samo desktop) ----
+    // ---- SIP sočivo: scale oko sredine trake. Ton daje ispuna trake: filter na sočivu je izmeren kao
+    // najskuplji deo talasa (ceo SIP sloj se ponovo filtrira u svakom kadru), pa ga nema. ----
     const lens = lensRef.current
     if (lens && geo.lensW > 0) {
       const L = smooth(0, 0.15, p) * (1 - smooth(0.62, 1, p))
@@ -383,13 +386,6 @@ function createEngine(els: Els, variant: WaveVariant, pourRef: WaveProps['pourCl
       const tx = (1 - k) * (cx - geo.lensW / 2)
       const ty = (1 - k) * (cy - geo.lensH / 2)
       lens.style.transform = `translate3d(${tx.toFixed(2)}px, ${ty.toFixed(2)}px, 0) scale(${k.toFixed(4)})`
-      if (variant === 'desktop') {
-        // ton samo dok je skoro sav vidljiv SIP pod tečnošću; ispod trake (p ≥ 0,3) SIP je čist
-        const T = smooth(0, 0.08, p) * (1 - smooth(0.16, 0.3, p))
-        if (T > 0.001) {
-          lens.style.filter = `sepia(${(geo.lensSepia * T).toFixed(3)}) saturate(${(1 + (geo.lensSaturate - 1) * T).toFixed(3)})`
-        } else lens.style.removeProperty('filter')
-      }
     }
   }
 

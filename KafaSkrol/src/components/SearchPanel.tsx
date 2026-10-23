@@ -96,7 +96,7 @@ export function SearchBox({ onPick, inputRef, action, className = '', listClassN
             enterKeyHint="search"
             aria-describedby={`${id}-status`}
             aria-controls={`${id}-results`}
-            className="h-12 w-full rounded-pill border-[1.5px] border-line-strong bg-transparent pr-s4 pl-12 font-text text-body text-text placeholder:text-muted"
+            className="chrome-search h-12 w-full rounded-pill border-[1.5px] border-line-strong bg-transparent pr-s4 pl-12 font-text text-body text-text placeholder:text-muted"
           />
         </div>
         {action}

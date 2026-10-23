@@ -29,10 +29,8 @@
     --wave-shine: #fff4e0;
     --wave-sheen: #ffe6bf; /* blag sjaj površine odmah ispod gornje ivice */
     --wave-glow: #f0b266;
-    /* sočivo: živ SIP sloj iza trake (Wave čita ove tri vrednosti pri merenju, ne u petlji) */
+    /* sočivo: živ SIP sloj iza trake se uveća oko sredine trake (Wave čita vrednost pri merenju) */
     --wave-lens-scale: 1.04;
-    --wave-lens-sepia: 0.22;
-    --wave-lens-saturate: 1.25;
     /* pozadine za statičnu ivicu (reduced motion): POUR gore, SIP dole */
     --wave-pour: var(--pp-terracotta);
     --wave-sip: var(--pp-espresso);

@@ -1,0 +1,55 @@
+/* Sekcije ispod prodavnice, footer i pravne stranice (Z10). Raspored je iz skice (skica.html,
+   skica-1440.png, skica-390.png), a boje, slova i razmaci iz tokena. Većina je u Tailwind klasama;
+   ovde je samo ono što klase ne mogu lepo: boje apstraktne mape (SVG) i priprema za parallax.
+
+   Sve je u @layer components, pa Tailwind klase (utilities) imaju prednost. Izjava o redosledu
+   slojeva je ista kao u src/story/chapters.css: fajl se u bundle-u može učitati pre src/index.css. */
+@layer properties, theme, base, components, utilities;
+
+@layer components {
+  /* ---------- Kontakt: apstraktna „mapa" (aria-hidden, bez pravih ulica i podataka) ---------- */
+  .ct-map {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius-card);
+    background: var(--color-bg);
+  }
+  .ct-map__block {
+    fill: var(--color-surface);
+    stroke: var(--color-line);
+    stroke-width: 1;
+  }
+  .ct-map__green {
+    fill: var(--color-line);
+  }
+  .ct-map__street {
+    fill: none;
+    stroke: var(--color-surface);
+    stroke-linecap: round;
+  }
+  .ct-map__edge {
+    fill: none;
+    stroke: var(--color-line);
+    stroke-linecap: round;
+  }
+  .ct-map__pin {
+    fill: var(--color-accent);
+  }
+  .ct-map__pin-dot {
+    fill: var(--color-surface);
+  }
+  .ct-map__halo {
+    fill: none;
+    stroke: var(--color-accent);
+    stroke-opacity: 0.35;
+    stroke-width: 2;
+  }
+
+  /* ---------- O nama: parallax fotografija (About.tsx, samo desktop i bez reduced motion) ---------- */
+  @media (min-width: 64rem) and (min-height: 600px) and (prefers-reduced-motion: no-preference) {
+    .about-photo[data-parallax] {
+      will-change: transform;
+    }
+  }
+}

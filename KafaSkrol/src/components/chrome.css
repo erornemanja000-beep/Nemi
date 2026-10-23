@@ -54,7 +54,7 @@
     position: absolute;
     inset: 0;
     background: rgb(27 21 13 / 0.45); /* --pp-ink-deep */
-    animation: chrome-fade-in var(--dur-base) var(--ease-out) both;
+    animation: chrome-fade-in var(--dur-base) var(--ease-out) backwards;
   }
   .chrome-panel {
     position: absolute;
@@ -64,7 +64,7 @@
     color: var(--color-text);
     box-shadow: var(--shadow-float);
     overscroll-behavior: contain;
-    animation: var(--dur-base) var(--ease-out) both;
+    animation: var(--dur-base) var(--ease-out) backwards;
   }
   /* panel sam dobija fokus samo kad u njemu nema ničeg fokusabilnog */
   .chrome-panel:focus {
@@ -96,6 +96,10 @@
   }
 
   /* izlaz: isti pokret unazad, pa Overlay skida panel posle --dur-base */
+  .chrome-overlay[data-state="closed"] .chrome-backdrop,
+  .chrome-overlay[data-state="closed"] .chrome-panel {
+    animation-fill-mode: forwards;
+  }
   .chrome-overlay[data-state="closed"] .chrome-backdrop {
     animation-name: chrome-fade-out;
   }
@@ -124,7 +128,7 @@
 
   /* ---------- Toast ---------- */
   .chrome-toast {
-    animation: chrome-toast-in var(--dur-base) var(--ease-out) both;
+    animation: chrome-toast-in var(--dur-base) var(--ease-out) backwards;
     transition: opacity var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
   }
   .chrome-toast[data-leaving="true"] {
@@ -147,7 +151,7 @@
   }
   .chrome-chat-panel {
     transform-origin: bottom right;
-    animation: chrome-pop-in var(--dur-base) var(--ease-out) both;
+    animation: chrome-pop-in var(--dur-base) var(--ease-out) backwards;
   }
   /* oblačić „Questions? Ask us." pored balona, na hover i fokus tastaturom */
   .chrome-chat-tip {

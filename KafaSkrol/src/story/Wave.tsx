@@ -559,7 +559,7 @@ export function WaveEdgeStatic({ className = '' }: { className?: string }) {
         </defs>
         <rect className="wave-static__sip" width={STATIC_W} height={STATIC_H} />
         <path className="wave-static__pour" d={STATIC_POUR} />
-        <path className="wave-static__tint" d={STATIC_BAND} fill={`url(#${id}-fill)`} />
+        <path d={STATIC_BAND} fill={`url(#${id}-fill)`} />
         <path className="wave__line wave__under" d={STATIC_BOTTOM} />
         <path className="wave__line wave__shine" d={STATIC_TOP} transform="translate(0 3)" />
         <path className="wave__line wave__meniscus" d={STATIC_TOP} />

@@ -26,6 +26,9 @@ import { bestBefore, formatAltitude, formatDate, formatGrams, lastRoastDate } fr
 import { lockScroll, scrollToTarget } from '../lib/motion'
 import '../sections/shop.css'
 
+/** Položaj elementa na stranici, uz scroll-margin-top (visina headera). */
+const pageY = (el: HTMLElement) => window.scrollY + el.getBoundingClientRect().top - (parseFloat(getComputedStyle(el).scrollMarginTop) || 0)
+
 const FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
 const STATUS_MS = 4000
 
@@ -50,6 +53,7 @@ function ProductDialog({ product }: { product: Product }) {
   const openerRef = useRef<HTMLElement | null>(null)
   const closingRef = useRef(false)
   const mountedRef = useRef(false)
+  const pageYRef = useRef(0)
   const pressedOutside = useRef(false)
   // otvoren iz aplikacije (postoji korak nazad) ili hladno (/p/<slug> u adresi)
   const inApp = location.key !== 'default'
@@ -73,6 +77,7 @@ function ProductDialog({ product }: { product: Product }) {
     closingRef.current = false
     const active = document.activeElement
     openerRef.current = active instanceof HTMLElement && active !== document.body ? active : null
+    pageYRef.current = window.scrollY
     lockScroll(true)
     if (!dialog.open) dialog.showModal()
     closeRef.current?.focus()
@@ -88,16 +93,34 @@ function ProductDialog({ product }: { product: Product }) {
       queueMicrotask(() => {
         if (mountedRef.current) return
         const card = document.querySelector<HTMLElement>(`[data-product-link="${CSS.escape(slug)}"]`)
-        const opener = openerRef.current?.isConnected ? openerRef.current : null
         if (restoreRef.current === 'opener') {
-          const target = opener ?? card
-          target?.focus({ preventScroll: true })
+          const opener = openerRef.current?.isConnected ? openerRef.current : null
+          const restore = () => {
+            if (Math.abs(window.scrollY - pageYRef.current) > 1) scrollToTarget(pageYRef.current, true)
+            const target = opener ?? card
+            target?.focus({ preventScroll: true })
+          }
+          restore()
+          // korak nazad na adresu sa #sidrom (npr. /#find-your-cup): pregledač posle popstate-a skoči na
+          // sidro i skine fokus, pa se vraćanje ponavlja u sledećem kadru
+          requestAnimationFrame(restore)
           return
         }
-        // na prodavnicu: kartica ovog proizvoda (ako je u filtriranoj mreži), inače naslov prodavnice
-        scrollToTarget('#find-your-cup', true)
-        const target = card ?? document.getElementById('t-shop')
-        target?.focus({ preventScroll: true })
+        // na prodavnicu (u sledećem kadru, posle eventualnog skoka na sidro), tako da se vidi i kartica
+        // ovog proizvoda; fokus na nju, a ako nije u filtriranoj mreži, na naslov prodavnice
+        requestAnimationFrame(() => {
+          const shopEl = document.getElementById('find-your-cup')
+          if (!shopEl) return
+          let y = pageY(shopEl)
+          const box = card?.closest('article')
+          if (box) {
+            const bottom = window.scrollY + box.getBoundingClientRect().bottom
+            if (bottom - y > window.innerHeight) y = bottom - window.innerHeight + 16
+          }
+          scrollToTarget(y, true)
+          const target = card ?? document.getElementById('t-shop')
+          target?.focus({ preventScroll: true })
+        })
       })
     }
   }, [slug])
@@ -112,7 +135,8 @@ function ProductDialog({ product }: { product: Product }) {
   const close = (restore: Restore) => {
     if (closingRef.current) return
     closingRef.current = true
-    restoreRef.current = restore
+    // posle hladnog otvaranja nema stranice iza modala: uvek na prodavnicu
+    restoreRef.current = inApp ? restore : 'shop'
     if (inApp) navigate(-1)
     else navigate('/', { replace: true })
   }

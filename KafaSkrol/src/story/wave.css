@@ -18,12 +18,12 @@
        čitljiv (svetla boja bi ga zamaglila). Odozgo svetla ćilibarna, dole tamna kafa (~0,88 najviše).
        Normalno mešanje, ne multiply: multiply traži dodatni prolaz preko cele scene (izmereno: +8–9 ms
        po kadru na 1440 u Playwright-u bez GPU-a). */
-    --wave-amber-light: #b8692a;
-    --wave-amber: #8c4519;
+    --wave-amber-light: #c27a2e;
+    --wave-amber: #9a5220;
     --wave-coffee: #3d1d0d;
-    --wave-fill-top: 0.42;
-    --wave-fill-mid: 0.58;
-    --wave-fill-bottom: 0.82;
+    --wave-fill-top: 0.3;
+    --wave-fill-mid: 0.46;
+    --wave-fill-bottom: 0.8;
     /* ivice i odsjaji (normalno mešanje) */
     --wave-meniscus: #24130b;
     --wave-shine: #fff4e0;
@@ -89,7 +89,12 @@
   .wave-static svg { display: block; width: 100%; height: 100%; }
   .wave-static__pour { fill: var(--wave-pour); }
   .wave-static__sip { fill: var(--wave-sip); }
-  .wave-static__tint { mix-blend-mode: multiply; }
+  /* statična traka nema živ SIP iza sebe, pa je punija od žive (samo dekor) */
+  .wave-static {
+    --wave-fill-top: 0.95;
+    --wave-fill-mid: 0.9;
+    --wave-fill-bottom: 0.85;
+  }
   .wave-static .wave__meniscus,
   .wave-static .wave__shine,
   .wave-static .wave__under { vector-effect: non-scaling-stroke; }

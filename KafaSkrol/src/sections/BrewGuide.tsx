@@ -56,8 +56,12 @@ export function BrewGuide() {
     // novi tab ili prozor: ostaje običan link sa ?brew=filter
     if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return
     e.preventDefault()
-    window.dispatchEvent(new CustomEvent('kafa:shop-filter', { detail: { brew: 'filter' } }))
+    // Lenis (anchors: true) sluša klik na window i skrolovao bi drugi put, posle promene filtera.
+    // Prodavnica se tada skrati, pregledač pomeri skrol (scroll anchoring), pa Lenis promaši cilj.
+    e.stopPropagation()
+    // prvo skrol (cilj se meri pre promene mreže), pa filter
     scrollToTarget('#find-your-cup')
+    window.dispatchEvent(new CustomEvent('kafa:shop-filter', { detail: { brew: 'filter' } }))
   }
 
   return (

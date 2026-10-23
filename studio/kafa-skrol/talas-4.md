@@ -154,3 +154,10 @@ Snimci su u `pregled/z15/`:
 - SIP traku na telefonu;
 - reduced motion;
 - paru preko `screen`.
+
+## Stanje
+
+- **Z18 + Z19:** gotovo (commit „section, footer and config fixes"). rolldown je 1.2.14 (isti integrity kao u RealEstates), a `npm audit` daje 0.
+- **Ostaci za sledeći krug:**
+  - na 390 DE se dugme „Probierset in den Warenkorb" (`Subscription.tsx`) lomi u 2 reda;
+  - `tekstopisac` treba da potvrdi `credits.standIn` u `legal.ts` („Zubereitung, Schritt 3 (bis das Rendering da ist)").

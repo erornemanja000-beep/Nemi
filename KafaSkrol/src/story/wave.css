@@ -113,6 +113,8 @@
     display: block;
     pointer-events: none;
   }
+  /* ne svira → ne crta se (Steam.tsx postavlja data-on) */
+  .steam[data-on="0"] { visibility: hidden; }
   .steam__media {
     position: absolute;
     inset: 0;

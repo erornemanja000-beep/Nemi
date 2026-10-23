@@ -8,6 +8,8 @@
 // - Ako pregledač odbije play() (NotAllowedError, npr. iOS u režimu štednje baterije), prelazi na
 //   WebP kadrove iz `frames` (30 kadrova petlje) na malom platnu, sa pretapanjem između kadrova.
 // - Opacity menja Story na omotaču. Taj omotač mora imati klasu `steam-host` (vidi wave.css).
+// - Kad ne svira (nije aktivna, nije u ekranu ili je potpuno isečena), para se ne vidi
+//   (visibility: hidden). Story zato prvo spusti opacity omotača, pa tek onda `active = false`.
 import { useEffect, useRef, useState } from 'react'
 import { media } from '../content/media'
 import type { SteamMedia } from '../content/types'
@@ -54,6 +56,9 @@ function SteamPlayer({ m, level, active, className }: PlayerProps) {
 
     const sync = () => {
       const on = want()
+      // kad ne svira, koren je visibility: hidden (wave.css), pa sloj videa izlazi iz kompozitora;
+      // ugašen video ispod maske talasa inače košta svaki kadar (izmereno u Z6)
+      root.dataset.on = on ? '1' : '0'
       if (mode === 'frames') {
         if (!player && on && frames && canvasRef.current) player = createFramePlayer(canvasRef.current, frames, level)
         player?.run(on)
@@ -114,7 +119,7 @@ function SteamPlayer({ m, level, active, className }: PlayerProps) {
 
   const sources = m.sources[level]
   return (
-    <div ref={rootRef} className={`steam ${className}`} style={{ aspectRatio: `${m.width} / ${m.height}` }} aria-hidden="true">
+    <div ref={rootRef} className={`steam ${className}`} data-on="0" style={{ aspectRatio: `${m.width} / ${m.height}` }} aria-hidden="true">
       {mode === 'video' ? (
         <video
           ref={videoRef}

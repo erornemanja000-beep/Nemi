@@ -42,6 +42,19 @@ Ove izmene su predložili agenti talasa 1–2. Radi ih **jedan** programer u Z13
 - Kartice uleću redom 2 → 1 → 0.
 - Na 1024 px mlin po procentima iz mockupa pokriva kolonu teksta. Treba ga suziti ili pomeriti.
 
+**Za Z12 (iz Z6):**
+- **POUR pozadina:** mora biti unutar `.layer-pour__clip`, inače isečeni deo ne otkriva SIP. Z7 sada stavlja `background` na `.ch-layer`, pa to treba uskladiti.
+- **Ugovor talasa:** `wave.set(p, startY, { pourTop?, lensTop?, waveTop? })`. Treći argument se šalje kad se sloj pomera tokom talasa (telefon bez pina).
+- **Raspored:** `Wave` daje dva korena sa istim `className`. Stavljaju se posle slojeva.
+- **Para:**
+  - omotač kome Story menja opacity ima klasu `steam-host`, a ispod njega u istom stacking context-u mora biti obojena pozadina;
+  - pri gašenju prvo ide opacity, pa `active = false`;
+  - POUR paru ugasiti do p ≈ 0,2 talasa, jer je najskuplja ispod maske;
+  - para u SIP-u ne ide unutar sočiva, ako pozadina nije u njemu.
+- **Reduced motion:** `WaveEdgeStatic` stoji između POUR i SIP bloka.
+
+**Za Z12 (iz Z9):** na 390 priča naraste oko 94 px dok se skroluje, pa sva sidra na telefonu stanu 94 px prenisko. Visina priče mora biti konačna od prvog rendera (svh, bez rasta).
+
 **Za Z12 (napomena direktora):** na desktopu je jedan dekodiran `d` kadar oko 4 MB, a tokom šava oko 400 MB. Zato `createClock(..., { retain: 16 })`.
 
 Dopunjava se kako stižu izveštaji Z5–Z10.

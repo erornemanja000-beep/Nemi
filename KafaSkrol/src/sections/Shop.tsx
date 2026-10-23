@@ -160,12 +160,7 @@ export function Shop() {
         {/* naslov i SHOP-1 */}
         <div className="mt-s5 grid gap-s5 lg:mt-s6 lg:grid-cols-12 lg:items-start lg:gap-s7">
           <div className="lg:col-span-7">
-            <h2
-              ref={titleRef}
-              id="t-shop"
-              tabIndex={-1}
-              className="type-display m-0 text-[length:var(--fs-section,clamp(2.5rem,1.5rem+4vw,4.5rem))] leading-none focus:outline-none"
-            >
+            <h2 ref={titleRef} id="t-shop" tabIndex={-1} className="type-display m-0 text-section leading-none focus:outline-none">
               {tx(shop.title)}
             </h2>
             <p className="m-0 mt-s3 max-w-[34rem] text-[1.125rem] leading-snug font-semibold">{tx(shop.subtitle)}</p>

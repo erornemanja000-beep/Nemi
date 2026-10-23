@@ -1,0 +1,16 @@
+{
+ "id": "grind",
+ "units": "S od gornjeg levog ugla punog kadra (W 1, H 1,25)",
+ "full": {
+  "W": 1,
+  "H": 1.25
+ },
+ "osa_x": 0.5,
+ "otvor": {
+  "x": 0.5,
+  "y": 0.8389
+ },
+ "g_od": 1,
+ "g_do": 96,
+ "generator": "scripts/blender/kafa/grind.py"
+}

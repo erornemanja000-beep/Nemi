@@ -1,0 +1,42 @@
+{
+ "id": "pour",
+ "units": "S od gornjeg levog ugla punog kadra (W 1, H 1)",
+ "full": {
+  "W": 1,
+  "H": 1
+ },
+ "osa_x": 0.5,
+ "ivica_v60": {
+  "x": 0.5,
+  "y": 0.466,
+  "rx": 0.136,
+  "ry": 0.0346
+ },
+ "pult_y": 0.8851,
+ "baza_y": 0.9784,
+ "kafa_y": {
+  "from": 177,
+  "values": [
+   0.9199,
+   0.9193,
+   0.9185,
+   0.9174,
+   0.916,
+   0.9146,
+   0.913,
+   0.9114,
+   0.9097,
+   0.9081,
+   0.9067,
+   0.9053,
+   0.9042,
+   0.9033,
+   0.9028,
+   0.9026
+  ]
+ },
+ "g_od": 65,
+ "g_do": 192,
+ "fajl": "kadar_LLLL.png, L = G - 64",
+ "generator": "scripts/blender/kafa/pour.py"
+}

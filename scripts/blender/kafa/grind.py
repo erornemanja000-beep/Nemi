@@ -225,6 +225,11 @@ def transmission_card(scene, hex_color, center, radius=4.0):
             nt.nodes.remove(n)
     em = N.new('ShaderNodeEmission')
     em.inputs['Color'].default_value = (*card_color(scene, hex_color), 1.0)
+    # svetli samo zraku koji je kroz staklo/tečnost stigao pravo do karte; difuzni i sjajni odskoci sa
+    # predmeta iza stakla je ne vide (inače karta osvetli zrna u levku i daje im mlečnu koprenu)
+    lp = N.new('ShaderNodeLightPath')
+    only = N.mul(N.math('LESS_THAN', lp.outputs['Diffuse Depth'], 0.5), N.math('LESS_THAN', lp.outputs['Glossy Depth'], 0.5))
+    N.put(only, em.inputs['Strength'])
     nt.links.new(em.outputs[0], nt.nodes['Material Output'].inputs['Surface'])
     if hasattr(m, 'emission_sampling'):
         m.emission_sampling = 'NONE'

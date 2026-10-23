@@ -39,4 +39,111 @@ Nema kritičnih, visokih ni srednjih nalaza. Prošlo je:
 
 ## Z15: vizuelni pregled (recenzent)
 
-Čeka izveštaj.
+Ocenjen je commit `d8a4ccf`, na 390, 1024, 1280, 1440 i 1920, na EN i DE i sa reduced motion. **Ocena je 7/10.**
+
+**Najveći problemi:**
+- filteri se preklapaju na desktopu;
+- u modalu je dugme za kupovinu ispod ivice ekrana;
+- talas i kartice oko šolje još ne liče na referencu.
+
+Snimci su u `pregled/z15/`:
+- `filters.png`, `modal390.png`;
+- `wave1440.png`, a uz njega isečak reference `f137crop.png`;
+- `1440-en-sip.png`, a uz njega predlog `proto-sip-1440-en.png`.
+
+**Odluka direktora za tačku 14 (veličina naslova sekcija):** prihvata se novi token `--fs-section: clamp(2.5rem, 1.5rem + 4vw, 4.5rem)`. On vraća veličinu iz odobrene skice (oko 76 px), pa nije nov smer dizajna.
+
+### Z17 (programer, fajlovi iz Z8 i Z9)
+
+- **`src/sections/shop.css`:**
+  - **P1:** `.shop-strip` od 64rem: `flex-wrap: wrap; margin-inline: 0; padding-inline: 0; overflow: visible`. Sada čipovi prelaze u susednu kolonu i van kontejnera na 1024 (EN), na 1280 (EN i DE) i na 1440 (DE).
+  - Oznake na kartici proizvoda 11 → 12 px.
+  - Slika zrna kod „Shipping" ne sme da dodiruje razdelnik.
+- **`src/sections/Shop.tsx`:**
+  - **P1:** `lg:grid-cols-[1fr_1.15fr_1.35fr_1.4fr]` (red 183) zameniti sa `lg:flex lg:flex-wrap lg:gap-x-s7 lg:gap-y-s4`.
+  - Na telefonu Sets i Equipment idu u jedan red od 2 kolone.
+  - Na uvodu `lg:items-start` (red 161), jer je naslov sada 100 px ispod vrha fotografije.
+- **`src/components/ProductCard.tsx`:** ispod 40rem kratak natpis dugmeta (`addToCartShort` iz Z19) i `whitespace-nowrap`. „IN DEN WARENKORB" se sada lomi u 2 reda.
+- **`src/pages/ProductModal.tsx`:**
+  - **P1:** blok sa veličinom, mlevenjem, cenom i dugmetom ide odmah ispod opisa, a tabela (Origin … Roasted on) ispod njega. Na telefonu ide lepljiva traka na dnu dijaloga (`sticky bottom: 0`, `bg-bg`, linija gore) sa cenom, Grundpreis-om i dugmetom. Sada je dugme na y 971 na 1440×900 i na y 1240 na 390.
+  - Dugme za zatvaranje 16 px od ivica dijaloga i ekrana.
+- **`src/components/Header.tsx`** (red 63–66): u dev-u i na `/dev/*` računati kao početnu, da se POUR i SIP mogu porediti sa mockupom.
+
+### Z18 (programer, fajlovi iz Z10)
+
+- **`src/sections/Subscription.tsx` + `sections.css`:**
+  - CSS kese iz prodavnice dok ne stignu renderi: 2 kese za pretplatu i 4 male u redu za Probierset.
+  - Napomena „Pause, skip or cancel…" na telefonu je 16 px.
+- **`src/sections/BrewGuide.tsx`:**
+  - linkovi iz skice po koracima (→ Gooseneck Kettle, → Find your cup);
+  - korak 3 pokazuje „S064 PLATZHALTER", pa privremeno ide fotografija dok ne stigne render.
+- **`src/sections/Contact.tsx`:** demo napomene na telefonu su 16 px.
+- **`src/sections/Footer.tsx`:**
+  - kućica `accent-color: var(--pp-cream-light)`, 22 px ili krem ivica 1,5 px;
+  - `min-w-tap` na kratkim linkovima („Abo" 30, „AGB" 32, „Terms" 43 px);
+  - demo red i copyright na telefonu su 16 px.
+- **Naslovi sekcija:** FIND YOUR CUP, THREE STEPS, COME BY i A ROASTERY dobijaju `--fs-section` (token dodaje Z19). FIND YOUR CUP je u Z9 fajlovima, pa ga radi Z17.
+
+### Z19 (programer, zajednički fajlovi i sadržaj)
+
+- **`src/index.css`:**
+  - `text-wrap: balance` u `@utility type-display` i `p { text-wrap: pretty }` u base. Sada se pojavljuju usamljene reči: „…TRY / FOUR.", „…OF / BEANS", „…WITH / CHAIRS", „…IM / MONAT", „…tasting / set.".
+  - novi token `--fs-section` (odluka direktora gore).
+- **`src/content/shop.ts`:**
+  - `addToCartShort` (EN „Add", DE „In den Korb");
+  - nelomljivi razmaci u „2–4 Werktage".
+- **`src/content/sections.ts`** (red 197): `10 Uhr` sa nelomljivim razmakom.
+
+### Z20 (animator, `src/story/**` i `Dev*.tsx`)
+
+**`src/story/wave.css`, talas (P1).** Sada je to mutna kakao traka iste svetline kao POUR i SIP. U referenci (kadrovi 121–149) to je sjajno ćilibarno sočivo.
+- **Boje iz reference:**
+  - telo `#5A2010`–`#6A2008`;
+  - osvetljeno dno `#B35915`–`#C77A2E`;
+  - gornji odsjaj `#AF6F40`.
+- **Nove promenljive:** `--wave-coffee: #4A1C0B; --wave-amber: #8E3F15; --wave-amber-light: #C9732A; --wave-glow: #F0A04B`.
+- **Gradijent se obrće:**
+  - gore tamna kafa 0,72;
+  - sredina ćilibar 0,6;
+  - dole svetli ćilibar 0,5.
+- **Odsjaji:**
+  - `.wave__glow` 16 → 28 px, 0,2 → 0,45;
+  - `.wave__shine` 2 → 3 px, 0,5 → 0,8;
+  - `.wave__shine-soft` 6 → 12 px, 0,12 → 0,22;
+  - meniskus 0,92 → 0,6.
+
+**`src/story/Wave.tsx`, oblik talasa:**
+- `A1` 0,04 → ~0,10 i `L1` 1,2 → 1,8, da bude jedan veliki talas preko ekrana.
+- Donja ivica dobija suprotnu fazu, pa traka postaje sočivo: oko 35 % vh u sredini i 8–10 % na krajevima.
+- Sočivo 1,04 → 1,08, ako vreme kadra dozvoli.
+- Statična ivica za reduced motion ostaje kakva je.
+
+**`src/story/chapters.css` i `SipCards.tsx`, SIP kartice oko šolje (P1).** Važi od `(min-width: 80rem) and (min-height: 53.75rem)`, a ispod toga ostaje sadašnji špil. Prototip je `pregled/z15/proto-sip-1440-en.png`.
+- **Kartica 0, Origin, puna:**
+  - left `min(68.5%, 100% - gutter - 3.75rem - 16.25rem - 6px)`;
+  - top `clamp(header-h + 1rem, 31%, 100% - 27rem)`;
+  - nagib −6°, z 4.
+- **Kartica 1, Flavor, kompaktna (`glass-card--compact`):**
+  - širina 12,5rem, pakovanje 5,5rem;
+  - bez reda sa notama i bez datuma prženja; cena, Grundpreis i „inkl. MwSt." ostaju;
+  - left 44 %, top `max(header-h + .75rem, 12%)`, nagib +5°, z 3.
+- **Kartica 2, Roast, kompaktna:** left 33,5 %, top `min(61%, 100% - 20rem)`, nagib −3°, z 4.
+- **Zvezdica:** left 62 %, top 17 %.
+- **Sitnice:** čip „DEMO" 10 → 12 px, a podnatpis kartice na telefonu 12 → 13 px.
+
+**`src/story/Story.tsx`:**
+- kartice uleću redom 1 → 2 → 0, tako da puna Origin kartica sleće poslednja;
+- header prelazi na `sip` kad gornja ivica talasa pređe liniju headera (sada je tamni meni na tamnoj traci na p 0,85);
+- GRIND platno ide do y 0 iza menija, pa treba maska vrha ili podloga iza menija.
+
+**`src/pages/DevChapters.tsx`:** kutija šolje `desk:left-[40%] desk:w-[min(30vw,27rem)]`. Sada ulazi 67 px u kolonu teksta na 1440, a na 1024 tekst stoji preko šolje.
+
+**Ne kvariti:**
+- tokene i smenu krem i papirnih pozadina;
+- poglavlja, koja odgovaraju mockupu;
+- obradu fotografija;
+- espresso footer;
+- Grundpreis, PDV i demo oznake;
+- SIP traku na telefonu;
+- reduced motion;
+- paru preko `screen`.

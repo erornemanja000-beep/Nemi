@@ -1,3 +1,6 @@
+import { existsSync } from 'node:fs'
+import type { IncomingMessage, ServerResponse } from 'node:http'
+import { resolve, sep } from 'node:path'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import { defineConfig, type Plugin } from 'vite'
@@ -72,9 +75,39 @@ function siteHtml(): Plugin {
   }
 }
 
+/**
+ * Kao netlify.toml: mediji (i u preview-u bundle) koji ne postoje vraćaju 404, a ne index.html sa 200.
+ * Bez ovoga Vite-ov SPA fallback daje HTML umesto slike ili seq.json, pa se greška ne vidi.
+ */
+function missingFiles404(): Plugin {
+  const guard = (dir: string, prefixes: string[]) => (req: IncomingMessage, res: ServerResponse, next: () => void) => {
+    let pathname: string
+    try {
+      pathname = decodeURIComponent((req.url ?? '').split('?')[0])
+    } catch {
+      return next()
+    }
+    if (!prefixes.some((p) => pathname.startsWith(p))) return next()
+    const file = resolve(dir, `.${pathname}`)
+    if (file.startsWith(dir + sep) && existsSync(file)) return next()
+    res.statusCode = 404
+    for (const [name, value] of Object.entries(securityHeaders)) res.setHeader(name, value)
+    res.end('Not found')
+  }
+  return {
+    name: 'kafa-missing-files-404',
+    configureServer(server) {
+      server.middlewares.use(guard(resolve(server.config.publicDir), ['/media/']))
+    },
+    configurePreviewServer(server) {
+      server.middlewares.use(guard(resolve(server.config.root, server.config.build.outDir), ['/media/', '/assets/']))
+    },
+  }
+}
+
 export default defineConfig({
   base: '/',
-  plugins: [siteHtml(), react(), tailwindcss()],
+  plugins: [siteHtml(), missingFiles404(), react(), tailwindcss()],
   build: {
     rolldownOptions: {
       output: {

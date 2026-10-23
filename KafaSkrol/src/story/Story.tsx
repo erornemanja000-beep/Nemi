@@ -37,28 +37,33 @@ function Poster({ chapter, priority }: { chapter: Chapter; priority: boolean }) 
 export function Story() {
   const root = useRef<HTMLDivElement>(null)
 
-  // header prati sloj koji prelazi liniju headera; ispod priče je 'page'
+  // header prati sloj koji je pod linijom headera; ispod priče je 'page' (Z12 ovo radi u svom ScrollTrigger-u)
   useEffect(() => {
     const el = root.current
     if (!el) return
-    const io = new IntersectionObserver(
-      (entries) => {
-        for (const e of entries) {
-          if (!e.isIntersecting) continue
-          const id = (e.target as HTMLElement).dataset.chapter
-          if (id === 'grind' || id === 'pour' || id === 'sip') setActiveChapter(id)
-        }
-      },
-      { rootMargin: '0px 0px -95% 0px' },
-    )
-    el.querySelectorAll('[data-chapter]').forEach((s) => io.observe(s))
-    const out = new IntersectionObserver(([e]) => {
-      if (!e.isIntersecting && e.boundingClientRect.top < 0) setActiveChapter('page')
-    }, { rootMargin: '0px 0px -95% 0px' })
-    out.observe(el)
+    const layers = [...el.querySelectorAll<HTMLElement>('[data-chapter]')]
+    let frame = 0
+    const update = () => {
+      frame = 0
+      const line = (document.querySelector('header')?.getBoundingClientRect().height ?? 64) / 2
+      const layer = layers.find((s) => {
+        const r = s.getBoundingClientRect()
+        return r.top <= line && r.bottom > line
+      })
+      const id = layer?.dataset.chapter
+      if (id === 'grind' || id === 'pour' || id === 'sip') setActiveChapter(id)
+      else setActiveChapter(el.getBoundingClientRect().bottom <= line ? 'page' : 'grind')
+    }
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(update)
+    }
+    update()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', onScroll)
     return () => {
-      io.disconnect()
-      out.disconnect()
+      cancelAnimationFrame(frame)
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onScroll)
     }
   }, [])
 

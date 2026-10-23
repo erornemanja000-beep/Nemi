@@ -43,8 +43,8 @@ export function Header() {
           </ul>
         </nav>
         <div className="flex items-center gap-s1">
-          <LangSwitch className="hidden lg:inline-grid" />
-          <Button variant="outline" href={href(site.shopNow.href)} className="mx-s2 hidden lg:inline-flex">
+          <LangSwitch className="max-lg:hidden" />
+          <Button variant="outline" href={href(site.shopNow.href)} className="mx-s2 max-lg:hidden">
             {tx(site.shopNow.label)}
           </Button>
           <Button variant="icon" onClick={openCart} aria-label={count === 1 ? tx(site.aria.cartOne) : tf(site.aria.cart, { n: count })}>

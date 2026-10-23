@@ -11,6 +11,7 @@ Beleške o napretku su u `NAPREDAK.md`.
 | `freiraum/` | Freiraum Wien, statički sajt + Netlify funkcije (`booking.js`, `team.js`) | `cd freiraum && python3 build.py` |
 | `freiraum-premium/` | premium verzija Freiraum-a sa skrol animacijama (`src/shared` je link na `freiraum/src/assets`) | `python3 freiraum-premium/build_offline.py <izlaz>` |
 | `RealEstates/` | Vista Estates, Vite + React + TS + Tailwind + GSAP + Three.js | `cd RealEstates && npm run build && npm run lint` |
+| `KafaSkrol/` | kafa skrol-sajt (koncept, privremeno ime u `src/config/site.ts`), Vite + React + TS + Tailwind + GSAP; 3D sekvence iz `scripts/blender/kafa/`; radni materijal u `studio/kafa-skrol/` | `cd KafaSkrol && npm run build && npm run lint && npm run check` |
 | `video/`, `frames/`, `assets/` | gotovi videi, kadrovi za AI klipove, promptovi | skripte u `scripts/` |
 
 Tekstovi na sajtovima klijenata su podrazumevano na nemačkom. Sve mora da radi na 390 px, na 1440 px i sa `prefers-reduced-motion`.

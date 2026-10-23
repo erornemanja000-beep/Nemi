@@ -552,3 +552,400 @@ Za maketu bi svaka stranica mogla da počne redom „Konzept / Demo — kein ech
 | pozadinske reči | Longberry, Percolate (9 slova) | smeju da izađu van ekrana, jer su dekor; ne prelamati ih u dva reda |
 
 Tekstovi poglavlja (do 202 znaka) staju u 5–6 redova na 390 px pri 16 px. Ako dizajner smanji prostor pored predmeta, DE tekst GRIND može bez poslednje rečenice („Oder du mahlst selbst, frisch zu Hause."), pa ima 162 znaka.
+
+---
+
+# Dopune za izradu (talas 1)
+
+Tekstopisac, 23.10.2026, zadatak Z3 iz `plan-izrade.md`. Postojeći tekst iznad se ne menja. Gde se dopuna i stari tekst razlikuju, piše šta važi.
+
+## Beleške za tim (srpski)
+
+**Osnova:**
+- `brief.md`, `plan-izrade.md` (sa „Odlukama direktora posle plana"), `izvori.md`, `fotografije.md` i `scripts/blender/kafa/bags.py` (boje kesa);
+- `mockup.html` (čip „Demo", dugme „+", datum na kartici);
+- licence fontova: `sajt/src/assets/fonts/OFL-*.txt` i `KafaSkrol/node_modules/@fontsource-variable/archivo/LICENSE`.
+
+Sve fotografije iz `KafaSkrol/public/media/photos/*-sm.webp` sam pogledao, pa alt tekstovi opisuju ono što se stvarno vidi na slikama.
+
+**Redosled:** kao u ostatku fajla, prvo EN pa DE, jer je EN podrazumevani jezik sajta.
+
+**Ime brenda** se ne piše u ovom odeljku. Gde treba, stoji `{brand}`, a ostale oznake su `{n}`, `{q}`, `{name}`, `{size}` i `{date}`.
+
+**Šta sam primetio na fotografijama (za direktora i `recenzent`-a):**
+- `onama-1` i `onama-2` ne prikazuju bubanj (kako piše u `izvori.md`), nego **sito za hlađenje**: okrugla posuda sa rupičastim dnom i mešalicom. U alt tekstu zato piše „cooling tray" / „Kühlsieb".
+- `guide-2`: na displeju vage piše **330** (i tajmer 00:18), a recept kaže 288 g. Dripper ima **ravno dno** i talasasti filter, a naš proizvod je konus od 60°. Za simboličnu fotografiju to je sitnica, ali pažljiv gost može da primeti. Alt tekst ne pominje brojeve.
+- `guide-1` prikazuje **cela zrna** na vagi, a korak 1 je „Mahlen". Fotografija i dalje odgovara koraku, jer se zrna mere pre mlevenja.
+- Fotografije u O nama su stvarne pržionice (ONAMA-2 je po `fotografije.md` snimljena u Indoneziji), a tekst kaže „naša pržionica". To pokriva demo red ispod teksta. Ako direktor želi da bude strože, i tamo može da stoji „Symbolbild", isto kao u kontaktu.
+- Alt SIP scene iz gornjeg dela fajla („…surrounded by three coffee cards") opisuje celu scenu. Poster (S64) prikazuje samo šolju, a kartice su HTML i čitač ih ionako čita. Za poster važi alt iz tabele ispod (B3).
+
+**EUR-Lex:** nijedna stranica nije mogla da se otvori. Detalji su u odeljku 6, a obe formulacije ostaju **NEPROVERENE**.
+
+---
+
+## 1. Fotografije i mediji
+
+### 1a. Alt tekstovi fotografija
+
+Fotografije su iz „Odluka direktora posle plana", tačka 5. KONTAKT-1 je odbačen, pa fajl `kontakt-1` sadrži fotografiju KONTAKT-2. Pozadinske slike prodavnice su dekor i dobijaju `alt=""`. Njihov alt ispod važi samo ako se upotrebe kao sadržaj.
+
+| Fajl | Gde | Alt (EN) | Alt (DE) |
+|---|---|---|---|
+| `shop-1` | prodavnica | A row of glass jars with clip lids, full of roasted coffee beans, on a dark background. Only the front jar is sharp. | Eine Reihe Gläser mit Bügelverschluss voller gerösteter Kaffeebohnen vor dunklem Hintergrund. Nur das vorderste ist scharf. |
+| `shop-bg-1` | prodavnica, pozadina | `alt=""` (rezerva: A heap of roasted coffee beans on a cream background.) | `alt=""` (rezerva: Ein Häufchen gerösteter Kaffeebohnen auf cremefarbenem Grund.) |
+| `shop-bg-2` | prodavnica, pozadina | `alt=""` (rezerva: Roasted coffee beans scattered on a cream surface, seen from above.) | `alt=""` (rezerva: Geröstete Kaffeebohnen, locker verstreut auf hellem Grund, von oben.) |
+| `onama-1` | O nama | Freshly roasted beans in the round cooling tray of a roaster. A steel arm stirs them over the perforated floor. | Frisch geröstete Bohnen im runden Kühlsieb einer Röstmaschine. Ein Rührarm aus Stahl bewegt sie über den gelochten Boden. |
+| `onama-2` | O nama | Close-up of roasted beans in a roaster's cooling tray, with a steel stirring arm passing through. | Nahaufnahme: geröstete Bohnen im Kühlsieb einer Röstmaschine, ein Rührarm aus Stahl zieht hindurch. |
+| `guide-1` | Brew guide, korak 1 | Whole roasted beans in a white ceramic dosing cup on a black scale. A dark grinder stands next to it. | Ganze geröstete Bohnen in einem weißen Dosierbecher aus Keramik auf einer schwarzen Waage. Daneben steht eine dunkle Kaffeemühle. |
+| `guide-2` | Brew guide, korak 2 | From above: a white dripper with a pleated paper filter on a digital scale, the wet grounds blooming. Next to it, a wooden scoop of ground coffee. | Von oben: ein weißer Handfilter mit gefaltetem Papierfilter auf einer digitalen Waage, das nasse Kaffeemehl quillt auf. Daneben ein Holzlöffel mit Kaffeemehl. |
+| SIP poster | Brew guide, korak 3 | A ceramic cup with a dripping glaze. | Eine Keramiktasse mit herablaufender Glasur. |
+| `kontakt-1` (izvor KONTAKT-2) | Kontakt | An empty café courtyard in Vienna after rain: white chairs and tables, a folded striped parasol, wet paving stones. | Ein leerer Gastgarten in einem Wiener Innenhof nach dem Regen: weiße Stühle und Tische, ein zusammengeklappter gestreifter Sonnenschirm, nasses Pflaster. |
+
+- Za „Beč" na `kontakt-1` izvor je stranica fotografije na Pexels-u, kako piše u `izvori.md` i `fotografije.md`.
+- „Gastgarten" je austrijska reč za baštu lokala. „Schanigarten" je samo bašta na trotoaru, pa ovde ne pristaje.
+- Para (`steam-cup-a`, `steam-cup-b`) je dekor: `<video aria-hidden="true">`, bez alt teksta.
+
+### 1b. Natpis „Symbolbild"
+
+Plan navodi KONTAKT-1 i KONTAKT-2, ali na sajtu ostaje samo jedna fotografija (`kontakt-1`, izvor KONTAKT-2), pa natpis ide samo uz nju.
+
+| Gde | EN | DE |
+|---|---|---|
+| čip na uglu fotografije | Illustrative photo | Symbolbild |
+| `figcaption` ispod fotografije | Illustrative photo: a café courtyard in Vienna. Not our café. | Symbolbild: Gastgarten in einem Wiener Innenhof. Nicht unser Café. |
+
+„Symbolic image" iz plana je doslovan prevod i na engleskom se retko koristi. Prirodnije je „Illustrative photo". Ako direktor želi da EN prati plan, rezerva je „Symbolic image".
+
+### 1c. Kese (3 rendera)
+
+Boje su iz `bags.py` i privremene su. Posle Z4 (etiketa) treba ih uskladiti, jer u alt tekstu mora da piše boja koja se stvarno vidi. Na etiketi po Z4 stoje brend, „Specialty Coffee · Wien", „250 g" i „Demo", bez imena kafe.
+
+| Fajl | Alt (EN) | Alt (DE) |
+|---|---|---|
+| `kesa-origin` | Stand-up coffee bag, 250 g, cream with a coral-red label. | Stehende Kaffeepackung, 250 g, cremefarben mit korallenrotem Etikett. |
+| `kesa-flavor` | Stand-up coffee bag, 250 g, beige with a turquoise wave and a blue stripe. | Stehende Kaffeepackung, 250 g, beige mit türkisfarbener Welle und blauem Streifen. |
+| `kesa-roast` | Stand-up coffee bag, 250 g, peach-pink with salmon spots and a light arc. | Stehende Kaffeepackung, 250 g, pfirsichrosa mit lachsfarbenen Flecken und hellem Bogen. |
+
+**Kako se koristi:**
+- **SIP kartica i kartica u prodavnici:** `alt=""`, isto kao `aria-hidden` u `mockup.html`. Ime kafe već stoji u naslovu kartice, a pošto 6 kafa deli 3 kese, alt sa bojom bi samo ponavljao isto.
+- **Modal proizvoda (velika slika):** EN „{name}, 250 g bag", DE „{name}, Packung à 250 g".
+- **CSS kesa (rezerva):** `aria-hidden="true"`.
+
+### 1d. Oprema (3 opciona Blender snimka)
+
+Snimci još ne postoje. Alt tekst je napisan po opisu proizvoda i scenama, pa ga treba proveriti kad render stigne (materijal, boja, da li je bokal u kadru). CSS silueta kao rezerva je `aria-hidden="true"`.
+
+| Fajl | Alt (EN) | Alt (DE) |
+|---|---|---|
+| `gear-grinder` | Electric burr grinder in stainless steel with a glass hopper. | Elektrische Kaffeemühle aus Edelstahl mit Bohnenbehälter aus Glas. |
+| `gear-dripper` | Ceramic cone dripper on a glass carafe. | Kegelförmiger Handfilter aus Keramik auf einer Glaskanne. |
+| `gear-kettle` | Electric gooseneck kettle with a long, thin spout, on its base. | Elektrischer Schwanenhals-Wasserkocher mit langem, dünnem Ausguss, auf dem Sockel. |
+
+Ako snimak drippera prikazuje i bokal, kartica mora da kaže da li je bokal uključen u kupovinu. Toga nema ni u briefu ni u repou: `[FEHLT: Lieferumfang Dripper (Glaskanne ja/nein)]`.
+
+---
+
+## 2. Stranica Credits (`/credits`)
+
+**Title (EN):** Credits & licenses   **Titel (DE):** Quellen & Lizenzen
+**Subtitle (EN):** Who made the photos, video and fonts.
+**Untertitel (DE):** Wer die Fotos, das Video und die Schriften gemacht hat.
+**Text (EN):** Photos, video and fonts on this concept site come from free sources. The photo and video licenses don't ask for credit, but we give it anyway. The fonts are under the SIL Open Font License, and the license texts are linked below.
+**Text (DE):** Fotos, Video und Schriften auf dieser Konzeptseite stammen aus freien Quellen. Für Fotos und Video verlangen die Lizenzen keine Nennung, wir nennen sie trotzdem. Die Schriften stehen unter der SIL Open Font License, die Lizenztexte findest du unten.
+**Button:** EN: Back to the start · DE: Zurück zur Startseite
+
+**Link u footeru:** EN „Credits" · DE „Quellen & Lizenzen".
+
+**Nazivi kolona:**
+
+| EN | DE |
+|---|---|
+| Photo | Foto |
+| Author | Urheber |
+| Source | Quelle |
+| License | Lizenz |
+| Used in (opciono) | Verwendet in (opciono) |
+
+**Napomena iznad tabele:** EN „All photos are color-adjusted for this site, some are cropped." · DE „Alle Fotos sind für diese Seite farblich angepasst, manche zugeschnitten."
+
+**Redovi** (autor, link i licenca prepisani iz `izvori.md`; link u koloni „Source" ide na stranicu fotografije):
+
+| Fajl | Photo (EN) | Foto (DE) | Author / Urheber | Source / Quelle | License / Lizenz |
+|---|---|---|---|---|---|
+| `shop-1` | Coffee beans in glass jars · Shop | Kaffeebohnen in Gläsern · Shop | Clint Bustrillos | Unsplash | Unsplash License |
+| `shop-bg-1` | Heap of coffee beans · Shop background | Häufchen Kaffeebohnen · Shop-Hintergrund | Cemrecan Yurtman | Unsplash | Unsplash License |
+| `shop-bg-2` | Scattered coffee beans · Shop background | Verstreute Kaffeebohnen · Shop-Hintergrund | Mockup Graphics | Unsplash | Unsplash License |
+| `onama-1` | Beans in a roaster's cooling tray · About | Bohnen im Kühlsieb · Über uns | Khanh Do | Unsplash | Unsplash License |
+| `onama-2` | Stirring arm in roasted beans · About | Rührarm in gerösteten Bohnen · Über uns | Ichsan Chairul | Unsplash | Unsplash License |
+| `guide-1` | Beans on a scale · Brew guide, step 1 | Bohnen auf der Waage · Zubereitung, Schritt 1 | User_Pascal | Unsplash | Unsplash License |
+| `guide-2` | Dripper on a scale · Brew guide, step 2 | Handfilter auf der Waage · Zubereitung, Schritt 2 | Jason An | Unsplash | Unsplash License |
+| `kontakt-1` | Café courtyard in Vienna (illustrative photo) · Visit | Gastgarten in Wien (Symbolbild) · Kontakt | Anna Holodna | Pexels | Pexels License |
+
+**Red o snimku pare:**
+
+| Polje | EN | DE |
+|---|---|---|
+| Photo / Foto | Steam over a cup (video, edited) · Pour, Sip | Dampf über einer Tasse (Video, bearbeitet) · Pour, Sip |
+| Author / Urheber | Mixkit | Mixkit |
+| Source / Quelle | Mixkit: „Demonstration video of a steaming cup of coffee" (originalni naslov, ne prevodi se) | isto |
+| License / Lizenz | Mixkit Stock Video Free License | Mixkit Stock Video Free License |
+| napomena | Cropped, background removed, looped, no sound. | Zugeschnitten, Hintergrund entfernt, als Endlosschleife, ohne Ton. |
+
+Link: https://mixkit.co/free-stock-video/demonstration-video-of-a-steaming-cup-of-coffee-43935/ (licenca „Free", ne „Restricted", provereno 23.10.2026 po `izvori.md`).
+
+**Red o fontovima:**
+- EN: Fonts: Archivo, Fraunces and Figtree, under the SIL Open Font License, Version 1.1. © The Archivo Project Authors, The Fraunces Project Authors, The Figtree Project Authors.
+- DE: Schriften: Archivo, Fraunces und Figtree, unter der SIL Open Font License, Version 1.1. © The Archivo Project Authors, The Fraunces Project Authors, The Figtree Project Authors.
+- Linkovi: EN „License text: Archivo · Fraunces · Figtree" · DE „Lizenztext: Archivo · Fraunces · Figtree". Vode na `/licenses/OFL-Archivo.txt`, `/licenses/OFL-Fraunces.txt` i `/licenses/OFL-Figtree.txt`.
+- Imena autora su iz prvog reda licenci u repou (`Copyright 2020 The Archivo Project Authors` i ostali).
+
+**Red o 3D scenama:**
+- EN: 3D scenes and coffee bags: our own renders, made in Blender.
+- DE: 3D-Szenen und Packungen: eigene Renderings, gemacht mit Blender.
+
+Dok važi `placeholder: true` u bilo kom `seq.json`, iza toga ide dodatak: EN „Until the final renders are in, you see placeholders." · DE „Bis die fertigen Renderings da sind, siehst du Platzhalter."
+
+---
+
+## 3. Pravne stranice (demo stub)
+
+Ovo su podrazumevana rešenja iz otvorenog pitanja 8, bez izmišljenog sadržaja. Svaka stranica ima isti uvod i spisak naslova. Spiskovi su iz `[FEHLT]` liste u gornjem delu fajla i iz briefa.
+
+Na stranici se ne prikazuje doslovno `[FEHLT]`, nego naslov sa čipom: EN „not in demo" · DE „nicht in der Demo". `[FEHLT]` ostaje samo u ovom fajlu, kao oznaka za klijenta.
+
+**Zajedničko za svih šest stranica:**
+- **Untertitel / Subtitle:** EN „Concept / demo — not a real shop." · DE „Konzept / Demo — kein echter Shop."
+- **Text (EN):** In a real shop, this page holds the full legal text. We don't make up legal details, so here you only see what it would cover.
+- **Text (DE):** Im echten Shop steht hier der vollständige Rechtstext. Rechtliche Angaben erfinden wir nicht. Hier siehst du nur, was dazugehört.
+- **Naslov spiska:** EN „What goes here" · DE „Was hier hingehört"
+- **Button:** EN: Back to the start · DE: Zurück zur Startseite
+
+**Naslov kartice pregledača** (`document.title`, do 60 znakova):
+
+| Ruta | EN | DE |
+|---|---|---|
+| `/impressum` | Imprint \| {brand} | Impressum \| {brand} |
+| `/datenschutz` | Privacy policy \| {brand} | Datenschutz \| {brand} |
+| `/agb` | Terms \| {brand} | AGB \| {brand} |
+| `/versand` | Shipping & payment \| {brand} | Versand & Zahlung \| {brand} |
+| `/widerruf` | Right of withdrawal \| {brand} | Widerrufsrecht \| {brand} |
+| `/cookies` | Cookies \| {brand} | Cookies \| {brand} |
+| `/credits` | Credits & licenses \| {brand} | Quellen & Lizenzen \| {brand} |
+
+### Impressum
+**Title (EN):** Imprint   **Titel (DE):** Impressum
+
+| EN | DE | Oznaka |
+|---|---|---|
+| Company name (as registered) | Firma (laut Firmenbuch) | `[FEHLT]` |
+| Address for service | Ladungsfähige Anschrift | `[FEHLT]` (demo adresa nije stvarna) |
+| Email and phone | E-Mail und Telefon | `[FEHLT]` |
+| Company register number and court | Firmenbuchnummer und Firmenbuchgericht | `[FEHLT]` |
+| VAT ID (UID) | UID-Nummer | `[FEHLT]` |
+| Supervisory authority | Aufsichtsbehörde | `[FEHLT]` |
+| Chamber membership | Kammerzugehörigkeit | `[FEHLT]` |
+| Applicable rules (Trade Regulation Act, GewO) | Anwendbare Rechtsvorschriften (GewO) | `[FEHLT]` |
+| Disclosure under § 25 Media Act | Offenlegung nach § 25 MedienG | `[FEHLT]` (brief: NIJE POTVRĐENO) |
+| Out-of-court dispute resolution | Außergerichtliche Streitbeilegung | `[FEHLT]` (bez linka na OS-platformu) |
+
+### Datenschutz
+**Title (EN):** Privacy policy   **Titel (DE):** Datenschutz
+(podnaslov ispod naslova, ako dizajn ima mesta: DE „Datenschutzerklärung")
+
+| EN | DE | Oznaka |
+|---|---|---|
+| Controller | Verantwortlicher | `[FEHLT]` |
+| Purposes of processing | Zwecke der Verarbeitung | `[FEHLT]` |
+| Cookies and local storage | Cookies und lokale Speicherung | vidi stranicu Cookies |
+| Newsletter and withdrawing consent | Newsletter und Widerruf der Einwilligung | `[FEHLT]` |
+| Your rights | Deine Rechte | `[FEHLT]` |
+| Complaints to the Data Protection Authority | Beschwerde bei der Datenschutzbehörde | `[FEHLT]` |
+| Hosting and server logs | Hosting und Server-Logs | `[FEHLT: Hosting (Netlify) und Server-Logs]` |
+
+Netlify je iz repoa (`CLAUDE.md`). Šta Netlify beleži u logovima, to nisam proveravao, pa je i to `[FEHLT]`. Ovaj red nema u starom spisku i predlažem da se doda.
+
+**Demo red (tačan danas, po planu):**
+- EN: In this demo, forms don't send anything. Language and cart stay in your browser.
+- DE: In dieser Demo senden Formulare nichts ab. Sprache und Warenkorb bleiben in deinem Browser.
+
+### AGB
+**Title (EN):** Terms   **Titel (DE):** AGB
+**Untertitel / Subtitle:** EN „Terms and conditions" · DE „Allgemeine Geschäftsbedingungen". Na 390 px je dugačka reč samo u podnaslovu, uz `hyphens: auto` i `lang="de"`.
+
+| EN | DE | Oznaka |
+|---|---|---|
+| Terms and conditions | Allgemeine Geschäftsbedingungen | `[FEHLT: AGB]` |
+| How the contract is made: steps to your order | Wie der Vertrag zustande kommt: Schritte bis zur Bestellung | `[FEHLT]` (ECG § 9) |
+| Whether the contract text is stored | Ob der Vertragstext gespeichert wird | `[FEHLT]` (ECG § 9) |
+| Spotting and fixing input errors | Eingabefehler erkennen und korrigieren | `[FEHLT]` (ECG § 9) |
+| Contract languages | Vertragssprachen | `[FEHLT]` (ECG § 9) |
+| Subscription: term and cancellation | Abo: Laufzeit und Kündigung | `[FEHLT]` (brief: pravila za pretplatu NIJE POTVRĐENO) |
+
+### Versand & Zahlung
+**Title (EN):** Shipping & payment   **Titel (DE):** Versand & Zahlung
+
+| EN | DE | Oznaka |
+|---|---|---|
+| Shipping in Austria | Versand in Österreich | tekst „Dostava" iz gornjeg dela fajla (demo) |
+| Pickup at the café | Abholung im Café | isto (demo) |
+| Payment methods | Zahlungsarten | `[FEHLT: Zahlungsarten]` |
+| Shipping to Germany and the EU | Versand nach Deutschland & in die EU | `[FEHLT: Versand nach Deutschland & EU]` |
+
+Po briefu (FAGG § 8 Abs 3), ograničenja isporuke i načini plaćanja moraju biti jasni najkasnije na početku porudžbine, pa ova dva reda ne smeju da ostanu prazna u pravom projektu.
+
+### Widerrufsrecht
+**Title (EN):** Right of withdrawal   **Titel (DE):** Widerrufsrecht
+
+| EN | DE | Oznaka |
+|---|---|---|
+| Withdrawal information | Widerrufsbelehrung | `[FEHLT]` |
+| Model withdrawal form (unchanged) | Muster-Widerrufsformular (unverändert) | `[FEHLT]` |
+| Exceptions | Ausnahmen | `[FEHLT]` (brief: da li pržena kafa spada pod izuzetak § 18 FAGG, NIJE POTVRĐENO) |
+| Withdraw online | Online widerrufen | demo blok ispod |
+
+**Demo blok (cilj dugmeta „Vertrag widerrufen" iz footera):**
+- EN: Demo: there's no contract here to withdraw from. In a real shop, you'd fill in your withdrawal here and send it.
+- DE: Demo: Hier gibt es keinen Vertrag zum Widerrufen. Im echten Shop füllst du hier deinen Widerruf aus und schickst ihn ab.
+- Dugme za potvrdu, onemogućeno: EN „Confirm withdrawal" · DE „Widerruf bestätigen" (oba **NEPROVERENO**, vidi 6).
+
+### Cookies
+**Title (EN):** Cookies   **Titel (DE):** Cookies
+**Text (EN):** This demo doesn't use cookies. Your language and cart are saved only in your browser (localStorage) and are never sent to us. There are two entries: kafa-lang (language) and kafa-cart (cart). To remove them, clear this site's data in your browser.
+**Text (DE):** Diese Demo verwendet keine Cookies. Sprache und Warenkorb werden nur in deinem Browser gespeichert (localStorage) und nicht an uns geschickt. Es sind zwei Einträge: kafa-lang (Sprache) und kafa-cart (Warenkorb). Löschen kannst du sie, indem du die Websitedaten dieser Seite in deinem Browser löschst.
+
+| EN | DE | Oznaka |
+|---|---|---|
+| Cookie list and consent, if payment or other services are added | Cookie-Liste und Einwilligung, falls Zahlungs- oder andere Dienste dazukommen | `[FEHLT]` (samo za pravi shop) |
+
+- Tekst odgovara planu (tačka 8: samo `kafa-lang` i `kafa-cart`, kolačića nema). Ako se ključevi promene, menja se i tekst. Proverava `bezbednost`.
+- **Footer link:** stari tekst kaže „Cookie settings" / „Cookie-Einstellungen", ali podešavanja ne postoje. Predlog za Z11 je EN „Cookies" · DE „Cookies". Stari red iznad ne menjam, odluka je na direktoru.
+
+### Mesto za Gewährleistungslabel (footer)
+
+| Gde | EN | DE |
+|---|---|---|
+| natpis u obeleženom okviru | Placeholder: in a real shop, the official notice on the legal guarantee goes here, unchanged and in color. | Platzhalter: Im echten Shop steht hier der offizielle Hinweis zur gesetzlichen Gewährleistung, unverändert und in Farbe. |
+| kratko (390 px) | Placeholder · Legal guarantee notice | Platzhalter · Gewährleistungshinweis |
+| `aria-label` okvira | Placeholder for the legal guarantee notice | Platzhalter für den Gewährleistungshinweis |
+
+Okvir ne pominje trajanje garancije niti bilo koji drugi sadržaj zvaničnog predloška. Odakle se predložak preuzima nisam proveravao (otvoreno pitanje 8).
+
+---
+
+## 4. Nedostajući natpisi
+
+### Modal proizvoda i korpa
+
+| Element | EN | DE |
+|---|---|---|
+| zatvori modal (dugme, `aria-label`) | Close details | Details schließen |
+| zatvori korpu (`aria-label`) | Close cart | Warenkorb schließen |
+| natpis „Količina" | Quantity | Menge |
+| dugme − (`aria-label`) | Decrease quantity | Menge verringern |
+| dugme + (`aria-label`) | Increase quantity | Menge erhöhen |
+| ukloni (vidljivo) | Remove | Entfernen |
+| ukloni (`aria-label`) | Remove {name}, {size}, from cart | {name}, {size}, aus dem Warenkorb entfernen |
+| nazad iz modala (opciono) | Back to the shop | Zurück zum Shop |
+
+### SIP kartica i kartica u prodavnici
+
+| Element | EN | DE |
+|---|---|---|
+| čip | Demo | Demo |
+| čip, tekst za čitač (`sr-only`) | Demo product, not for sale | Demo-Produkt, nicht erhältlich |
+| dugme „+" (`aria-label`, iz `mockup.html`) | Add {name}, 250 g, to cart | {name}, 250 g, in den Warenkorb |
+
+### Pretraga
+
+| Element | EN | DE |
+|---|---|---|
+| broj rezultata, 1 | 1 result | 1 Ergebnis |
+| broj rezultata, više | {n} results | {n} Ergebnisse |
+| 0 rezultata | postojeći tekst „Nothing found for "{q}"." | postojeći tekst „Nichts gefunden für „{q}"." |
+
+Broj se čita preko `aria-live="polite"`.
+
+### Drugi skip link
+
+| EN | DE | Vodi na |
+|---|---|---|
+| Skip to shop | Zum Shop springen | `#find-your-cup` |
+
+### Demo napomena za „Start a subscription" i „Give as a gift"
+
+| Element | EN | DE |
+|---|---|---|
+| red ispod oba dugmeta | Demo: nothing is ordered or paid here. | Demo: Hier wird nichts bestellt oder bezahlt. |
+| toast posle „Start a subscription" | This is a demo, so no subscription was started. | Das ist eine Demo, es wurde kein Abo abgeschlossen. |
+| toast posle „Give as a gift" | This is a demo, so no gift was ordered. | Das ist eine Demo, es wurde kein Geschenk bestellt. |
+
+### `<noscript>`
+
+Plugin pravi `<noscript>` na EN, a DE verzija je data u slučaju da zatreba.
+- EN: Concept / demo — not a real shop. Turn on JavaScript to see the animation and the shop.
+- DE: Konzept / Demo — kein echter Shop. Mit JavaScript siehst du die Animation und den Shop.
+
+Alt GRIND postera u `<noscript>` je postojeći alt scene GRIND (EN).
+
+### Format datuma
+
+| Jezik | Izgled | Primer na kartici | `Intl` |
+|---|---|---|---|
+| EN | Oct 20, 2026 | Roasted on Oct 20, 2026 | `en-US`, `{ month: 'short', day: 'numeric', year: 'numeric', timeZone: 'Europe/Vienna' }` |
+| DE | 20.10.2026 | Geröstet am 20.10.2026 | `de-AT`, `{ day: '2-digit', month: '2-digit', year: 'numeric', timeZone: 'Europe/Vienna' }` |
+
+- EN ima ime meseca, jer bi „10/20/2026" ili „20/10/2026" gost mogao da pročita na dva načina. Uz US pravopis („flavor") ide US redosled.
+- Ako se igde koristi pun naziv meseca na DE, `de-AT` daje „Jänner" umesto „Januar", i to je u redu za bečki sajt.
+
+---
+
+## 5. Grupe prženja za filter
+
+**Potvrđeno:** Huila Pink Bourbon („Light-medium" / „Hell-mittel") se prikazuje i pod **Light / Hell** i pod **Medium / Mittel**, a na kartici ostaje natpis „Light-medium" / „Hell-mittel".
+
+Provera brojeva iz Z9 po tabeli od 6 kafa:
+
+| Filter | Kafe | Broj |
+|---|---|---|
+| Light | Guji, Nyeri, Huila | 3 |
+| Medium | Huila, Tarrazú, Pause | 3 |
+| Medium-dark | On Repeat | 1 |
+
+`roastGroups` za Huilu je `['light', 'medium']`, a za ostale je po jedna grupa.
+
+**Pomoćni tekst (opciono, ispod grupe Roast):**
+- EN: Light-medium roasts show up under Light and Medium.
+- DE: Hell-mittel geröstete Kaffees findest du unter Hell und unter Mittel.
+
+---
+
+## 6. Provera na EUR-Lex-u (23.10.2026)
+
+**Rezultat: obe formulacije ostaju NEPROVERENE.**
+
+Stranice EUR-Lex-a su otvarane preko `WebFetch` 23.10.2026 i svaki put su vratile prazan sadržaj. Verovatno je u pitanju provera „nisi bot" sa JavaScript-om. Probane stranice:
+- HTML: `legal-content/EN/TXT/HTML/?uri=CELEX:32011L0083`;
+- `TXT/?uri=CELEX:32011L0083`;
+- PDF: `TXT/PDF/?uri=CELEX:32011L0083`;
+- ELI 2023/2673: `eli/dir/2023/2673/oj/eng`;
+- prečišćeni tekst 2011/83 na dan 27.09.2026, HTML i PDF.
+
+Pretraga ograničena na `eur-lex.europa.eu` vratila je iste formulacije. Pošto je to sažetak malog modela, to je **trag, a ne citat**.
+
+| Šta | EN (trag) | DE (trag) | Gde u propisu | Link | Status |
+|---|---|---|---|---|---|
+| dugme za porudžbinu | order with obligation to pay („or a corresponding unambiguous formulation") | zahlungspflichtig bestellen (brief, FAGG) | Direktiva 2011/83/EU, čl. 8(2), drugi podstav | [EUR-Lex 32011L0083](https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32011L0083) | **NEPROVERENO** |
+| funkcija za odustanak | withdraw from contract here | Vertrag widerrufen (isto i u FAGG § 13a, brief) | čl. 11a(1) Direktive 2011/83/EU, dodat Direktivom (EU) 2023/2673 | [EUR-Lex 2023/2673 EN](https://eur-lex.europa.eu/eli/dir/2023/2673/oj/eng), [DE](https://eur-lex.europa.eu/eli/dir/2023/2673/oj/deu) | **NEPROVERENO** |
+| potvrda odustanka | confirm withdrawal | Widerruf bestätigen | čl. 11a(3) | isto, i [prečišćeni tekst 27.09.2026](https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX%3A02011L0083-20260927) | **NEPROVERENO** |
+
+**Ostali tragovi iz iste pretrage (nisu otvoreni):**
+- Presuda SEU C-249/21 (Fuhrmann-2, 7.4.2022): reči iz čl. 8(2) su primer, a druge reči su dozvoljene ako već **sam natpis na dugmetu** jasno kaže da klik znači obavezu plaćanja ([EUR-Lex 62021CJ0249](https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:62021CJ0249)).
+- Smernice Komisije (SL C 525/2021): „buy now", „pay now" i „confirm purchase" bi bili u redu, a „order now", „confirm" i „register" verovatno ne ([EUR-Lex SL C 525/2021](https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ%3AC%3A2021%3A525%3AFULL)).
+- Rok za prenošenje Direktive 2023/2673 je 19.12.2025, a primena od 19.6.2026 (EUR-Lex sažetak, trag). Brief za Austriju navodi Widerrufsbutton posle 30.9.2026 po RIS-u. Ta dva podatka se ne isključuju, ali vezu nisam proveravao.
+
+**Šta važi do provere:**
+- **Korpa (EN, onemogućeno dugme):** „Order with obligation to pay". To je doslovna formulacija iz direktive i najsigurniji izbor. Ima 28 znakova, pa staje u jedan red dugmeta u korpi na 390 px. Kraće „Buy now" je moguće po smernicama (trag), ali to bira klijent.
+- **Footer (EN):** „Withdraw from contract here" (27 znakova). Ovim se popunjava `[FEHLT: EN-Text]` iz odeljka Footer, uz oznaku **NEPROVERENO**.
+- **DE ostaje kao u briefu:** „Zahlungspflichtig bestellen" i „Vertrag widerrufen".
+
+**Kako da se oznaka skine:** neko ko ima običan pregledač (korisnik ili direktor) otvori tri linka iz tabele, uporedi tekst i upiše datum. Posle toga u ovom odeljku i u beleškama na vrhu fajla „NEPROVERENO" postaje „provereno <datum>".

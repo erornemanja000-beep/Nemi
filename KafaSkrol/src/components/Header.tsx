@@ -5,8 +5,8 @@
 // Širine (izmereno, EN je duži): logo ~225 px, meni ~500 px, desni deo ~330 px. Zato je meni tačno na
 // sredini ekrana (mockup) tek od 90rem; ispod toga stoji na sredini između logoa i ikonica. Ispod 80rem
 // (1024–1279 px) meni je zbijeniji, a pilula „Shop now" se ne prikazuje (isto sidro kao „Coffee").
-// Providan je samo iznad zakačene priče na desktopu (kao mockup). Svuda gde sadržaj prolazi ispod njega
-// (telefon, mirna verzija, sekcije ispod priče, druge stranice) ima pozadinu poglavlja.
+// Providan je na vrhu stranice i iznad zakačene priče na desktopu (kao mockup). Svuda gde sadržaj prolazi
+// ispod njega (telefon, mirna verzija, sekcije ispod priče, druge stranice) ima pozadinu poglavlja.
 // Tanka linija ispod posle 20 px skrola. Dva skip linka: sadržaj (#main) i prodavnica (#find-your-cup).
 import { useCallback, useEffect, useState, type MouseEvent } from 'react'
 import { Link, useLocation } from 'react-router-dom'
@@ -64,8 +64,8 @@ export function Header() {
   // modal proizvoda (/p/:slug) stoji preko početne, pa header i dalje prati priču
   const overHome = onHome || pathname.startsWith('/p/')
   const chapter = overHome ? active : 'page'
-  // providan samo iznad zakačene priče na desktopu
-  const solid = !(overHome && chapter !== 'page' && !isPhone && !reduced)
+  // providan na vrhu stranice i iznad zakačene priče na desktopu; inače pozadina poglavlja
+  const solid = scrolled && !(overHome && chapter !== 'page' && !isPhone && !reduced)
   // na pravnim stranicama sidra vode nazad na početnu
   const href = (h: string) => (onHome ? h : `/${h}`)
 

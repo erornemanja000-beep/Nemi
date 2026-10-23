@@ -25,7 +25,7 @@ Glavni agent je direktor: raspoređuje posao, pokreće agente paralelno, spaja r
 | 1. Planiranje | `istrazivac`, `planer` | brief sa činjenicama i referencama; plan u talasima |
 | 2. Ideje | `kreativac`, `tekstopisac` | 2–3 smera koncepta; tekstovi DE/EN |
 | 3. Skice | `skicar`, `storyboard` | skica sajta (PNG) i mapa skrola; storyboard videa |
-| 4. Dizajn | `dizajner`, `animator` | dizajn sistem i mockup (PNG); kod za pokret |
+| 4. Dizajn | `dizajner`, `animator`, `blender-umetnik` | dizajn sistem i mockup (PNG); kod za pokret; 3D sekvence iz Blendera |
 | 5. Promptovi | `prompt-slike`, `prompt-video` | promptovi za AI slike i AI video |
 | 6. Izrada | `programer`, `mediji` | kod sajta; obrađene slike, video i zvuk |
 | 7. Kontrola | `tester`, `recenzent`, `bezbednost` | radi li; kako izgleda; da li je bezbedno |

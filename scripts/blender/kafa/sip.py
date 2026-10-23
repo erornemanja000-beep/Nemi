@@ -32,12 +32,15 @@ Pokretanje iz korena repoa (uslovi iz .claude/agents/blender-umetnik.md):
 --backdrop: sto i zid boje SIP sekcije (RGB, za probu i poređenje); bez njega providna pozadina sa
 senkom na shadow catcher-u (RGBA za sajt). Zrno filma se ne peče u render (ide preko CSS-a);
 --grain/--vignette postoje samo za probu. Bez --frames renderuje sve kadrove 1..end.
---poster dodaje poster.png (smiren poslednji kadar). Para je podrazumevano isključena (biće pravi snimak).
+--poster dodaje poster.png (smiren poslednji kadar; kopija ako je već renderovan). Para je podrazumevano
+isključena (biće pravi snimak). Vreme (23.10.2026, 4 niti): ~205 s po kadru na 1200 px, 64 uzorka;
+prvo pečenje mapa ~250 s (posle iz keša).
 """
 import argparse
 import math
 import pathlib
 import random
+import shutil
 import sys
 import time
 
@@ -260,8 +263,8 @@ LOOK = dict(
     peel=0.6,          # „pomorandžina kora" glazure i laka (bilo 1,0)
     handle_bump=0.40,  # reljef gline na dršci (0,4x)
     spots=1.0,         # smeđe pege kao u referenci
-    streak=0.50,
-    band=0.85,         # smeđ pojas ispod oboda kao u referenci (do ~16 mm, u prugama)       # smeđe pruge od oboda naniže (glazura se tanji i curi)
+    streak=0.50,       # smeđe pruge od oboda naniže (glazura se tanji i curi)
+    band=0.85,         # smeđ pojas ispod oboda kao u referenci (do ~16 mm, u prugama)
     inside=0.80,       # unutrašnjost tamni ka kafi (deblja glazura + senka; kafa ne ogleda svetao zid)
 )
 
@@ -762,10 +765,14 @@ def main():
         t1 = time.time()
         C.render_frames(scene, str(out), [f])
         print(f'SIP kadar {f}: {time.time() - t1:.1f} s')
-    if args.poster:
-        scene.frame_set(args.end)
-        scene.render.filepath = str(out / 'poster.png')
-        bpy.ops.render.render(write_still=True)
+    if args.poster:                              # poster = smiren poslednji kadar
+        last = out / f'kadar_{args.end:04d}.png'
+        if args.end in frames and last.exists():
+            shutil.copyfile(last, out / 'poster.png')
+        else:
+            scene.frame_set(args.end)
+            scene.render.filepath = str(out / 'poster.png')
+            bpy.ops.render.render(write_still=True)
 
 
 if __name__ == '__main__':

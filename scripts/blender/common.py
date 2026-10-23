@@ -482,6 +482,8 @@ def photo_studio_lights(target, subjects, wall=None, key=70.0, strip=10.0, sun=5
     blende u W (0 = bez); layout: izmene rasporeda iz STUDIO.
 
     Fill skoro ne postoji (samo tamni HDRI iz world_hdri, 0,1-0,15), pa je odnos key:fill oko 5-8:1.
+    Trake su na 0,40 m: na 10 W daju predmetu više svetla nego key (1,3 m) i na difuznim/satenskim
+    predmetima (keramika) peru boju u sivo, pa tu ide ~3 W; 10 W je za inox i staklo (odsjaj ivica).
     Zid ne dobija key (light linking = „cutter"), nego svoje meko svetlo sleva + sunce kroz okvir.
     Bez zida nema ni okvira: prečke bi delimično zaklonile key po stolu, pa bi shadow catcher dao sivu
     koprenu preko celog kadra."""

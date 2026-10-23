@@ -1,0 +1,504 @@
+/* Statični delovi poglavlja (Z7): sloj i scena, tekst, pozadinska reč, strelice i tačkice, staklene
+   kartice, zvezdica, svetlo i sto, zrno filma. Mere i boje su iz mockup.html, tokens.css i dizajn.md.
+
+   Raspored:
+   - .ch-layer je sloj poglavlja (sa data-chapter), a .ch-stage scena sa predmetima u njemu.
+     Telefon (kao mockup-390): tekst gore, ispod scena fiksne visine (28, 30, 31 rem).
+     Desktop: sloj je jedan ekran, scena je preko celog sloja, a delovi stoje apsolutno.
+   - Položaji delova važe samo unutar .ch-layer / .ch-stage. Van njih (npr. statična verzija)
+     delovi idu redom u toku stranice, a kartice su traka.
+   - Story (Z12) pomera samo omotače sa data-anim (transform, opacity). Mirni položaj i nagib su
+     na unutrašnjem elementu.
+
+   Desktop je isti upit kao `desk` u src/index.css: (min-width: 64rem) and (min-height: 600px).
+   Sve je u @layer components, pa Tailwind klase (utilities) imaju prednost. */
+
+/* Redosled slojeva kao u Tailwind-u. Ovaj fajl se u bundle-u učita pre src/index.css (main.tsx uvozi
+   App pre index.css), a sloj koji se prvi pojavi bio bi najslabiji: bez ove izjave bi Tailwind base
+   (preflight) gazio ove stilove. */
+@layer properties, theme, base, components, utilities;
+
+@layer components {
+  /* ---------- Sloj i scena ---------- */
+  .ch-layer {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 100svh;
+    padding: calc(var(--header-h) + var(--space-5)) var(--gutter) 0;
+    background: var(--color-bg);
+    color: var(--color-text);
+  }
+  .ch-layer[data-chapter="grind"] { --stage-h: 28rem; }
+  .ch-layer[data-chapter="pour"] { --stage-h: 30rem; }
+  .ch-layer[data-chapter="sip"] { --stage-h: 31rem; }
+
+  .ch-stage {
+    position: relative;
+    flex: none;
+    height: var(--stage-h, 28rem);
+    margin: var(--space-5) calc(var(--gutter) * -1) 0;
+  }
+
+  /* ---------- Tekst poglavlja (.chapter__content) ---------- */
+  .ch-text {
+    position: relative;
+    z-index: var(--z-content);
+  }
+  .ch-text__inner {
+    max-width: 34rem;
+  }
+
+  /* ---------- Pozadinska reč (.word): ukras iza predmeta ---------- */
+  .ch-word {
+    position: relative;
+    z-index: var(--z-word);
+    pointer-events: none;
+    user-select: none;
+  }
+  .ch-stage .ch-word { position: absolute; }
+  .ch-stage .ch-word--grind { left: 3%; bottom: 1.5rem; }
+  .ch-stage .ch-word--pour { left: -1%; top: 12.5rem; }
+  .ch-stage .ch-word--sip { left: -4%; top: 2.25rem; }
+
+  /* ---------- Zvezdica (.sparkle): treperi 2400 ms, u mirnoj verziji stoji ---------- */
+  .sparkle {
+    position: relative;
+    z-index: var(--z-object);
+    width: 22px;
+    color: var(--pp-crema);
+    pointer-events: none;
+  }
+  .ch-stage .sparkle { position: absolute; left: 56%; top: 2rem; }
+  .sparkle__icon {
+    display: block;
+    width: 100%;
+    height: auto;
+    transform-origin: 50% 50%;
+    animation: sparkle-twinkle var(--dur-twinkle) var(--ease-in-out) infinite;
+  }
+
+  /* ---------- Svetlo i sto (SceneBackdrop) ----------
+     Key svetlo dolazi gore levo (storyboard 1). Gradijent bledi pre kolone teksta, pa kontrast
+     teksta ostaje kao u dizajn.md. Sto: --table-y postavlja Story iz pult_y / sto_y (seq.json);
+     bez nje važi mockup (POUR pult pri dnu, SIP pod 58–70 % kao .chapter--sip). */
+  .scene-backdrop {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+  .scene-backdrop--grind {
+    background: radial-gradient(ellipse 75% 60% at 0% 0%, rgb(255 251 244 / 0.4), transparent 70%);
+  }
+  .scene-backdrop--pour {
+    --ty: var(--table-y, calc(100% - 1.75rem));
+    background:
+      /* pult: tanka svetla ivica, pa površina terakote */
+      linear-gradient(
+        180deg,
+        transparent var(--ty),
+        rgb(244 238 228 / 0.1) var(--ty),
+        var(--color-surface) calc(var(--ty) + 2px)
+      ),
+      /* svetlo iz prozora (#AF7051 u videu, dizajn.md 2) */
+      radial-gradient(ellipse 70% 55% at 0% 0%, rgb(175 112 81 / 0.55), transparent 70%);
+  }
+  .scene-backdrop--sip {
+    --ty: var(--table-y, 64%);
+    background:
+      linear-gradient(
+        180deg,
+        transparent calc(var(--ty) - 3.5rem),
+        var(--color-floor) calc(var(--ty) + 3.5rem),
+        var(--color-floor-deep) 100%
+      ),
+      radial-gradient(ellipse 70% 55% at 0% 0%, rgb(255 246 232 / 0.1), transparent 70%);
+  }
+
+  /* ---------- Strelice i tačkice poglavlja (samo desktop) ---------- */
+  .ch-nav {
+    position: absolute;
+    inset: 0;
+    z-index: var(--z-content);
+    pointer-events: none;
+  }
+  .ch-arrow {
+    position: absolute;
+    top: 52%;
+    display: grid;
+    place-items: center;
+    width: 3.75rem;
+    height: 3.75rem;
+    margin-top: -1.875rem;
+    border: 0;
+    border-radius: 50%;
+    background: var(--color-control-bg);
+    color: var(--color-text);
+    cursor: pointer;
+    pointer-events: auto;
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    transition: opacity var(--dur-fast) var(--ease-out);
+  }
+  .ch-arrow svg { width: 20px; height: 20px; }
+  .ch-arrow--prev { left: var(--gutter); }
+  .ch-arrow--next { right: var(--gutter); }
+  .ch-arrow:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
+  .ch-dots {
+    position: absolute;
+    left: 50%;
+    bottom: 2.5%;
+    display: flex;
+    translate: -50% 0;
+    pointer-events: auto;
+  }
+  /* tačkica: 44 px dodirna površina, 7 px vidljivo (.dots button) */
+  .ch-dot {
+    display: grid;
+    place-items: center;
+    width: var(--tap);
+    height: var(--tap);
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--color-text);
+    cursor: pointer;
+  }
+  .ch-dot::before {
+    content: "";
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: currentColor;
+    opacity: 0.45;
+    transition:
+      opacity var(--dur-fast) var(--ease-out),
+      transform var(--dur-fast) var(--ease-out);
+  }
+  .ch-dot[aria-current="true"]::before {
+    opacity: 1;
+    transform: scale(1.25);
+  }
+
+  /* ---------- Staklene kartice SIP (.glass-card) ----------
+     Telefon i van scene: horizontalna traka sa scroll-snap-om, tačkice prate traku. */
+  .sip-cards {
+    position: relative;
+    z-index: var(--z-card);
+  }
+  /* u sloju na telefonu traka ide odmah ispod šolje (šolja u mockup-u završava na ~19 rem scene) */
+  .ch-layer .sip-cards {
+    margin-top: var(--sip-cards-pull, calc(19.5rem - var(--stage-h, 31rem)));
+    padding-bottom: var(--space-6);
+  }
+  .sip-cards__strip {
+    display: flex;
+    gap: var(--space-4);
+    margin: 0 calc(var(--gutter) * -1);
+    padding: var(--space-5) var(--gutter) var(--space-7);
+    list-style: none;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--gutter);
+    scrollbar-width: none;
+  }
+  .sip-cards__strip::-webkit-scrollbar { display: none; }
+  .sip-card-slot {
+    flex: none;
+    scroll-snap-align: start;
+  }
+  .sip-cards__dots {
+    display: flex;
+    justify-content: center;
+    margin-top: calc(var(--space-5) * -1);
+  }
+  .sip-cards__swipe {
+    margin: 0;
+    text-align: center;
+    font-size: var(--fs-small);
+    color: var(--color-text-muted);
+  }
+
+  .glass-card {
+    /* fokus na staklu: tamni prsten (krem iz SIP-a se na staklu ne vidi) */
+    --color-focus: var(--glass-text);
+    position: relative;
+    width: 15.5rem;
+    padding: var(--space-4);
+    border-radius: var(--radius-card);
+    background: var(--glass-bg);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+    backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    color: var(--glass-text);
+    transform: perspective(900px) rotateY(-8deg) rotateZ(var(--card-tilt));
+    transform-origin: 50% 60%;
+  }
+  .glass-card__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: -6px -8px 0 0;
+  }
+  .glass-card__label {
+    min-width: 0;
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-variation-settings: "wdth" var(--font-display-wdth);
+    font-size: 1.0625rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .glass-card__chip {
+    margin-left: 0.5em;
+    padding: 2px 6px;
+    border-radius: var(--radius-pill);
+    border: 1px solid currentColor;
+    font: 700 10px/1.2 var(--font-label);
+    letter-spacing: 0.08em;
+    vertical-align: 3px;
+  }
+  .glass-card__sub {
+    margin: -4px 0 var(--space-2);
+    font-size: var(--fs-micro);
+    line-height: 1.3;
+    color: var(--glass-text-muted);
+  }
+  /* ceo kartica je link (rastegnut ::after), a dugme „+" stoji iznad njega */
+  .glass-card__link {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: var(--tap);
+    height: var(--tap);
+    border-radius: 50%;
+    color: inherit;
+    text-decoration: none;
+  }
+  .glass-card__link svg { width: 16px; height: 16px; }
+  .glass-card__link::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius-card);
+  }
+  .glass-card__pack {
+    position: relative;
+    height: 8.25rem;
+    border-radius: var(--radius-md);
+    background: linear-gradient(160deg, #d9d2c8, #c5bdb2);
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+  }
+  .glass-card__pack img {
+    width: auto;
+    height: 100%;
+    object-fit: contain;
+  }
+  /* CSS kesa iz mockupa, dok render kese nije spreman */
+  .glass-card__bag {
+    position: relative;
+    width: 44%;
+    height: 84%;
+    margin-top: 8%;
+    border-radius: 6px 6px 10px 10px;
+    background: linear-gradient(180deg, #b2a99e 0 14%, #a79d92 14% 100%);
+    box-shadow:
+      inset 0 -12px 0 rgb(0 0 0 / 0.06),
+      0 10px 18px -8px rgb(27 21 13 / 0.45);
+  }
+  .glass-card__bag::after {
+    content: "";
+    position: absolute;
+    left: 14%;
+    right: 14%;
+    top: 40%;
+    height: 22%;
+    border-radius: 3px;
+    background: #e9e3da;
+  }
+  .glass-card__title {
+    margin: var(--space-3) 0 2px;
+    font: 800 var(--fs-h3) / var(--lh-snug) var(--font-text);
+  }
+  .glass-card__meta {
+    margin: 0 0 var(--space-3);
+    font-size: var(--fs-label);
+    line-height: 1.45;
+    color: var(--glass-text-muted);
+  }
+  .glass-card__buy {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--space-2);
+  }
+  .glass-card__buy > button {
+    position: relative;
+    z-index: 1;
+  }
+  .glass-card__roast {
+    margin: var(--space-3) 0 0;
+    padding-top: var(--space-2);
+    border-top: 1px solid rgb(43 35 22 / 0.16);
+    font-size: var(--fs-micro);
+    color: var(--glass-text-muted);
+  }
+
+  /* ---------- Zrno filma (src/components/Grain.tsx) ----------
+     Statičan SVG šum (feTurbulence, sivi) kao data-URI, popločan na 180 px. Telefon: obično
+     mešanje (merenje u izveštaju Z7), desktop: overlay. */
+  .film-grain {
+    position: fixed;
+    inset: 0;
+    z-index: 9; /* ispod headera (--z-header 10) i chata */
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='.33 .33 .33 0 0 .33 .33 .33 0 0 .33 .33 .33 0 0 0 0 0 0 1'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 180px 180px;
+    opacity: 0.035;
+  }
+}
+
+/* ---------- Telefon do 40rem (mockup: manja kartica, blaži nagib) ---------- */
+@media (max-width: 40rem) {
+  @layer components {
+    .glass-card {
+      --card-tilt: -3deg;
+      width: 13.5rem;
+      padding: var(--space-3) var(--space-4) var(--space-4);
+    }
+    .glass-card__pack { height: 5.5rem; }
+  }
+}
+
+/* ================= Desktop (od 64rem širine i 600 px visine) ================= */
+@media (min-width: 64rem) and (min-height: 600px) {
+  @layer components {
+    .ch-layer {
+      display: block;
+      height: 100vh;
+      min-height: 0;
+      padding: 0;
+    }
+    .ch-stage {
+      position: absolute;
+      inset: 0;
+      height: auto;
+      margin: 0;
+    }
+
+    /* tekst: levo na --chapter-inset (222 px na 1440), sredina na 49 % visine */
+    .ch-layer .ch-text {
+      position: absolute;
+      left: var(--chapter-inset);
+      top: 0;
+      bottom: 2%;
+      width: var(--text-measure);
+      display: flex;
+      align-items: center;
+      pointer-events: none;
+    }
+    .ch-layer .ch-text__inner {
+      max-width: none;
+      pointer-events: auto;
+    }
+
+    .ch-stage .ch-word--grind { left: 76.5%; top: auto; bottom: 11%; }
+    .ch-stage .ch-word--pour { left: 4%; top: 46%; }
+    .ch-stage .ch-word--sip { left: 4%; top: 44%; }
+
+    .sparkle { width: 26px; }
+    .ch-stage .sparkle { left: 48.5%; top: 24%; }
+
+    .scene-backdrop--pour { --ty: var(--table-y, 95%); }
+
+    /* kartice: stoje oko drške šolje, kao špil (predlog, proverava recenzent).
+       Kartica 0 (Origin) je kao u mockup-u: 68,5 % / 31 %. Kartice 1 i 2 su iza nje, svaka
+       1 rem desno i 4,5 rem više, pa se vide natpis i podnatpis. Hover ili fokus dovodi karticu napred.
+       Na užem ili nižem desktopu špil se pomera da ne pređe strelicu i header. */
+    .ch-layer .sip-cards {
+      --stack-dx: 1rem;
+      --stack-dy: 4.5rem;
+      --stack-x: min(68.5%, 100% - var(--gutter) - 3.75rem - 16.25rem - 2 * var(--stack-dx) - 6px);
+      --stack-y: clamp(var(--header-h) + 2 * var(--stack-dy) + 0.5rem, 31%, 100% - 27rem);
+      position: absolute;
+      inset: 0;
+      margin: 0;
+      padding: 0;
+      pointer-events: none;
+    }
+    .ch-layer .sip-cards__strip {
+      display: block;
+      margin: 0;
+      padding: 0;
+      overflow: visible;
+    }
+    .ch-layer .sip-cards__dots,
+    .ch-layer .sip-cards__swipe { display: none; }
+    .ch-layer .sip-card-slot {
+      position: absolute;
+      left: var(--stack-x);
+      top: var(--stack-y);
+      z-index: 3;
+      pointer-events: auto;
+    }
+    .ch-layer .sip-card-slot[data-sip-card="1"] {
+      --card-tilt: -2deg;
+      left: calc(var(--stack-x) + var(--stack-dx));
+      top: calc(var(--stack-y) - var(--stack-dy));
+      z-index: 2;
+    }
+    .ch-layer .sip-card-slot[data-sip-card="2"] {
+      --card-tilt: 2deg;
+      left: calc(var(--stack-x) + 2 * var(--stack-dx));
+      top: calc(var(--stack-y) - 2 * var(--stack-dy));
+      z-index: 1;
+    }
+    .ch-layer .sip-card-slot:hover,
+    .ch-layer .sip-card-slot:focus-within { z-index: 4; }
+
+    .glass-card { width: 16.25rem; }
+
+    .film-grain {
+      mix-blend-mode: overlay;
+      opacity: 0.05;
+    }
+  }
+}
+
+@keyframes sparkle-twinkle {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+  45% {
+    opacity: 0.4;
+    transform: scale(0.7) rotate(14deg);
+  }
+}
+
+/* ---------- Mirna verzija: ništa ne treperi ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .sparkle__icon { animation: none; }
+}
+
+/* ---------- Bez backdrop-filter-a: neprovidno staklo iz tokena ---------- */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  @layer components {
+    .glass-card { background: var(--glass-bg-solid); }
+  }
+}
+
+@media print {
+  .film-grain { display: none; }
+}

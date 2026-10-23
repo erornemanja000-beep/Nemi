@@ -1,0 +1,192 @@
+// Platno sekvence (plan, Interfejs 5). Kutija razmere full.W : full.H; poster i platno stoje na mestu
+// isečka (crop), pa zamena postera prvim kadrom nema skoka.
+// - Poster <img> je ispod platna dok se ne nacrta prvi kadar (GRIND: poster = G1, isti URL kao
+//   predučitavanje u index.html). Posle toga ostaje u DOM-u providan, zbog alt teksta; platno je aria-hidden.
+// - Crta samo dok je u ekranu (IntersectionObserver), kadar daje zajednički sat (createClock).
+//   Veličina se pamti iz ResizeObserver-a; u petlji se ne čita layout.
+// - DPR najviše 2, i nikad više piksela nego što fajl nivoa ima.
+// - Reduced motion i Save-Data: samo poster, bez platna i bez zahteva za kadrove.
+// - Bez `geometry` i bez manifesta (npr. reduced motion pre Z13) poster popunjava kutiju (object-contain).
+import { useEffect, useRef, type CSSProperties } from 'react'
+import { SEQ_DEBUG, type Clock, type SeqGeometry, type Sequence } from '../lib/sequence'
+import { useReducedMotion, useSaveData } from '../lib/useMedia'
+
+export type SeqPoster = {
+  src: string
+  alt: string
+  /** prvi ekran (LCP): eager + fetchpriority high */
+  priority?: boolean
+}
+
+type Props = {
+  /** null dok seq.json ne stigne, i uvek u reduced motion / Save-Data */
+  seq: Sequence | null
+  clock: Clock | null
+  poster: SeqPoster
+  /** pun kadar i isečak pre nego što stigne seq.json (inače iz seq.manifest) */
+  geometry?: SeqGeometry
+  /** poziva se jednom, kad platno prvi put zameni poster */
+  onFirstFrame?: () => void
+  className?: string
+  style?: CSSProperties
+}
+
+const pct = (v: number) => `${v * 100}%`
+
+export function SeqCanvas({ seq, clock, poster, geometry, onFirstFrame, className = '', style }: Props) {
+  const reduced = useReducedMotion()
+  const saveData = useSaveData()
+  const live = !reduced && !saveData && seq !== null && clock !== null
+  const geo = geometry ?? seq?.manifest ?? null
+  const rootRef = useRef<HTMLDivElement>(null)
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const posterRef = useRef<HTMLImageElement>(null)
+  const firstFrame = useRef(onFirstFrame)
+
+  useEffect(() => {
+    firstFrame.current = onFirstFrame
+  })
+
+  useEffect(() => {
+    const root = rootRef.current
+    const canvas = canvasRef.current
+    if (!live || !root || !canvas || !seq || !clock) return
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
+    const img = posterRef.current
+    const fileW = seq.info.w
+    let cssW = 0
+    let cssH = 0
+    let visible = false
+    let detach: (() => void) | null = null
+    let drawn: number | null = null
+    let fresh = true // platno je prazno (novo ili promenjena veličina)
+    let covered = false // poster je sakriven
+    let announced = false
+
+    const showPoster = (on: boolean) => {
+      covered = !on
+      if (img) img.style.opacity = on ? '' : '0'
+    }
+
+    const draw = () => {
+      if (!visible || !cssW) return
+      const g = clock.frameFor(seq)
+      if (g === null || (g === drawn && !fresh)) return
+      const bmp = seq.bitmap(g)
+      if (!bmp) return
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
+      ctx.drawImage(bmp, 0, 0, canvas.width, canvas.height)
+      drawn = g
+      fresh = false
+      if (SEQ_DEBUG) canvas.dataset.g = String(g)
+      if (!covered) showPoster(false)
+      if (!announced) {
+        announced = true
+        firstFrame.current?.()
+      }
+    }
+
+    const fit = () => {
+      if (!cssW || !cssH) return
+      const dpr = Math.min(window.devicePixelRatio || 1, 2)
+      const scale = Math.min(dpr, fileW / cssW)
+      const w = Math.max(1, Math.round(cssW * scale))
+      const h = Math.max(1, Math.round(cssH * scale))
+      if (canvas.width === w && canvas.height === h) return
+      canvas.width = w
+      canvas.height = h
+      ctx.imageSmoothingQuality = 'high'
+      fresh = true
+      draw()
+      // nova veličina briše platno; dok se kadar ne nacrta ponovo, vidi se poster
+      if (fresh && covered) showPoster(true)
+    }
+
+    const ro = new ResizeObserver((entries) => {
+      const box = entries[entries.length - 1].contentRect
+      cssW = box.width
+      cssH = box.height
+      fit()
+    })
+    ro.observe(canvas)
+
+    // DPR se menja kad se prozor prebaci na drugi ekran (ResizeObserver to ne javlja)
+    let dprQuery: MediaQueryList | null = null
+    function onDpr() {
+      watchDpr()
+      fit()
+    }
+    function watchDpr() {
+      dprQuery?.removeEventListener('change', onDpr)
+      dprQuery = window.matchMedia(`(resolution: ${window.devicePixelRatio || 1}dppx)`)
+      dprQuery.addEventListener('change', onDpr)
+    }
+    watchDpr()
+
+    // u ekranu: crta se (-1px: kutija koja samo dodiruje ivicu ekrana se ne računa)
+    const inView = new IntersectionObserver(
+      (entries) => {
+        visible = entries[entries.length - 1].isIntersecting
+        if (visible && !detach) detach = clock.attach(seq, draw)
+        else if (!visible && detach) {
+          detach()
+          detach = null
+        }
+      },
+      { rootMargin: '-1px 0px' },
+    )
+    // daleko od ekrana: dekodirani kadrovi se zatvaraju (Blob-ovi ostaju)
+    const nearView = new IntersectionObserver(
+      (entries) => {
+        if (!entries[entries.length - 1].isIntersecting) seq.release()
+      },
+      { rootMargin: '100% 0px' },
+    )
+    inView.observe(root)
+    nearView.observe(root)
+
+    return () => {
+      inView.disconnect()
+      nearView.disconnect()
+      ro.disconnect()
+      dprQuery?.removeEventListener('change', onDpr)
+      detach?.()
+      seq.release()
+      showPoster(true)
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
+      delete canvas.dataset.g
+    }
+  }, [live, seq, clock])
+
+  const rect: CSSProperties | undefined = geo
+    ? {
+        left: pct(geo.crop.x0 / geo.full.W),
+        top: pct(geo.crop.y0 / geo.full.H),
+        width: pct(geo.crop.w / geo.full.W),
+        height: pct(geo.crop.h / geo.full.H),
+      }
+    : undefined
+
+  return (
+    <div
+      ref={rootRef}
+      data-seq-canvas={seq?.id}
+      className={`[contain:layout] ${className}`}
+      style={geo ? { aspectRatio: `${geo.full.W} / ${geo.full.H}`, ...style } : style}
+    >
+      <img
+        ref={posterRef}
+        src={poster.src}
+        alt={poster.alt}
+        decoding="async"
+        loading={poster.priority ? 'eager' : 'lazy'}
+        fetchPriority={poster.priority ? 'high' : 'auto'}
+        draggable={false}
+        className={geo ? 'absolute block max-w-none select-none' : 'block h-full w-full select-none object-contain'}
+        style={rect}
+      />
+      {live && <canvas ref={canvasRef} aria-hidden="true" className="pointer-events-none absolute block" style={rect} />}
+    </div>
+  )
+}

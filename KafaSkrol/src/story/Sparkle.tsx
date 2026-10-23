@@ -1,6 +1,12 @@
-// STUB iz Z1 (doradu radi Z7): zvezdica koja treperi (2400 ms), u reduced motion stoji.
+// Zvezdica u SIP-u (mockup .sparkle): treperi 2400 ms (--dur-twinkle), u reduced motion stoji.
+// Položaj u sceni je u chapters.css (.ch-stage .sparkle).
 import { Icon } from '../components/Icon'
+import './chapters.css'
 
 export function Sparkle({ className = '' }: { className?: string }) {
-  return <Icon name="sparkle" className={`text-pp-crema ${className}`} />
+  return (
+    <div aria-hidden="true" className={`sparkle ${className}`}>
+      <Icon name="sparkle" className="sparkle__icon" />
+    </div>
+  )
 }

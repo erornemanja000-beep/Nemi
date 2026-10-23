@@ -1,54 +1,71 @@
-"""Kafa skrol-sajt, poglavlje 2 · POUR.
+"""Kafa skrol-sajt, poglavlje 2 · POUR, foto-studio verzija (23.10.2026).
 
-Stakleni bokal (kao Hario server) sa V60 dripperom od providnog stakla i belim papirnim filterom.
-Gooseneck kuvalo od tamnijeg brušenog inoxa gore desno sipa tanak mlaz u centar filtera, para se diže,
-kafa curi iz drippera i nivo u bokalu raste. Pored bokala su dva zrna na podu.
+Stakleni bokal (kao Hario server) sa staklenim V60 i papirnim filterom (pravi konus 60°, krep tekstura,
+šav). Od G65 odozgo, preko šava sa GRIND-om, u filter pada mlevena kafa (iste čestice kao u grind.py, iz
+istog emitera i u istom trenutku). Od G104 se kovano/brušeno gooseneck kuvalo (bliže kameri, odsečeno
+desnom ivicom kadra) nagne i tanak mlaz vode (staklena cev po balističkoj putanji) pada u filter; nivo u
+filteru raste, papir vlaži odozdo, od G130 kaplje kafa (Volume Absorption) i nivo u bokalu raste, od G166
+se kuvalo vraća i počinje drawdown. Na pultu leže 4 zrna. Para NIJE u renderu (pravi snimak preko CSS-a).
 
-Dogovor scena: metri, pod na z=0, centar drippera tačno na x=0, y=0 (tu upadaju zrna iz GRIND),
-kamera spreda (-Y) ~10° odozgo, 85 mm, kadar 1:1, providna pozadina.
+Zajednički svet (kamera rig K, sat G, mlaz mlevene kafe, karta za transmisiju, svetlo) je u grind.py i
+ovde se uvozi. Kamera je ista kao u GRIND-u, tačno 1 S niže. Kadar scene = G + grind.G_OFF; fajlovi se
+zovu po lokalnom broju sekvence: kadar_0001.png = G65 ... kadar_0128.png = G192.
+
+Skupe proceduralne mape (kovane fasete kuvala, krep papira) peku se jednom u EXR (cache/, otisak koda u
+imenu; promena koda = novo pečenje). HDRI „Lebombo“ (Greg Zaal, Poly Haven, CC0 1.0,
+https://polyhaven.com/a/lebombo) dolazi iz common.world_hdri; ostalo je proceduralno.
 
 Pokretanje iz korena repoa:
   unshare -n /opt/blender/blender -b --factory-startup --offline-mode -Y --python-exit-code 1 -t 4 \\
-    -P scripts/blender/kafa/pour.py -- --out <folder> [--kadrovi 120] [--render proba|sve|1,60,120] \\
-    [--res 1600] [--uzorci 64] [--poster 90] [--para ravni|volumen]
+    -P scripts/blender/kafa/pour.py -- --out <folder> [--kadrovi 84,150,192 | sve] [--res 1200] \\
+    [--uzorci 64] [--poster] [--fstop 5] [--bez-zamucenja] [--ponovo-peci]
+
+--kadrovi su globalni G (65-192). Izlaz: kadar_LLLL.png (L = G - 64, RGBA 1200 x 1200), anchors.json
+(sidra u S: ivica_v60, pult_y, kafa_y od G177), po želji poster.png (= G150).
 """
 import argparse
 import math
 import pathlib
+import random
 import sys
 import time
 
-sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1]))
+HERE = pathlib.Path(__file__).resolve().parent
+sys.path.insert(0, str(HERE.parent))
+sys.path.insert(0, str(HERE))
 import common as C  # noqa: E402
+import grind as GR  # noqa: E402  (zajednički svet GRIND/POUR)
 
 import bmesh  # noqa: E402
 import bpy  # noqa: E402
-from mathutils import Euler, Vector  # noqa: E402
+from mathutils import Euler, Matrix, Vector  # noqa: E402
 
-TRAJANJE = 4.0          # sekundi "fizičkog" vremena za celu sekvencu (ne zavisi od broja kadrova)
+CACHE = GR.CACHE
 TAN30 = math.tan(math.radians(30))
+sf = GR.sf
 
-# ---------------------------------------------------------------------------- mere (m)
-SERVER_PROFIL = [  # spoljna kontura bokala (r, z), od centra dna nagore
-    (0.000, 0.000), (0.028, 0.000), (0.038, 0.0015), (0.0445, 0.005), (0.0485, 0.011),
-    (0.0505, 0.020), (0.0512, 0.032), (0.0508, 0.044), (0.0490, 0.058), (0.0462, 0.072),
-    (0.0430, 0.085), (0.0405, 0.096), (0.0392, 0.104), (0.0392, 0.110), (0.0405, 0.115),
-    (0.0420, 0.118),
+# ---------------------------------------------------------------------------- mere (m), pult z=0
+SERVER_PROFIL = [  # spoljna kontura bokala (r, z), od centra dna nagore (Hario server ~600 ml)
+    (0.000, 0.000), (0.028, 0.000), (0.038, 0.0016), (0.0445, 0.0055), (0.0485, 0.0121),
+    (0.0505, 0.0220), (0.0512, 0.0352), (0.0508, 0.0484), (0.0490, 0.0638), (0.0462, 0.0792),
+    (0.0430, 0.0935), (0.0405, 0.1056), (0.0392, 0.1144), (0.0392, 0.1210), (0.0405, 0.1265),
+    (0.0420, 0.1298),
 ]
 SERVER_DEBLJINA = 0.0022
-PLOCA_Z = (0.1185, 0.1235)      # donja i gornja strana staklene ploče drippera
+PLOCA_Z = (0.1303, 0.1353)      # donja i gornja strana staklene ploče drippera
 KONUS_R0 = 0.0085               # unutrašnji poluprečnik konusa na dnu (otvor)
-KONUS_Z1 = 0.2035               # gornja ivica konusa
-FILTER_RAZMAK = 0.0022          # papir je toliko odmaknut od stakla (rebra su između)
-FILTER_VRH = 0.1126             # vrh papirnog konusa (viri kroz otvor, kao pravi V60 filter)
-NIVO_DRIPPER = 0.195            # površina kafe u filteru (blizu ivice, kao u videu)
-NIVO_BOKAL = (0.010, 0.043)     # nivo kafe u bokalu na prvom i poslednjem kadru
+KONUS_Z1 = 0.2153               # gornja ivica konusa (ivica V60 ~0,217: 0,47 S od vrha POUR kadra)
+RIM_R = 0.0612                  # spoljni poluprečnik usne V60
+FILTER_VRH = 0.1244             # vrh papirnog konusa (viri kroz otvor)
+FILTER_IZNAD = 0.018            # koliko papir viri iznad ivice V60
+BOKAL_NIVO = ((132, 0.0030), (176, 0.0345), (192, 0.0420))   # nivo kafe u bokalu (G, z)
 
-KUVALO_NAGIB = 31.0             # stepeni, izliv nadole ka -X
-KUVALO_ZAOKRET = 8.0            # stepeni oko Z, da se izliv malo okrene ka kameri
-MLAZ_PAD = 0.09                 # visina vrha izliva iznad površine kafe u filteru
-MLAZ_BRZINA = 0.45              # m/s na izlazu iz izliva
-MLAZ_R0 = 0.0021
+KUVALO_NAGIB = (12.0, 32.0)     # mirno / sipanje (stepeni)
+KUVALO_ZAOKRET = -32.0          # telo kuvala ide napred-desno (bliže kameri), izliv nazad-levo
+VRH_Z = 0.262                   # vrh izliva pri sipanju (storyboard ~0,26)
+SLETANJE_Z = 0.186              # mlaz vode se gasi u filteru (ispod linije pogleda preko ivice)
+MLAZ_BRZINA = 0.42              # m/s na izlazu iz izliva
+MLAZ_R0 = 0.00185
 
 
 def r_konus(z):
@@ -57,11 +74,34 @@ def r_konus(z):
 
 
 def r_filter(z):
-    return (z - FILTER_VRH) * TAN30
+    return max(z - FILTER_VRH, 0.0) * TAN30
+
+
+def interp(keys, g):
+    """Deo-po-deo smoothstep između (G, vrednost) ključeva."""
+    if g <= keys[0][0]:
+        return keys[0][1]
+    for (g0, v0), (g1, v1) in zip(keys, keys[1:]):
+        if g <= g1:
+            return v0 + (v1 - v0) * GR.smoothstep(g0, g1, g)
+    return keys[-1][1]
+
+
+def filter_level(g):
+    """Površina u filteru: suva kupa do G116, raste uz sipanje, drawdown od G166."""
+    return interp([(65, 0.150), (110, 0.160), (118, 0.163), (160, 0.197), (166, 0.199), (192, 0.180)], g)
+
+
+def carafe_level(g):
+    return interp([(130, 0.0), *BOKAL_NIVO], g) if g >= 130 else 0.0
+
+
+def kettle_tilt(g):
+    return interp([(104, KUVALO_NAGIB[0]), (116, KUVALO_NAGIB[1]), (166, KUVALO_NAGIB[1]),
+                   (178, KUVALO_NAGIB[0])], g)
 
 
 # ---------------------------------------------------------------------------- pomoćne funkcije
-# (predlog za common.py: catmull, tube, weld, shadow_light, animate, node helperi)
 
 def catmull(pts, n=6):
     """Glatka kriva kroz tačke (Catmull-Rom), radi i za 2D i za 3D."""
@@ -83,6 +123,14 @@ def profil(pts, n=4):
     return [(v.x, v.y) for v in catmull(pts, n)]
 
 
+def arc_v(prof):
+    """UV v za lathe: dužina luka profila, normalizovana na 0..1."""
+    d = [0.0]
+    for (r0, z0), (r1, z1) in zip(prof, prof[1:]):
+        d.append(d[-1] + math.hypot(r1 - r0, z1 - z0))
+    return [x / d[-1] for x in d]
+
+
 def offset_profil(pts, d):
     """Pomera (r, z) profil za d ka unutra (za šupljinu u koju ide tečnost)."""
     out = []
@@ -90,19 +138,12 @@ def offset_profil(pts, d):
         a = Vector(pts[max(i - 1, 0)])
         b = Vector(pts[min(i + 1, len(pts) - 1)])
         t = (b - a).normalized()
-        n_in = Vector((-t.y, t.x))
-        p = Vector((r, z)) + n_in * d
+        p = Vector((r, z)) + Vector((-t.y, t.x)) * d
         out.append((max(p.x, 0.0) if i else 0.0, p.y))
     return out
 
 
-def link_obj(obj):
-    bpy.context.collection.objects.link(obj)
-    return obj
-
-
 def weld(obj, dist=1e-6):
-    """Spaja duple tačke (pol lathe-a na osi) i ispravlja normale."""
     bm = bmesh.new()
     bm.from_mesh(obj.data)
     bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=dist)
@@ -112,9 +153,10 @@ def weld(obj, dist=1e-6):
     return obj
 
 
-def tube(name, pts, radii, segs=12, caps=True, mat=None):
-    """Cev duž polilinije (paralelni transport okvira); radii je poluprečnik po tački."""
+def tube(name, pts, radii, segs=12, caps=True, mat=None, attr=None):
+    """Cev duž polilinije (paralelni transport okvira); attr = vrednost po tački (npr. vreme duž mlaza)."""
     bm = bmesh.new()
+    lay = bm.verts.layers.float.new('s') if attr is not None else None
     n = len(pts)
     rings, normal = [], None
     angles = [2 * math.pi * k / segs for k in range(segs)]
@@ -123,7 +165,13 @@ def tube(name, pts, radii, segs=12, caps=True, mat=None):
         normal = t.orthogonal().normalized() if normal is None else (normal - t * normal.dot(t)).normalized()
         b = t.cross(normal)
         r = radii[i]
-        rings.append([bm.verts.new(pts[i] + r * (math.cos(a) * normal + math.sin(a) * b)) for a in angles])
+        ring = []
+        for a in angles:
+            v = bm.verts.new(pts[i] + r * (math.cos(a) * normal + math.sin(a) * b))
+            if lay is not None:
+                v[lay] = attr[i]
+            ring.append(v)
+        rings.append(ring)
     for i in range(n - 1):
         for k in range(segs):
             bm.faces.new((rings[i][k], rings[i][(k + 1) % segs], rings[i + 1][(k + 1) % segs], rings[i + 1][k]))
@@ -134,7 +182,7 @@ def tube(name, pts, radii, segs=12, caps=True, mat=None):
     mesh = bpy.data.meshes.new(name)
     bm.to_mesh(mesh)
     bm.free()
-    obj = link_obj(bpy.data.objects.new(name, mesh))
+    obj = C.link(bpy.data.objects.new(name, mesh))
     C.smooth(obj)
     if mat:
         C.assign(obj, mat)
@@ -144,7 +192,7 @@ def tube(name, pts, radii, segs=12, caps=True, mat=None):
 def mesh_obj(name, verts, faces):
     mesh = bpy.data.meshes.new(name)
     mesh.from_pydata(verts, [], faces)
-    return link_obj(bpy.data.objects.new(name, mesh))
+    return C.link(bpy.data.objects.new(name, mesh))
 
 
 def solidify(obj, thickness, offset=-1.0, subsurf=0):
@@ -154,439 +202,6 @@ def solidify(obj, thickness, offset=-1.0, subsurf=0):
         s = obj.modifiers.new('Subsurf', 'SUBSURF')
         s.levels = s.render_levels = subsurf
     return obj
-
-
-def shadow_light(mat, amount=0.7):
-    """Staklo baca svetliju senku: za zrake senke deo materijala je providan (umesto kaustike)."""
-    nt = mat.node_tree
-    out = next(n for n in nt.nodes if n.type == 'OUTPUT_MATERIAL')
-    src = out.inputs['Surface'].links[0].from_socket
-    lp = nt.nodes.new('ShaderNodeLightPath')
-    tr = nt.nodes.new('ShaderNodeBsdfTransparent')
-    mul = nt.nodes.new('ShaderNodeMath')
-    mul.operation = 'MULTIPLY'
-    mul.inputs[1].default_value = amount
-    mix = nt.nodes.new('ShaderNodeMixShader')
-    nt.links.new(lp.outputs['Is Shadow Ray'], mul.inputs[0])
-    nt.links.new(mul.outputs[0], mix.inputs['Fac'])
-    nt.links.new(src, mix.inputs[1])
-    nt.links.new(tr.outputs[0], mix.inputs[2])
-    nt.links.new(mix.outputs[0], out.inputs['Surface'])
-    return mat
-
-
-def bsdf_of(mat):
-    return mat.node_tree.nodes['Principled BSDF']
-
-
-def sock(sockets, identifier):
-    """Utičnica po identifikatoru (Mix čvor ima više utičnica istog imena)."""
-    return next(x for x in sockets if x.identifier == identifier)
-
-
-class N:
-    """Kratki pomoćnik za čvorove u kodu."""
-
-    def __init__(self, nt):
-        self.nt = nt
-
-    def new(self, kind, **inputs):
-        n = self.nt.nodes.new(kind)
-        for k, v in inputs.items():
-            self.set(n.inputs[k], v)
-        return n
-
-    def set(self, socket, v):
-        if hasattr(v, 'is_linked') or hasattr(v, 'links'):
-            self.nt.links.new(v, socket)
-        else:
-            socket.default_value = v
-
-    def math(self, op, a, b=0.0, clamp=False):
-        n = self.nt.nodes.new('ShaderNodeMath')
-        n.operation = op
-        n.use_clamp = clamp
-        self.set(n.inputs[0], a)
-        self.set(n.inputs[1], b)
-        return n.outputs[0]
-
-    def maprange(self, x, a, b, c=0.0, d=1.0, smooth=True):
-        n = self.nt.nodes.new('ShaderNodeMapRange')
-        n.interpolation_type = 'SMOOTHSTEP' if smooth else 'LINEAR'
-        n.clamp = True
-        self.set(n.inputs['Value'], x)
-        n.inputs['From Min'].default_value, n.inputs['From Max'].default_value = a, b
-        n.inputs['To Min'].default_value, n.inputs['To Max'].default_value = c, d
-        return n.outputs['Result']
-
-    def mix_color(self, fac, a, b):
-        n = self.nt.nodes.new('ShaderNodeMix')
-        n.data_type = 'RGBA'
-        self.set(sock(n.inputs, 'Factor_Float'), fac)
-        self.set(sock(n.inputs, 'A_Color'), a)
-        self.set(sock(n.inputs, 'B_Color'), b)
-        return sock(n.outputs, 'Result_Color')
-
-    def link(self, a, b):
-        self.nt.links.new(a, b)
-
-
-def animate(n_frames, setter, target, path, index=-1):
-    """Ključni kadar na svakom kadru: setter(t, sec) postavi vrednost, pa se upiše ključ."""
-    for f in range(1, n_frames + 1):
-        t = (f - 1) / max(1, n_frames - 1)
-        setter(t, t * TRAJANJE)
-        target.keyframe_insert(data_path=path, frame=f, index=index)
-
-
-# ---------------------------------------------------------------------------- materijali
-
-def materijali():
-    m = {}
-    m['glass'] = shadow_light(C.mat_glass('Glass'), 0.8)
-    m['glass_drops'] = mat_glass_drops()
-    m['steel'] = C.mat_steel('KettleSteel', roughness=0.26)
-    bsdf_of(m['steel']).inputs['Base Color'].default_value = (0.52, 0.505, 0.49, 1)   # tamniji inox
-    m['black'] = C.mat_plastic('KettleBlack', color=(0.018, 0.017, 0.016), roughness=0.42)
-    m['coffee'] = C.mat_coffee_liquid('Coffee')
-    m['coffee_thin'] = C.mat_coffee_liquid('CoffeeThin', color=(0.32, 0.13, 0.045))     # tanak mlaz je ćilibaran
-    m['water'] = C.mat_water('Water')
-    m['bean'] = C.mat_bean('Bean', color=(0.065, 0.032, 0.015))    # tamnije prženo, kao u videu
-    m['filter'] = mat_filter()
-    m['bed'] = mat_bed()
-    m['top'] = mat_coffee_top()
-    m['steam'] = []
-    return m
-
-
-def mat_glass_drops():
-    """Unutrašnja strana bokala: staklo sa sitnim kapljicama kondenzacije iznad kafe (kao u videu)."""
-    mat = shadow_light(C.mat_glass('GlassDrops'), 0.8)
-    b = bsdf_of(mat)
-    nt = N(mat.node_tree)
-    tc = nt.new('ShaderNodeTexCoord')
-    sep = nt.new('ShaderNodeSeparateXYZ')
-    nt.link(tc.outputs['Object'], sep.inputs[0])
-    vor = nt.new('ShaderNodeTexVoronoi', Scale=380.0, Randomness=1.0)
-    nt.link(tc.outputs['Object'], vor.inputs['Vector'])
-    sepc = nt.new('ShaderNodeSeparateColor')
-    nt.link(vor.outputs['Color'], sepc.inputs[0])
-    size = nt.math('ADD', 0.12, nt.math('MULTIPLY', sepc.outputs['Red'], 0.30))
-    dome = nt.math('SUBTRACT', 1.0, nt.math('DIVIDE', vor.outputs['Distance'], size), clamp=True)
-    keep = nt.maprange(sepc.outputs['Green'], 0.35, 0.40)                 # samo deo ćelija ima kap
-    band = nt.math('MULTIPLY', nt.maprange(sep.outputs['Z'], 0.040, 0.058), nt.maprange(sep.outputs['Z'], 0.085, 0.102, 1.0, 0.0))
-    h = nt.math('MULTIPLY', nt.math('MULTIPLY', nt.math('SQRT', dome), keep), band)
-    bump = nt.new('ShaderNodeBump', Strength=0.6, Distance=0.0006)
-    nt.link(h, bump.inputs['Height'])
-    nt.link(bump.outputs['Normal'], b.inputs['Normal'])
-    return mat
-
-
-def mat_filter():
-    """Papir: suv i beo iznad kafe, mokar i taman ispod (kao u videu: donji deo drippera je taman)."""
-    mat = C.mat_paper('Filter')
-    b = bsdf_of(mat)
-    nt = N(mat.node_tree)
-    tc = nt.new('ShaderNodeTexCoord')
-    sep = nt.new('ShaderNodeSeparateXYZ')
-    nt.link(tc.outputs['Object'], sep.inputs[0])
-    noise = nt.new('ShaderNodeTexNoise', Scale=90.0, Detail=3.0)
-    nt.link(tc.outputs['Object'], noise.inputs['Vector'])
-    zz = nt.math('ADD', sep.outputs['Z'], nt.math('MULTIPLY', nt.math('SUBTRACT', noise.outputs['Fac'], 0.5), 0.006))
-    wet = nt.maprange(zz, NIVO_DRIPPER + 0.006, NIVO_DRIPPER + 0.0015, 0.0, 1.0)
-    col = nt.mix_color(wet, (0.86, 0.84, 0.79, 1), (0.055, 0.026, 0.011, 1))
-    nt.link(col, b.inputs['Base Color'])
-    nt.link(nt.maprange(wet, 0, 1, 0.85, 0.45, smooth=False), b.inputs['Roughness'])
-    nt.link(nt.maprange(wet, 0, 1, 0.25, 0.0, smooth=False), b.inputs['Subsurface Weight'])
-    return mat
-
-
-def mat_bed():
-    """Površina kafe u filteru: pena sa mehurićima i talasići oko mesta gde pada mlaz."""
-    mat, b = C._principled('CoffeeBed', **{'Roughness': 0.22, 'Coat Weight': 0.4, 'Coat Roughness': 0.08})
-    nt = N(mat.node_tree)
-    tc = nt.new('ShaderNodeTexCoord')
-    noise = nt.new('ShaderNodeTexNoise', Scale=260.0, Detail=4.0)
-    nt.link(tc.outputs['Object'], noise.inputs['Vector'])
-    col = nt.mix_color(nt.maprange(noise.outputs['Fac'], 0.35, 0.7), (0.07, 0.03, 0.012, 1), (0.30, 0.16, 0.07, 1))
-    nt.link(col, b.inputs['Base Color'])
-    vor = nt.new('ShaderNodeTexVoronoi', Scale=700.0)
-    nt.link(tc.outputs['Object'], vor.inputs['Vector'])
-    flat = nt.new('ShaderNodeVectorMath', Vector=(0, 0, 0))
-    flat.operation = 'MULTIPLY'
-    nt.link(tc.outputs['Object'], flat.inputs[0])
-    flat.inputs[1].default_value = (1, 1, 0)
-    wave = nt.new('ShaderNodeTexWave', Scale=70.0, Distortion=0.0, Detail=0.0)
-    wave.wave_type = 'RINGS'
-    nt.link(flat.outputs['Vector'], wave.inputs['Vector'])
-    dist = nt.new('ShaderNodeVectorMath')
-    dist.operation = 'LENGTH'
-    nt.link(flat.outputs['Vector'], dist.inputs[0])
-    fade = nt.maprange(dist.outputs['Value'], 0.004, 0.03, 1.0, 0.0)
-    h = nt.math('ADD', nt.math('MULTIPLY', wave.outputs['Fac'], fade), nt.math('MULTIPLY', vor.outputs['Distance'], 0.5))
-    bump = nt.new('ShaderNodeBump', Strength=0.35, Distance=0.0004)
-    nt.link(h, bump.inputs['Height'])
-    nt.link(bump.outputs['Normal'], b.inputs['Normal'])
-    mat['wave'] = wave.name
-    return mat
-
-
-def mat_coffee_top():
-    """Gornja površina kafe u bokalu: tamno ogledalo sa prstenom pene uz staklo."""
-    mat, b = C._principled('CoffeeTop', **{'Roughness': 0.06, 'IOR': 1.34})
-    nt = N(mat.node_tree)
-    tc = nt.new('ShaderNodeTexCoord')
-    flat = nt.new('ShaderNodeVectorMath')
-    flat.operation = 'MULTIPLY'
-    nt.link(tc.outputs['Object'], flat.inputs[0])
-    flat.inputs[1].default_value = (1, 1, 0)
-    dist = nt.new('ShaderNodeVectorMath')
-    dist.operation = 'LENGTH'
-    nt.link(flat.outputs['Vector'], dist.inputs[0])
-    radius = nt.new('ShaderNodeValue')
-    radius.name = 'Radius'
-    radius.outputs[0].default_value = 0.045
-    edge = nt.math('SUBTRACT', radius.outputs[0], dist.outputs['Value'])     # udaljenost od stakla
-    vor = nt.new('ShaderNodeTexVoronoi', Scale=900.0)
-    nt.link(tc.outputs['Object'], vor.inputs['Vector'])
-    ring = nt.math('MULTIPLY', nt.maprange(edge, 0.0065, 0.0012), nt.maprange(vor.outputs['Distance'], 0.15, 0.55, 0.55, 1.0))
-    col = nt.mix_color(ring, (0.03, 0.012, 0.005, 1), (0.34, 0.19, 0.085, 1))
-    nt.link(col, b.inputs['Base Color'])
-    nt.link(nt.maprange(ring, 0, 1, 0.06, 0.45, smooth=False), b.inputs['Roughness'])
-    return mat
-
-
-# ---------------------------------------------------------------------------- modeli
-
-def bokal(m):
-    prof = profil(SERVER_PROFIL, 4)
-    srv = C.lathe('Server', prof, segments=128)
-    # izliv (kljun) na -X strani: gornja ivica se izvlači napolje, ispod ploče drippera
-    for v in srv.data.vertices:
-        x, y, z = v.co
-        th = math.atan2(y, x)
-        d = math.pi - abs(th)
-        w = math.exp(-(d / 0.30) ** 2) * min(1.0, max(0.0, (z - 0.096) / 0.022)) ** 1.6
-        if w > 1e-4:
-            r = math.hypot(x, y) + 0.014 * w
-            v.co = (r * math.cos(th), r * math.sin(th), z)
-    weld(srv)
-    C.assign(srv, m['glass'])
-    srv.data.materials.append(m['glass_drops'])
-    solidify(srv, SERVER_DEBLJINA, -1.0, subsurf=1)
-    srv.modifiers['Solidify'].material_offset = 1          # unutrašnja ljuska dobija kapljice
-    # drška desno
-    pts = catmull([(0.034, 0, 0.106), (0.052, 0, 0.1085), (0.071, 0, 0.104), (0.080, 0, 0.088),
-                   (0.080, 0, 0.064), (0.071, 0, 0.046), (0.054, 0, 0.037), (0.045, 0, 0.036)], 8)
-    tube('ServerHandle', pts, [0.0045] * len(pts), segs=14, mat=m['glass'])
-    return srv
-
-
-def tecnost_bokal(m, n_frames):
-    """Kafa u bokalu: šupljina bokala presečena kockom čija visina prati nivo (Boolean, egzaktno)."""
-    outer = [p for p in profil(SERVER_PROFIL, 4) if p[1] <= 0.095]
-    inner = offset_profil(outer, SERVER_DEBLJINA + 0.0003)
-    cav = inner + [(0.0, inner[-1][1])]
-    liq = weld(C.lathe('CoffeeLiquid', cav, segments=128))
-    liq.data.materials.append(m['coffee'])
-    liq.data.materials.append(m['top'])
-    cut = mesh_obj('LevelCutter', [(-.1, -.1, -.2), (.1, -.1, -.2), (.1, .1, -.2), (-.1, .1, -.2),
-                                   (-.1, -.1, 0), (.1, -.1, 0), (.1, .1, 0), (-.1, .1, 0)],
-                   [(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)])
-    cut.data.materials.append(m['top'])
-    cut.hide_render = True
-    cut.display_type = 'WIRE'
-    b = liq.modifiers.new('Level', 'BOOLEAN')
-    b.operation, b.solver, b.object = 'INTERSECT', 'EXACT', cut
-    b.material_mode = 'TRANSFER'
-
-    def r_in(h):
-        for (r0, z0), (r1, z1) in zip(inner, inner[1:]):
-            if z0 <= h <= z1 and z1 > z0:
-                return r0 + (r1 - r0) * (h - z0) / (z1 - z0)
-        return inner[-1][0]
-
-    def level(t):
-        return NIVO_BOKAL[0] + (NIVO_BOKAL[1] - NIVO_BOKAL[0]) * (0.25 * t + 0.75 * t * t * (3 - 2 * t))
-
-    animate(n_frames, lambda t, s: setattr(cut.location, 'z', level(t)), cut, 'location', 2)
-    rad = m['top'].node_tree.nodes['Radius'].outputs[0]
-    animate(n_frames, lambda t, s: setattr(rad, 'default_value', r_in(level(t))), rad, 'default_value')
-    return level
-
-
-def dripper(m):
-    z0, z1 = PLOCA_Z
-    # staklena ploča (prsten) koja leži na bokalu
-    plate = [(KONUS_R0, z0), (0.050, z0), (0.0532, z0 + 0.0009), (0.0542, (z0 + z1) / 2),
-             (0.0532, z1 - 0.0009), (0.050, z1), (KONUS_R0 + 0.002, z1), (KONUS_R0, z0)]
-    p = weld(C.lathe('DripperPlate', plate, segments=128))
-    C.assign(p, m['glass'])
-    # nožica koja ulazi u grlo bokala
-    foot = C.lathe('DripperFoot', [(0.0345, 0.106), (0.0345, z0)], segments=96)
-    C.assign(foot, m['glass'])
-    solidify(foot, 0.0018, 1.0)
-    # konus sa zaobljenom ivicom
-    cone_pts = [(r_konus(z), z) for z in [z1 + i * (KONUS_Z1 - z1) / 10 for i in range(11)]]
-    cone_pts += [(0.0562, 0.2055), (0.0588, 0.2066), (0.0612, 0.2060)]
-    cone = C.lathe('DripperCone', profil(cone_pts, 3), segments=128)
-    C.assign(cone, m['glass'])
-    solidify(cone, 0.0025, 1.0, subsurf=1)
-    # spiralna rebra na staklu (u videu se vide kao svetle linije, pa su spolja)
-    for k in range(12):
-        th0 = 2 * math.pi * k / 12
-        pts, rad = [], []
-        for i in range(40):
-            u = i / 39
-            z = 0.131 + u * 0.067
-            th = th0 + 0.85 * u
-            r = r_konus(z) + 0.0029 - 0.0002
-            pts.append(Vector((r * math.cos(th), r * math.sin(th), z)))
-            rad.append(0.0009 * min(1.0, 4 * u, 4 * (1 - u)) + 0.0002)
-        tube(f'Rib{k:02d}', pts, rad, segs=8, mat=m['glass'])
-    # drška desno
-    hp = catmull([(0.048, 0, 0.199), (0.064, 0, 0.2015), (0.078, 0, 0.197), (0.0855, 0, 0.185),
-                  (0.086, 0, 0.170), (0.079, 0, 0.157), (0.064, 0, 0.150), (0.045, 0, 0.148),
-                  (0.024, 0, 0.150)], 8)
-    tube('DripperHandle', hp, [0.0037] * len(hp), segs=14, mat=m['glass'])
-
-
-def filter_papir(m):
-    """V60 filter: konus uz staklo, iznad ivice se širi i gužva."""
-    pts = [(0.0004, FILTER_VRH + 0.0007)]
-    pts += [(r_filter(z), z) for z in [FILTER_VRH + 0.002 + i * (KONUS_Z1 - FILTER_VRH - 0.002) / 24 for i in range(25)]]
-    pts += [(0.0541, 0.2075), (0.0566, 0.2125), (0.0601, 0.2185), (0.0634, 0.2245), (0.0652, 0.2285)]
-    prof = profil(pts, 2)
-    f = C.lathe('Filter', prof, segments=160)
-    top = prof[-1][1]
-    for v in f.data.vertices:
-        x, y, z = v.co
-        th = math.atan2(y, x)
-        s = min(1.0, max(0.0, (z - 0.201) / (top - 0.201)))
-        if s <= 0:
-            continue
-        fold = 0.6 * math.sin(4 * th + 1.3) + 0.35 * math.sin(7 * th + 0.4) + 0.15 * math.sin(11 * th + 2.0)
-        crum = 0.6 * math.sin(3 * th + 0.7) + 0.4 * math.sin(6 * th + 2.6) + 0.15 * math.sin(10 * th)
-        r = math.hypot(x, y) * (1 + 0.035 * fold * s * s)
-        v.co = (r * math.cos(th), r * math.sin(th), z + 0.0022 * crum * s ** 3)
-    weld(f)
-    C.assign(f, m['filter'])
-    solidify(f, 0.00035, 1.0)
-    th_s = math.radians(-128)                      # šav spreda levo, kao u videu
-    seam_v, seam_f = [], []
-    for i in range(9):
-        z = 0.2025 + i * (top - 0.0012 - 0.2025) / 8
-        r = r_filter(min(z, KONUS_Z1)) + max(0.0, z - KONUS_Z1) * 0.95
-        for dr in (0.0, 0.0045 * min(1.0, max(0.0, (z - 0.2025) / 0.006))):
-            seam_v.append(((r + dr) * math.cos(th_s), (r + dr) * math.sin(th_s), z))
-        if i:
-            k = 2 * i
-            seam_f.append((k - 2, k - 1, k + 1, k))
-    seam = mesh_obj('FilterSeam', seam_v, seam_f)
-    C.smooth(seam)
-    C.assign(seam, m['filter'])
-    solidify(seam, 0.0004, 0.0)
-    # površina kafe u filteru (blago udubljena u sredini, gde pada mlaz)
-    rb = r_filter(NIVO_DRIPPER) - 0.0003
-    bed_prof = [(rb, NIVO_DRIPPER + 0.0007), (0.03, NIVO_DRIPPER), (0.012, NIVO_DRIPPER - 0.0008),
-                (0.0, NIVO_DRIPPER - 0.0016)]
-    bed = weld(C.lathe('CoffeeBed', profil(bed_prof, 4), segments=128))
-    C.assign(bed, m['bed'])
-    return bed
-
-
-def kuvalo(m):
-    """Gooseneck kuvalo u lokalnim koordinatama (uspravno, izliv ka -X). Vraća rig, vrh i pravac izliva."""
-    rig = link_obj(bpy.data.objects.new('KettleRig', None))
-    body_prof = profil([
-        (0.000, 0.003), (0.050, 0.003), (0.061, 0.005), (0.0655, 0.010), (0.0665, 0.020),
-        (0.0625, 0.045), (0.0580, 0.072), (0.0530, 0.098), (0.0480, 0.118), (0.0430, 0.129),
-        (0.0375, 0.1345), (0.0340, 0.137)], 6)
-    body = C.lathe('KettleBody', body_prof, segments=192)
-
-    def dimple(th, z):
-        lo, hi, row_h, nn = 0.020, 0.126, 0.027, 14
-        if z <= lo or z >= hi:
-            return 0.0
-        u = (z - lo) / row_h
-        row = math.floor(u)
-        a = 0.5 + 0.5 * math.cos(nn * (th + (row % 2) * math.pi / nn))
-        return a ** 1.5 * math.sin(math.pi * (u - row)) * min(1.0, (z - lo) / 0.008, (hi - z) / 0.008)
-
-    for v in body.data.vertices:
-        x, y, z = v.co
-        th = math.atan2(y, x)
-        r = math.hypot(x, y) * (1 - 0.015 * dimple(th, z))
-        v.co = (r * math.cos(th), r * math.sin(th), z)
-    weld(body)
-    body.data.materials.append(m['steel'])
-    body.data.materials.append(m['black'])
-    for poly in body.data.polygons:
-        if poly.center.z < 0.014:
-            poly.material_index = 1
-    sub = body.modifiers.new('Subsurf', 'SUBSURF')
-    sub.levels = sub.render_levels = 1
-    lid = weld(C.lathe('KettleLid', profil([(0.0335, 0.1368), (0.0328, 0.1400), (0.0285, 0.1445),
-                                            (0.020, 0.1475), (0.010, 0.1490), (0.0, 0.1493)], 4), 128))
-    C.assign(lid, m['steel'])
-    solidify(lid, 0.0012, -1.0)
-    knob = weld(C.lathe('KettleKnob', profil([(0.0, 0.1480), (0.0095, 0.1480), (0.0105, 0.1500), (0.0108, 0.1560),
-                                              (0.0100, 0.1610), (0.0075, 0.1635), (0.0, 0.1645)], 3), 64))
-    C.assign(knob, m['black'])
-    # izliv: tanka labudova šija
-    sp = [(-0.040, 0, 0.018), (-0.068, 0, 0.030), (-0.088, 0, 0.050), (-0.104, 0, 0.075), (-0.117, 0, 0.098),
-          (-0.128, 0, 0.115), (-0.138, 0, 0.125), (-0.148, 0, 0.129), (-0.157, 0, 0.127), (-0.164, 0, 0.122)]
-    spts = catmull(sp, 10)
-    srad = [0.0033 + 0.0058 * (1 - i / (len(spts) - 1)) ** 2.2 for i in range(len(spts))]
-    spout = tube('KettleSpout', spts, srad, segs=20, mat=m['steel'])
-    tip, tip_dir = spts[-1], (spts[-1] - spts[-3]).normalized()
-    # otvor izliva: mali taman disk na vrhu
-    hole = tube('SpoutHole', [tip - tip_dir * 0.0004, tip + tip_dir * 0.0002], [0.0022, 0.0022], segs=16,
-                mat=m['black'])
-    # drška pozadi (+X)
-    hp = catmull([(0.036, 0, 0.132), (0.058, 0, 0.142), (0.084, 0, 0.140), (0.102, 0, 0.125), (0.107, 0, 0.095),
-                  (0.100, 0, 0.062), (0.082, 0, 0.038), (0.058, 0, 0.026)], 8)
-    handle = tube('KettleHandle', hp, [0.0058] * len(hp), segs=16, mat=m['black'])
-    for o in (body, lid, knob, spout, hole, handle):
-        o.parent = rig
-    return rig, tip, tip_dir
-
-
-def mlaz_putanja(tip_w, d):
-    """Balistička putanja vode iz izliva; vraća tačke i poluprečnike (mlaz se tanji kako ubrzava)."""
-    g = Vector((0, 0, -9.81))
-    v0 = d * MLAZ_BRZINA
-    a, b, c = 0.5 * g.z, v0.z, tip_w.z - (NIVO_DRIPPER - 0.004)
-    t_end = (-b - math.sqrt(b * b - 4 * a * c)) / (2 * a)
-    pts, rad = [], []
-    n = 220
-    t0 = -0.004 / MLAZ_BRZINA
-    for i in range(n):
-        t = t0 + (t_end - t0) * (i / (n - 1)) ** 0.85
-        tt = max(t, 0.0)
-        p = tip_w + v0 * t + 0.5 * g * tt * tt
-        speed = (v0 + g * tt).length
-        pts.append(p)
-        rad.append(MLAZ_R0 * math.sqrt(MLAZ_BRZINA / speed))
-    return pts, rad
-
-
-def postavi_kuvalo(rig, tip_local, dir_local):
-    """Kuvalo visi na pivotu u vrhu izliva; pivot se pomera tako da mlaz padne tačno u x=0, y=0."""
-    rot = Euler((0, -math.radians(KUVALO_NAGIB), math.radians(KUVALO_ZAOKRET)), 'XYZ')
-    d = rot.to_matrix() @ dir_local
-    tip_z = NIVO_DRIPPER + MLAZ_PAD
-    g = -9.81
-    v0 = d * MLAZ_BRZINA
-    a, b, c = 0.5 * g, v0.z, MLAZ_PAD
-    t_land = (-b - math.sqrt(b * b - 4 * a * c)) / (2 * a)
-    tip_w = Vector((-v0.x * t_land, -v0.y * t_land, tip_z))
-    pivot = link_obj(bpy.data.objects.new('KettlePivot', None))
-    pivot.location = tip_w
-    pivot.rotation_euler = rot
-    rig.parent = pivot
-    rig.location = -tip_local
-    return pivot, tip_w, d
 
 
 def displace(obj, name, tex_scale, strength, coord_obj, direction='NORMAL'):
@@ -599,241 +214,691 @@ def displace(obj, name, tex_scale, strength, coord_obj, direction='NORMAL'):
     return mod
 
 
-def mlaz_vode(m, tip_w, d, n_frames):
-    pts, rad = mlaz_putanja(tip_w, d)
-    s = tube('WaterStream', pts, rad, segs=12, caps=True, mat=m['water'])
-    flow = link_obj(bpy.data.objects.new('WaterFlow', None))
-    sway = link_obj(bpy.data.objects.new('WaterSway', None))
-    displace(s, 'WaterRipple', 0.0045, 0.00055, flow)
-    displace(s, 'WaterSwayX', 0.035, 0.0011, sway, 'X')
-    animate(n_frames, lambda t, sec: setattr(flow.location, 'z', 0.32 * sec), flow, 'location', 2)
-    animate(n_frames, lambda t, sec: setattr(sway.location, 'z', 0.05 * sec), sway, 'location', 2)
-    return s
+def value_node(N, label, value=0.0):
+    n = N.new('ShaderNodeValue', label=label)
+    n.outputs[0].default_value = value
+    return n.outputs[0]
 
 
-def mlaz_kafe(m, level, n_frames):
-    """Tanak mlaz kafe iz vrha filtera u bokal; dužina prati nivo u bokalu."""
-    top = FILTER_VRH + 0.0015
-    pts = [Vector((0, 0, -i / 160)) for i in range(161)]
-    rad = [0.00125 * (1 - 0.3 * (i / 160) ** 0.7) for i in range(161)]
-    s = tube('CoffeeStream', pts, rad, segs=10, mat=m['coffee_thin'])
-    s.location = (0, 0, top)
-    flow = link_obj(bpy.data.objects.new('CoffeeFlow', None))
-    displace(s, 'CoffeeRipple', 0.004, 0.0005, flow)
-    animate(n_frames, lambda t, sec: setattr(s.scale, 'z', top - level(t) + 0.002), s, 'scale', 2)
-    animate(n_frames, lambda t, sec: setattr(flow.location, 'z', 0.2 * sec), flow, 'location', 2)
-    return s
+def no_deform_blur(ob):
+    """Sporo promenljiva geometrija (Boolean nivo): bez deformacionog motion blur-a (štedi vreme)."""
+    if hasattr(ob, 'cycles'):
+        ob.cycles.use_deform_motion = False
 
 
-def para_ravni(m, n_frames):
-    """Para kao 3 providne ravni sa šumom (brže od volumena na CPU-u)."""
-    planes = []
-    specs = [  # x, y, rotZ, širina, visina, drift, providnost, seme
-        (0.000, -0.004, 0, 0.26, 0.30, 0.060, 0.68, 0.0),
-        (-0.010, 0.016, 22, 0.24, 0.26, 0.085, 0.45, 3.7),
-        (0.012, -0.022, -16, 0.20, 0.21, 0.035, 0.40, 7.1),
-    ]
-    for i, (x, y, rz, w, h, drift, alpha, seed) in enumerate(specs):
-        mat = mat_steam(f'Steam{i}', h, drift, alpha, seed, n_frames)
-        p = mesh_obj(f'Steam{i}', [(-w / 2, 0, 0), (w / 2, 0, 0), (w / 2, 0, h), (-w / 2, 0, h)], [(0, 1, 2, 3)])
-        p.location = (x, y, NIVO_DRIPPER + 0.004)
-        p.rotation_euler = (0, 0, math.radians(rz))
-        C.assign(p, mat)
-        p.visible_shadow = p.visible_diffuse = p.visible_glossy = False
-        p.visible_transmission = p.visible_volume_scatter = False
-        planes.append(p)
-    return planes
+# ---------------------------------------------------------------------------- materijali
+
+def mat_glass_drops(level_fn):
+    """Unutrašnja strana bokala: kapljice kondenzacije iznad kafe (kao u videu)."""
+    m = GR.mat_glass('StakloKapi', tint=(0.97, 0.98, 0.975), shadow=0.85, smudge=0.03)
+    nt = m.node_tree
+    b = nt.nodes['Principled BSDF']
+    N = C.Nodes(nt)
+    tc = N.new('ShaderNodeTexCoord')
+    P = tc.outputs['Object']
+    _, _, z = N.sep(P)
+    d, c = N.voronoi(P, 420.0, randomness=1.0)
+    cr, cg, _ = N.split(c)
+    size = N.math('MULTIPLY_ADD', cr, 0.32, 0.12)
+    dome = N.math('SUBTRACT', 1.0, N.math('DIVIDE', d, size), clamp=True)
+    keep = N.ramp(cg, 0.40, 0.46)
+    band = N.mul(N.ramp(z, 0.050, 0.068), N.ramp(z, 0.112, 0.124, 1.0, 0.0))
+    h = N.mul(N.mul(N.math('SQRT', dome), keep), band)
+    bump = N.new('ShaderNodeBump')
+    bump.inputs['Distance'].default_value = 1.0
+    N.put(N.mul(h, 0.0005), bump.inputs['Height'])
+    N.put(bump.outputs['Normal'], b.inputs['Normal'])
+    return m
 
 
-def mat_steam(name, h, drift, alpha, seed, n_frames):
-    mat = bpy.data.materials.new(name)
-    mat.use_nodes = True
-    tree = mat.node_tree
-    tree.nodes.remove(tree.nodes['Principled BSDF'])
-    nt = N(tree)
-    tc = nt.new('ShaderNodeTexCoord')
-    sep = nt.new('ShaderNodeSeparateXYZ')
-    nt.link(tc.outputs['Object'], sep.inputs[0])
-    zrel = nt.math('DIVIDE', sep.outputs['Z'], h)
-    # stub pare se njiše i odnosi ulevo kako se diže
-    cz = nt.new('ShaderNodeCombineXYZ')
-    nt.link(sep.outputs['Z'], cz.inputs['Z'])
-    wob = nt.new('ShaderNodeTexNoise', Scale=7.0, Detail=1.0)
-    wob.noise_dimensions = '4D'
-    nt.link(cz.outputs[0], wob.inputs['Vector'])
-    center = nt.math('ADD', nt.math('MULTIPLY', nt.math('POWER', zrel, 1.6), -drift),
-                     nt.math('MULTIPLY', nt.math('MULTIPLY', nt.math('SUBTRACT', wob.outputs['Fac'], 0.5), 0.09), zrel))
-    width = nt.math('ADD', 0.011, nt.math('MULTIPLY', zrel, 0.065))
-    q = nt.math('DIVIDE', nt.math('SUBTRACT', sep.outputs['X'], center), width)
-    hmask = nt.math('EXPONENT', nt.math('MULTIPLY', nt.math('MULTIPLY', q, q), -1.0))
-    vmask = nt.math('MULTIPLY', nt.maprange(zrel, 0.0, 0.18), nt.maprange(zrel, 0.40, 1.0, 1.0, 0.0))
-    # pramenovi: 4D šum koji putuje nagore
-    mp = nt.new('ShaderNodeMapping')
-    nt.link(tc.outputs['Object'], mp.inputs['Vector'])
-    mp.inputs['Scale'].default_value = (1.0, 1.0, 0.5)
-    det = nt.new('ShaderNodeTexNoise', Scale=13.0, Detail=3.0, Roughness=0.5, Distortion=0.5)
-    det.noise_dimensions = '4D'
-    nt.link(mp.outputs['Vector'], det.inputs['Vector'])
-    wisps = nt.maprange(det.outputs['Fac'], 0.38, 0.80)
-    dens = nt.math('MULTIPLY', nt.math('MULTIPLY', hmask, vmask), nt.math('MULTIPLY', wisps, alpha))
-    # emisija + providnost: nema stohastičkog biranja zatvarača, pa je alfa glatka i bez zrna
-    emit = nt.new('ShaderNodeEmission', Color=(0.97, 0.95, 0.92, 1),
-                  Strength=nt.maprange(sep.outputs['X'], 0.06, -0.08, 1.5, 2.1, smooth=False))
-    tr = nt.new('ShaderNodeBsdfTransparent')
-    mix = nt.new('ShaderNodeMixShader', Fac=dens)
-    nt.link(tr.outputs[0], mix.inputs[1])
-    nt.link(emit.outputs[0], mix.inputs[2])
-    out = next(n for n in tree.nodes if n.type == 'OUTPUT_MATERIAL')
-    nt.link(mix.outputs[0], out.inputs['Surface'])
-    loc = mp.inputs['Location']
-    animate(n_frames, lambda t, s: setattr(loc, 'default_value', (0, 0, -0.06 * s)), loc, 'default_value')
-    for node in (wob, det):
-        w_in = node.inputs['W']
-        animate(n_frames, lambda t, s, w_in=w_in: setattr(w_in, 'default_value', seed + 0.35 * s), w_in, 'default_value')
-    return mat
+def mat_coffee_liquid(name, foam=False, density=900.0):
+    """Kafa: providna površina (IOR 1,34) + Volume Absorption (tamna u sredini, ćilibarna gde je tanka).
+    foam=True: na vrhu tanak prsten pene uz staklo; nivo i poluprečnik su Value čvorovi 'Nivo' i
+    'Poluprecnik' (ključevi po kadru). Vraća (materijal, nivo, poluprečnik) (utičnice ili None)."""
+    m, nt, b, N = C.new_material(name)
+    b.inputs['Base Color'].default_value = (1.0, 1.0, 1.0, 1.0)
+    b.inputs['Transmission Weight'].default_value = 1.0
+    b.inputs['IOR'].default_value = 1.34
+    b.inputs['Roughness'].default_value = 0.03
+    out = nt.nodes['Material Output']
+    surf = b.outputs['BSDF']
+    level = radius = None
+    if foam:
+        level = value_node(N, 'Nivo', 0.0)
+        radius = value_node(N, 'Poluprecnik', 0.045)
+        tc = N.new('ShaderNodeTexCoord')
+        P = tc.outputs['Object']
+        x, y, z = N.sep(P)
+        r = N.vmath('LENGTH', N.xyz(x, y, 0.0))
+        top = N.ramp(N.sub(z, level), -0.0006, -0.0002)
+        edge = N.sub(radius, r)
+        vor, _ = N.voronoi(P, 900.0)
+        ring = N.mul(N.mul(top, N.ramp(edge, 0.0055, 0.0010)), N.ramp(vor, 0.10, 0.45, 0.55, 1.0))
+        pb = N.new('ShaderNodeBsdfPrincipled')
+        pb.inputs['Base Color'].default_value = (0.30, 0.165, 0.075, 1.0)
+        pb.inputs['Roughness'].default_value = 0.45
+        mix = N.new('ShaderNodeMixShader')
+        N.put(ring, mix.inputs['Fac'])
+        nt.links.new(surf, mix.inputs[1])
+        nt.links.new(pb.outputs['BSDF'], mix.inputs[2])
+        surf = mix.outputs['Shader']
+    nt.links.new(surf, out.inputs['Surface'])
+    va = N.new('ShaderNodeVolumeAbsorption')
+    va.inputs['Color'].default_value = (0.80, 0.50, 0.12, 1.0)
+    va.inputs['Density'].default_value = density
+    nt.links.new(va.outputs[0], out.inputs['Volume'])
+    return m, level, radius
 
 
-def zrno(m, name, loc, rot_z, flip=False):
-    """Prženo zrno: spljošten elipsoid sa zakrivljenim urezom na ravnoj strani."""
-    mesh = bpy.data.meshes.new(name)
-    bm = bmesh.new()
-    bmesh.ops.create_uvsphere(bm, u_segments=32, v_segments=16, radius=1.0)
-    for v in bm.verts:
+def mat_water(name='Voda'):
+    """Mlaz vode: čisto staklo IOR 1,333; vidljiv samo između s_start i s_end (glava i rep mlaza)."""
+    m, nt, b, N = C.new_material(name)
+    b.inputs['Transmission Weight'].default_value = 1.0
+    b.inputs['IOR'].default_value = 1.333
+    b.inputs['Roughness'].default_value = 0.0
+    b.inputs['Base Color'].default_value = (1.0, 1.0, 1.0, 1.0)
+    s = N.new('ShaderNodeAttribute', attribute_type='GEOMETRY', attribute_name='s').outputs['Fac']
+    s0 = value_node(N, 'MlazPocetak', 0.0)
+    s1 = value_node(N, 'MlazKraj', 0.0)
+    vis = N.mul(N.math('GREATER_THAN', s, s0), N.math('LESS_THAN', s, s1))
+    tr = N.new('ShaderNodeBsdfTransparent')
+    mix = N.new('ShaderNodeMixShader')
+    N.put(vis, mix.inputs['Fac'])
+    nt.links.new(tr.outputs[0], mix.inputs[1])
+    nt.links.new(b.outputs['BSDF'], mix.inputs[2])
+    nt.links.new(mix.outputs[0], nt.nodes['Material Output'].inputs['Surface'])
+    return m, s0, s1
+
+
+def mat_filter_src(obj):
+    """Proceduralni papir za pečenje: krep (fine talasaste bore), meki nabori, 3 pregiba od savijanja."""
+    m, nt, b, N = C.new_material('FilterIzvor')
+    tc = N.new('ShaderNodeTexCoord', object=obj)
+    P = tc.outputs['Object']
+    x, y, z = N.sep(P)
+    th = N.math('ARCTAN2', y, x)
+    crepe = N.noise(N.vmath('MULTIPLY', P, (140.0, 140.0, 1100.0)), 1.0, detail=3, rough=0.55, distortion=0.6)
+    soft = N.noise(P, 38.0, detail=3)
+    h = N.add(N.mul(crepe, 0.000035), N.mul(soft, 0.00030))
+    for a0 in (0.6, 2.7, 4.4):
+        da = N.math('ABSOLUTE', N.math('SINE', N.mul(N.sub(th, a0), 0.5)))   # ~ugaono rastojanje / 2
+        h = N.sub(h, N.mul(N.math('EXPONENT', N.mul(N.mul(da, da), -9000.0)), 0.00025))
+    fib = N.noise(P, 900.0, detail=2)
+    alb = N.mix(N.ramp(fib, 0.3, 0.7), (0.74, 0.72, 0.68), (0.82, 0.80, 0.76))
+    N.put(alb, b.inputs['Base Color'])
+    maps = {'albedo': alb, 'height': N.math('MULTIPLY_ADD', h, 1000.0, 1.0)}
+    return m, maps
+
+
+def mat_filter_baked(imgs):
+    """Papir iz ispečenih mapa + vlaženje odozdo (Value 'VlagaZ'): mokar papir je tamnosmeđ (kafa iza)."""
+    m, nt, b, N = C.new_material('Filter')
+    wet_z = value_node(N, 'VlagaZ', 0.0)
+    alb, _ = N.image(imgs['albedo'])
+    h, _ = N.image(imgs['height'])
+    tc = N.new('ShaderNodeTexCoord')
+    P = tc.outputs['Object']
+    _, _, z = N.sep(P)
+    zz = N.add(z, N.mul(N.sub(N.noise(P, 70.0, detail=3), 0.5), 0.006))
+    wet = N.ramp(zz, N.add(wet_z, 0.002), N.sub(wet_z, 0.002), 0.0, 1.0)
+    col = N.mix(wet, alb, (0.075, 0.038, 0.016))
+    N.put(col, b.inputs['Base Color'])
+    N.put(N.mixf(wet, 0.85, 0.42), b.inputs['Roughness'])
+    b.inputs['Specular IOR Level'].default_value = 0.35
+    bump = N.new('ShaderNodeBump')
+    bump.inputs['Distance'].default_value = 0.001
+    N.put(h, bump.inputs['Height'])
+    N.put(N.mixf(wet, 1.0, 0.5), bump.inputs['Strength'])
+    N.put(bump.outputs['Normal'], b.inputs['Normal'])
+    tl = N.new('ShaderNodeBsdfTranslucent')
+    N.put(col, tl.inputs['Color'])
+    N.put(bump.outputs['Normal'], tl.inputs['Normal'])
+    mix = N.new('ShaderNodeMixShader')
+    N.put(N.mixf(wet, 0.28, 0.05), mix.inputs['Fac'])
+    nt.links.new(b.outputs['BSDF'], mix.inputs[1])
+    nt.links.new(tl.outputs[0], mix.inputs[2])
+    nt.links.new(mix.outputs[0], nt.nodes['Material Output'].inputs['Surface'])
+    return m
+
+
+def mat_kettle_src(obj):
+    """Proceduralni kovani inox za pečenje: Voronoi udubljenja (uspravno izdužena, ~11 mm), sitni tragovi
+    čekića, mrlje i otisci (hrapavost)."""
+    m, nt, b, N = C.new_material('KuvaloIzvor')
+    tc = N.new('ShaderNodeTexCoord', object=obj)
+    P = tc.outputs['Object']
+    d1, c1 = N.voronoi(N.vmath('MULTIPLY', P, (1.0, 1.0, 0.62)), 92.0, randomness=0.85)
+    d2, _ = N.voronoi(P, 300.0, randomness=1.0)
+    dent = N.add(N.mul(N.mul(d1, d1), -0.00042), N.mul(N.mul(d2, d2), -0.00004))
+    cr, _, _ = N.split(c1)
+    sm = N.ramp(N.noise(P, 14.0, detail=4, distortion=0.5), 0.55, 0.78)
+    rough = N.add(N.add(N.math('MULTIPLY_ADD', cr, 0.06, 0.13), N.mul(sm, 0.12)),
+                  N.mul(N.noise(N.vmath('MULTIPLY', P, (30.0, 30.0, 1800.0)), 1.0, detail=2), 0.05))
+    maps = {'height': N.math('MULTIPLY_ADD', dent, 1000.0, 1.0), 'rough': rough}
+    return m, maps
+
+
+def mat_kettle_baked(imgs):
+    m, nt, b, N = C.new_material('Kuvalo')
+    b.inputs['Metallic'].default_value = 1.0
+    b.inputs['Base Color'].default_value = (0.58, 0.57, 0.555, 1.0)
+    h, _ = N.image(imgs['height'])
+    r, _ = N.image(imgs['rough'])
+    N.put(N.split(r)[0], b.inputs['Roughness'])
+    b.inputs['Anisotropic'].default_value = 0.35
+    tan = N.new('ShaderNodeTangent', direction_type='RADIAL', axis='Z')
+    N.put(tan.outputs['Tangent'], b.inputs['Tangent'])
+    bump = N.new('ShaderNodeBump')
+    bump.inputs['Distance'].default_value = 0.001
+    N.put(N.split(h)[0], bump.inputs['Height'])
+    N.put(bump.outputs['Normal'], b.inputs['Normal'])
+    return m
+
+
+def baked_material(obj, src_fn, baked_fn, name, size, rebake, *extra):
+    """Peče proceduralne mape objekta (po UV mapi) u cache/<name>_<otisak>_<kanal>.exr i vraća materijal iz
+    tekstura; promena koda materijala ili geometrije = novo pečenje."""
+    src, maps = src_fn(obj)
+    C.assign(obj, src)
+    key = C.source_key(src_fn, baked_fn, *extra, size, len(obj.data.vertices))
+    paths = {k: CACHE / f'{name}_{key}_{k}.exr' for k in maps}
+    if rebake or not all(p.exists() for p in paths.values()):
+        for old in CACHE.glob(f'{name}_*.exr'):
+            if key not in old.name:
+                old.unlink()
+        t0 = time.time()
+        C.bake_maps(obj, src, maps, paths, size[0], size[1], samples=4)
+        print(f'POUR pečenje {name}: {size[0]}x{size[1]}, {len(maps)} mape, {time.time() - t0:.0f} s', flush=True)
+    m = baked_fn(C.load_maps(paths))
+    C.assign(obj, m)
+    bpy.data.materials.remove(src)
+    return m
+
+
+def mat_bed():
+    """Površina u filteru: suva mlevena kafa -> bloom (tamni od sredine) -> tečna kafa sa penom.
+    Value čvorovi 'Bloom' (poluprečnik mokrog kruga, m) i 'Mokro' (0..1) se ključaju po kadru."""
+    m, nt, b, N = C.new_material('PovrsinaFiltera')
+    bloom_r = value_node(N, 'Bloom', 0.0)
+    wetness = value_node(N, 'Mokro', 0.0)
+    tc = N.new('ShaderNodeTexCoord')
+    P = tc.outputs['Object']
+    x, y, _ = N.sep(P)
+    r = N.vmath('LENGTH', N.xyz(x, y, 0.0))
+    grain = N.noise(P, 900.0, detail=2)
+    dry = N.mix(N.ramp(grain, 0.3, 0.7), (0.085, 0.048, 0.026), (0.150, 0.088, 0.050))
+    wet_m = N.mul(N.ramp(N.sub(r, bloom_r), 0.002, -0.002), 1.0)
+    swirl = N.noise(P, 160.0, detail=4, distortion=1.2)
+    foam = N.mix(N.ramp(swirl, 0.35, 0.70), (0.040, 0.020, 0.009), (0.19, 0.105, 0.048))
+    bub, _ = N.voronoi(P, 1400.0)
+    foam = N.mix(N.mul(N.ramp(bub, 0.28, 0.06), 0.5), foam, (0.26, 0.15, 0.07))
+    col = N.mix(N.math('MAXIMUM', wet_m, wetness), dry, foam)
+    N.put(col, b.inputs['Base Color'])
+    N.put(N.mixf(N.math('MAXIMUM', wet_m, wetness), 0.92, 0.22), b.inputs['Roughness'])
+    bump = N.new('ShaderNodeBump')
+    bump.inputs['Distance'].default_value = 1.0
+    N.put(N.add(N.mul(grain, 0.00008), N.mul(N.sub(0.3, bub), 0.00003)), bump.inputs['Height'])
+    N.put(bump.outputs['Normal'], b.inputs['Normal'])
+    return m
+
+
+# ---------------------------------------------------------------------------- modeli
+
+def bokal(glass, glass_drops):
+    prof = profil(SERVER_PROFIL, 4)
+    srv = C.lathe('Server', prof, segments=160)
+    for v in srv.data.vertices:            # kljun na -X: gornja ivica se izvlači napolje
         x, y, z = v.co
-        X, Y, Z = x * 0.0056, y * 0.0041, z * 0.0028
-        if z > 0:
-            Z *= 0.55
-            s = Y - 0.0009 * math.sin(x * 2.6)
-            Z -= 0.0011 * math.exp(-(s / 0.00065) ** 2) * (1 - x * x) * min(1.0, z * 3)
-        v.co = (X, Y, Z)
-    bm.to_mesh(mesh)
+        th = math.atan2(y, x)
+        d = math.pi - abs(th)
+        w = math.exp(-(d / 0.30) ** 2) * min(1.0, max(0.0, (z - 0.106) / 0.024)) ** 1.6
+        if w > 1e-4:
+            r = math.hypot(x, y) + 0.014 * w
+            v.co = (r * math.cos(th), r * math.sin(th), z)
+    weld(srv)
+    C.assign(srv, glass)
+    srv.data.materials.append(glass_drops)
+    solidify(srv, SERVER_DEBLJINA, -1.0, subsurf=1)
+    srv.modifiers['Solidify'].material_offset = 1
+    pts = catmull([(0.034, 0, 0.1166), (0.052, 0, 0.1193), (0.071, 0, 0.1144), (0.080, 0, 0.0968),
+                   (0.080, 0, 0.0704), (0.071, 0, 0.0506), (0.054, 0, 0.0407), (0.045, 0, 0.0396)], 8)
+    h = tube('ServerHandle', pts, [0.0045] * len(pts), segs=16, mat=glass)
+    return [srv, h]
+
+
+def tecnost_bokal(mat_name):
+    """Kafa u bokalu: šupljina bokala presečena kockom čija visina prati nivo (Boolean, egzaktno)."""
+    outer = [p for p in profil(SERVER_PROFIL, 4) if p[1] <= 0.106]
+    inner = offset_profil(outer, SERVER_DEBLJINA + 0.0003)
+    liq = weld(C.lathe('KafaBokal', inner + [(0.0, inner[-1][1])], segments=128))
+    cut = mesh_obj('NivoBokala', [(-.1, -.1, -.2), (.1, -.1, -.2), (.1, .1, -.2), (-.1, .1, -.2),
+                                  (-.1, -.1, 0), (.1, -.1, 0), (.1, .1, 0), (-.1, .1, 0)],
+                   [(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)])
+    cut.hide_render = True
+    cut.display_type = 'WIRE'
+    bo = liq.modifiers.new('Nivo', 'BOOLEAN')
+    bo.operation, bo.solver, bo.object = 'INTERSECT', 'EXACT', cut
+    no_deform_blur(liq)
+
+    def r_in(h):
+        for (r0, z0), (r1, z1) in zip(inner, inner[1:]):
+            if z0 <= h <= z1 and z1 > z0:
+                return r0 + (r1 - r0) * (h - z0) / (z1 - z0)
+        return inner[-1][0]
+    return liq, cut, r_in
+
+
+def dripper(glass):
+    z0, z1 = PLOCA_Z
+    objs = []
+    plate = [(KONUS_R0, z0), (0.050, z0), (0.0532, z0 + 0.0009), (0.0542, (z0 + z1) / 2),
+             (0.0532, z1 - 0.0009), (0.050, z1), (KONUS_R0 + 0.002, z1), (KONUS_R0, z0)]
+    p = weld(C.lathe('DripperPlate', plate, segments=160))
+    C.assign(p, glass)
+    objs.append(p)
+    foot = C.lathe('DripperFoot', [(0.0345, z0 - 0.0125), (0.0345, z0)], segments=96)
+    C.assign(foot, glass)
+    solidify(foot, 0.0018, 1.0)
+    objs.append(foot)
+    cone_pts = [(r_konus(z), z) for z in [z1 + i * (KONUS_Z1 - z1) / 10 for i in range(11)]]
+    cone_pts += [(0.0562, KONUS_Z1 + 0.0020), (0.0588, KONUS_Z1 + 0.0031), (RIM_R, KONUS_Z1 + 0.0025)]
+    cone = C.lathe('DripperCone', profil(cone_pts, 3), segments=160)
+    C.assign(cone, glass)
+    solidify(cone, 0.0025, 1.0, subsurf=1)
+    objs.append(cone)
+    for k in range(12):                    # spiralna rebra (svetle linije kao u videu)
+        th0 = 2 * math.pi * k / 12
+        pts, rad = [], []
+        for i in range(40):
+            u = i / 39
+            z = z1 + 0.0075 + u * 0.067
+            th = th0 + 0.85 * u
+            r = r_konus(z) + 0.0029 - 0.0002
+            pts.append(Vector((r * math.cos(th), r * math.sin(th), z)))
+            rad.append(0.0009 * min(1.0, 4 * u, 4 * (1 - u)) + 0.0002)
+        objs.append(tube(f'Rib{k:02d}', pts, rad, segs=8, mat=glass))
+    dz = KONUS_Z1 - 0.2035
+    hp = catmull([(0.048, 0, 0.199 + dz), (0.064, 0, 0.2015 + dz), (0.078, 0, 0.197 + dz), (0.0855, 0, 0.185 + dz),
+                  (0.086, 0, 0.170 + dz), (0.079, 0, 0.157 + dz), (0.064, 0, 0.150 + dz), (0.045, 0, 0.148 + dz),
+                  (0.024, 0, 0.150 + dz)], 8)
+    objs.append(tube('DripperHandle', hp, [0.0037] * len(hp), segs=14, mat=glass))
+    return objs
+
+
+def filter_papir(rebake):
+    """V60 filter: pravi konus 60° uz rebra (2,2 mm od stakla), iznad ivice nastavlja konus ~1,8 cm sa
+    blago talasastim, isečenim rubom; preklopljen šav sa strane."""
+    top = KONUS_Z1 + FILTER_IZNAD
+    zs = [FILTER_VRH + 0.0008] + [FILTER_VRH + 0.002 + i * (top - FILTER_VRH - 0.002) / 40 for i in range(41)]
+    prof = [(0.0004, FILTER_VRH)] + [(r_filter(z), z) for z in zs]
+    f = C.lathe('Filter', prof, segments=192, uv=arc_v(prof))
+    for v in f.data.vertices:
+        x, y, z = v.co
+        th = math.atan2(y, x)
+        s = min(1.0, max(0.0, (z - KONUS_Z1 + 0.002) / (top - KONUS_Z1 + 0.002)))
+        if s <= 0:
+            continue
+        wob = 0.5 * math.sin(3 * th + 0.7) + 0.3 * math.sin(5 * th + 2.1) + 0.2 * math.sin(9 * th + 0.3)
+        r = math.hypot(x, y) * (1 + 0.012 * wob * s * s)
+        v.co = (r * math.cos(th), r * math.sin(th), z + 0.0010 * wob * s ** 2)
+    weld(f)
+    solidify(f, 0.00025, 1.0)
+    m = baked_material(f, mat_filter_src, mat_filter_baked, 'filter', (4096, 1024), rebake, prof)
+    th_s = math.radians(-118)                 # šav spreda levo
+    seam_v, seam_f = [], []
+    for i in range(13):
+        z = FILTER_VRH + 0.006 + i * (top - 0.0010 - FILTER_VRH - 0.006) / 12
+        r = r_filter(z) + 0.0003
+        for dth in (0.0, 0.085):
+            seam_v.append(((r) * math.cos(th_s + dth), (r) * math.sin(th_s + dth), z))
+        if i:
+            k = 2 * i
+            seam_f.append((k - 2, k - 1, k + 1, k))
+    seam = mesh_obj('FilterSav', seam_v, seam_f)
+    C.smooth(seam)
+    C.assign(seam, m)
+    solidify(seam, 0.0003, 0.0)
+    bed = weld(C.lathe('PovrsinaFiltera', [(1.0, 0.0006), (0.6, 0.0), (0.2, -0.0005), (0.0, -0.0007)], segments=128))
+    return [f, seam], bed
+
+
+def kuvalo(steel_pol, black):
+    """Gooseneck kuvalo (uspravno, izliv ka -X). Telo ima kovane redove u geometriji + ispečene sitne
+    tragove čekića; izliv je šupalj (bez crnog diska). Vraća rig, telo, vrh i pravac izliva, sve delove."""
+    rig = C.link(bpy.data.objects.new('KuvaloRig', None))
+    body_prof = profil([
+        (0.000, 0.003), (0.050, 0.003), (0.061, 0.005), (0.0655, 0.010), (0.0665, 0.020),
+        (0.0625, 0.045), (0.0580, 0.072), (0.0530, 0.098), (0.0480, 0.118), (0.0430, 0.129),
+        (0.0375, 0.1345), (0.0340, 0.137)], 6)
+    body = C.lathe('KuvaloTelo', body_prof, segments=192, uv=arc_v(body_prof))
+
+    def dimple(th, z):
+        lo, hi, row_h, nn = 0.022, 0.126, 0.026, 16
+        if z <= lo or z >= hi:
+            return 0.0
+        u = (z - lo) / row_h
+        row = math.floor(u)
+        a = 0.5 + 0.5 * math.cos(nn * (th + (row % 2) * math.pi / nn))
+        return a ** 1.5 * math.sin(math.pi * (u - row)) * min(1.0, (z - lo) / 0.008, (hi - z) / 0.008)
+
+    for v in body.data.vertices:
+        x, y, z = v.co
+        th = math.atan2(y, x)
+        r = math.hypot(x, y) * (1 - 0.010 * dimple(th, z))
+        v.co = (r * math.cos(th), r * math.sin(th), z)
+    weld(body)
+    sub = body.modifiers.new('Subsurf', 'SUBSURF')
+    sub.levels = sub.render_levels = 1
+    lid = weld(C.lathe('KuvaloPoklopac', profil([(0.0335, 0.1368), (0.0328, 0.1400), (0.0285, 0.1445),
+                                                 (0.020, 0.1475), (0.010, 0.1490), (0.0, 0.1493)], 4), 128))
+    C.assign(lid, steel_pol)
+    solidify(lid, 0.0012, -1.0)
+    knob = weld(C.lathe('KuvaloDugme', profil([(0.0, 0.1480), (0.0095, 0.1480), (0.0105, 0.1500), (0.0108, 0.1560),
+                                               (0.0100, 0.1610), (0.0075, 0.1635), (0.0, 0.1645)], 3), 64))
+    C.assign(knob, black)
+    base_ring = weld(C.lathe('KuvaloDno', [(0.0, 0.0), (0.050, 0.0), (0.0605, 0.0012), (0.0635, 0.0048),
+                                            (0.0650, 0.0080), (0.0, 0.0080)], 128))
+    C.assign(base_ring, black)
+    sp = [(-0.040, 0, 0.018), (-0.068, 0, 0.030), (-0.088, 0, 0.050), (-0.104, 0, 0.075), (-0.117, 0, 0.098),
+          (-0.128, 0, 0.115), (-0.138, 0, 0.125), (-0.148, 0, 0.129), (-0.157, 0, 0.127), (-0.164, 0, 0.122)]
+    spts = catmull(sp, 10)
+    srad = [0.0033 + 0.0058 * (1 - i / (len(spts) - 1)) ** 2.2 for i in range(len(spts))]
+    spout = tube('KuvaloIzliv', spts, srad, segs=24, caps=False, mat=steel_pol)
+    solidify(spout, 0.0007, -1.0)               # šupalj vrh sa ivicom, voda izlazi iznutra
+    tip, tip_dir = spts[-1], (spts[-1] - spts[-3]).normalized()
+    hp = catmull([(0.036, 0, 0.132), (0.058, 0, 0.142), (0.084, 0, 0.140), (0.102, 0, 0.125), (0.107, 0, 0.095),
+                  (0.100, 0, 0.062), (0.082, 0, 0.038), (0.058, 0, 0.026)], 8)
+    handle = tube('KuvaloDrska', hp, [0.0058] * len(hp), segs=16, mat=black)
+    parts = [body, lid, knob, base_ring, spout, handle]
+    for o in parts:
+        o.parent = rig
+    return rig, body, tip, tip_dir, parts
+
+
+def mlaz_putanja(tip_w, d, z_end):
+    """Balistička putanja vode iz izliva, tačke na jednakim vremenskim koracima (s = vreme 0..1)."""
+    g = Vector((0, 0, -9.81))
+    v0 = d * MLAZ_BRZINA
+    a, b, c = 0.5 * g.z, v0.z, tip_w.z - z_end
+    t_end = (-b - math.sqrt(b * b - 4 * a * c)) / (2 * a)
+    pts, rad, s = [], [], []
+    n = 160
+    t0 = -0.006 / MLAZ_BRZINA
+    for i in range(n):
+        u = i / (n - 1)
+        t = t0 + (t_end - t0) * u
+        tt = max(t, 0.0)
+        pts.append(tip_w + v0 * t + 0.5 * g * tt * tt)
+        speed = (v0 + g * tt).length
+        rad.append(MLAZ_R0 * math.sqrt(MLAZ_BRZINA / speed))
+        s.append(u)
+    return pts, rad, s, t_end
+
+
+def postavi_kuvalo(rig, tip_local, dir_local):
+    """Kuvalo visi na pivotu u vrhu izliva; pivot je postavljen tako da mlaz pri nagibu za sipanje padne
+    tačno u x=0, y=0 (sredina filtera)."""
+    rot = Euler((0, -math.radians(KUVALO_NAGIB[1]), math.radians(KUVALO_ZAOKRET)), 'XYZ')
+    d = rot.to_matrix() @ dir_local
+    v0 = d * MLAZ_BRZINA
+    a, b, c = -0.5 * 9.81, v0.z, VRH_Z - SLETANJE_Z
+    t_land = (-b - math.sqrt(b * b - 4 * a * c)) / (2 * a)
+    tip_w = Vector((-v0.x * t_land, -v0.y * t_land, VRH_Z))
+    pivot = C.link(bpy.data.objects.new('KuvaloPivot', None))
+    pivot.location = tip_w
+    pivot.rotation_euler = rot
+    rig.parent = pivot
+    rig.location = -tip_local
+    return pivot, tip_w, d
+
+
+def kapi_i_mlaz_kafe(mat):
+    """Kapanje iz V60: kapi (G130-G138), tanak mlaz (G138-G182), retke kapi posle. Sve po kadru G."""
+    z_top = FILTER_VRH - 0.0006
+    objs = []
+    # tanak mlaz: jedinična cev od 0 do -1, skala po z = dužina; vrh i dno se animiraju
+    pts = [Vector((0, 0, -i / 120)) for i in range(121)]
+    rad = [1.0 - 0.25 * (i / 120) ** 0.7 for i in range(121)]
+    st = tube('KafaMlaz', pts, rad, segs=12, mat=mat)
+    flow = C.link(bpy.data.objects.new('KafaMlazTok', None))
+    displace(st, 'KafaTalasici', 0.004, 0.30, flow)      # u jedinicama poluprečnika (cev je skalirana)
+    no_deform_blur(st)
+    objs.append(st)
+    g_on, g_off = 136, 182
+    dt = GR.SLOW / GR.FPS
+    for g in range(GR.G_POUR[0], GR.G_POUR[1] + 1):
+        lvl = carafe_level(g) + 0.0005
+        full = z_top - lvl
+        head = full * min(1.0, max(0.0, (0.5 * 9.81 * ((g - g_on) * dt) ** 2) / full)) if g >= g_on else 0.0
+        tail = min(full, 0.5 * 9.81 * ((g - g_off) * dt) ** 2) if g >= g_off else 0.0
+        r = 0.0013 * GR.smoothstep(136, 150, g) * (1 - 0.35 * GR.smoothstep(168, 182, g)) + 0.0006
+        visible = head - tail > 0.0008
+        st.location = (0.0, 0.0, z_top - tail)
+        st.scale = (r, r, max(head - tail, 0.0005))
+        st.hide_render = not visible
+        st.keyframe_insert('location', frame=sf(g))
+        st.keyframe_insert('scale', frame=sf(g))
+        st.keyframe_insert('hide_render', frame=sf(g))
+        flow.location = (0, 0, 0.25 * g * dt)
+        flow.keyframe_insert('location', frame=sf(g))
+    # kapi: pre mlaza i posle njega
+    drops = [130, 133, 135.5] + [184.5, 188, 191]
+    bm = bmesh.new()
+    bmesh.ops.create_uvsphere(bm, u_segments=16, v_segments=10, radius=1.0)
+    for v in bm.verts:
+        v.co = (v.co.x * 0.0017, v.co.y * 0.0017, v.co.z * (0.0022 if v.co.z > 0 else 0.0017))
+    me = bpy.data.meshes.new('Kap')
+    bm.to_mesh(me)
     bm.free()
-    o = link_obj(bpy.data.objects.new(name, mesh))
-    C.smooth(o, subdiv=1)
-    C.assign(o, m['bean'])
-    o.location = (loc[0], loc[1], 0.0016 if flip else 0.0027)
-    o.rotation_euler = (math.pi if flip else 0.0, 0.0, math.radians(rot_z))
-    return o
+    for p in me.polygons:
+        p.use_smooth = True
+    me.materials.append(mat)
+    for k, g0 in enumerate(drops):
+        ob = C.link(bpy.data.objects.new(f'Kap{k}', me))
+        for g in range(GR.G_POUR[0], GR.G_POUR[1] + 1):
+            t = (g - g0) * dt
+            z = z_top - 0.0015 - 0.5 * 9.81 * max(t, 0.0) ** 2
+            hit = z < carafe_level(g) + 0.001
+            ob.location = (0.0, 0.0, max(z, carafe_level(g)))
+            ob.hide_render = t < 0 or hit
+            ob.keyframe_insert('location', frame=sf(g))
+            ob.keyframe_insert('hide_render', frame=sf(g))
+        objs.append(ob)
+    return objs
+
+
+def zrna_na_pultu(render_meshes):
+    """4 zrna na pultu desno od bokala (statična, kontaktna senka na shadow catcher-u)."""
+    objs = []
+    spots = [((0.074, -0.034), 35, False, 3), ((0.091, -0.018), -70, True, 7), ((0.112, -0.040), 12, False, 1),
+             ((0.128, -0.022), 98, True, 10)]
+    for i, ((x, y), rz, flip, shape) in enumerate(spots):
+        ob = C.link(bpy.data.objects.new(f'ZrnoPult{i}', render_meshes[shape]))
+        sh = GR.bean_shape(shape)
+        ob.location = (x, y, sh['tb'] * 0.85 if not flip else sh['tt'] * 0.92)
+        ob.rotation_euler = (math.pi if flip else 0.0, 0.0, math.radians(rz))
+        objs.append(ob)
+    return objs
 
 
 # ---------------------------------------------------------------------------- scena
 
-def svet(scene):
-    """Okolina: dole tamno, horizont u terakoti sajta, gore krem (za odsjaje na inoxu i staklu)."""
-    w = C.world(scene, strength=0.55)
-    nt = N(w.node_tree)
-    bg = w.node_tree.nodes['Background']
-    tc = nt.new('ShaderNodeTexCoord')
-    sep = nt.new('ShaderNodeSeparateXYZ')
-    nt.link(tc.outputs['Generated'], sep.inputs[0])
-    ramp = nt.new('ShaderNodeValToRGB')
-    nt.link(nt.maprange(sep.outputs['Z'], -1.0, 1.0, 0.0, 1.0, smooth=False), ramp.inputs['Fac'])
-    els = ramp.color_ramp.elements
-    els[0].position, els[0].color = 0.30, (0.10, 0.06, 0.04, 1)
-    els[1].position, els[1].color = 0.62, (0.92, 0.88, 0.80, 1)
-    e = els.new(0.50)
-    e.color = (0.30, 0.11, 0.05, 1)
-    # trake po azimutu: naizmenično svetlo i tamno, da brušeni inox dobije kontrast kao u videu
-    az = nt.math('ARCTAN2', sep.outputs['Y'], sep.outputs['X'])
-    bands = nt.maprange(nt.math('SINE', nt.math('MULTIPLY', az, 3.0)), -0.3, 0.9, 0.25, 1.35)
-    up = nt.maprange(sep.outputs['Z'], -0.05, 0.25)            # trake samo iznad horizonta
-    gain = nt.math('ADD', nt.math('MULTIPLY', nt.math('SUBTRACT', bands, 1.0), up), 1.0)
-    col = nt.new('ShaderNodeMix')
-    col.data_type = 'RGBA'
-    col.blend_type = 'MULTIPLY'
-    sock(col.inputs, 'Factor_Float').default_value = 1.0
-    nt.link(ramp.outputs['Color'], sock(col.inputs, 'A_Color'))
-    gray = nt.new('ShaderNodeCombineColor')
-    for ch in ('Red', 'Green', 'Blue'):
-        nt.link(gain, gray.inputs[ch])
-    nt.link(gray.outputs[0], sock(col.inputs, 'B_Color'))
-    nt.link(sock(col.outputs, 'Result_Color'), bg.inputs['Color'])
-
-
 def parse():
     p = argparse.ArgumentParser(prog='pour.py')
-    p.add_argument('--out', required=True, help='folder za kadar_0001.png ...')
-    p.add_argument('--kadrovi', type=int, default=120)
-    p.add_argument('--render', default='proba', help="'proba' (prvi, srednji, poslednji), 'sve' ili '1,60,120'")
-    p.add_argument('--res', type=int, default=800)
-    p.add_argument('--uzorci', type=int, default=32)
-    p.add_argument('--poster', type=int, default=0, help='kadar koji se snima i kao poster.png (0 = ne)')
-    p.add_argument('--para', choices=['ravni'], default='ravni')
-    p.add_argument('--kamera', choices=['nagib', 'rigk'], default='nagib',
-                   help="'nagib' = 10° odozgo (dogovor iz zadatka); 'rigk' = horizontalna kamera sa shift-om iz storyboard.md")
-    p.add_argument('--kamera-daljina', type=float, default=1.15)
+    p.add_argument('--out', required=True, help='folder za kadar_LLLL.png (L = G - 64) i anchors.json')
+    p.add_argument('--kadrovi', default='sve', help="'sve' ili lista globalnih G, npr. 84,150,192")
+    p.add_argument('--res', type=int, default=1200)
+    p.add_argument('--uzorci', type=int, default=64)
+    p.add_argument('--adaptive', type=float, default=0.02)
+    p.add_argument('--fstop', type=float, default=GR.FSTOP)
+    p.add_argument('--key', type=float, default=70.0)
+    p.add_argument('--strip', type=float, default=10.0)
+    p.add_argument('--mleveno', type=int, default=170, help='čestica mlevene kafe po kadru (isto kao GRIND)')
+    p.add_argument('--poster', action='store_true', help='poster.png = G150')
+    p.add_argument('--bez-zamucenja', dest='bez_zamucenja', action='store_true')
+    p.add_argument('--ponovo-peci', dest='ponovo_peci', action='store_true', help='ponovo ispeci mape')
+    p.add_argument('--bez-rendera', dest='bez_rendera', action='store_true')
     return p.parse_args(C.args())
+
+
+def build(a):
+    sc = C.reset()
+    bpy.context.preferences.edit.keyframe_new_interpolation_type = 'LINEAR'
+    GR.render_setup(sc, a.res, a.res, a.uzorci, a.adaptive, motion_blur=not a.bez_zamucenja)
+    sc.frame_start, sc.frame_end = sf(GR.G_POUR[0]), sf(GR.G_POUR[1])
+    C.world_hdri(sc, 0.15)
+    cam = GR.rig_camera(sc, 'pour', a.res, a.fstop)
+    GR.transmission_card(sc, GR.BG_POUR, GR.LIGHT_TARGET - Vector((0, 0, GR.S)))
+
+    glass = GR.mat_glass('Staklo', tint=(0.97, 0.98, 0.975), shadow=0.85, smudge=0.04)
+    steel_pol = GR.mat_steel('KuvaloIzlivInox', rough=0.14, aniso=0.4, prints=False, smudge=0.8)
+    black = GR.mat_plastic('KuvaloCrno', color=(0.014, 0.013, 0.012), rough=0.45)
+
+    subjects = []
+    liq, cut, r_in = tecnost_bokal('KafaBokal')
+    coffee_mat, lvl_v, rad_v = mat_coffee_liquid('KafaBokal', foam=True)
+    C.assign(liq, coffee_mat)
+    C.assign(cut, coffee_mat)
+    subjects.append(liq)
+    subjects += bokal(glass, mat_glass_drops(carafe_level))
+    subjects += dripper(glass)
+    filt_objs, bed = filter_papir(a.ponovo_peci)
+    fmat = filt_objs[0].data.materials[0]
+    wet_v = next(n for n in fmat.node_tree.nodes if n.label == 'VlagaZ').outputs[0]
+    subjects += filt_objs
+    bed_mat = mat_bed()
+    bloom_v = next(n for n in bed_mat.node_tree.nodes if n.label == 'Bloom').outputs[0]
+    wetness_v = next(n for n in bed_mat.node_tree.nodes if n.label == 'Mokro').outputs[0]
+    C.assign(bed, bed_mat)
+    subjects.append(bed)
+
+    rig, body, tip_l, dir_l, kparts = kuvalo(steel_pol, black)
+    baked_material(body, mat_kettle_src, mat_kettle_baked, 'kuvalo', (2048, 1024), a.ponovo_peci, kuvalo)
+    pivot, tip_w, d = postavi_kuvalo(rig, tip_l, dir_l)
+    subjects += kparts
+    pts, rad, s_attr, t_fall = mlaz_putanja(tip_w, d, SLETANJE_Z - 0.004)
+    water_mat, s0, s1 = mat_water()
+    stream = tube('MlazVode', pts, rad, segs=14, caps=True, mat=water_mat, attr=s_attr)
+    flow = C.link(bpy.data.objects.new('MlazVodeTok', None))
+    sway = C.link(bpy.data.objects.new('MlazVodeNjihanje', None))
+    displace(stream, 'VodaTalasici', 0.0045, 0.00045, flow)
+    displace(stream, 'VodaNjihanje', 0.035, 0.0009, sway, 'X')
+    subjects.append(stream)
+
+    drip_mat, _, _ = mat_coffee_liquid('KafaKapi', foam=False, density=900.0)
+    subjects += kapi_i_mlaz_kafe(drip_mat)
+    render_meshes, proxy_meshes, _ = GR.bean_meshes()
+    for pm in proxy_meshes:
+        bpy.data.meshes.remove(pm)
+    subjects += zrna_na_pultu(render_meshes)
+
+    # senka samo oko bokala i zrna (mali disk, ne velika ravan)
+    bpy.ops.mesh.primitive_circle_add(vertices=96, radius=0.17, fill_type='NGON', location=(0.035, 0.01, 0.0))
+    catcher = bpy.context.active_object
+    catcher.name = 'Senka'
+    catcher.is_shadow_catcher = True
+    catcher.visible_transmission = False
+    catcher.visible_glossy = False
+
+    em, crumbs = GR.build_grounds(sc, a.mleveno, end_g=GR.G_POUR[1])
+    GR.lights(sc, 'pour', subjects, crumbs, key=a.key, strip=a.strip)
+
+    # ---------------- animacija po kadru G
+    dt = GR.SLOW / GR.FPS
+    rest = pivot.rotation_euler.copy()
+    for g in range(GR.G_POUR[0], GR.G_POUR[1] + 1):
+        f = sf(g)
+        tilt = kettle_tilt(g) + 0.6 * math.sin(2 * math.pi * (g - 116) / 40.0) * GR.smoothstep(116, 124, g) \
+            * (1 - GR.smoothstep(160, 166, g))
+        pivot.rotation_euler = (rest.x, -math.radians(tilt), rest.z)
+        pivot.keyframe_insert('rotation_euler', frame=f)
+        # mlaz vode: glava izlazi G106 i stiže do filtera za t_fall; rep kreće G166
+        fall_frames = t_fall / dt
+        s1.default_value = min(1.0, max(0.0, (g - 106) / fall_frames)) if g >= 106 else 0.0
+        s0.default_value = min(1.0, max(0.0, (g - 166) / fall_frames)) if g >= 166 else 0.0
+        s1.keyframe_insert('default_value', frame=f)
+        s0.keyframe_insert('default_value', frame=f)
+        stream.hide_render = not (106 <= g <= 166 + fall_frames + 1)
+        stream.keyframe_insert('hide_render', frame=f)
+        flow.location = (0, 0, 0.30 * g * dt)
+        sway.location = (0, 0, 0.05 * g * dt)
+        flow.keyframe_insert('location', frame=f)
+        sway.keyframe_insert('location', frame=f)
+        # površina u filteru, bloom i vlaga papira
+        zf = filter_level(g)
+        bed.location = (0, 0, zf)
+        rr = r_filter(zf) - 0.0005
+        bed.scale = (rr, rr, 1.0)
+        bed.keyframe_insert('location', frame=f)
+        bed.keyframe_insert('scale', frame=f)
+        bloom_v.default_value = 0.06 * GR.smoothstep(116, 132, g)
+        wetness_v.default_value = GR.smoothstep(126, 140, g)
+        bloom_v.keyframe_insert('default_value', frame=f)
+        wetness_v.keyframe_insert('default_value', frame=f)
+        wz = max(filter_level(x) for x in range(65, g + 1)) + 0.004 if g >= 116 else FILTER_VRH - 0.01
+        wet_v.default_value = wz
+        wet_v.keyframe_insert('default_value', frame=f)
+        # bokal
+        lv = carafe_level(g)
+        cut.location = (0, 0, lv if lv > 0.0005 else -0.5)
+        cut.keyframe_insert('location', frame=f)
+        lvl_v.default_value = lv
+        lvl_v.keyframe_insert('default_value', frame=f)
+        rad_v.default_value = r_in(max(lv, 0.001))
+        rad_v.keyframe_insert('default_value', frame=f)
+    GR.bake_particles(sc)
+    return sc, cam, r_in, tip_w
 
 
 def main():
     a = parse()
-    scene = C.reset()
-    scene.frame_start, scene.frame_end = 1, a.kadrovi
-    C.render_settings(scene, width=a.res, height=a.res, samples=a.uzorci, transparent=True, fps=30)
-    scene.cycles.caustics_reflective = False
-    scene.cycles.caustics_refractive = False
-    scene.cycles.blur_glossy = 1.0
-    scene.cycles.sample_clamp_indirect = 6.0
-    scene.render.use_persistent_data = True   # brže za celu sekvencu (BVH statičnih predmeta ostaje)
-    scene.view_settings.exposure = -1.0   # sa studio_lights() tamni predmeti (zrna, kafa) izlaze presvetli
-    svet(scene)
-    C.studio_lights()
-    # 1,6 m: daleka ivica ploče pada ispod pare (sa 6 m se kroz paru videla vodoravna linija)
-    catcher = C.shadow_catcher(size=1.6)
-    # kroz staklo i kafu catcher bi se video kao siva ploča: zraci prelamanja i odsjaja ga preskaču
-    catcher.visible_transmission = False
-    catcher.visible_glossy = False
-
-    m = materijali()
-    bokal(m)
-    level = tecnost_bokal(m, a.kadrovi)
-    dripper(m)
-    bed = filter_papir(m)
-    rig, tip_l, dir_l = kuvalo(m)
-    pivot, tip_w, d = postavi_kuvalo(rig, tip_l, dir_l)
-    mlaz_vode(m, tip_w, d, a.kadrovi)
-    mlaz_kafe(m, level, a.kadrovi)
-    para_ravni(m, a.kadrovi)
-    zrno(m, 'Bean1', (0.084, -0.030), 35)
-    zrno(m, 'Bean2', (0.101, -0.012), -70, flip=True)
-
-    # talasići u filteru putuju od centra
-    wave = bed.data.materials[0].node_tree.nodes[m['bed']['wave']].inputs['Phase Offset']
-    animate(a.kadrovi, lambda t, s: setattr(wave, 'default_value', -30.0 * s), wave, 'default_value')
-    # kuvalo se jedva primetno njiše oko vrha izliva (mlaz ostaje na mestu)
-    base = pivot.rotation_euler.copy()
-    animate(a.kadrovi, lambda t, s: setattr(pivot, 'rotation_euler',
-                                            (base.x, base.y + math.radians(0.8) * math.sin(2 * math.pi * t), base.z)),
-            pivot, 'rotation_euler', 1)
-
-    if a.kamera == 'rigk':
-        # storyboard.md, rig K: kadar 45 x 45 cm na ravni y=0 (z od -0,0225 do 0,4275), oko na z=0,4725,
-        # kamera horizontalna, pa vertikale ostaju paralelne i šav sa GRIND (0,45 m više) se poklapa
-        cam = C.camera((0, -1.0625, 0.4725), (0, 0, 0.4725), lens=85)
-        cam.data.shift_y = (0.2025 - 0.4725) / 0.45
-    else:
-        el = math.radians(10)
-        target = Vector((0, 0, 0.215))
-        cam = C.camera(target + a.kamera_daljina * Vector((0, -math.cos(el), math.sin(el))), target, lens=85)
-    print(f'[pour] vrh izliva {tuple(round(c, 4) for c in tip_w)}, kamera {tuple(round(c, 4) for c in cam.location)}')
-
-    if a.render == 'proba':
-        frames = sorted({1, (a.kadrovi + 1) // 2, a.kadrovi})
-    elif a.render == 'sve':
-        frames = list(range(1, a.kadrovi + 1))
-    else:
-        frames = [int(x) for x in a.render.split(',') if x.strip()]
-    out = str(pathlib.Path(a.out).resolve())
-    for f in frames:
-        t0 = time.time()
-        C.render_frames(scene, out, [f])
-        print(f'[pour] kadar {f}: {time.time() - t0:.1f} s')
-    if a.poster:
-        scene.frame_set(a.poster)
-        scene.render.filepath = f'{out}/poster.png'
-        t0 = time.time()
+    t0 = time.time()
+    sc, cam, r_in, tip_w = build(a)
+    out = pathlib.Path(a.out)
+    out.mkdir(parents=True, exist_ok=True)
+    sc.frame_set(sf(150))
+    rim_z = KONUS_Z1 + 0.0025
+    cx, cy = GR.project(sc, cam, (0, 0, rim_z), 'pour')
+    rx = GR.project(sc, cam, (RIM_R, 0, rim_z), 'pour')[0] - cx
+    ry = GR.project(sc, cam, (0, -RIM_R, rim_z), 'pour')[1] - cy
+    kafa = []
+    for g in range(177, 193):
+        lv = carafe_level(g)
+        kafa.append(round(GR.project(sc, cam, (0, -r_in(lv), lv), 'pour')[1], 4))
+    GR.write_anchors(out, {'id': 'pour', 'units': 'S od gornjeg levog ugla punog kadra (W 1, H 1)',
+                           'full': {'W': 1, 'H': 1}, 'osa_x': round(GR.project(sc, cam, (0, 0, 0.2), 'pour')[0], 4),
+                           'ivica_v60': {'x': round(cx, 4), 'y': round(cy, 4), 'rx': round(rx, 4), 'ry': round(ry, 4)},
+                           'pult_y': round(GR.project(sc, cam, (0, 0, 0), 'pour')[1], 4),
+                           'kafa_y': {'from': 177, 'values': kafa}, 'g_od': GR.G_POUR[0], 'g_do': GR.G_POUR[1],
+                           'fajl': 'kadar_LLLL.png, L = G - 64', 'generator': 'scripts/blender/kafa/pour.py'})
+    kb = [o for o in bpy.data.objects if o.name.startswith('Kuvalo') and o.type == 'MESH']
+    print(f'POUR scena {time.time() - t0:.0f} s; vrh izliva {tuple(round(c, 4) for c in tip_w)}; '
+          f'V60 ({cx:.3f}, {cy:.3f}) rx {rx:.3f} ry {ry:.3f}', flush=True)
+    if a.bez_rendera:
+        for g in (100, 150):
+            sc.frame_set(sf(g))
+            xs, ys = [], []
+            for o in kb:
+                for c in o.bound_box:
+                    x, y = GR.project(sc, cam, o.matrix_world @ Vector(c), 'pour')
+                    xs.append(x)
+                    ys.append(y)
+            print(f'POUR kuvalo G{g}: x {min(xs):.3f}..{max(xs):.3f}, y {min(ys):.3f}..{max(ys):.3f} S', flush=True)
+        return
+    for g in GR.frame_list(a.kadrovi, GR.G_POUR):
+        t1 = time.time()
+        sc.frame_set(sf(g))
+        sc.render.filepath = str(out / f'kadar_{g - GR.G_POUR[0] + 1:04d}.png')
         bpy.ops.render.render(write_still=True)
-        print(f'[pour] poster (kadar {a.poster}): {time.time() - t0:.1f} s')
+        print(f'POUR kadar G{g} (kadar_{g - GR.G_POUR[0] + 1:04d}): {time.time() - t1:.1f} s', flush=True)
+    if a.poster:
+        p150 = out / f'kadar_{150 - GR.G_POUR[0] + 1:04d}.png'
+        if not p150.exists():
+            sc.frame_set(sf(150))
+            sc.render.filepath = str(p150)
+            bpy.ops.render.render(write_still=True)
+        (out / 'poster.png').write_bytes(p150.read_bytes())
 
 
-main()
+if __name__ == '__main__':
+    main()

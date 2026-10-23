@@ -130,10 +130,11 @@ function LiveView({ phone }: { phone: boolean }) {
       s.p = p
       s.startY = startY
       if (coffee.current) coffee.current.style.transform = `translate3d(0, ${(startY - jugTop()).toFixed(1)}px, 0)`
-      if (pourSteam.current) pourSteam.current.style.opacity = (1 - smooth(0.45, 0.85, p)).toFixed(3)
+      // para u POUR-u se ugasi na početku talasa: video ispod maske talasa je skup (vidi izveštaj Z6)
+      if (pourSteam.current) pourSteam.current.style.opacity = (1 - smooth(0, 0.2, p)).toFixed(3)
       // kao u priči: para u SIP-u počinje od S20, a to je posle talasa (S1–S16), pa ovde tek na p = 1
       if (sipSteam.current) sipSteam.current.style.opacity = p >= 1 ? '1' : '0'
-      const next = { pour: p < 0.95, sip: p >= 1 }
+      const next = { pour: p < 0.2, sip: p >= 1 }
       if (next.pour !== last.pour || next.sip !== last.sip) {
         last = next
         setSteamOn(next)

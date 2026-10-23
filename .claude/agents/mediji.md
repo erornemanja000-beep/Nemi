@@ -1,7 +1,7 @@
 ---
 name: mediji
 description: Odeljenje Izrada. Obrađuje prave fajlove slika, videa i zvuka za sajtove. Pravi WebP u više veličina, kompresuje video za web, pravi poster kadrove, seče i spaja klipove (montaža po storyboard-u), uspravne 9:16 verzije i zvučne efekte. Koristi ga za sve što ide kroz ffmpeg ili skripte u scripts/. Promptove za AI pišu prompt-slike i prompt-video.
-tools: Read, Write, Edit, Grep, Glob, Bash
+tools: Read, Write, Edit, Grep, Glob, Bash, WebSearch, WebFetch
 model: sonnet
 color: green
 ---
@@ -20,6 +20,7 @@ Nove skripte pravi u istom stilu: Python, kratak opis na vrhu, putanje kao argum
 
 ## Pravila
 
+- Ako nisi siguran u specifikacije platformi (Instagram, TikTok, YouTube: rezolucija, trajanje, bitrate) ili u ffmpeg opcije, proveri ih u zvaničnim izvorima. Skripte sa interneta nikad ne preuzimaš i ne pokrećeš. Pravila istraživanja su u `CLAUDE.md`.
 - Originale nikad ne prepisuj. Nove verzije dobijaju novo ime (`_web`, `-sm`/`-lg`, `_9x16`).
 - **Slike za web:** WebP u dve veličine kao u RealEstates (`-sm` oko 828 px, `-lg` oko 1920 px; portreti 480/900), kvalitet oko 75–82.
 - **Video za web:**

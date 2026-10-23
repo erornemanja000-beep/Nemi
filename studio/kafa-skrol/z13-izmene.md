@@ -23,6 +23,12 @@ Ove izmene su predložili agenti talasa 1–2. Radi ih **jedan** programer u Z13
 
 | `KafaSkrol/src/main.tsx` | `import './index.css'` ide **iznad** `import App`. Inače se CSS komponenti učita pre Tailwind-a, a preflight (`base`) pregazi `@layer components`. Kad se popravi, proveriti `wave.css`, `chrome.css`, `shop.css` i `sections.css`; `chapters.css` sada ima `@layer properties, theme, base, components, utilities;` kao zaštitu | Z7 |
 
+| `KafaSkrol/src/lib/motion.ts` | `lockScroll` broji otvorene panele, umesto da/ne, da korpa preko modala ne otključa skrol | Z8 |
+| `KafaSkrol/src/index.css` | `html { scrollbar-gutter: stable; }`, da se raspored ne pomera kad se skrol zaključa | Z8 |
+| `KafaSkrol/src/components/Overlay.tsx` (nov) | `Overlay` premestiti iz `CartDrawer.tsx` u svoj fajl; uvoze ga `CartDrawer`, `MobileMenu`, `SearchPanel`, `ProductModal` | Z8 |
+
+**Sidra sa Lenis-om stanu prekratko** (Z8): sekcije iznad cilja narastu tokom skrola, `#find-your-cup` oko 310 px, a `#sip` oko 94 px na 390. Z9 i Z10 su dobili zadatak da rezervišu visine. Z12 radi isto za priču. Z13 proverava sve linkove iz menija na 1440 i 390.
+
 **Za Z12 (iz Z7):**
 - Slojevi imaju klase `ch-layer` i `ch-stage`. Redosled u sloju je `SceneBackdrop`, `ChapterText`, scena (`BackWord`, platno, `Sparkle`), pa `SipCards` kao direktno dete sloja i `ChapterNav`.
 - `--table-y` se stavlja na sloj.

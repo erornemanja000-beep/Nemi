@@ -60,11 +60,12 @@ const hasPlaceholders = Object.values(media.seq).some((s) => !('placeholder' in 
 
 const linkClass = 'inline-flex min-h-tap items-center gap-1 underline underline-offset-[3px] hover:text-accent-text'
 
+/** Spoljni link; ikonica ide u red teksta (i kad se dug naslov prelomi), visina reda ≥ 44 px. */
 function External({ href, children }: { href: string; children: ReactNode }) {
   return (
-    <a href={href} rel="noopener noreferrer" className={linkClass}>
+    <a href={href} rel="noopener noreferrer" className="inline-block py-[11px] underline underline-offset-[3px] hover:text-accent-text">
       {children}
-      <Icon name="external" className="size-3.5 flex-none" />
+      <Icon name="external" className="ml-1 inline size-3.5 align-[-1px]" />
     </a>
   )
 }

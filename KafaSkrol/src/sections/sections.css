@@ -8,15 +8,21 @@
 
 @layer components {
   /* ---------- Kontakt: apstraktna „mapa" (aria-hidden, bez pravih ulica i podataka) ---------- */
+  /* okvir sa zaobljenjem (SVG sam ne seče sadržaj po border-radius) */
   .ct-map {
-    display: block;
-    width: 100%;
-    height: auto;
+    overflow: hidden;
+    border: 1px solid var(--color-line);
     border-radius: var(--radius-card);
     background: var(--color-bg);
   }
+  .ct-map svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  /* blokovi su u boji podloge, sa tankom ivicom; ulice su svetlije (površina) */
   .ct-map__block {
-    fill: var(--color-surface);
+    fill: var(--color-bg);
     stroke: var(--color-line);
     stroke-width: 1;
   }

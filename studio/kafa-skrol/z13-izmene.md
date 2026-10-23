@@ -27,6 +27,12 @@ Ove izmene su predložili agenti talasa 1–2. Radi ih **jedan** programer u Z13
 | `KafaSkrol/src/index.css` | `html { scrollbar-gutter: stable; }`, da se raspored ne pomera kad se skrol zaključa | Z8 |
 | `KafaSkrol/src/components/Overlay.tsx` (nov) | `Overlay` premestiti iz `CartDrawer.tsx` u svoj fajl; uvoze ga `CartDrawer`, `MobileMenu`, `SearchPanel`, `ProductModal` | Z8 |
 
+| `KafaSkrol/src/App.tsx` / `pages/Home.tsx` | ako se `Footer` premesti u `App.tsx`, izbaciti ga iz `Legal.tsx` i `Credits.tsx` (Z10 ga je tamo dodao) | Z10 |
+| `KafaSkrol/src/content/legal.ts` + `types.ts` | polje `bodyReplacesText` umesto odluke po slug-u `cookies` | Z10 |
+| `KafaSkrol/src/i18n/LangContext.tsx` | posle promene jezika ne upisivati naslov početne na drugim rutama (`PageMeta` to sada zaobilazi u sledećem kadru) | Z10 |
+
+**Lenis 1.3.27, `anchors: true`:** ne radi `preventDefault`, pa pri kliku na `#sidro` skroluju i pregledač i Lenis. Z13 proverava da li `anchors` treba isključiti i sidra voditi preko `scrollToTarget` (Z10 je to rešio za dugme Brew guide-a).
+
 **Sidra sa Lenis-om stanu prekratko** (Z8): sekcije iznad cilja narastu tokom skrola, `#find-your-cup` oko 310 px, a `#sip` oko 94 px na 390. Z9 i Z10 su dobili zadatak da rezervišu visine. Z12 radi isto za priču. Z13 proverava sve linkove iz menija na 1440 i 390.
 
 **Za Z12 (iz Z7):**

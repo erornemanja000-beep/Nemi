@@ -72,7 +72,7 @@ export function BrewGuide() {
           <span className="max-md:hidden">{tx(guide.title)}</span>
         </h2>
         <p className="mt-s3 mb-0 font-bold">{tx(guide.subtitle)}</p>
-        <p className="mt-s2 mb-0 text-small">
+        <p className="mt-s2 mb-0 md:text-small">
           <strong>{tx(guide.need.label)}:</strong> {tx(guide.need.text)}
         </p>
 
@@ -91,10 +91,10 @@ export function BrewGuide() {
         </ol>
 
         <div className="mt-s6 flex flex-wrap items-center gap-x-s6 gap-y-s4">
-          <p className="m-0 text-small">
+          <p className="m-0 md:text-small">
             <strong>{tx(guide.tip.label)}:</strong> {tx(guide.tip.text)}
           </p>
-          <p className="m-0 text-small">{tx(guide.recommendation)}</p>
+          <p className="m-0 md:text-small">{tx(guide.recommendation)}</p>
           <Button href={guide.cta.href} onClick={shopFilter}>
             {tx(guide.cta.label)}
           </Button>

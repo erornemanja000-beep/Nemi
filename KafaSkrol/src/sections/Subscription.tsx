@@ -1,16 +1,16 @@
 // Pretplata i Probierset (skica: sekcija 8, „jedan red"; telefon: dve kartice jedna ispod druge).
-// #subscription: dve opcije, uslovi, poklon (3/6/12) i dva demo dugmeta. Klik ne šalje ništa, nego
-// menja demo red ispod dugmadi u poruku iz sadržaja (role="status"), jer globalni Toast zna samo „added".
+// #subscription: dve opcije, uslovi, poklon (3/6/12) i dva demo dugmeta sa demo redom ispod. Klik ne
+// šalje ništa, nego prikazuje toast iz sadržaja (showToast, Toast.tsx čita ga preko aria-live).
 // #tasting-set: opis i cena seta (400 g) i „Add tasting set" (addToCart sam prikazuje toast).
 // Sve cene se računaju iz centi (format.ts): oznake {price} {was} {unit} {shipping} {p3} {p6} {p12}.
-import { Fragment, useState, type ReactNode } from 'react'
+import { Fragment, type ReactNode } from 'react'
 import { Button } from '../components/Button'
 import { fill } from '../config/site'
 import { productBySlug } from '../content/products'
 import { giftPriceCents, sections, subscriptionPriceCents } from '../content/sections'
 import { shop } from '../content/shop'
 import { useLang } from '../i18n/LangContext'
-import { addToCart } from '../lib/cart'
+import { addToCart, showToast } from '../lib/cart'
 import { formatPrice, formatUnitPrice, NBSP } from '../lib/format'
 import { useReveal } from '../lib/reveal'
 import './sections.css'
@@ -34,12 +34,9 @@ function withNodes(text: string, nodes: Record<string, ReactNode>): ReactNode[] 
 const strong = (text: string) => <strong className="whitespace-nowrap font-extrabold">{text}</strong>
 const nowrap = (text: string) => <span className="whitespace-nowrap">{text}</span>
 
-type Notice = 'start' | 'gift' | null
-
 export function Subscription() {
   const { lang, tx } = useLang()
   const reveal = useReveal<HTMLDivElement>()
-  const [notice, setNotice] = useState<Notice>(null)
   const price = (cents: number) => formatPrice(cents, lang)
 
   const optionNodes: Record<(typeof sub.options)[number]['id'], Record<string, ReactNode>> = {
@@ -78,13 +75,13 @@ export function Subscription() {
                     </span>
                   )}
                 </h3>
-                <p className="mt-s2 mb-0 text-small">{withNodes(tx(option.text), optionNodes[option.id])}</p>
+                <p className="mt-s2 mb-0 md:text-small">{withNodes(tx(option.text), optionNodes[option.id])}</p>
               </li>
             ))}
           </ul>
 
           <p className="mt-s4 mb-0 text-small text-muted">{tx(sub.terms)}</p>
-          <p className="mt-s3 mb-0 text-small">
+          <p className="mt-s3 mb-0 md:text-small">
             {withNodes(tx(sub.gift.text), {
               p3: strong(price(giftPriceCents(3))),
               p6: strong(price(giftPriceCents(6))),
@@ -93,15 +90,12 @@ export function Subscription() {
           </p>
 
           <div className="mt-s5 flex flex-wrap items-center gap-s3">
-            <Button onClick={() => setNotice('start')}>{tx(sub.buttons.start)}</Button>
-            <Button variant="outline" onClick={() => setNotice('gift')}>
+            <Button onClick={() => showToast(sub.toast.start)}>{tx(sub.buttons.start)}</Button>
+            <Button variant="outline" onClick={() => showToast(sub.toast.gift)}>
               {tx(sub.buttons.gift)}
             </Button>
           </div>
-          {/* demo red; posle klika ista linija kaže da ništa nije naručeno (čita se preko role="status") */}
-          <p role="status" className={`mt-s3 mb-0 text-small ${notice ? 'font-bold' : 'text-muted'}`}>
-            {tx(notice ? sub.toast[notice] : sub.demo)}
-          </p>
+          <p className="mt-s3 mb-0 text-small text-muted">{tx(sub.demo)}</p>
         </article>
 
         {/* ---------- Probierset ----------

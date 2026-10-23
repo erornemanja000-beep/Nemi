@@ -19,32 +19,34 @@ const link = 'inline-flex min-h-tap items-center underline underline-offset-[3px
 /** Apstraktna mapa četvrti: blokovi, ulice i oznaka mesta. Ukras, ne nosi informaciju (adresa je u tekstu). */
 function ContactMap() {
   return (
-    <svg viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false" className="ct-map aspect-[4/3] md:aspect-[4/5]">
-      {/* blokovi */}
-      <path className="ct-map__block" d="M-10 -10h130l-18 120H-10z" />
-      <path className="ct-map__block" d="M150 -10h110l-12 112H134z" />
-      <path className="ct-map__block" d="M290 -10h120v132H276z" />
-      <path className="ct-map__block" d="M-10 140h106l-14 110H-10z" />
-      <path className="ct-map__green" d="M128 132h116l-10 96H116z" />
-      <path className="ct-map__block" d="M272 152h138v104H262z" />
-      <path className="ct-map__block" d="M-10 282h94l-12 98H-10z" />
-      <path className="ct-map__block" d="M112 258h118l-10 118H98z" />
-      <path className="ct-map__block" d="M258 286h152v94H250z" />
-      <path className="ct-map__block" d="M-10 410h76l-8 100H-10z" />
-      <path className="ct-map__block" d="M94 406h120l-6 104H86z" />
-      <path className="ct-map__block" d="M240 410h170v100H234z" />
-      {/* ulice: široka (gore levo → dole desno) i dve poprečne */}
-      <path className="ct-map__edge" strokeWidth="30" d="M-20 236C110 250 240 266 420 270" />
-      <path className="ct-map__street" strokeWidth="26" d="M-20 236C110 250 240 266 420 270" />
-      <path className="ct-map__street" strokeWidth="14" d="M136 -20 96 520" />
-      <path className="ct-map__street" strokeWidth="14" d="M270 -20 240 520" />
-      <path className="ct-map__street" strokeWidth="10" d="M-20 124 420 140" />
-      <path className="ct-map__street" strokeWidth="10" d="M-20 394 420 398" />
-      {/* oznaka mesta */}
-      <circle className="ct-map__halo" cx="182" cy="350" r="34" />
-      <path className="ct-map__pin" d="M182 366c-15-18-24-31-24-43a24 24 0 0 1 48 0c0 12-9 25-24 43Z" />
-      <circle className="ct-map__pin-dot" cx="182" cy="323" r="8" />
-    </svg>
+    <div aria-hidden="true" className="ct-map aspect-[4/3] md:aspect-[4/5]">
+      <svg viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice" focusable="false">
+        {/* blokovi */}
+        <path className="ct-map__block" d="M-10 -10h130l-18 120H-10z" />
+        <path className="ct-map__block" d="M150 -10h110l-12 112H134z" />
+        <path className="ct-map__block" d="M290 -10h120v132H276z" />
+        <path className="ct-map__block" d="M-10 140h106l-14 110H-10z" />
+        <path className="ct-map__green" d="M128 132h116l-10 96H116z" />
+        <path className="ct-map__block" d="M272 152h138v104H262z" />
+        <path className="ct-map__block" d="M-10 282h94l-12 98H-10z" />
+        <path className="ct-map__block" d="M112 258h118l-10 118H98z" />
+        <path className="ct-map__block" d="M258 286h152v94H250z" />
+        <path className="ct-map__block" d="M-10 410h76l-8 100H-10z" />
+        <path className="ct-map__block" d="M94 406h120l-6 104H86z" />
+        <path className="ct-map__block" d="M240 410h170v100H234z" />
+        {/* ulice: široka (gore levo → dole desno) i dve poprečne */}
+        <path className="ct-map__edge" strokeWidth="30" d="M-20 236C110 250 240 266 420 270" />
+        <path className="ct-map__street" strokeWidth="26" d="M-20 236C110 250 240 266 420 270" />
+        <path className="ct-map__street" strokeWidth="14" d="M136 -20 96 520" />
+        <path className="ct-map__street" strokeWidth="14" d="M270 -20 240 520" />
+        <path className="ct-map__street" strokeWidth="10" d="M-20 124 420 140" />
+        <path className="ct-map__street" strokeWidth="10" d="M-20 394 420 398" />
+        {/* oznaka mesta */}
+        <circle className="ct-map__halo" cx="182" cy="350" r="34" />
+        <path className="ct-map__pin" d="M182 366c-15-18-24-31-24-43a24 24 0 0 1 48 0c0 12-9 25-24 43Z" />
+        <circle className="ct-map__pin-dot" cx="182" cy="323" r="8" />
+      </svg>
+    </div>
   )
 }
 
@@ -89,11 +91,11 @@ export function Contact() {
             ))}
           </dl>
 
-          <p className="mt-s5 mb-0 text-small">{tx(contact.roasting)}</p>
-          <p className="mt-s2 mb-0 text-small">
+          <p className="mt-s5 mb-0 md:text-small">{tx(contact.roasting)}</p>
+          <p className="mt-s2 mb-0 md:text-small">
             <strong>{tx(contact.cuppingLabel)}:</strong> {tx(contact.cupping)}
           </p>
-          <p className="mt-s1 mb-s5 text-small">
+          <p className="mt-s1 mb-s5 md:text-small">
             {wholesaleBefore}
             <a href={`mailto:${brand.wholesale}`} className={link}>
               {brand.wholesale}

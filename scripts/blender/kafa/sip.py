@@ -256,10 +256,12 @@ LOOK = dict(
     thin=0.50,         # pojas gde se glazura tanji iznad ivice (bilo 1,0 = do 0,75)
     edge=0.35,         # karamel na samoj ivici glazure (bilo 0,55)
     drip=0.45,         # kapljice i zadebljan rub svetliji, krem (bilo 0,10)
-    peb_glaze=0.30,    # reljef zrnaca gline kroz glazuru (bilo 0,55)
+    peb_glaze=0.15,    # reljef zrnaca gline kroz glazuru (bilo 0,55; 0,3 je na 1200 px još izgledao kao koža)
+    peel=0.6,          # „pomorandžina kora" glazure i laka (bilo 1,0)
     handle_bump=0.40,  # reljef gline na dršci (0,4x)
     spots=1.0,         # smeđe pege kao u referenci
-    streak=0.35,       # smeđe pruge od oboda naniže (glazura se tanji i curi)
+    streak=0.50,       # smeđe pruge od oboda naniže (glazura se tanji i curi)
+    inside=0.60,       # unutrašnjost tamni ka kafi (deblja glazura + senka; kafa ne ogleda svetao zid)
 )
 
 
@@ -358,16 +360,16 @@ def mat_stoneware(body, seed=7, look=None):
     peb_top = N.ramp(pebble, 0.55, 0.05)                        # 1 na vrhu zrnca
     grain = N.noise(P, 2600.0, detail=1)
     clay_var = N.noise(P, 90.0, detail=4)
-    clay = N.mix(clay_var, (0.0080, 0.0055, 0.0045), (0.0165, 0.0115, 0.0090))
-    clay = N.mix(N.mul(peb_top, 0.55), clay, (0.040, 0.029, 0.024))
+    clay = N.mix(clay_var, (0.0085, 0.0042, 0.0027), (0.0175, 0.0088, 0.0054))
+    clay = N.mix(N.mul(peb_top, 0.55), clay, (0.042, 0.023, 0.015))
     grog_d, _ = N.voronoi(P, 520.0)
-    clay = N.mix(N.mul(N.ramp(grog_d, 0.10, 0.04), 0.7), clay, (0.10, 0.075, 0.058))
-    clay = N.mix(N.mul(ring, N.mul(ring_env, 0.30)), clay, (0.034, 0.024, 0.019))   # grebeni malo svetliji
+    clay = N.mix(N.mul(N.ramp(grog_d, 0.10, 0.04), 0.7), clay, (0.10, 0.062, 0.040))
+    clay = N.mix(N.mul(ring, N.mul(ring_env, 0.30)), clay, (0.036, 0.019, 0.012))   # grebeni malo svetliji
     clay = N.mix(N.mul(halo, 0.6), clay, (0.085, 0.036, 0.016))             # rđasti oreol oko glazure
 
     # --- glazura: ovsena sivo-zelena; oblaci, gvožđe, reljef gline kroz tanku glazuru, krem kapljice
     gv = N.noise(P, 55.0, detail=5, rough=0.62)
-    glaze = N.mix(N.ramp(gv, 0.36, 0.64), (0.092, 0.108, 0.096), (0.305, 0.395, 0.360))
+    glaze = N.mix(N.ramp(gv, 0.36, 0.64), (0.090, 0.104, 0.076), (0.285, 0.362, 0.280))
     cloud = N.ramp(N.noise(P, 30.0, detail=4, distortion=0.5), 0.48, 0.72)
     glaze = N.mix(N.mul(cloud, K['cloud']), glaze, (0.14, 0.105, 0.075))         # smeđi oblaci
     top_tone = N.ramp(z, GLAZE_Z + 0.010, RIM_Z - 0.002)                      # ka obodu glazura je tanja
@@ -382,12 +384,12 @@ def mat_stoneware(body, seed=7, look=None):
     # pege gvožđa kao u referenci: retke krupnije (1-2,5 mm), mekane mrlje (5-8 mm), sitne pegice
     spot_d, spot_c = N.voronoi(P, 150.0)
     sr, sg, _ = N.split(spot_c)
-    spot_r = N.math('MULTIPLY_ADD', sg, 0.16, 0.08)                            # poluprečnik u ćelijama
-    spots = N.mul(N.ramp(N.sub(spot_d, spot_r), 0.02, -0.03), N.ramp(sr, 0.35, 0.45))
-    spots = N.mul(spots, N.ramp(N.noise(P, 40.0, detail=2), 0.25, 0.45, 0.55, 1.0))
+    spot_r = N.math('MULTIPLY_ADD', N.mul(sg, sg), 0.20, 0.10)                  # poluprečnik u ćelijama
+    spots = N.mul(N.ramp(N.sub(spot_d, spot_r), 0.02, -0.03), N.ramp(sr, 0.22, 0.32))
+    spots = N.mul(spots, N.ramp(N.noise(P, 40.0, detail=2), 0.20, 0.40, 0.65, 1.0))
     glaze = N.mix(N.mul(spots, 0.85 * K['spots']), glaze, (0.050, 0.026, 0.013))
     blot = N.mul(N.ramp(N.noise(P, 24.0, detail=3, distortion=0.6), 0.64, 0.76), N.sub(1.0, inner))
-    glaze = N.mix(N.mul(blot, 0.45 * K['spots']), glaze, (0.085, 0.050, 0.028))   # mekane smeđe mrlje
+    glaze = N.mix(N.mul(blot, 0.55 * K['spots']), glaze, (0.085, 0.050, 0.028))   # mekane smeđe mrlje
     fleck_d, _ = N.voronoi(P, 650.0)
     glaze = N.mix(N.mul(N.ramp(fleck_d, 0.17, 0.05), N.ramp(N.noise(P, 30.0), 0.3, 0.6, 0.4, 0.9)), glaze,
                   (0.09, 0.050, 0.026))                                          # sitne pegice ~0,5 mm
@@ -401,6 +403,8 @@ def mat_stoneware(body, seed=7, look=None):
     craze_d, _ = N.voronoi(N.vmath('MULTIPLY', P, (1.0, 1.0, 0.7)), 140.0, feature='DISTANCE_TO_EDGE')
     craze = N.mul(N.ramp(craze_d, 0.0, 0.03, 1.0, 0.0), N.ramp(N.noise(P, 20.0), 0.45, 0.6))
     glaze = N.mix(N.mul(craze, 0.30), glaze, (0.12, 0.075, 0.045))            # krakelir (fine pukotine)
+    deep = N.mul(inner, N.ramp(z, RIM_Z - 0.0030, COFFEE_Z + 0.0005))
+    glaze = N.mix(N.mul(deep, K['inside']), glaze, (0.060, 0.055, 0.038))     # unutra tamnije ka kafi
     # mokar trag kafe iznad nivoa, unutra
     wet = N.mul(inner, N.ramp(z, COFFEE_Z + 0.0004, COFFEE_Z + 0.0022, 1.0, 0.0))
     glaze = N.mix(N.mul(wet, 0.6), glaze, (0.05, 0.025, 0.012))
@@ -427,7 +431,7 @@ def mat_stoneware(body, seed=7, look=None):
     # --- normala: sitni reljef (Bevel shader je izbačen: 4 zraka po tački; spoj drške je zaobljen geometrijom)
     pin, _ = N.voronoi(P, 600.0)                                  # rupice ~0,4 mm (2 px na 1200 px)
     pinholes = N.mul(N.ramp(pin, 0.15, 0.05), N.ramp(N.noise(P, 60.0), 0.52, 0.66))
-    peel = N.sub(N.noise(P, 420.0, detail=2), 0.5)                # „pomorandžina kora" glazure, ~2 mm
+    peel = N.mul(N.sub(N.noise(P, 420.0, detail=2), 0.5), K['peel'])   # „pomorandžina kora" glazure, ~2 mm
     peb_h = N.mul(N.sub(1.0, pebble), 0.00016)
     clay_h = N.add(peb_h, N.mul(N.sub(grain, 0.5), 0.00003))
     clay_h = N.mul(clay_h, N.mixf(hnd, 1.0, K['handle_bump']))   # drška je glađa (palac je ugladi)
@@ -708,7 +712,7 @@ def parse_args(argv):
     ap.add_argument('--frame-z', dest='frame_z', type=float, default=0.050)
     ap.add_argument('--key', type=float, default=70.0, help='key prozor (area 0,6x0,9 m), W')
     ap.add_argument('--strip', type=float, default=10.0, help='svaka od dve trake pozadi, W (svetle samo šolju)')
-    ap.add_argument('--reflector', type=float, default=0.9,
+    ap.add_argument('--reflector', type=float, default=1.7,
                     help='niska blenda levo-napred, W (samo odsjaj na šolji; 0 = bez)')
     ap.add_argument('--sun', type=float, default=5.0, help='sunce na zidu (gobo), W/m²')
     ap.add_argument('--sun-spot', dest='sun_spot', default='{},{}'.format(*C.STUDIO['sun_spot']),

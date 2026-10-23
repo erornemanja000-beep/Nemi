@@ -38,9 +38,9 @@ import sys
 from PIL import Image, ImageChops, ImageDraw, ImageFont
 
 VERSION = 'placeholder-1'
-SS = 2             # nadsempliranje pri crtanju, pa Lanczos na pravu velicinu
+SS = 2             # nadsempliranje pri crtanju, pa BOX (prosek 2x2) na pravu velicinu: manje nivoa alfe nego Lanczos
 QUALITY = 60
-ALPHA_QUALITY = 90
+ALPHA_QUALITY = 60
 LEVELS = {'d': 1200, 'm': 800}
 
 GRIND_PH = (0xBD, 0xB6, 0xAC)   # --color-placeholder (krem)
@@ -165,8 +165,9 @@ def mapped(pts, fn):
 class Canvas:
     """Crta oblike zadate u jedinicama S (od gornjeg levog ugla punog kadra) u isecak, nadsemplirano."""
 
-    def __init__(self, crop, px):
+    def __init__(self, crop, px, base):
         self.x0, self.y0, cw, ch = crop
+        self.base = base      # boja ispod potpuno providnih piksela (WebP onda ne pakuje lazne ivice)
         self.size = (round(cw * px), round(ch * px))
         self.k = px * SS
         self.img = Image.new('RGBA', (self.size[0] * SS, self.size[1] * SS), (0, 0, 0, 0))
@@ -243,18 +244,23 @@ class Canvas:
         return m
 
     def label(self, x, y, text):
-        """Oznaka kadra: tamna pilula sa svetlim tekstom, gornji levi ugao u (x, y) S."""
-        size = 0.015
+        """Oznaka kadra: neprovidna tamna pilula sa svetlim tekstom (tekst je samo u RGB, ne u alfi), gornji levi ugao u (x, y) S."""
+        size = 0.014
         font = ImageFont.load_default(size=max(8, round(size * self.k)))
         l, t, r, b = font.getbbox(text)
         tw, th = (r - l) / self.k, (b - t) / self.k
         pad = 0.006
         w, h = tw + 2 * pad, th + 2 * pad
-        self.draw([('poly', rrect_pts(x, y, w, h, h / 2))], INK_DEEP, 0.62)
+        self.draw([('poly', rrect_pts(x, y, w, h, h / 2))], INK_DEEP)
         self.draw([('text', x + pad - l / self.k, y + pad - t / self.k, text, size)], CREAM_LIGHT)
 
     def result(self):
-        return self.img.resize(self.size, Image.LANCZOS)
+        im = self.img.resize(self.size, Image.BOX)
+        a = im.getchannel('A')
+        out = Image.new('RGBA', im.size, self.base + (0,))
+        out.paste(im, (0, 0), a.point([0] + [255] * 255))
+        out.putalpha(a)
+        return out
 
 
 # ---------------- GRIND ----------------
@@ -453,7 +459,7 @@ def draw_pour(c, g):
     c.draw([('poly', rrect_pts(0.5 - 86 * KD, CONE_BOT_Y, 172 * KD, 22 * KD, 6 * KD))], POUR_PH)
     c.draw([('poly', [(0.5 - CONE_TOP_HW, V60['y']), (0.5 + CONE_TOP_HW, V60['y']),
                       (0.5 + CONE_BOT_HW, CONE_BOT_Y), (0.5 - CONE_BOT_HW, CONE_BOT_Y)])], POUR_PH, 0.9)
-    paper_top = [(0.5 - 0.108 + 0.216 * k / 28, 0.418 + (0.004 if k % 2 else 0.0)) for k in range(29)]
+    paper_top = [(0.5 - 0.108 + 0.216 * k / 14, 0.418 + (0.005 if k % 2 else 0.0)) for k in range(15)]
     c.draw([('poly', [(0.5 - 0.118, V60['y'])] + paper_top + [(0.5 + 0.118, V60['y'])])], WHITE, 0.42)
     c.draw([('poly', ellipse_pts(V60['x'], V60['y'], V60['rx'], V60['ry'], 0, 40))], POUR_PH)
     c.draw([('poly', ellipse_pts(V60['x'], V60['y'], V60['rx'] - 0.014, V60['ry'] - 0.006, 0, 40))], (0x8E, 0x81, 0x77), 0.9)
@@ -559,10 +565,11 @@ def draw_sip(c, s):
 
 
 DRAW = {'grind': draw_grind, 'pour': draw_pour, 'sip': draw_sip}
+BASE = {'grind': GRIND_PH, 'pour': POUR_PH, 'sip': SIP_PH}
 
 
 def render(seq_id, g, px):
-    c = Canvas(SPEC[seq_id]['crop'], px)
+    c = Canvas(SPEC[seq_id]['crop'], px, BASE[seq_id])
     DRAW[seq_id](c, g)
     return c.result()
 

@@ -466,7 +466,8 @@ STUDIO = dict(
     sun_spot=(0.0, 0.10),                        # (x, z) na zidu kroz koju sunce gađa sredinu prozora
     # niska blenda: svetla traka levo-napred, tik iznad stola, vidljiva SAMO u odsjaju (ne osvetljava
     # difuzno). Kamera nisko (13-16°) na strmom boku vidi sto, ne prozor; ova traka daje odsjaj prozora.
-    refl_az=-128.0, refl_dist=0.24, refl_z=(0.004, 0.044), refl_w=0.12, refl_kelvin=5800,
+    # uska (5 cm): sjajna glazura dobija isti odsjaj, a hrapava glina manje ukupnog svetla (ne posivi)
+    refl_az=-128.0, refl_dist=0.24, refl_z=(0.004, 0.044), refl_w=0.05, refl_kelvin=5800,
 )
 
 

@@ -13,8 +13,10 @@ Zajednički svet (kamera rig K, sat G, mlaz mlevene kafe, karta za transmisiju, 
 ovde se uvozi. Kamera je ista kao u GRIND-u, tačno 1 S niže. Kadar scene = G + grind.G_OFF; fajlovi se
 zovu po lokalnom broju sekvence: kadar_0001.png = G65 ... kadar_0128.png = G192.
 
-Skupe proceduralne mape (kovane fasete kuvala, krep papira) peku se jednom u EXR (cache/, otisak koda u
-imenu; promena koda = novo pečenje). HDRI „Lebombo“ (Greg Zaal, Poly Haven, CC0 1.0,
+Kuvalo: krupna meka udubljenja u vodoravnim redovima su u geometriji (kao kovano kuvalo u referenci f_090),
+satenski brušen inox, slabije normale. Papir: krep ~2 mm (vidljiv na 1200 px), 4 nabora, blago neravna
+gornja ivica. Skupe proceduralne mape (talasanje i hrapavost kuvala, krep papira) peku se jednom u EXR
+(cache/, otisak koda u imenu; promena koda = novo pečenje). HDRI „Lebombo“ (Greg Zaal, Poly Haven, CC0 1.0,
 https://polyhaven.com/a/lebombo) dolazi iz common.world_hdri; ostalo je proceduralno.
 
 Pokretanje iz korena repoa:

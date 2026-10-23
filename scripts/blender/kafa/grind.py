@@ -17,7 +17,11 @@ uvozi (import grind): kamera, sat G, mlaz mlevene kafe, karta za transmisiju, sv
 - Staklo: film_transparent_glass=False + „karta“ u boji sekcije (vidljiva samo kroz staklo), boja je
   kalibrisana kroz AgX tako da render daje tačno boju iz tokens.css.
 - Fizika zrna: Bullet u uvećanom svetu (x10, gravitacija x10), levak od kutija, 10 podkoraka, 20 iteracija;
-  rezultat (položaj i rotacija svakog zrna po kadru) se kešira u cache/zrna_<otisak>.npz.
+  rezultat (položaj i rotacija svakog zrna po kadru) se kešira u cache/zrna_<otisak>.npz. Zrna u mirovanju
+  dobijaju mrtvu zonu (settle): Bullet ih ostavlja da podrhtavaju 0,1-0,6 mm, a to na 1200 px svetluca.
+- Mlaz mlevene kafe: glavni mlaz sa blagim pulsevima brzine, 6 kratkih naleta gustine i retke grudvice sa
+  strane (build_grounds; isti emiter i seme u obe scene).
+- OIDN: fiksno seme; test na 10 uzastopnih kadrova (G40-G49) ne pokazuje treperenje na mirnim delovima.
 
 HDRI „Lebombo“ (Greg Zaal, Poly Haven, CC0 1.0, https://polyhaven.com/a/lebombo, md5
 15daa3dc91907106756355aa0d2a3517) dolazi iz common.world_hdri / scripts/blender/assets (IZVORI.md).
@@ -1043,6 +1047,26 @@ def _fcurves(ob, path, frames, values, interp='LINEAR'):
         fc.update()
 
 
+def settle(p, q, dpos=0.0003, dang=math.radians(2.0), rest_win=3, rest_pos=0.00015):
+    """Mrtva zona za zrna u mirovanju: Bullet ostavlja zrna u gomili da podrhtavaju 0,1-0,6 mm po kadru, pa
+    ivice svetlucaju (test treperenja G40-G49). Zrno stoji (drži poslednju pozu) dok ne odstupi > dpos ili
+    > dang; tada prati fiziku dok se za rest_win kadrova ne pomeri manje od rest_pos, pa opet stoji."""
+    out_p, out_q = p.copy(), q.copy()
+    hp, hq = p[0].copy(), q[0].copy()
+    moving = False
+    for f in range(len(p)):
+        if not moving:
+            ang = 2.0 * math.acos(min(1.0, abs(float(np.dot(hq, q[f])))))
+            if np.linalg.norm(p[f] - hp) > dpos or ang > dang:
+                moving = True
+        if moving:
+            hp, hq = p[f].copy(), q[f].copy()
+            if f >= rest_win and np.linalg.norm(p[f] - p[f - rest_win]) < rest_pos:
+                moving = False
+        out_p[f], out_q[f] = hp, hq
+    return out_p, out_q
+
+
 def place_beans(shape, pos, quat, frames, rel, M, render_meshes):
     """Render zrna u svetu (M @ lokalno); zrna koja se ne pomeraju u G1-G96 nemaju animaciju."""
     coll = bpy.data.collections.new('Zrna')
@@ -1062,19 +1086,20 @@ def place_beans(shape, pos, quat, frames, rel, M, render_meshes):
         lp = pos[i]
         r = np.hypot(lp[:, 0], lp[:, 1])
         escaped = bool(np.any((r > 0.094) & (lp[:, 2] < 0.33)) or np.any(lp[:, 2] < 0.08))
+        wpos_i, wq = settle(wpos[i], wq)
         ob = bpy.data.objects.new(f'Zrno{i:04d}', render_meshes[shape[i]])
         coll.objects.link(ob)
         ob.rotation_mode = 'QUATERNION'
-        ob.location = tuple(wpos[i, 0])
+        ob.location = tuple(wpos_i[0])
         ob.rotation_quaternion = tuple(wq[0])
         if escaped:
             ob.hide_render = True
             hidden += 1
             continue
-        dp = np.abs(wpos[i] - wpos[i, 0]).max()
+        dp = np.abs(wpos_i - wpos_i[0]).max()
         dq = 1.0 - np.abs(wq @ wq[0]).min()
         if dp > 2e-5 or dq > 1e-6:
-            _fcurves(ob, 'location', frames, wpos[i])
+            _fcurves(ob, 'location', frames, wpos_i)
             _fcurves(ob, 'rotation_quaternion', frames, wq)
             moving += 1
         if rel[i] > -999 and sf(rel[i]) > frames[0]:   # zrno iz mlaza: skriveno dok je na „traci“

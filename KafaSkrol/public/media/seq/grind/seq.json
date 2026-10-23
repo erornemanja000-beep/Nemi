@@ -1,7 +1,7 @@
 {
   "id": "grind",
-  "version": "placeholder-1",
-  "placeholder": true,
+  "version": "render-1",
+  "placeholder": false,
   "clock": "G",
   "g_od": 1,
   "g_do": 96,
@@ -21,8 +21,8 @@
       "px": 1200,
       "w": 672,
       "h": 1500,
-      "count": 96,
-      "every": 1
+      "count": 48,
+      "every": 2
     },
     "m": {
       "px": 800,
@@ -52,9 +52,18 @@
     "osa_x": 0.5,
     "otvor": {
       "x": 0.5,
-      "y": 0.84
+      "y": 0.8389
     }
   },
   "units": "S (stranica kvadrata kadra), od gornjeg levog ugla punog kadra; steps i kafa_y u kadrovima sata",
-  "generator": "KafaSkrol/scripts/placeholder_seq.py"
+  "generator": "KafaSkrol/scripts/pack_seq.py",
+  "pack": {
+    "q": {
+      "d": 82,
+      "m": 72
+    },
+    "alpha_quality": 85,
+    "alpha_floor": 4,
+    "fade_right": null
+  }
 }

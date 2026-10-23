@@ -66,6 +66,8 @@ VRH_Z = 0.262                   # vrh izliva pri sipanju (storyboard ~0,26)
 SLETANJE_Z = 0.186              # mlaz vode se gasi u filteru (ispod linije pogleda preko ivice)
 MLAZ_BRZINA = 0.42              # m/s na izlazu iz izliva
 MLAZ_R0 = 0.00185
+DRSKA = Vector((0.095, 0.0, 0.120))   # tačka okreta (hvat na dršci), lokalno u kuvalu
+PULT_ZADNJA = 0.070             # zadnja ivica pulta (y): senka samo na pultu, iza je zid sekcije
 
 
 def r_konus(z):
@@ -97,7 +99,7 @@ def carafe_level(g):
 
 
 def kettle_tilt(g):
-    return interp([(104, KUVALO_NAGIB[0]), (116, KUVALO_NAGIB[1]), (166, KUVALO_NAGIB[1]),
+    return interp([(100, KUVALO_NAGIB[0]), (112, KUVALO_NAGIB[1]), (166, KUVALO_NAGIB[1]),
                    (178, KUVALO_NAGIB[0])], g)
 
 
@@ -372,7 +374,7 @@ def mat_kettle_src(obj):
     dent = N.add(N.mul(N.mul(d1, d1), -0.00042), N.mul(N.mul(d2, d2), -0.00004))
     cr, _, _ = N.split(c1)
     sm = N.ramp(N.noise(P, 14.0, detail=4, distortion=0.5), 0.55, 0.78)
-    rough = N.add(N.add(N.math('MULTIPLY_ADD', cr, 0.06, 0.13), N.mul(sm, 0.12)),
+    rough = N.add(N.add(N.math('MULTIPLY_ADD', cr, 0.06, 0.20), N.mul(sm, 0.10)),
                   N.mul(N.noise(N.vmath('MULTIPLY', P, (30.0, 30.0, 1800.0)), 1.0, detail=2), 0.05))
     maps = {'height': N.math('MULTIPLY_ADD', dent, 1000.0, 1.0), 'rough': rough}
     return m, maps
@@ -381,11 +383,11 @@ def mat_kettle_src(obj):
 def mat_kettle_baked(imgs):
     m, nt, b, N = C.new_material('Kuvalo')
     b.inputs['Metallic'].default_value = 1.0
-    b.inputs['Base Color'].default_value = (0.58, 0.57, 0.555, 1.0)
+    b.inputs['Base Color'].default_value = (0.50, 0.49, 0.475, 1.0)
     h, _ = N.image(imgs['height'])
     r, _ = N.image(imgs['rough'])
     N.put(N.split(r)[0], b.inputs['Roughness'])
-    b.inputs['Anisotropic'].default_value = 0.35
+    b.inputs['Anisotropic'].default_value = 0.55
     tan = N.new('ShaderNodeTangent', direction_type='RADIAL', axis='Z')
     N.put(tan.outputs['Tangent'], b.inputs['Tangent'])
     bump = N.new('ShaderNodeBump')
@@ -636,19 +638,20 @@ def mlaz_putanja(tip_w, d, z_end):
 
 
 def postavi_kuvalo(rig, tip_local, dir_local):
-    """Kuvalo visi na pivotu u vrhu izliva; pivot je postavljen tako da mlaz pri nagibu za sipanje padne
-    tačno u x=0, y=0 (sredina filtera)."""
+    """Kuvalo se naginje oko drške (ruka), kao pravo: pri nagibu za sipanje vrh izliva je na tip_w, odakle
+    mlaz pada tačno u x=0, y=0 (sredina filtera); u mirovanju je izliv viši i desno."""
     rot = Euler((0, -math.radians(KUVALO_NAGIB[1]), math.radians(KUVALO_ZAOKRET)), 'XYZ')
-    d = rot.to_matrix() @ dir_local
+    R = rot.to_matrix()
+    d = R @ dir_local
     v0 = d * MLAZ_BRZINA
     a, b, c = -0.5 * 9.81, v0.z, VRH_Z - SLETANJE_Z
     t_land = (-b - math.sqrt(b * b - 4 * a * c)) / (2 * a)
     tip_w = Vector((-v0.x * t_land, -v0.y * t_land, VRH_Z))
     pivot = C.link(bpy.data.objects.new('KuvaloPivot', None))
-    pivot.location = tip_w
+    pivot.location = tip_w - R @ (Vector(tip_local) - DRSKA)
     pivot.rotation_euler = rot
     rig.parent = pivot
-    rig.location = -tip_local
+    rig.location = -DRSKA
     return pivot, tip_w, d
 
 
@@ -733,7 +736,7 @@ def parse():
     p.add_argument('--fstop', type=float, default=GR.FSTOP)
     p.add_argument('--key', type=float, default=70.0)
     p.add_argument('--strip', type=float, default=6.0)
-    p.add_argument('--mleveno', type=int, default=320, help='čestica mlevene kafe po kadru (isto kao GRIND)')
+    p.add_argument('--mleveno', type=int, default=600, help='čestica mlevene kafe po kadru (isto kao GRIND)')
     p.add_argument('--odsjaj', type=float, default=3.0, help='blenda levo-napred (samo odsjaj), W')
     p.add_argument('--poster', action='store_true', help='poster.png = G150')
     p.add_argument('--bez-zamucenja', dest='bez_zamucenja', action='store_true')
@@ -791,35 +794,45 @@ def build(a):
     render_meshes, proxy_meshes, _ = GR.bean_meshes()
     for pm in proxy_meshes:
         bpy.data.meshes.remove(pm)
-    subjects += zrna_na_pultu(render_meshes)
+    beans = zrna_na_pultu(render_meshes)
 
-    # senka samo oko bokala i zrna (mali disk, ne velika ravan)
-    bpy.ops.mesh.primitive_circle_add(vertices=96, radius=0.17, fill_type='NGON', location=(0.035, 0.01, 0.0))
-    catcher = bpy.context.active_object
+    # senka samo na pultu: od prednje ivice kadra do zadnje ivice pulta (y = PULT_ZADNJA); iza je zid sekcije,
+    # pa bi senka iza te linije visila po pozadini
+    catcher = mesh_obj('Senka', [(-0.24, -0.30, 0.0), (0.26, -0.30, 0.0), (0.26, PULT_ZADNJA, 0.0),
+                                 (-0.24, PULT_ZADNJA, 0.0)], [(0, 1, 2, 3)])
     catcher.name = 'Senka'
     catcher.is_shadow_catcher = True
     catcher.visible_transmission = False
     catcher.visible_glossy = False
 
     em, crumbs = GR.build_grounds(sc, a.mleveno, end_g=GR.G_POUR[1])
-    GR.lights(sc, 'pour', subjects, crumbs, key=a.key, strip=a.strip, refl=a.odsjaj)
+    # trake pozadi i blenda samo na staklo, inox i vodu (papir i zrna bi isprale u sivo)
+    shiny = [o for o in subjects if o not in filt_objs and o is not bed]
+    GR.lights(sc, 'pour', shiny, crumbs, key=a.key, strip=a.strip, refl=a.odsjaj, refl_subjects=kparts,
+              no_key=[catcher])
+    # pult: nizak key bi bacio senku od 60 cm unazad (preko ivice pulta); pult dobija meko svetlo odozgo
+    # (samo on ga prima), pa ostaje kontaktna senka ispod bokala i zrna
+    top = C.area_light('PultSvetlo', (0.02, -0.05, 0.75), (0.02, 0.0, 0.0), (0.9, 0.9), 60.0, 5600)
+    only_c = bpy.data.collections.new('SamoPult')
+    only_c.objects.link(catcher)
+    top.light_linking.receiver_collection = only_c
 
     # ---------------- animacija po kadru G
     dt = GR.SLOW / GR.FPS
     rest = pivot.rotation_euler.copy()
     for g in range(GR.G_POUR[0], GR.G_POUR[1] + 1):
         f = sf(g)
-        tilt = kettle_tilt(g) + 0.6 * math.sin(2 * math.pi * (g - 116) / 40.0) * GR.smoothstep(116, 124, g) \
+        tilt = kettle_tilt(g) + 0.25 * math.sin(2 * math.pi * (g - 118) / 40.0) * GR.smoothstep(118, 126, g) \
             * (1 - GR.smoothstep(160, 166, g))
         pivot.rotation_euler = (rest.x, -math.radians(tilt), rest.z)
         pivot.keyframe_insert('rotation_euler', frame=f)
-        # mlaz vode: glava izlazi G106 i stiže do filtera za t_fall; rep kreće G166
+        # mlaz vode: glava izlazi G112 (kuvalo je nagnuto) i stiže do filtera za t_fall; rep kreće G166
         fall_frames = t_fall / dt
-        s1.default_value = min(1.0, max(0.0, (g - 106) / fall_frames)) if g >= 106 else 0.0
+        s1.default_value = min(1.0, max(0.0, (g - 112) / fall_frames)) if g >= 112 else 0.0
         s0.default_value = min(1.0, max(0.0, (g - 166) / fall_frames)) if g >= 166 else 0.0
         s1.keyframe_insert('default_value', frame=f)
         s0.keyframe_insert('default_value', frame=f)
-        stream.hide_render = not (106 <= g <= 166 + fall_frames + 1)
+        stream.hide_render = not (112 <= g <= 166 + fall_frames + 1)
         stream.keyframe_insert('hide_render', frame=f)
         flow.location = (0, 0, 0.30 * g * dt)
         sway.location = (0, 0, 0.05 * g * dt)
@@ -869,7 +882,8 @@ def main():
     GR.write_anchors(out, {'id': 'pour', 'units': 'S od gornjeg levog ugla punog kadra (W 1, H 1)',
                            'full': {'W': 1, 'H': 1}, 'osa_x': round(GR.project(sc, cam, (0, 0, 0.2), 'pour')[0], 4),
                            'ivica_v60': {'x': round(cx, 4), 'y': round(cy, 4), 'rx': round(rx, 4), 'ry': round(ry, 4)},
-                           'pult_y': round(GR.project(sc, cam, (0, 0, 0), 'pour')[1], 4),
+                           'pult_y': round(GR.project(sc, cam, (0, PULT_ZADNJA, 0), 'pour')[1], 4),
+                           'baza_y': round(GR.project(sc, cam, (0, -0.028, 0), 'pour')[1], 4),
                            'kafa_y': {'from': 177, 'values': kafa}, 'g_od': GR.G_POUR[0], 'g_do': GR.G_POUR[1],
                            'fajl': 'kadar_LLLL.png, L = G - 64', 'generator': 'scripts/blender/kafa/pour.py'})
     kb = [o for o in bpy.data.objects if o.name.startswith('Kuvalo') and o.type == 'MESH']
@@ -887,11 +901,13 @@ def main():
             print(f'POUR kuvalo G{g}: x {min(xs):.3f}..{max(xs):.3f}, y {min(ys):.3f}..{max(ys):.3f} S', flush=True)
         return
     for g in GR.frame_list(a.kadrovi, GR.G_POUR):
-        t1 = time.time()
+        t1, c1 = time.time(), time.process_time()
         sc.frame_set(sf(g))
         sc.render.filepath = str(out / f'kadar_{g - GR.G_POUR[0] + 1:04d}.png')
         bpy.ops.render.render(write_still=True)
-        print(f'POUR kadar G{g} (kadar_{g - GR.G_POUR[0] + 1:04d}): {time.time() - t1:.1f} s', flush=True)
+        cpu = time.process_time() - c1
+        print(f'POUR kadar G{g} (kadar_{g - GR.G_POUR[0] + 1:04d}): {time.time() - t1:.1f} s zidno, {cpu:.0f} CPU-s '
+              f'(~{cpu / 4:.0f} s na 4 slobodna jezgra)', flush=True)
     if a.poster:
         p150 = out / f'kadar_{150 - GR.G_POUR[0] + 1:04d}.png'
         if not p150.exists():

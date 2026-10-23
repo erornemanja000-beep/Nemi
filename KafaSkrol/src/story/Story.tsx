@@ -727,7 +727,7 @@ function LiveStory({ phone }: { phone: boolean }) {
           mode: phone ? 'flow' : 'pinned',
           ...now,
           chapter: lastChapter,
-          clocks: { grind: clockA.current, pour: clocks.pour.current, sip: clockS.current },
+          clocks: { grind: clockA.current, pour: (phone ? clockB : clockA).current, sip: clockS.current },
           flags: flagsRef.current,
           metrics: { ...m },
           wave: wave.current?.inspect().phase,
@@ -755,8 +755,6 @@ function LiveStory({ phone }: { phone: boolean }) {
         if (w) w.style.transform = ''
       }
     }
-    // clocks.pour zavisi od `phone`, a LiveStory se pravi iznova kad se `phone` promeni (key)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phone, clockA, clockB, clockS])
 
   const live: Live = {

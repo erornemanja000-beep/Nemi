@@ -238,7 +238,8 @@ def transmission_card(scene, hex_color, center, radius=4.0):
 
 # ---------------------------------------------------------------- svetlo
 
-def lights(scene, which, subjects, stream_objs, key=70.0, strip=6.0, refl=3.0, stream_key=None):
+def lights(scene, which, subjects, stream_objs, key=70.0, strip=6.0, refl=3.0, refl_subjects=None,
+           stream_key=None, no_key=()):
     """Foto-studio iz common.py oko LIGHT_TARGET (POUR: 1 S niže) + blenda „Odsjaj“: velika bela ploča
     levo-napred, nisko, vidljiva samo u odsjaju predmeta (subjects): prednja strana inoksa dobija svetao
     meki odsjaj, a crna zastava desno tamnu traku (kontrast kao na product fotografiji).
@@ -249,22 +250,24 @@ def lights(scene, which, subjects, stream_objs, key=70.0, strip=6.0, refl=3.0, s
     ls = C.photo_studio_lights(tuple(tgt), subjects, None, key=key, strip=strip, flags=True)
     if refl > 0:
         only = bpy.data.collections.new('OdsjajPrima')
-        for ob in subjects:
+        for ob in (subjects if refl_subjects is None else refl_subjects):     # staklo ne (koprena)
             only.objects.link(ob)
         pos = tgt + 0.85 * C.direction(-138.0, 4.0)
         ro = C.area_light('Odsjaj', tuple(pos), tuple(tgt), (0.55, 0.75), refl, 6000)
         C.ray_visibility(ro, camera=False, diffuse=False, glossy=True, transmission=False, scatter=False)
         ro.light_linking.receiver_collection = only
         ls.append(ro)
-    if not stream_objs:
+    if not stream_objs and not no_key:
         return ls
     k = next(o for o in ls if o.name == 'Key')
-    no_stream = bpy.data.collections.new('BezMlaza')
-    for ob in stream_objs:
+    no_stream = bpy.data.collections.new('BezMlaza')       # key ne svetli mlaz (ni objekte iz no_key)
+    for ob in list(stream_objs) + list(no_key):
         no_stream.objects.link(ob)
     for co in no_stream.collection_objects:
         co.light_linking.link_state = 'EXCLUDE'
     k.light_linking.receiver_collection = no_stream
+    if not stream_objs:
+        return ls
     only_stream = bpy.data.collections.new('SamoMlaz')
     for ob in stream_objs:
         only_stream.objects.link(ob)
@@ -319,7 +322,7 @@ def build_grounds(scene, rate=170, end_g=None):
     mat = mat_grounds()
     crumbs = []
     for k in range(10):
-        ob = bpy.data.objects.new(f'Mrvica{k}', crumb_mesh(f'Mrvica{k}', rng, rng.uniform(0.00028, 0.00060)))
+        ob = bpy.data.objects.new(f'Mrvica{k}', crumb_mesh(f'Mrvica{k}', rng, rng.uniform(0.00035, 0.00075)))
         ob.data.materials.append(mat)
         shapes.objects.link(ob)
         crumbs.append(ob)
@@ -331,10 +334,10 @@ def build_grounds(scene, rate=170, end_g=None):
         for p in o.data.polygons:
             p.use_smooth = True
 
-    # emiter: elipsa 7 x 4,4 mm (tanak mlaz po dubini zbog paralakse na šavu), normala nadole
+    # emiter: elipsa 9 x 4,4 mm (tanak mlaz po dubini zbog paralakse na šavu), normala nadole
     bm = bmesh.new()
     n = 24
-    vs = [bm.verts.new((0.0035 * math.cos(2 * math.pi * i / n), 0.0022 * math.sin(2 * math.pi * i / n), 0.0))
+    vs = [bm.verts.new((0.0045 * math.cos(2 * math.pi * i / n), 0.0022 * math.sin(2 * math.pi * i / n), 0.0))
           for i in range(n)]
     bm.faces.new(vs[::-1])                       # normala -Z
     me = bpy.data.meshes.new('MlazIzvor')
@@ -1054,7 +1057,7 @@ def parse():
     p.add_argument('--tok', type=float, default=4.0, help='zrna po kadru u mlazu odozgo')
     p.add_argument('--traka', type=float, default=0.6, help='brzina zrna pri puštanju, m/s (stvarno vreme)')
     p.add_argument('--odvod', type=float, default=0.06, help='koliko se klip u grlu spusti G50-G96 (m)')
-    p.add_argument('--mleveno', type=int, default=320, help='čestica mlevene kafe po kadru')
+    p.add_argument('--mleveno', type=int, default=600, help='čestica mlevene kafe po kadru')
     p.add_argument('--odsjaj', type=float, default=3.0, help='blenda levo-napred (samo odsjaj), W')
     p.add_argument('--podkoraci', type=int, default=10)
     p.add_argument('--seed', type=int, default=SEED)
@@ -1083,7 +1086,9 @@ def build(a):
     parts = build_grinder(M)
     beans = place_beans(shape, pos, quat, frames, rel, M, render_meshes)
     em, crumbs = build_grounds(sc, a.mleveno, end_g=G_GRIND[1] + 1)
-    lights(sc, 'grind', parts, crumbs, key=a.key, strip=a.strip, refl=a.odsjaj)   # trake bi zrna isprale u sivo
+    metal = [o for o in parts if o.active_material and o.active_material.name.startswith('Inox')]
+    lights(sc, 'grind', parts, crumbs, key=a.key, strip=a.strip, refl=a.odsjaj, refl_subjects=metal)
+    # (trake i blenda samo na mlin: na zrnima bi ih isprale u sivo)
     bake_particles(sc)
     return sc, cam, M
 
@@ -1114,11 +1119,13 @@ def main():
     if a.bez_rendera:
         return
     for g in frame_list(a.kadrovi, G_GRIND):
-        t1 = time.time()
+        t1, c1 = time.time(), time.process_time()
         sc.frame_set(sf(g))
         sc.render.filepath = str(out / f'kadar_{g:04d}.png')
         bpy.ops.render.render(write_still=True)
-        print(f'GRIND kadar G{g}: {time.time() - t1:.1f} s', flush=True)
+        cpu = time.process_time() - c1
+        print(f'GRIND kadar G{g}: {time.time() - t1:.1f} s zidno, {cpu:.0f} CPU-s (~{cpu / 4:.0f} s na 4 slobodna jezgra)',
+              flush=True)
     if a.poster:
         p1 = out / 'kadar_0001.png'
         if not p1.exists():

@@ -1,5 +1,5 @@
-// Poglavlja GRIND → POUR → SIP, staklene kartice i kontrole (tekstovi.md). STUB iz Z1, proverava i
-// dopunjuje ga Z11. vite.config.ts čita chapters.items (naslov, tekst i alt na EN) za <noscript>.
+// Poglavlja GRIND → POUR → SIP, staklene kartice i kontrole (tekstovi.md sa dopunama Z3).
+// vite.config.ts čita chapters.items (naslov, tekst i alt na EN) za <noscript>.
 // Nelomljivi razmak (U+00A0) ide u „18 g", „93 °C" i „1.950 m" (tekstovi.md).
 import type { Chapter, L, SipCard } from './types.ts'
 
@@ -47,15 +47,16 @@ const items: Chapter[] = [
     cta: { label: { en: 'Find your cup', de: 'Finde deine Tasse' }, href: '#find-your-cup' },
     word: 'Frother',
     wordNote: { en: 'makes the foam for your Melange', de: 'macht den Schaum für deine Melange' },
+    // Alt postera S64 (Z3, 1a): poster prikazuje samo šolju, kartice su HTML. Isti alt ima i korak 3 u Brew guide-u.
+    // Alt cele scene iz tekstovi.md: „Ceramic cup with a dripping glaze, surrounded by three coffee cards."
     alt: {
-      en: 'Ceramic cup with a dripping glaze, surrounded by three coffee cards.',
-      de: 'Keramiktasse mit herablaufender Glasur, umgeben von drei Kaffeekarten.',
+      en: 'A ceramic cup with a dripping glaze.',
+      de: 'Eine Keramiktasse mit herablaufender Glasur.',
     },
   },
 ]
 
-/** Tri staklene kartice u SIP-u. Proizvode huila-pink-bourbon i on-repeat dodaje Z11 (products.ts);
-    dok ih nema, kartica mora da preživi nepostojeći slug. */
+/** Tri staklene kartice u SIP-u. Note, cena i datum prženja dolaze iz proizvoda (products.ts). */
 const sipCards: SipCard[] = [
   {
     label: { en: 'Origin', de: 'Herkunft' },
@@ -78,6 +79,16 @@ const sipCards: SipCard[] = [
   },
 ]
 
+/**
+ * Natpisi SIP kartice. Čip „Demo", sr-only tekst i dugme „+" su zajednički sa prodavnicom (shop.card).
+ * aria-label kartice: {name} ime kafe, {place} prvi deo reda kartice („Ethiopia"), {price} formatPrice,
+ * {size} formatGrams, npr. „Guji, Ethiopia, €17.90 for 250 g. View coffee".
+ */
+const card = {
+  view: { en: 'View', de: 'Ansehen' } satisfies L,
+  aria: { en: '{name}, {place}, {price} for {size}. View coffee', de: '{name}, {place}, {price} für {size}. Kaffee ansehen' } satisfies L,
+}
+
 /** Kontrole karusela poglavlja. {n} menja fill(). */
 const nav = {
   prev: { en: 'Previous section', de: 'Vorheriges Kapitel' } satisfies L,
@@ -86,4 +97,4 @@ const nav = {
   swipe: { en: 'Swipe for more', de: 'Wischen für mehr' } satisfies L,
 }
 
-export const chapters = { items, sipCards, nav }
+export const chapters = { items, sipCards, card, nav }

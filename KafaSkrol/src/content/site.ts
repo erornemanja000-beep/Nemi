@@ -1,5 +1,6 @@
-// Sadržaj sajta: SEO, header, skip linkovi, demo napomena (tekstovi.md). STUB iz Z1, dopunjuje ga Z11.
-// vite.config.ts čita site.seo.title.en, site.seo.description.en, site.h1.en i site.demo.en.
+// Sadržaj sajta: SEO, header, skip linkovi, pretraga, chat, demo napomena (tekstovi.md sa dopunama Z3).
+// vite.config.ts čita site.seo.title.en, site.seo.description.en, site.h1.en i site.demo.en (ili site.noscript.en).
+// Oznake {brand}, {email}… menja fill(); {n} broj, {q} upit pretrage.
 import type { L, Link } from './types.ts'
 
 const seo: { title: L; description: L } = {
@@ -41,6 +42,19 @@ export const site = {
   },
   chat: {
     open: { en: 'Open chat', de: 'Chat öffnen' } satisfies L,
+    tooltip: { en: 'Questions? Ask us.', de: 'Fragen? Schreib uns.' } satisfies L,
+    /** Demo panel; {email} = brand.email */
+    panel: {
+      en: 'Hi! This chat is a demo. Write to {email} or come by the café.',
+      de: 'Hallo! Dieser Chat ist eine Demo. Schreib an {email} oder komm im Café vorbei.',
+    } satisfies L,
+  },
+  /** Pretraga: kafe i oprema po imenu, poreklu i notama (Z8). Broj se čita preko aria-live. */
+  search: {
+    placeholder: { en: 'Search coffee, origin or gear', de: 'Kaffee, Herkunft oder Zubehör suchen' } satisfies L,
+    empty: { en: 'Nothing found for "{q}".', de: 'Nichts gefunden für „{q}“.' } satisfies L,
+    resultOne: { en: '1 result', de: '1 Ergebnis' } satisfies L,
+    results: { en: '{n} results', de: '{n} Ergebnisse' } satisfies L,
   },
   /** aria natpisi headera (tekstovi.md); {n} menja fill(). */
   aria: {
@@ -54,9 +68,16 @@ export const site = {
     cartTitle: { en: 'Your cart', de: 'Dein Warenkorb' } satisfies L,
     close: { en: 'Close', de: 'Schließen' } satisfies L,
   },
-  /** Stalna napomena o demou (footer, traka nad prodavnicom, <noscript>). */
+  /** Stalna napomena o demou (footer, traka nad prodavnicom). */
   demo: {
     en: 'Concept / demo — not a real shop. Brand, coffees, farms, address and prices are made up.',
     de: 'Konzept / Demo — kein echter Shop. Marke, Kaffees, Farmen, Adresse und Preise sind erfunden.',
+  } satisfies L,
+  /** Kratka oznaka (traka nad prodavnicom, čipovi): početak napomene iznad. */
+  demoShort: { en: 'Concept / demo', de: 'Konzept / Demo' } satisfies L,
+  /** Red u <noscript> (Z3 tačka 4); plugin u vite.config.ts koristi EN. */
+  noscript: {
+    en: 'Concept / demo — not a real shop. Turn on JavaScript to see the animation and the shop.',
+    de: 'Konzept / Demo — kein echter Shop. Mit JavaScript siehst du die Animation und den Shop.',
   } satisfies L,
 }

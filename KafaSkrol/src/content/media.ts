@@ -1,11 +1,13 @@
 // Mediji u public/media (plan, Interfejs 3). Kod čita putanje SAMO odavde.
 // Novi renderi: zameni folder u public/media i prebaci `ready` ovde (README, „Renderi").
-// Fotografije i para: fajlovi i licence iz studio/kafa-skrol/izvori.md (mediji, 23.10.2026).
-// Alt tekstovi fotografija su privremeni opisi slike; konačne daju Z3 i Z11.
+// Fotografije i para: fajlovi, autori i licence iz studio/kafa-skrol/izvori.md (mediji, 23.10.2026).
+// Alt tekstovi su iz tekstovi.md (dopune Z3, 1a–1d). Natpisi za stranicu Credits su u legal.ts (credits).
 import type { ChapterId, MediaManifest, PhotoEntry, ProductImage, SeqMedia, SteamMedia } from './types.ts'
 
 const UNSPLASH = { license: 'Unsplash License', licenseUrl: 'https://unsplash.com/license' }
 const PEXELS = { license: 'Pexels License', licenseUrl: 'https://www.pexels.com/license/' }
+/** alt="" za dekorativne fotografije (Z3: pozadine prodavnice) */
+const DECOR = { en: '', de: '' }
 
 function photo(
   id: string,
@@ -29,44 +31,78 @@ function photo(
 
 const photos: Record<string, PhotoEntry> = {
   'shop-1': photo('shop-1', [480, 600], [900, 1125],
-    { en: 'Glass jars filled with coffee beans', de: 'Gläser voller Kaffeebohnen' },
+    {
+      en: 'A row of glass jars with clip lids, full of roasted coffee beans, on a dark background. Only the front jar is sharp.',
+      de: 'Eine Reihe Gläser mit Bügelverschluss voller gerösteter Kaffeebohnen vor dunklem Hintergrund. Nur das vorderste ist scharf.',
+    },
     { author: 'Clint Bustrillos', url: 'https://unsplash.com/photos/clear-glass-jar-filled-with-coffee-bean-lot-XgVHdER_fG4', ...UNSPLASH }),
   'shop-bg-1': photo('shop-bg-1', [480, 720], [900, 1350],
-    { en: 'A pile of roasted coffee beans on a light background', de: 'Geröstete Kaffeebohnen auf hellem Grund' },
+    // pozadina prodavnice = dekor, alt="" (Z3). Ako postane sadržaj: „A heap of roasted coffee beans on a cream
+    // background." / „Ein Häufchen gerösteter Kaffeebohnen auf cremefarbenem Grund."
+    DECOR,
     { author: 'Cemrecan Yurtman', url: 'https://unsplash.com/photos/a-pile-of-coffee-beans-on-a-white-background-G4RS0NGIS8I', ...UNSPLASH }),
   'shop-bg-2': photo('shop-bg-2', [828, 778], [1920, 1805],
-    { en: 'Coffee beans scattered on a light surface, seen from above', de: 'Verstreute Kaffeebohnen von oben' },
+    // pozadina prodavnice = dekor, alt="" (Z3). Ako postane sadržaj: „Roasted coffee beans scattered on a cream
+    // surface, seen from above." / „Geröstete Kaffeebohnen, locker verstreut auf hellem Grund, von oben."
+    DECOR,
     { author: 'Mockup Graphics', url: 'https://unsplash.com/photos/brown-coffee-beans-on-white-surface-m7ijvnNGaV0', ...UNSPLASH }),
   'onama-1': photo('onama-1', [828, 806], [1920, 1868],
-    { en: 'Freshly roasted beans turning in the cooling tray of a roaster', de: 'Frisch geröstete Bohnen im Kühlsieb eines Röstofens' },
+    {
+      en: 'Freshly roasted beans in the round cooling tray of a roaster. A steel arm stirs them over the perforated floor.',
+      de: 'Frisch geröstete Bohnen im runden Kühlsieb einer Röstmaschine. Ein Rührarm aus Stahl bewegt sie über den gelochten Boden.',
+    },
     { author: 'Khanh Do', url: 'https://unsplash.com/photos/freshly-roasted-coffee-beans-in-a-roaster-QrrFbQp085M', ...UNSPLASH }),
   'onama-2': photo('onama-2', [828, 552], [1920, 1280],
-    { en: 'Roasted coffee beans in a roasting machine', de: 'Geröstete Kaffeebohnen in einer Röstmaschine' },
+    {
+      en: "Close-up of roasted beans in a roaster's cooling tray, with a steel stirring arm passing through.",
+      de: 'Nahaufnahme: geröstete Bohnen im Kühlsieb einer Röstmaschine, ein Rührarm aus Stahl zieht hindurch.',
+    },
     { author: 'Ichsan Chairul', url: 'https://unsplash.com/photos/freshly-roasted-coffee-beans-in-a-roaster-machine-iwcZmTKFo0w', ...UNSPLASH }),
   'guide-1': photo('guide-1', [828, 501], [1920, 1162],
-    { en: 'Coffee beans being weighed on a digital scale', de: 'Kaffeebohnen auf einer digitalen Waage' },
+    {
+      en: 'Whole roasted beans in a white ceramic dosing cup on a black scale. A dark grinder stands next to it.',
+      de: 'Ganze geröstete Bohnen in einem weißen Dosierbecher aus Keramik auf einer schwarzen Waage. Daneben steht eine dunkle Kaffeemühle.',
+    },
     { author: 'User_Pascal', url: 'https://unsplash.com/photos/coffee-beans-are-being-weighed-on-a-digital-scale-dZAb0Km1ELY', ...UNSPLASH }),
   'guide-2': photo('guide-2', [828, 745], [1776, 1599],
-    { en: 'A dripper on a carafe, standing on a scale', de: 'Handfilter auf einer Kanne, auf einer Waage' },
+    {
+      en: 'From above: a white dripper with a pleated paper filter on a digital scale, the wet grounds blooming. Next to it, a wooden scoop of ground coffee.',
+      de: 'Von oben: ein weißer Handfilter mit gefaltetem Papierfilter auf einer digitalen Waage, das nasse Kaffeemehl quillt auf. Daneben ein Holzlöffel mit Kaffeemehl.',
+    },
     { author: 'Jason An', url: 'https://unsplash.com/photos/a-cup-of-coffee-sitting-on-top-of-a-scale-S9QYhiZ0tFE', ...UNSPLASH }),
-  // izvor je KONTAKT-2 (odluka direktora 5): stvaran bečki lokal, zato natpis „Symbolbild"
+  // izvor je KONTAKT-2 (odluka direktora 5): stvaran bečki lokal, zato čip „Symbolbild" (caption);
+  // figcaption je sections.contact.photoCaption. EN „Illustrative photo" po Z3 (rezerva iz plana: „Symbolic image").
   'kontakt-1': photo('kontakt-1', [480, 716], [900, 1342],
-    { en: 'Empty café courtyard in Vienna after the rain', de: 'Leerer Cafégarten in Wien nach dem Regen' },
+    {
+      en: 'An empty café courtyard in Vienna after rain: white chairs and tables, a folded striped parasol, wet paving stones.',
+      de: 'Ein leerer Gastgarten in einem Wiener Innenhof nach dem Regen: weiße Stühle und Tische, ein zusammengeklappter gestreifter Sonnenschirm, nasses Pflaster.',
+    },
     { author: 'Anna Holodna', url: 'https://www.pexels.com/photo/view-of-an-empty-cafe-patio-16862543/', ...PEXELS },
-    { en: 'Symbolic image', de: 'Symbolbild' }),
+    { en: 'Illustrative photo', de: 'Symbolbild' }),
 }
 
-/** Kese iz Blender rendera (storyboard 6): 400 telefon, 600 kartica, 900 prodavnica; render 1200×1500. */
-function bag(id: 'origin' | 'flavor' | 'roast'): ProductImage {
+/**
+ * Kese iz Blender rendera (storyboard 6): 400 telefon, 600 kartica, 900 prodavnica; render 1200×1500.
+ * Šest kafa deli tri kese po boji (etiketa bez imena kafe, Z4). Ključ je `image` u products.ts:
+ *   origin (terakota): Guji, Nyeri · flavor (tirkiz): Huila Pink Bourbon, Tarrazú Honey, Probierset ·
+ *   roast (breskva): On Repeat, Pause. SIP kartice: Origin = Guji, Flavor = Huila, Roast = On Repeat.
+ * Alt je iz Z3 (1c) i opisuje boju; na SIP kartici i kartici prodavnice ide alt="", u modalu shop.modal.imageAlt.
+ * Boje u alt-u su pisane po bags.py pre etikete Z4 (origin i roast sad imaju talas): proveriti kad render stigne.
+ */
+function bag(id: 'origin' | 'flavor' | 'roast', alt: ProductImage['alt']): ProductImage {
   return {
     srcs: [400, 600, 900].map((width) => ({ width, src: `/media/bags/kesa-${id}-${width}.webp` })),
     ratio: 1200 / 1500,
-    alt: { en: 'Coffee bag (demo label)', de: 'Kaffeepackung (Demo-Etikett)' },
+    alt,
     ready: false,
   }
 }
 
-/** Opciono: mirni Blender snimci opreme (plan, Interfejs 3). Bez njih kartica crta CSS siluetu. */
+/**
+ * Opciono: mirni Blender snimci opreme (plan, Interfejs 3). Bez njih kartica crta CSS siluetu (aria-hidden).
+ * Alt je iz Z3 (1d), pisan po opisu proizvoda: proveriti kad render stigne. Ako dripper stoji na bokalu,
+ * kartica mora da kaže da li je bokal uključen ([FEHLT: Lieferumfang Dripper], tekstovi.md).
+ */
 function gear(id: 'grinder' | 'dripper' | 'kettle', alt: ProductImage['alt']): ProductImage {
   return {
     srcs: [
@@ -128,14 +164,32 @@ export const media: MediaManifest = {
   },
   photos,
   bags: {
-    origin: bag('origin'),
-    flavor: bag('flavor'),
-    roast: bag('roast'),
+    origin: bag('origin', {
+      en: 'Stand-up coffee bag, 250\u00a0g, cream with a coral-red label.',
+      de: 'Stehende Kaffeepackung, 250\u00a0g, cremefarben mit korallenrotem Etikett.',
+    }),
+    flavor: bag('flavor', {
+      en: 'Stand-up coffee bag, 250\u00a0g, beige with a turquoise wave and a blue stripe.',
+      de: 'Stehende Kaffeepackung, 250\u00a0g, beige mit türkisfarbener Welle und blauem Streifen.',
+    }),
+    roast: bag('roast', {
+      en: 'Stand-up coffee bag, 250\u00a0g, peach-pink with salmon spots and a light arc.',
+      de: 'Stehende Kaffeepackung, 250\u00a0g, pfirsichrosa mit lachsfarbenen Flecken und hellem Bogen.',
+    }),
   },
   gear: {
-    grinder: gear('grinder', { en: 'Burr grinder', de: 'Kaffeemühle' }),
-    dripper: gear('dripper', { en: 'Ceramic dripper', de: 'Handfilter aus Keramik' }),
-    kettle: gear('kettle', { en: 'Gooseneck kettle', de: 'Schwanenhals-Wasserkocher' }),
+    grinder: gear('grinder', {
+      en: 'Electric burr grinder in stainless steel with a glass hopper.',
+      de: 'Elektrische Kaffeemühle aus Edelstahl mit Bohnenbehälter aus Glas.',
+    }),
+    dripper: gear('dripper', {
+      en: 'Ceramic cone dripper on a glass carafe.',
+      de: 'Kegelförmiger Handfilter aus Keramik auf einer Glaskanne.',
+    }),
+    kettle: gear('kettle', {
+      en: 'Electric gooseneck kettle with a long, thin spout, on its base.',
+      de: 'Elektrischer Schwanenhals-Wasserkocher mit langem, dünnem Ausguss, auf dem Sockel.',
+    }),
   },
 }
 

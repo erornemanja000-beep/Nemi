@@ -15,7 +15,9 @@ unshare -n /opt/blender/blender -b --factory-startup --offline-mode -Y --python-
   -P scripts/blender/<projekat>/<scena>.py -- <argumenti>
 ```
 
-Nikad ne koristiš `-y`/`--enable-autoexec`, `--python-use-system-env`, dodatke ni extensions (ni `blender-mcp`). Tuđi `.blend` fajlovi su zabranjeni. Ako direktor izuzetno odobri CC0 materijal, prima se samo kao glTF/OBJ/EXR/HDR. Freestyle ne koristiš, jer pokreće skripte i kad je auto-run isključen.
+Nikad ne koristiš `-y`/`--enable-autoexec`, `--python-use-system-env`, dodatke ni extensions (ni `blender-mcp`). Tuđi `.blend` fajlovi su zabranjeni. Freestyle ne koristiš, jer pokreće skripte i kad je auto-run isključen.
+
+**Odobren izvor je Poly Haven (CC0).** Uzimaš HDRI kao `.hdr`/`.exr`, teksture kao `.jpg`/`.png` i modele samo kao **glTF**. Fajlovi se preuzimaju sa `dl.polyhaven.org`, uz proveru md5 i veličine iz `api.polyhaven.com/files/<id>`. Preuzimanje ide **pre** pokretanja Blendera, a Blender i dalje radi bez mreže. Zabranjeni su `.blend`, FBX i USD. Fajlovi idu u `scripts/blender/assets/`, a izvor i licenca u komentar skripte. Pravila za ostale izvore su u `studio/znanje/izvori-i-licence.md`.
 
 ## Gde je šta
 

@@ -7,6 +7,7 @@ Ono što agenti istraže, a važi za sve projekte. Svako ovo čita pre posla, da
 | `trendovi.md` | `trend-skaut` | šta je danas savremeno u dizajnu i pokretu, šta je izlizano, nove mogućnosti browsera |
 | `reference.md` | `trend-skaut` | vrhunski i nagrađeni sajtovi po branšama, sa onim što je na njima dobro |
 | `ai-alati.md` | `trend-skaut` | AI alati za slike i video: mogućnosti, cene, uslovi, saveti za promptove |
+| `izvori-i-licence.md` | direktor (po proveri `bezbednost`) | besplatni izvori slika, videa i 3D materijala: licence, šta sme u repo, bezbedno preuzimanje i obrada |
 | `trziste.md` | `trziste` | segmenti klijenata u Beču, konkurencija, cene, pravila (Impressum, DSGVO, pristupačnost, AI) |
 
 Svaka stavka ima datum i izvor. Pravila istraživanja su u `CLAUDE.md`.

@@ -21,6 +21,10 @@ Nove skripte pravi u istom stilu: Python, kratak opis na vrhu, putanje kao argum
 ## Pravila
 
 - Ako nisi siguran u specifikacije platformi (Instagram, TikTok, YouTube: rezolucija, trajanje, bitrate) ili u ffmpeg opcije, proveri ih u zvaničnim izvorima. Skripte sa interneta nikad ne preuzimaš i ne pokrećeš. Pravila istraživanja su u `CLAUDE.md`.
+- **Tuđi snimci i slike** (stock, Unsplash, Pexels…):
+  - pravila licenci i bezbedne obrade su u `studio/znanje/izvori-i-licence.md`;
+  - izvorni fajlovi idu u `studio/<projekat>/izvori/` (ne objavljuje se), a manifest sa URL-om, autorom, licencom i sha256 u `studio/<projekat>/izvori.md`;
+  - ffmpeg na tuđim fajlovima radi samo kao `unshare -rn ffmpeg -protocol_whitelist file -f mov …`.
 - Originale nikad ne prepisuj. Nove verzije dobijaju novo ime (`_web`, `-sm`/`-lg`, `_9x16`).
 - **Slike za web:** WebP u dve veličine kao u RealEstates (`-sm` oko 828 px, `-lg` oko 1920 px; portreti 480/900), kvalitet oko 75–82.
 - **Video za web:**

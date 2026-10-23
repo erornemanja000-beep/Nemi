@@ -1,2 +1,5 @@
 __pycache__/
 *.pyc
+
+# izvorni stock i CC0 fajlovi (licence ne dozvoljavaju objavu sirovih fajlova), vidi studio/znanje/izvori-i-licence.md
+studio/*/izvori/

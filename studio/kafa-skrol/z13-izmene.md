@@ -19,5 +19,8 @@ Ove izmene su predložili agenti talasa 1–2. Radi ih **jedan** programer u Z13
 | `KafaSkrol/src/lib/format.ts` + `scripts/check-data.ts` | EN datum „Oct 20, 2026" (en-US, kratak mesec) umesto „23 Oct 2026" | Z11 / Z3 |
 | `KafaSkrol/src/content/types.ts` | `SipCard.notes?: L<string[]>` (tačne note na SIP karticama); `LegalEntry`, `LegalPageContent` iz `legal.ts` premestiti ovde; `SeqMedia.placeholder?: boolean` za red u Credits-u | Z11 |
 | `KafaSkrol/src/lib/cart.ts` | koristi `shop.shipping.feeCents` i `freeFromCents` iz sadržaja umesto sopstvenih konstanti | Z11 (radi Z8, ne Z13) |
+| `KafaSkrol/src/content/types.ts` + `media.ts` | `SeqMedia.geometry: { full: {W,H}, crop: {x0,y0,w,h} }`: grind `{1,1.25}` / `{0.22,0,0.56,1.25}`; pour `{1,1}` / `{0.26,0,0.72,1}`; sip `{1,1}` / `{0.2,0,0.64,0.86}`. Poster tada stoji na mestu isečka pre `seq.json` i u reduced motion | Z5 |
+
+**Za Z12 (napomena direktora):** na desktopu je jedan dekodiran `d` kadar oko 4 MB, a tokom šava oko 400 MB. Zato `createClock(..., { retain: 16 })`.
 
 Dopunjava se kako stižu izveštaji Z5–Z10.

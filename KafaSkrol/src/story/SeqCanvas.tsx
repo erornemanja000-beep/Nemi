@@ -6,7 +6,8 @@
 //   Veličina se pamti iz ResizeObserver-a; u petlji se ne čita layout.
 // - DPR najviše 2, i nikad više piksela nego što fajl nivoa ima.
 // - Reduced motion i Save-Data: samo poster, bez platna i bez zahteva za kadrove.
-// - Bez `geometry` i bez manifesta (npr. reduced motion pre Z13) poster popunjava kutiju (object-contain).
+// - Bez `geometry` i bez manifesta (reduced motion, Save-Data, pre seq.json) poster popunjava kutiju
+//   (object-contain). Zato Story prosleđuje `geometry` (isti brojevi kao full i crop u seq.json).
 import { useEffect, useRef, type CSSProperties } from 'react'
 import { SEQ_DEBUG, type Clock, type SeqGeometry, type Sequence } from '../lib/sequence'
 import { useReducedMotion, useSaveData } from '../lib/useMedia'
@@ -23,7 +24,7 @@ type Props = {
   seq: Sequence | null
   clock: Clock | null
   poster: SeqPoster
-  /** pun kadar i isečak pre nego što stigne seq.json (inače iz seq.manifest) */
+  /** pun kadar i isečak dok seq.json ne stigne (i u reduced motion); posle važi seq.manifest */
   geometry?: SeqGeometry
   /** poziva se jednom, kad platno prvi put zameni poster */
   onFirstFrame?: () => void
@@ -37,7 +38,18 @@ export function SeqCanvas({ seq, clock, poster, geometry, onFirstFrame, classNam
   const reduced = useReducedMotion()
   const saveData = useSaveData()
   const live = !reduced && !saveData && seq !== null && clock !== null
-  const geo = geometry ?? seq?.manifest ?? null
+  // seq.json je merodavan čim stigne; `geometry` važi samo do tada (poster na pravom mestu pre manifesta)
+  const geo = seq?.manifest ?? geometry ?? null
+
+  useEffect(() => {
+    if (!SEQ_DEBUG || !geometry || !seq) return
+    const m = seq.manifest
+    const a = [geometry.full.W, geometry.full.H, geometry.crop.x0, geometry.crop.y0, geometry.crop.w, geometry.crop.h]
+    const b = [m.full.W, m.full.H, m.crop.x0, m.crop.y0, m.crop.w, m.crop.h]
+    if (a.some((v, i) => Math.abs(v - b[i]) > 1e-6)) {
+      console.warn(`[seq] ${seq.id}: geometry iz media.ts se razlikuje od seq.json (poster će skočiti); uskladiti media.ts`)
+    }
+  }, [geometry, seq])
   const rootRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const posterRef = useRef<HTMLImageElement>(null)
@@ -94,9 +106,10 @@ export function SeqCanvas({ seq, clock, poster, geometry, onFirstFrame, classNam
       const w = Math.max(1, Math.round(cssW * scale))
       const h = Math.max(1, Math.round(cssH * scale))
       if (canvas.width === w && canvas.height === h) return
+      // imageSmoothingQuality ostaje podrazumevan ('low', bilinearno): umanjenje je 0,5–1, a 'high'
+      // je uz 4× usporen CPU skoro duplo skuplji po kadru (izmereno na /dev/seq)
       canvas.width = w
       canvas.height = h
-      ctx.imageSmoothingQuality = 'high'
       fresh = true
       draw()
       // nova veličina briše platno; dok se kadar ne nacrta ponovo, vidi se poster

@@ -1,0 +1,50 @@
+# Netlify: poseban sajt za Kafa skrol (base directory = KafaSkrol). Koncept / demo, ne indeksira se.
+# Pravi ga korisnik kad sajt bude spreman; do tada se ništa ne objavljuje.
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+  # paketi se instaliraju bez install skripti (pravilo iz CLAUDE.md, proverava `bezbednost`)
+  NPM_FLAGS = "--ignore-scripts"
+
+# Mediji i bundle koji ne postoje vraćaju 404, a ne index.html (inače bi slika dobila HTML sa 200).
+# Netlify ne primenjuje ova pravila kad fajl postoji, pa postojeći fajlovi idu normalno.
+[[redirects]]
+  from = "/media/*"
+  to = "/index.html"
+  status = 404
+
+[[redirects]]
+  from = "/assets/*"
+  to = "/index.html"
+  status = 404
+
+# SPA: sve ostale rute (/p/guji, /impressum, /credits …) daje index.html, a ruter bira stranicu.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Isti CSP i X-Robots-Tag stoje u vite.config.ts (preview.headers): uskladiti oba mesta.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow, noarchive"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+    Content-Security-Policy = "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; media-src 'self' blob:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
+
+# Bundle iz Vite-a ima heš u imenu fajla: keš godinu dana.
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Kadrovi, para i fotografije menjaju se bez promene imena: keš 1 dan (kao root netlify.toml).
+[[headers]]
+  for = "/media/*"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"

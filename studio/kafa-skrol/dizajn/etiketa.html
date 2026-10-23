@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=2048">
+<title>Etiketa za kese · kafa-skrol (Konzept / Demo)</title>
+<!--
+  Etiketa za kese (Z4), dizajner, 23.10.2026.
+  Jedna etiketa u tri boje: ?v=origin | flavor | roast. Uz &guides=1 se vide zone (ne idu u PNG).
+  Platno je 2048 × 3072 px = prednja strana kese 120 × 180 mm (17,0667 px/mm). Mapa i mere su u etiketa.md.
+  Fontovi su samo lokalni: Archivo iz KafaSkrol/node_modules (@fontsource-variable/archivo 5.3.0),
+  Figtree iz sajt/src/assets/fonts. Bez CDN-a. Otvarati preko lokalnog servera iz korena repoa
+  (file:// blokira fontove), vidi etiketa.md.
+-->
+<link rel="stylesheet" href="tokens.css">
+<style>
+@font-face{font-family:"Archivo";font-style:normal;font-display:block;font-weight:100 900;font-stretch:62% 125%;src:url(../../../KafaSkrol/node_modules/@fontsource-variable/archivo/files/archivo-latin-wdth-normal.woff2) format("woff2-variations");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Figtree";font-style:normal;font-display:block;font-weight:300 900;src:url(../../../sajt/src/assets/fonts/figtree-latin-wght-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+
+/* ---------- Boje kesa (izvedene iz scripts/blender/kafa/bags.py, usklađene sa tokens.css) ----------
+   paper   = boja papira kese (i materijal boka, leđa i vara u Blenderu)
+   field   = talas kafe (glavna površina etikete)
+   meniscus/glint = tamna linija i svetli odsjaji na ivici talasa (kao Wave na sajtu)
+   on-paper / on-field = boja teksta (samo boje iz tokena)                                         */
+.label[data-v="origin"]{
+  --paper:#EEE5D5; --field:#AD4731; --meniscus:#86321F; --glint:var(--pp-crema);
+  --on-paper:var(--pp-ink); --on-field:var(--pp-cream-light); --star:#AD4731;
+}
+.label[data-v="flavor"]{
+  --paper:#E6D6BF; --field:#3A9A96; --meniscus:#1E5C86; --glint:#8FCBC6;
+  --on-paper:var(--pp-ink); --on-field:var(--pp-ink-deep); --star:#1E5C86;
+}
+.label[data-v="roast"]{
+  --paper:#EDB8A0; --field:#D8826A; --meniscus:#B25A45; --glint:#F6ECE4;
+  --on-paper:var(--pp-ink); --on-field:var(--pp-ink-deep); --star:#B25A45;
+}
+
+html,body{margin:0;padding:0;background:transparent}
+body{width:2048px;height:3072px;overflow:hidden}
+
+.label{
+  --mm:17.0667px;              /* 2048 px / 120 mm */
+  --safe-x:calc(10 * var(--mm)); /* 171 px: bok kese i zaobljeni ugao */
+  position:relative;width:2048px;height:3072px;overflow:hidden;
+  background:var(--paper);color:var(--on-field);
+  -webkit-font-smoothing:antialiased;text-rendering:geometricPrecision;
+}
+.label svg.art{position:absolute;inset:0;width:2048px;height:3072px;display:block}
+
+/* ---------- Tekst (sve mere u px platna; 1 mm = 17,07 px) ---------- */
+.brand{
+  position:absolute;left:var(--safe-x);top:1372px;margin:0;
+  font-family:var(--font-display);font-weight:800;
+  font-variation-settings:"wdth" 88;font-stretch:88%;
+  text-transform:uppercase;letter-spacing:-0.01em;line-height:0.84;
+  font-size:400px; /* skript ga podesi na širinu sigurne zone */
+  white-space:nowrap;color:var(--on-field);
+}
+.brand span{display:block}
+.sub{
+  position:absolute;left:var(--safe-x);top:2322px;margin:0;
+  font-family:var(--font-text);font-weight:700;text-transform:uppercase;
+  letter-spacing:0.2em;font-size:96px;line-height:1;white-space:nowrap;color:var(--on-field);
+}
+.qty{
+  position:absolute;left:var(--safe-x);top:2660px;margin:0;
+  font-family:var(--font-display);font-weight:800;font-variation-settings:"wdth" 88;font-stretch:88%;
+  font-size:236px;line-height:1;letter-spacing:-0.01em;white-space:nowrap;color:var(--on-field);
+}
+.demo{
+  position:absolute;right:var(--safe-x);top:2752px;margin:0;box-sizing:border-box;
+  display:inline-flex;align-items:center;justify-content:center;
+  height:136px;padding:0 54px 0 calc(54px + 0.16em);
+  border:7px solid var(--on-field);border-radius:999px;
+  font-family:var(--font-text);font-weight:700;text-transform:uppercase;
+  letter-spacing:0.16em;font-size:76px;line-height:1;color:var(--on-field);
+}
+
+/* ---------- Pomoćne zone (samo ?guides=1, nikad u PNG) ---------- */
+.guides{display:none;position:absolute;inset:0;pointer-events:none;font:700 34px/1.2 var(--font-text);color:#d0021b}
+.label.show-guides .guides{display:block}
+.guides div{position:absolute;box-sizing:border-box}
+.g-zip{left:0;right:0;top:0;height:358px;background:repeating-linear-gradient(135deg,rgba(208,2,27,.18) 0 18px,transparent 18px 40px);border-bottom:4px dashed #d0021b}
+.g-valve{left:819px;top:341px;width:410px;height:410px;border:4px dashed #d0021b;border-radius:50%}
+.g-valve::after{content:"";position:absolute;left:68.5px;top:68.5px;width:273px;height:273px;border-radius:50%;background:rgba(208,2,27,.25)}
+.g-safe{left:171px;right:171px;top:800px;bottom:137px;border:4px dashed #0a7d3e}
+.g-side{top:0;bottom:0;width:171px;background:rgba(208,2,27,.10)}
+.g-side.l{left:0}.g-side.r{right:0}
+.g-bottom{left:0;right:0;bottom:0;height:137px;background:repeating-linear-gradient(135deg,rgba(208,2,27,.18) 0 18px,transparent 18px 40px)}
+.g-note{padding:12px 18px;background:rgba(255,255,255,.85);border-radius:8px}
+
+.font-error{position:absolute;inset:0;display:none;place-items:center;background:#d0021b;color:#fff;font:700 80px/1.2 sans-serif;text-align:center}
+.label.font-missing .font-error{display:grid}
+</style>
+</head>
+<body>
+<div class="label" id="label" data-v="origin">
+  <svg class="art" viewBox="0 0 2048 3072" aria-hidden="true">
+    <path id="field" fill="var(--field)" d=""/>
+    <path id="glint" fill="none" stroke="var(--glint)" stroke-width="22" stroke-linecap="round" d=""/>
+    <path id="meniscus" fill="none" stroke="var(--meniscus)" stroke-width="18" d=""/>
+    <!-- zvezdica sa sajta (favicon / Sparkle), na papiru iznad talasa -->
+    <g transform="translate(1612 896) scale(7.5)"><path fill="var(--star)" d="M12 0c.6 6.2 5.8 11.4 12 12-6.2.6-11.4 5.8-12 12-.6-6.2-5.8-11.4-12-12C6.2 11.4 11.4 6.2 12 0Z"/></g>
+  </svg>
+
+  <h1 class="brand" id="brand" data-brand><span>Pour /</span><span>Play</span></h1>
+  <p class="sub" id="sub">Specialty Coffee · Wien</p>
+  <p class="qty" id="qty">250&nbsp;g</p>
+  <p class="demo" id="demo">Demo</p>
+
+  <div class="guides" aria-hidden="true">
+    <div class="g-zip"><span class="g-note" style="position:absolute;left:190px;top:150px">zipper i nabori · z 169–190 mm · bez teksta</span></div>
+    <div class="g-side l"></div><div class="g-side r"></div>
+    <div class="g-bottom"></div>
+    <div class="g-valve"></div>
+    <div class="g-note" style="left:1250px;top:500px">ventil Ø 16 mm · zona Ø 24 mm</div>
+    <div class="g-safe"></div>
+  </div>
+  <div class="font-error" id="font-error">Archivo ili Figtree se nisu učitali.<br>Ovaj izvoz ne važi.</div>
+</div>
+
+<script>
+(() => {
+  const q = new URLSearchParams(location.search);
+  const label = document.getElementById('label');
+  const v = q.get('v');
+  if (v === 'origin' || v === 'flavor' || v === 'roast') label.dataset.v = v;
+  if (q.get('guides') === '1') label.classList.add('show-guides');
+
+  /* Ivica talasa: zbir dve sinusoide, kao Wave na sajtu. Isti oblik za sve tri kese. */
+  const Y0 = 1210, A1 = 40, L1 = 1540, P1 = 0.9, A2 = 15, L2 = 590, P2 = 2.4;
+  const edge = x => Y0 + A1 * Math.sin(2 * Math.PI * x / L1 + P1) + A2 * Math.sin(2 * Math.PI * x / L2 + P2);
+  const line = (dy) => {
+    let d = '';
+    for (let x = -16; x <= 2064; x += 8) d += (d ? 'L' : 'M') + x + ',' + (edge(x) + dy).toFixed(2);
+    return d;
+  };
+  const top = line(0);
+  document.getElementById('field').setAttribute('d', top + 'L2064,3100L-16,3100Z');
+  document.getElementById('meniscus').setAttribute('d', top);
+  const glint = document.getElementById('glint');
+  glint.setAttribute('d', line(66));
+  glint.setAttribute('stroke-dasharray', '0 236 520 64 120 470 260 9999');
+
+  const fit = (el, width) => {
+    const w = el.getBoundingClientRect().width;
+    const fs = parseFloat(getComputedStyle(el).fontSize);
+    el.style.fontSize = (fs * width / w).toFixed(2) + 'px';
+  };
+
+  document.fonts.ready.then(() => {
+    const ok = document.fonts.check('800 100px "Archivo"', 'POUR') && document.fonts.check('700 100px "Figtree"', 'WIEN');
+    const loaded = [...document.fonts].filter(f => f.status === 'loaded').map(f => f.family.replace(/"/g, ''));
+    const real = loaded.includes('Archivo') && loaded.includes('Figtree');
+    if (!ok || !real) label.classList.add('font-missing');
+
+    const SAFE = 2048 - 2 * 171;                  // 1706 px
+    const brand = document.getElementById('brand');
+    const l1 = brand.firstElementChild;
+    l1.style.display = 'inline-block';
+    fit(l1, SAFE); brand.style.fontSize = l1.style.fontSize; l1.style.fontSize = ''; l1.style.display = '';
+    const sub = document.getElementById('sub');
+    sub.style.display = 'inline-block';
+    // širina bez poslednjeg razmaka slova
+    const ls = 0.2 * parseFloat(getComputedStyle(sub).fontSize);
+    const w = sub.getBoundingClientRect().width - ls;
+    sub.style.fontSize = (parseFloat(getComputedStyle(sub).fontSize) * SAFE / w).toFixed(2) + 'px';
+    label.dataset.ready = real && ok ? 'ok' : 'font-error';
+  });
+})();
+</script>
+</body>
+</html>

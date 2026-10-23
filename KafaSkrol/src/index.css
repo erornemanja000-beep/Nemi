@@ -1,0 +1,238 @@
+/* Zajednički stilovi (Z1). Posle Z1 ovaj fajl menja samo Z13: zadaci imaju svoje CSS fajlove. */
+@import "tailwindcss";
+@import "./styles/fonts.css";
+@import "./styles/tokens.css";
+
+/* Desktop raspored priče: od 64rem širine i 600 px visine (plan, Interfejs 1).
+   Isti upit je DESKTOP_QUERY u src/lib/useMedia.ts. Sve ostalo je telefonski raspored. */
+@custom-variant desk (@media (min-width: 64rem) and (min-height: 600px));
+@custom-variant phone (@media not all and (min-width: 64rem) and (min-height: 600px));
+
+/* Tailwind palete i fontovi se brišu: utility klase smeju da koriste samo tokene. */
+@theme {
+  --color-*: initial;
+  --font-*: initial;
+  --radius-*: initial;
+  --shadow-*: initial;
+  --ease-*: initial;
+}
+
+/* Uloge iz tokens.css. "inline reference": klasa piše var(--token) direktno, pa prati najbliži
+   [data-chapter] (bg-bg na POUR sloju je terakota), a Tailwind ne pravi svoje kopije promenljivih. */
+@theme inline reference {
+  /* boje po ulogama */
+  --color-bg: var(--color-bg);
+  --color-surface: var(--color-surface);
+  --color-text: var(--color-text);
+  --color-muted: var(--color-text-muted);
+  --color-accent: var(--color-accent);
+  --color-accent-text: var(--color-accent-text);
+  --color-line: var(--color-line);
+  --color-line-strong: var(--color-line-strong);
+  --color-word: var(--color-word);
+  --color-focus: var(--color-focus);
+  --color-btn: var(--color-btn-bg);
+  --color-btn-text: var(--color-btn-text);
+  --color-btn-ring: var(--color-btn-ring);
+  --color-pill: var(--color-pill-bg);
+  --color-pill-text: var(--color-pill-text);
+  --color-pill-border: var(--color-pill-border);
+  --color-placeholder: var(--color-placeholder);
+  --color-placeholder-line: var(--color-placeholder-line);
+  --color-control: var(--color-control-bg);
+  --color-floor: var(--color-floor);
+  --color-floor-deep: var(--color-floor-deep);
+  --color-glass: var(--glass-bg);
+  --color-glass-border: var(--glass-border);
+  --color-glass-text: var(--glass-text);
+  --color-glass-muted: var(--glass-text-muted);
+
+  /* sirova paleta: samo gde mockup koristi stalnu boju (chat, dugme „+", značka korpe) */
+  --color-pp-cream: var(--pp-cream);
+  --color-pp-cream-light: var(--pp-cream-light);
+  --color-pp-paper: var(--pp-paper);
+  --color-pp-ink: var(--pp-ink);
+  --color-pp-ink-deep: var(--pp-ink-deep);
+  --color-pp-terracotta: var(--pp-terracotta);
+  --color-pp-espresso: var(--pp-espresso);
+  --color-pp-clay: var(--pp-clay);
+  --color-pp-crema: var(--pp-crema);
+  --color-pp-mute: var(--pp-mute);
+
+  /* fontovi */
+  --font-display: var(--font-display);
+  --font-word: var(--font-word);
+  --font-text: var(--font-text);
+  --font-label: var(--font-label);
+
+  /* veličine slova (tokeni --fs-*) */
+  --text-word: var(--fs-word);
+  --text-word-xl: var(--fs-word-xl);
+  --text-chapter: var(--fs-chapter);
+  --text-h2: var(--fs-h2);
+  --text-h3: var(--fs-h3);
+  --text-logo: var(--fs-logo);
+  --text-logo-sub: var(--fs-logo-sub);
+  --text-eyebrow: var(--fs-eyebrow);
+  --text-body: var(--fs-body);
+  --text-small: var(--fs-small);
+  --text-label: var(--fs-label);
+  --text-micro: var(--fs-micro);
+
+  /* razmaci: p-s4 = --space-4 (Tailwindov p-4 je isti, ali p-5 nije --space-5) */
+  --spacing-s1: var(--space-1);
+  --spacing-s2: var(--space-2);
+  --spacing-s3: var(--space-3);
+  --spacing-s4: var(--space-4);
+  --spacing-s5: var(--space-5);
+  --spacing-s6: var(--space-6);
+  --spacing-s7: var(--space-7);
+  --spacing-s8: var(--space-8);
+  --spacing-s9: var(--space-9);
+  --spacing-s10: var(--space-10);
+  --spacing-gutter: var(--gutter);
+  --spacing-inset: var(--chapter-inset);
+  --spacing-header: var(--header-h);
+  --spacing-tap: var(--tap);
+  --container-measure: var(--text-measure);
+  --container-site: var(--container-max);
+
+  --radius-xs: var(--radius-xs);
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-card: var(--radius-card);
+  --radius-lg: var(--radius-lg);
+  --radius-pill: var(--radius-pill);
+
+  --shadow-soft: var(--shadow-soft);
+  --shadow-float: var(--shadow-float);
+  --shadow-btn: var(--shadow-btn);
+  --shadow-glass: var(--glass-shadow);
+
+  --ease-out: var(--ease-out);
+  --ease-in-out: var(--ease-in-out);
+  --ease-settle: var(--ease-settle);
+}
+
+/* ---------- Osnova (iz mockup.html) ---------- */
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    color-scheme: light;
+    background: var(--pp-cream);
+  }
+  body {
+    margin: 0;
+    background: var(--pp-cream);
+    color: var(--color-text);
+    font: 400 var(--fs-body) / var(--lh-body) var(--font-text);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: clip;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 3px;
+    border-radius: var(--radius-xs);
+  }
+  ::selection {
+    background: var(--pp-terracotta);
+    color: var(--pp-cream-light);
+  }
+}
+
+/* Skip link (mockup .skip): skriven iznad ekrana, pojavljuje se na fokus. */
+.skip-link {
+  position: absolute;
+  left: var(--gutter);
+  top: -100px;
+  z-index: 100;
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap);
+  padding: 0 18px;
+  border-radius: var(--radius-pill);
+  background: var(--pp-ink-deep);
+  color: var(--pp-cream-light);
+  font: 700 var(--fs-label) / 1 var(--font-label);
+  letter-spacing: var(--tracking-button);
+  text-transform: uppercase;
+  text-decoration: none;
+}
+.skip-link:focus {
+  top: 12px;
+}
+
+/* ---------- Lenis (kao RealEstates i lenis/dist/lenis.css) ---------- */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+  overflow: clip;
+}
+/* paneli koji se sami skroluju (korpa, meni, modal) dobijaju data-lenis-prevent */
+.lenis [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+/* ---------- Pojavljivanje (src/lib/reveal.ts) ----------
+   useReveal() dodaje .reveal-pending elementima sa data-reveal, pa ih zamenjuje sa .reveal-in
+   kad uđu u ekran (fade + 16 px, razmak 60 ms preko --reveal-delay). */
+.reveal-pending {
+  opacity: 0;
+  transform: translateY(16px);
+}
+.reveal-in {
+  transition:
+    opacity var(--dur-slow) var(--ease-out),
+    transform var(--dur-slow) var(--ease-out);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+/* ---------- Bez JavaScript-a: sadržaj iz <noscript> (upisuje ga vite.config.ts) ---------- */
+.noscript {
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: var(--space-7) var(--gutter);
+}
+.noscript img {
+  width: min(100%, 22rem);
+  height: auto;
+  margin: 0 auto var(--space-6);
+}
+.noscript h2 {
+  margin: var(--space-6) 0 var(--space-2);
+  font-family: var(--font-display);
+  font-weight: var(--font-display-wght);
+  font-variation-settings: "wdth" var(--font-display-wdth);
+  font-size: var(--fs-h2);
+  line-height: var(--lh-chapter);
+  text-transform: uppercase;
+}
+.noscript p {
+  margin: 0;
+}
+.noscript .noscript__demo {
+  margin-top: var(--space-7);
+  color: var(--color-text-muted);
+  font-size: var(--fs-small);
+}
+
+/* ---------- Mirna verzija (mockup.html) ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
+  .reveal-pending {
+    opacity: 1;
+    transform: none;
+  }
+}

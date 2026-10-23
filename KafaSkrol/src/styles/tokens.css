@@ -1,0 +1,223 @@
+/* ==========================================================================
+   Kafa skrol · Specialty Coffee — dizajn tokeni
+   Kopija fajla studio/kafa-skrol/dizajn/tokens.css (dizajner, 23.10.2026).
+   Razlike u KafaSkrol kopiji (programer, Z1):
+   - ime brenda je izbačeno iz ovog komentara (stoji samo u src/config/site.ts);
+   - u --font-display je prvo ime "Archivo Variable" (ime Fontsource familije).
+   Sve vrednosti tokena su iste kao u dizajnerskom fajlu.
+
+   Boje su uzorkovane iz referentnog videa (analiza-videa.md) i podešene
+   za WCAG 2.x AA. Kontrasti su izračunati i upisani u dizajn.md.
+   Poglavlja menjaju samo uloge: <section data-chapter="grind|pour|sip">.
+   ========================================================================== */
+
+:root {
+  /* ---------- 1. Sirova paleta (ne koristiti direktno u komponentama) ---------- */
+  --pp-cream:        #E6DDCE; /* GRIND i prodavnica, iz videa */
+  --pp-cream-light:  #F4EEE4; /* tekst na terakoti i braonu: 5,15:1 na POUR */
+  --pp-paper:        #F1EBE1; /* površina na kremu (kartice prodavnice, meni) */
+  --pp-ink:          #2B2316; /* tekst, iz videa */
+  --pp-ink-deep:     #1B150D; /* tamna dugmad i chat; 3,04:1 prema terakoti */
+  --pp-terracotta:   #915439; /* POUR, iz videa, nepromenjena */
+  --pp-espresso:     #6E3A27; /* SIP, iz videa */
+  --pp-clay:         #7A4128; /* akcenat za tekst na kremu (5,97:1) */
+  --pp-crema:        #F7E6C6; /* zvezdica, akcenat na obojenim poglavljima (4,84:1 POUR, 7,44:1 SIP) */
+  --pp-mute:         #665847; /* prigušen tekst na kremu (5,11:1) */
+
+  /* Pozadinske reči: ukras, aria-hidden, ne nose informaciju */
+  --pp-word-grind:   #AF998F; /* tamnije od krema, 2,01:1 */
+  --pp-word-pour:    #5C3120; /* tamnije od terakote, 1,84:1 */
+  --pp-word-sip:     #8A5440; /* svetlije od braona, 1,49:1 */
+
+  /* ---------- 2. Uloge: podrazumevano = krem (GRIND, prodavnica) ---------- */
+  --color-bg:            var(--pp-cream);
+  --color-surface:       var(--pp-paper);
+  --color-text:          var(--pp-ink);
+  --color-text-muted:    var(--pp-mute);
+  --color-accent:        var(--pp-terracotta); /* površine, veliki elementi */
+  --color-accent-text:   var(--pp-clay);       /* linkovi i sitan akcenat */
+  --color-line:          rgba(43, 35, 22, 0.14); /* razdelnici (ukras) */
+  --color-line-strong:   #857563;               /* ivice polja: 3,30:1 */
+  --color-word:          var(--pp-word-grind);
+  --color-focus:         var(--pp-ink);
+
+  --color-btn-bg:        var(--pp-ink-deep);
+  --color-btn-text:      var(--pp-cream-light);
+  --color-btn-ring:      transparent;           /* tanka ivica na obojenim poglavljima */
+  --color-pill-bg:       transparent;           /* dugme-pilula u headeru */
+  --color-pill-text:     var(--pp-ink);
+  --color-pill-border:   var(--pp-ink);
+
+  --color-placeholder:      #BDB6AC;             /* siva silueta 3D predmeta */
+  --color-placeholder-line: rgba(43, 35, 22, 0.28);
+  --color-control-bg:       rgba(255, 255, 255, 0.55); /* strelice karusela */
+
+  /* ---------- 3. Staklene kartice (SIP) ---------- */
+  --glass-bg:          rgba(255, 249, 241, 0.72);
+  --glass-bg-solid:    #EFE5DA;   /* bez backdrop-filter podrške */
+  --glass-border:      rgba(255, 255, 255, 0.60);
+  --glass-blur:        16px;
+  --glass-saturate:    140%;
+  --glass-text:        var(--pp-ink);  /* 7,96:1 i u najgorem slučaju */
+  --glass-text-muted:  #4A3D2F;        /* 5,40:1 u najgorem slučaju */
+  --glass-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.65),
+    0 24px 48px -18px rgba(27, 21, 13, 0.50),
+    0 8px 16px -8px rgba(27, 21, 13, 0.25);
+
+  /* ---------- 4. Fontovi (samo lokalno, vidi dizajn.md) ---------- */
+  /* Naslovi poglavlja: PREDLOG Archivo (wdth 88, wght 800), OFL-1.1, čeka
+     proveru `bezbednost`. Dok se ne instalira, mockup koristi Inter Display
+     (sistemski font na ovoj mašini), pa Figtree iz repoa. */
+  /* KafaSkrol: Fontsource familija se zove "Archivo Variable" (src/styles/fonts.css). */
+  --font-display: "Archivo Variable", "Inter Display", "Figtree", system-ui, sans-serif;
+  --font-display-wght: 800;
+  --font-display-wdth: 88;           /* SemiCondensed; bez efekta na rezervnim fontovima */
+  /* Pozadinske reči: Fraunces iz repoa (sajt/src/assets/fonts), osa SOFT */
+  --font-word: "Fraunces", "Cooper Black", Georgia, serif;
+  --font-word-wght: 800;
+  --font-word-settings: "SOFT" 100, "WONK" 1, "opsz" 144;
+  /* Tekst, meni, natpisi: Figtree iz repoa */
+  --font-text: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-label: var(--font-text);
+
+  /* ---------- 5. Tipografska skala (fluidno 390 → 1440 px) ---------- */
+  --fs-word:     clamp(8.5rem, 5rem + 12vw, 15rem);      /* 136 → 240 px (GRIND) */
+  --fs-word-xl:  clamp(9rem, 4rem + 17vw, 19.25rem);     /* 144 → 308 px (POUR, SIP: reč preko cele širine) */
+  --fs-chapter:  clamp(4rem, 2.9rem + 4.4vw, 6rem);      /*  64 →  96 px */
+  --fs-h2:       clamp(2rem, 1.5rem + 2vw, 3rem);        /*  32 →  48 px (prodavnica) */
+  --fs-h3:       clamp(1rem, 0.95rem + 0.2vw, 1.125rem); /*  16 →  18 px (kartica) */
+  --fs-logo:     clamp(1.25rem, 1.05rem + 0.8vw, 1.875rem); /* 20 → 30 px */
+  --fs-logo-sub: clamp(0.5625rem, 0.53rem + 0.15vw, 0.6875rem); /* 9 → 11 px, deo logotipa */
+  --fs-eyebrow:  clamp(0.875rem, 0.8rem + 0.3vw, 1.0625rem); /* 14 → 17 px */
+  --fs-body:     clamp(1rem, 0.96rem + 0.18vw, 1.0625rem);  /* 16 → 17 px */
+  --fs-small:    0.875rem;   /* 14 px */
+  --fs-label:    0.8125rem;  /* 13 px, nav, dugmad, natpisi kartica */
+  --fs-micro:    0.75rem;    /* 12 px, samo Grundpreis i datum, uvek ≥ 4,5:1 */
+
+  --lh-chapter: 0.92;
+  --lh-word:    0.8;
+  --lh-snug:    1.2;
+  --lh-body:    1.6;
+
+  --tracking-chapter: -0.01em;
+  --tracking-eyebrow: 0.16em;
+  --tracking-nav:     0.12em;
+  --tracking-button:  0.12em;
+  --tracking-logo-sub: 0.32em;
+
+  /* ---------- 6. Razmaci ---------- */
+  --space-1: 0.25rem;  /*   4 */
+  --space-2: 0.5rem;   /*   8 */
+  --space-3: 0.75rem;  /*  12 */
+  --space-4: 1rem;     /*  16 */
+  --space-5: 1.5rem;   /*  24 */
+  --space-6: 2rem;     /*  32 */
+  --space-7: 3rem;     /*  48 */
+  --space-8: 4rem;     /*  64 */
+  --space-9: 6rem;     /*  96 */
+  --space-10: 8rem;    /* 128 */
+
+  --gutter:       clamp(1.25rem, 0.6rem + 3vw, 3.5rem);  /* 20 → 56 px, header i ivice */
+  --chapter-inset: clamp(1.25rem, 15.5vw - 1rem, 14rem); /* levi rub teksta poglavlja, 222 px na 1440 */
+  --text-measure: 25rem;                                 /* kolona teksta u poglavlju */
+  --header-h:     clamp(4rem, 3.2rem + 2.6vw, 6rem);     /* 64 → 96 px */
+  --tap:          2.75rem;                               /* 44 px, najmanja dodirna površina */
+  --container-max: 90rem;
+
+  /* ---------- 7. Zaobljenja ---------- */
+  --radius-xs:   6px;
+  --radius-sm:   10px;
+  --radius-md:   14px;
+  --radius-card: 18px;
+  --radius-lg:   28px;
+  --radius-pill: 999px;
+
+  /* ---------- 8. Senke ---------- */
+  --shadow-soft:  0 1px 2px rgba(43, 35, 22, 0.08), 0 8px 24px -12px rgba(43, 35, 22, 0.25);
+  --shadow-float: 0 30px 60px -20px rgba(27, 21, 13, 0.45), 0 12px 24px -12px rgba(27, 21, 13, 0.30);
+  --shadow-btn:   0 6px 16px -6px rgba(27, 21, 13, 0.45);
+
+  /* ---------- 9. Pokret ---------- */
+  --dur-instant: 120ms;   /* hover boje */
+  --dur-fast:    200ms;   /* dugmad, fokus */
+  --dur-base:    360ms;   /* meni, kartica pri hoveru */
+  --dur-slow:    700ms;   /* ulazak teksta poglavlja */
+  --dur-scene:   1100ms;  /* let staklene kartice do mesta */
+  --dur-twinkle: 2400ms;  /* zvezdica */
+
+  --ease-out:    cubic-bezier(0.22, 1, 0.36, 1);   /* izlazak, smirivanje */
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);   /* prelazi poglavlja */
+  --ease-settle: cubic-bezier(0.34, 1.4, 0.64, 1); /* kartica sleće uz mali odskok */
+  --ease-scrub:  linear;                           /* sve što je vezano za skrol */
+
+  --parallax-word: 0.35;  /* reč ide 35 % brzine skrola (horizontalno) */
+  --pin-length:    420vh; /* dužina zakačenog poglavlja na desktopu */
+  --card-tilt:     -6deg; /* položaj kartice u mirovanju */
+
+  /* ---------- 10. Slojevi ---------- */
+  --z-word: 0;
+  --z-object: 2;
+  --z-content: 3;
+  --z-card: 4;
+  --z-header: 10;
+  --z-chat: 20;
+}
+
+/* ---------- Poglavlja: menjaju samo uloge ---------- */
+[data-chapter="pour"] {
+  --color-bg:          var(--pp-terracotta);
+  --color-surface:     #84492F;
+  --color-text:        var(--pp-cream-light);   /* 5,15:1 */
+  --color-text-muted:  #EDE3D5;                 /* 4,69:1 */
+  --color-accent-text: var(--pp-crema);         /* 4,84:1 */
+  --color-line:        rgba(244, 238, 228, 0.22);
+  --color-word:        var(--pp-word-pour);
+  --color-focus:       var(--pp-cream-light);
+  --color-btn-ring:    rgba(244, 238, 228, 0.65); /* ≥ 3,15:1 prema svakoj podlozi */
+  --color-pill-bg:     var(--pp-cream-light);
+  --color-pill-text:   var(--pp-ink-deep);
+  --color-pill-border: var(--pp-cream-light);
+  --color-placeholder: #B3A69B;
+  --color-placeholder-line: rgba(244, 238, 228, 0.45);
+  --color-control-bg:  rgba(244, 238, 228, 0.22);
+}
+
+[data-chapter="sip"] {
+  --color-bg:          var(--pp-espresso);
+  --color-surface:     #5E3020;
+  --color-text:        var(--pp-cream-light);   /* 7,92:1 */
+  --color-text-muted:  #E3D6C6;                 /* 6,40:1 */
+  --color-accent-text: var(--pp-crema);         /* 7,44:1 */
+  --color-line:        rgba(244, 238, 228, 0.20);
+  --color-word:        var(--pp-word-sip);
+  --color-floor:       #7C4532;                 /* sto ispod šolje, LT tekst 6,61:1 */
+  --color-floor-deep:  #74402D;
+  --color-focus:       var(--pp-cream-light);
+  --color-btn-ring:    rgba(244, 238, 228, 0.65); /* ≥ 3,15:1 prema svakoj podlozi */
+  --color-pill-bg:     var(--pp-cream-light);
+  --color-pill-text:   var(--pp-ink-deep);
+  --color-pill-border: var(--pp-cream-light);
+  --color-placeholder: #A2948A;
+  --color-placeholder-line: rgba(244, 238, 228, 0.40);
+  --color-control-bg:  rgba(244, 238, 228, 0.18);
+}
+
+/* ---------- Mirna verzija ---------- */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-instant: 1ms;
+    --dur-fast: 1ms;
+    --dur-base: 1ms;
+    --dur-slow: 1ms;
+    --dur-scene: 1ms;
+    --dur-twinkle: 0ms;
+    --parallax-word: 0;
+    --pin-length: 0;
+  }
+}
+
+/* ---------- Bez backdrop-filter: neprovidna kartica ---------- */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  :root { --glass-bg: var(--glass-bg-solid); }
+}

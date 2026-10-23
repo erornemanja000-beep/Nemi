@@ -7,7 +7,8 @@
 //   (.layer-sip__lens) i svoj SVG. Ništa ne čita iz layout-a u petlji: dimenzije i položaji se mere pri
 //   promeni veličine (ResizeObserver), pri ulasku u talas i na ref.measure().
 // - Pozadina POUR-a mora biti UNUTAR pourClip (inače isečen deo ne otkriva SIP), a pozadina SIP-a
-//   unutar sipLens ili ispod njega.
+//   unutar sipLens ili ispod njega. Tokom talasa je isečeno i sve što viri van kutije pourClip.
+// - Wave daje dva korena (telo tečnosti i ivice) sa istim className; Story ih stavlja posle slojeva.
 // - Ako se POUR ili SIP sloj pomera tokom talasa (npr. POUR „ide gore sporije od talasa" na 70–100 %,
 //   ili telefon bez pina), Story šalje trenutne gornje ivice: ref.set(p, startY, { pourTop, lensTop }).
 //   Bez toga važe izmerene vrednosti, što je tačno za sticky scenu.
@@ -16,7 +17,10 @@
 // - p = 0: ravna linija tačno na startY (amplituda 0), pa se tanka tamna linija pojavi do p ≈ 0,03.
 // - 0–0,12: gornja ivica se diže, a tečnost se razliva nadole do dna ekrana; ispod nje je još POUR.
 // - 0,12–0,3: donja ivica ulazi odozdo, ispod nje je čist SIP. Iznad gornje ivice je POUR.
-// - 0,3–0,7: traka debljine 18–35 % visine prolazi sredinom; kroz nju se vidi živ SIP (scale 1,04, ton).
+// - 0,3–0,7: traka debljine 18–35 % visine prolazi sredinom; kroz nju se vidi živ SIP (scale 1,04;
+//   ton daje providna ćilibarna ispuna, bez CSS filtera na SIP-u, vidi niže).
+// Varijante: desktop 36 segmenata ivice i 5 odsjaja, telefon 24 i 3. Nijedna nema displacement ni
+// backdrop-filter (izmereno: ni desktop nema rezerve u 16,7 ms za to).
 // - 0,7–1: traka izlazi gore, ostaje SIP. Na p = 1 POUR je isečen iznad ekrana (ostaje tako).
 import { useEffect, useImperativeHandle, useRef, useState, type Ref, type RefObject } from 'react'
 import './wave.css'
@@ -183,7 +187,7 @@ type Els = {
 }
 
 function createEngine(els: Els, variant: WaveVariant, pourRef: WaveProps['pourClip'], lensRef: WaveProps['sipLens']) {
-  const segments = variant === 'phone' ? 24 : 44
+  const segments = variant === 'phone' ? 24 : 36
   const glints = GLINTS.slice(0, els.glints.length)
   const geo = {
     W: 0,

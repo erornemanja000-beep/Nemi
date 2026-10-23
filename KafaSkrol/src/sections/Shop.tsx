@@ -7,7 +7,7 @@
 // Filter iz drugih sekcija: window događaj SHOP_FILTER_EVENT ('kafa:shop-filter', detail { brew }).
 // Kartice se pojavljuju preko reveal.ts; promena filtera ili sortiranja daje fade mreže (WAAPI, samo
 // opacity; u reduced motion odmah).
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties } from 'react'
 import { useLocation } from 'react-router-dom'
 import { Button } from '../components/Button'
 import { Icon } from '../components/Icon'
@@ -124,19 +124,17 @@ export function Shop() {
         </p>
 
         {/* naslov i SHOP-1 */}
-        <div className="mt-s5 grid gap-s5 lg:mt-s6 lg:grid-cols-12 lg:items-end lg:gap-s7">
+        <div className="mt-s5 grid gap-s5 lg:mt-s6 lg:grid-cols-12 lg:items-center lg:gap-s7">
           <div className="lg:col-span-7">
             <h2 id="t-shop" tabIndex={-1} className="type-display m-0 text-h2 leading-none focus:outline-none">
               {tx(shop.title)}
             </h2>
             <p className="m-0 mt-s3 max-w-[34rem] text-[1.125rem] leading-snug font-semibold">{tx(shop.subtitle)}</p>
-            <p className="m-0 mt-s3 max-w-[34rem]">
-              {tx(shop.text)}{' '}
-              <a href={shop.cta.href} className="inline-flex min-h-tap items-center gap-1 font-bold whitespace-nowrap text-accent-text underline underline-offset-4">
-                {tx(shop.cta.label)}
-                <Icon name="next" className="size-4" />
-              </a>
-            </p>
+            <p className="m-0 mt-s3 max-w-[34rem]">{tx(shop.text)}</p>
+            <a href={shop.cta.href} className="mt-s1 inline-flex min-h-tap items-center gap-1 font-bold text-accent-text underline underline-offset-4">
+              {tx(shop.cta.label)}
+              <Icon name="next" className="size-4" />
+            </a>
           </div>
           <div className="lg:col-span-5">
             <Photo
@@ -204,9 +202,14 @@ export function Shop() {
 
         {/* mreža po grupama */}
         <div ref={revealRef}>
-          <div ref={gridRef} className="mt-s5">
+          <div ref={gridRef} className="shop-groups mt-s5">
             {groups.map((g) => (
-              <section key={g.id} aria-labelledby={`shop-group-${g.id}`} className="mt-s6 first:mt-0 lg:mt-s7">
+              <section
+                key={g.id}
+                aria-labelledby={`shop-group-${g.id}`}
+                className="shop-group mt-s6 first:mt-0 lg:mt-0"
+                style={{ '--span': Math.min(g.items.length, 3) } as CSSProperties}
+              >
                 <h3 id={`shop-group-${g.id}`} className="m-0 mb-s3 type-label text-text">
                   {tx(groupLabel[g.id])} · {g.items.length}
                 </h3>
@@ -231,16 +234,17 @@ export function Shop() {
         </div>
 
         {/* dostava i preuzimanje */}
-        <div className="mt-s8 grid overflow-hidden rounded-card bg-surface lg:mt-s9 lg:grid-cols-2">
-          <div className="order-2 p-s5 lg:order-1 lg:p-s7">
+        <div className="mt-s8 grid border-t border-line lg:mt-s9 lg:grid-cols-2 lg:gap-s7">
+          <div className="pt-s6 lg:py-s7">
             <h3 className="type-display m-0 text-[1.75rem] leading-none">{tx(shop.shippingInfo.title)}</h3>
             <p className="m-0 mt-s3 max-w-[34rem]">{tx(shop.shippingInfo.text)}</p>
             <Button to={shop.shippingInfo.cta.href} className="mt-s5">
               {tx(shop.shippingInfo.cta.label)}
             </Button>
           </div>
-          <div className="order-1 lg:order-2" aria-hidden="true">
-            <Photo id="shop-bg-2" sizes="(min-width: 64rem) 45vw, 100vw" className="shop-ship-photo" />
+          {/* dekor: visina je rezervisana (telefon 2:1, desktop visina teksta), da sidra ispod ne kasne */}
+          <div className="shop-ship-media mt-s5 lg:mt-0" aria-hidden="true">
+            <Photo id="shop-bg-2" sizes="(min-width: 64rem) 45vw, 100vw" />
           </div>
         </div>
       </div>

@@ -71,6 +71,8 @@ function LiveView({ phone }: { phone: boolean }) {
   const [frame, setFrame] = useState<Frame>(() => frameFor(window.innerWidth, window.innerHeight, phone))
   const [steamOn, setSteamOn] = useState({ pour: true, sip: false })
   const kafa = useRef<number[]>([0.84])
+  /** ponovo primeni poslednji p (npr. kad stigne seq.json) */
+  const reapply = useRef<() => void>(() => {})
   const stats = useRef({ calls: 0, total: 0, max: 0, p: 0, startY: 0 })
   const frameRef = useRef(frame)
   useLayoutEffect(() => {
@@ -84,7 +86,10 @@ function LiveView({ phone }: { phone: boolean }) {
       .then((r) => (r.ok ? r.json() : null))
       .then((j) => {
         const v = j?.anchors?.kafa_y?.values
-        if (!cancelled && Array.isArray(v) && v.length) kafa.current = v
+        if (!cancelled && Array.isArray(v) && v.length) {
+          kafa.current = v
+          reapply.current()
+        }
       })
       .catch(() => {})
     return () => {
@@ -126,8 +131,9 @@ function LiveView({ phone }: { phone: boolean }) {
       s.startY = startY
       if (coffee.current) coffee.current.style.transform = `translate3d(0, ${(startY - jugTop()).toFixed(1)}px, 0)`
       if (pourSteam.current) pourSteam.current.style.opacity = (1 - smooth(0.45, 0.85, p)).toFixed(3)
-      if (sipSteam.current) sipSteam.current.style.opacity = smooth(0.35, 0.75, p).toFixed(3)
-      const next = { pour: p < 0.95, sip: p > 0.3 }
+      // kao u priči: para u SIP-u počinje od S20, a to je posle talasa (S1–S16), pa ovde tek na p = 1
+      if (sipSteam.current) sipSteam.current.style.opacity = p >= 1 ? '1' : '0'
+      const next = { pour: p < 0.95, sip: p >= 1 }
       if (next.pour !== last.pour || next.sip !== last.sip) {
         last = next
         setSteamOn(next)
@@ -141,6 +147,7 @@ function LiveView({ phone }: { phone: boolean }) {
     }
 
     let st: ScrollTrigger | null = null
+    reapply.current = () => apply(FIXED_P ?? st?.progress ?? 0)
     if (FIXED_P !== null) {
       apply(FIXED_P)
     } else if (range.current) {
@@ -187,6 +194,7 @@ function LiveView({ phone }: { phone: boolean }) {
     }
     return () => {
       st?.kill()
+      reapply.current = () => {}
       delete window.__devWave
     }
   }, [phone])

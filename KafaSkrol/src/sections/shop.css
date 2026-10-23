@@ -122,6 +122,26 @@
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: var(--space-5);
     }
+    /* grupe u istoj mreži od 3 kolone: Sets i Equipment staju u jedan red dok ih je ukupno ≤ 3
+       (--span = broj kartica grupe, najviše 3, postavlja Shop.tsx) */
+    .shop-groups {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--space-7) var(--space-5);
+    }
+    .shop-group {
+      display: grid;
+      grid-template-columns: subgrid;
+      grid-column: span var(--span, 3);
+      /* naslov, pa kartice do dna reda: kartice susednih grupa su iste visine */
+      grid-template-rows: auto 1fr;
+    }
+    .shop-group > * {
+      grid-column: 1 / -1;
+    }
+    .shop-group > .shop-grid {
+      grid-template-columns: subgrid;
+    }
   }
 
   /* ---------- Kartica ---------- */
@@ -149,6 +169,11 @@
     aspect-ratio: 4 / 3;
     margin: var(--space-2) var(--space-2) 0;
     border-radius: var(--radius-md);
+  }
+  @media (min-width: 64rem) {
+    .shop-card__media {
+      aspect-ratio: 3 / 2;
+    }
   }
   .shop-visual__img {
     width: auto;
@@ -277,53 +302,36 @@
     cursor: pointer;
   }
 
-  /* ---------- Dostava: dekor SHOP-BG-2 (pozadina slike je već krem) ---------- */
-  .shop-ship-photo {
-    display: block;
-    width: 100%;
-    height: 100%;
-    max-height: 18rem;
+  /* ---------- Dostava: dekor SHOP-BG-2 (pozadina slike je već krem, ivice se gube u sekciji) ----------
+     Visina je rezervisana pre učitavanja: telefon 2:1, desktop visina kolone teksta (slika je apsolutna). */
+  .shop-ship-media {
+    position: relative;
     aspect-ratio: 2 / 1;
-    object-fit: cover;
-    object-position: 50% 45%;
+    overflow: hidden;
   }
-  @media (min-width: 64rem) {
-    .shop-ship-photo {
-      max-height: none;
-      aspect-ratio: auto;
-      min-height: 100%;
-    }
-  }
-
-  /* ---------- Modal proizvoda (/p/:slug): <dialog> u top layer-u ---------- */
-  .pm {
-    position: fixed;
+  .shop-ship-media img {
+    position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
-    max-width: none;
-    max-height: none;
-    margin: 0;
-    padding: 0;
-    border: 0;
-    background: transparent;
-    color: var(--color-text);
+    object-fit: cover;
+    object-position: 50% 45%;
+    mask-image: radial-gradient(farthest-side at 50% 50%, #000 60%, transparent 100%);
+  }
+  @media (min-width: 64rem) {
+    .shop-ship-media {
+      aspect-ratio: auto;
+      min-height: 16rem;
+    }
+  }
+
+  /* ---------- Modal proizvoda (/p/:slug): panel u Overlay-u iz CartDrawer.tsx ----------
+     Overlay daje pozadinu, ulaz (chrome.css) i nivo (iznad headera i chata, ispod toast-a). Varijanta
+     „sheet" je ceo ekran; od 64rem je panel u sredini. Selektor je jači od chrome.css (sheet: inset 0). */
+  .chrome-overlay[data-variant="sheet"] .chrome-panel.pm-panel {
+    display: block;
     overflow-y: auto;
-    overscroll-behavior: contain;
-  }
-  .pm::backdrop {
-    background: rgb(27 21 13 / 0.55);
-  }
-  .pm[open]::backdrop {
-    animation: pm-fade var(--dur-base) var(--ease-out);
-  }
-  .pm__panel {
-    position: relative;
-    min-height: 100%;
     background: var(--color-bg);
-  }
-  .pm[open] .pm__panel {
-    animation: pm-in var(--dur-base) var(--ease-out);
   }
   .pm__bar {
     position: sticky;
@@ -348,7 +356,7 @@
   }
   .pm-dl {
     display: grid;
-    grid-template-columns: minmax(7rem, auto) 1fr;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
     gap: var(--space-2) var(--space-4);
     margin: 0;
   }
@@ -364,18 +372,17 @@
   }
 
   @media (min-width: 64rem) {
-    .pm {
-      padding: var(--space-7) var(--gutter);
-    }
-    .pm__panel {
-      display: flex;
-      flex-direction: column;
-      min-height: 0;
-      max-width: 66rem;
+    .chrome-overlay[data-variant="sheet"] .chrome-panel.pm-panel {
+      inset: var(--space-7) 0 auto;
+      width: min(100% - 2 * var(--gutter), 66rem);
+      max-height: calc(100dvh - 2 * var(--space-7));
       margin: 0 auto;
-      overflow: clip;
       border-radius: var(--radius-lg);
       box-shadow: var(--shadow-float);
+    }
+    .pm-dl {
+      grid-template-columns: max-content minmax(0, 1fr);
+      column-gap: var(--space-6);
     }
     .pm__bar {
       border-bottom: 0;
@@ -388,17 +395,5 @@
       max-height: none;
       margin: 0;
     }
-  }
-}
-
-@keyframes pm-in {
-  from {
-    opacity: 0;
-    transform: translateY(16px);
-  }
-}
-@keyframes pm-fade {
-  from {
-    opacity: 0;
   }
 }

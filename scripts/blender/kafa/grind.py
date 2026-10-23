@@ -1,21 +1,38 @@
-"""GRIND (kafa skrol-sajt, poglavlje 1): inox mlin sa burr mehanizmom.
+"""GRIND (kafa skrol-sajt, poglavlje 1): inox mlin sa staklenim levkom, foto-studio verzija (23.10.2026).
 
-Zrna padaju odozgo (van kadra) u stakleni levak i pune ga (rigid body), a iz otvora napred dole
-curi mlevena kafa (čestice) naniže, van kadra, ka dripperu iz scene POUR.
+Zrna padaju odozgo (iz gornje ivice kadra) u stakleni levak i odskaču po gomili (rigid body), od G50 se
+gomila u sredini lagano uvlači (mlevenje), a od G50 do G88 iz otvora mlina na x=0 curi mlevena kafa
+(čestice) naniže, preko šava, u V60 iz scene POUR (pour.py renderuje iste čestice svojom kamerom).
 
-Pokretanje iz korena repoa (vidi .claude/agents/blender-umetnik.md):
-  unshare -n /opt/blender/blender -b --factory-startup --offline-mode -Y --python-exit-code 1 -t 4 \
-    -P scripts/blender/kafa/grind.py -- --out <folder> --kadrova 90 --kadrovi 1,45,90 --res 800 --uzorci 32
+Ova skripta drži i zajednički „svet“ GRIND/POUR (storyboard.md 1-2, rig K i šav opcija C), koji pour.py
+uvozi (import grind): kamera, sat G, mlaz mlevene kafe, karta za transmisiju, svetlo. Zato je main() pod
+`if __name__ == '__main__'`.
 
-Dogovor svih scena: metri, pod z=0, kamera spreda (-Y) 10 stepeni odozgo, objektiv 85 mm, kadar 1:1,
-providna pozadina, C.studio_lights(). Otvor mlina (odakle pada mlevena kafa) je tačno na x=0.
-Mlin je okrenut za --rot stepeni oko vertikalne ose kroz otvor (pogled 3/4 kao u videu), pa je
-telo pomereno ~2 cm udesno, a levak (i mlaz zrna odozgo) je na x~+0.017.
+- Kamera: vodoravna, 85 mm, senzor 36 mm (HORIZONTAL), 1,0625 m od ravni y=0, kadar 45 cm (1 S);
+  GRIND kadar je S x 1,25 S (z 0,8775 do 0,315), POUR je tačno 1 S niže; kadriranje ide shift_y-om.
+- Sat: globalni kadar G (GRIND G1-G96, POUR G65-G192); u Blenderu je kadar scene G + G_OFF (sve > 0).
+- Svetlo: common.photo_studio_lights (key prozor levo-gore-napred, dve trake pozadi, crna zastava desno),
+  tamna HDRI okolina 0,15, ekspozicija 0, AgX Medium High Contrast. Rig ide sa kamerom (POUR = -1 S).
+  Mlaz mlevene kafe ima svoje svetlo na istom mestu u obe scene (light linking), pa je na šavu isti.
+- Staklo: film_transparent_glass=False + „karta“ u boji sekcije (vidljiva samo kroz staklo), boja je
+  kalibrisana kroz AgX tako da render daje tačno boju iz tokens.css.
+- Fizika zrna: Bullet u uvećanom svetu (x10, gravitacija x10), levak od kutija, 10 podkoraka, 20 iteracija;
+  rezultat (položaj i rotacija svakog zrna po kadru) se kešira u cache/zrna_<otisak>.npz.
 
-Fizika ide od negativnih kadrova (preroll), tako da je na kadru 1 levak već pun do pola, a mlazevi
-teku. Kadrovi 1..N su kadrovi sekvence (kadar_0001.png ... kadar_00NN.png).
+HDRI „Lebombo“ (Greg Zaal, Poly Haven, CC0 1.0, https://polyhaven.com/a/lebombo, md5
+15daa3dc91907106756355aa0d2a3517) dolazi iz common.world_hdri / scripts/blender/assets (IZVORI.md).
+Ostalo je proceduralno.
+
+Pokretanje iz korena repoa:
+  unshare -n /opt/blender/blender -b --factory-startup --offline-mode -Y --python-exit-code 1 -t 4 \\
+    -P scripts/blender/kafa/grind.py -- --out <folder> [--kadrovi 1,48,84 | sve] [--res 1200] [--uzorci 64]
+    [--poster] [--rot -25] [--fstop 5] [--bez-zamucenja] [--ponovo-fizika]
+
+Izlaz: <out>/kadar_GGGG.png (RGBA, 1200 x 1500 na --res 1200), <out>/anchors.json (sidra u S), po želji
+poster.png (= G1). Telefon: neparni kadrovi, umanjeni (bez novog rendera).
 """
 import argparse
+import json
 import math
 import pathlib
 import random
@@ -24,13 +41,435 @@ import time
 
 import bmesh
 import bpy
-from mathutils import Matrix, Vector
+import numpy as np
+from bpy_extras import anim_utils
+from bpy_extras.object_utils import world_to_camera_view
+from mathutils import Matrix, Quaternion, Vector
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1]))
 import common as C  # noqa: E402
 
-# --------------------------------------------------------------------------------------------
-# mere mlina (lokalno: centar tela na (0,0), pod z=0, prednja strana ka -Y)
+HERE = pathlib.Path(__file__).resolve().parent
+CACHE = HERE / 'cache'          # u .gitignore
+
+# ================================================================ zajednički svet GRIND/POUR (rig K)
+S = 0.45                        # stranica kvadrata kadra u metrima (1 S)
+CAM_DIST = 1.0625               # kamera -> ravan y=0
+LENS = 85.0
+EYE_ABOVE = 0.10 * S            # visina oka iznad gornje ivice kadra
+GRIND_TOP = 0.8775              # gornja ivica GRIND kadra (z)
+SEAM_Z = GRIND_TOP - S          # 0,4275: šav = donja ivica GRIND kvadrata = gornja ivica POUR kadra
+GRIND_H = 1.25                  # GRIND kadar je S x 1,25 S (produžetak samo za mlaz)
+FPS = 30
+SLOW = 0.30                     # usporenje fizike (storyboard: <= ~90 px po kadru na 1600)
+G_OFF = 100                     # kadar scene = G + G_OFF (Blender keš ne voli kadar 0 i negativne)
+G_GRIND = (1, 96)
+G_POUR = (65, 192)
+FOCUS_Y = -0.015                # ravan oštrine (isto u obe scene, pa je mlaz na šavu jednako oštar)
+FSTOP = 5.0
+SHUTTER = 0.4                   # motion blur, deo kadra
+SEED = 7
+SPOUT_W = Vector((0.0, 0.0, 0.500))   # izlaz otvora mlina (mlevena kafa kreće odavde)
+LIGHT_TARGET = Vector((0.01, 0.065, 0.63))  # centar svetla za GRIND; POUR je isti, 1 S niže
+STREAM_G = (50, 88)             # mlevena kafa izlazi iz otvora od G50 do G88
+STREAM_DIE_Z = 0.165            # čestice nestaju unutar filtera (ispod linije pogleda preko ivice V60)
+BG_GRIND = '#E6DDCE'            # --pp-cream (tokens.css)
+BG_POUR = '#915439'             # --pp-terracotta
+
+
+def sf(g):
+    """Globalni kadar G -> kadar scene."""
+    return int(g) + G_OFF
+
+
+def smoothstep(e0, e1, x):
+    t = min(max((x - e0) / (e1 - e0), 0.0), 1.0)
+    return t * t * (3 - 2 * t)
+
+
+def render_setup(scene, res_x, res_y, samples, adaptive=0.02, motion_blur=True):
+    """Foto render iz common + karta umesto providnog stakla, motion blur, fiksno seme (OIDN ne treperi
+    na mirnim delovima kadra)."""
+    C.photo_render_settings(scene, width=res_x, height=res_y, samples=samples, transparent=True,
+                            adaptive=adaptive, fps=FPS)
+    cy = scene.cycles
+    cy.film_transparent_glass = False          # kroz staklo se vidi karta u boji sekcije
+    cy.transmission_bounces = 8
+    cy.transparent_max_bounces = 16
+    cy.volume_bounces = 0
+    cy.seed = SEED
+    cy.use_animated_seed = False
+    scene.render.use_motion_blur = motion_blur
+    scene.render.motion_blur_shutter = SHUTTER
+    scene.render.motion_blur_position = 'CENTER'
+
+
+def rig_camera(scene, which, res, fstop=FSTOP):
+    """Vodoravna kamera rig K; which = 'grind' (S x 1,25 S) ili 'pour' (S x S, 1 S niže)."""
+    top = GRIND_TOP if which == 'grind' else SEAM_Z
+    h = GRIND_H if which == 'grind' else 1.0
+    eye = top + EYE_ABOVE
+    cam = C.camera((0.0, -CAM_DIST, eye), (0.0, 0.0, eye), lens=LENS)
+    cd = cam.data
+    cd.sensor_fit = 'HORIZONTAL'      # 36 mm je uvek širina (i kad je kadar uspravan)
+    cd.sensor_width = 36.0
+    cd.shift_y = (top - h * S / 2 - eye) / S   # pomak je u jedinicama širine kadra (S)
+    cd.clip_start, cd.clip_end = 0.05, 30.0
+    scene.render.resolution_x = res
+    scene.render.resolution_y = round(res * h)
+    cd.dof.use_dof = True
+    cd.dof.focus_distance = CAM_DIST + FOCUS_Y
+    cd.dof.aperture_fstop = fstop
+    cd.dof.aperture_blades = 7
+    cd.dof.aperture_rotation = math.radians(12)
+    return cam
+
+
+def project(scene, cam, p, which):
+    """Tačka sveta -> (x, y) u jedinicama S od gornjeg levog ugla punog kadra."""
+    bpy.context.view_layer.update()
+    v = world_to_camera_view(scene, cam, Vector(p))
+    h = GRIND_H if which == 'grind' else 1.0
+    return v.x, (1.0 - v.y) * h
+
+
+# ---------------------------------------------------------------- karta (pozadina vidljiva samo kroz staklo)
+
+def _srgb_to_lin(v):
+    return v / 12.92 if v <= 0.04045 else ((v + 0.055) / 1.055) ** 2.4
+
+
+def card_color(scene, hex_color):
+    """Linearna emisija koja kroz AgX (view/look/ekspozicija scene) izlazi tačno kao hex_color.
+    Kalibriše se renderom 8x8 ravni (par sekundi), rezultat se pamti u cache/karta_boje.json."""
+    vs = scene.view_settings
+    key = f'{hex_color}|{vs.view_transform}|{vs.look}|{vs.exposure:.3f}|{vs.gamma:.3f}|{bpy.app.version_string}'
+    store = CACHE / 'karta_boje.json'
+    data = json.loads(store.read_text()) if store.exists() else {}
+    if key in data:
+        return tuple(data[key])
+    target = [int(hex_color[i:i + 2], 16) / 255 for i in (1, 3, 5)]
+    tl = [_srgb_to_lin(t) for t in target]
+    tmp = bpy.data.scenes.new('Kalibracija')
+    tmp.render.engine = 'CYCLES'
+    tmp.cycles.device = 'CPU'
+    tmp.cycles.samples = 1
+    tmp.cycles.use_adaptive_sampling = False
+    tmp.cycles.use_denoising = False
+    tmp.cycles.filter_width = 0.01
+    tmp.render.resolution_x = tmp.render.resolution_y = 8
+    tmp.render.resolution_percentage = 100
+    tmp.render.film_transparent = False
+    tmp.view_settings.view_transform = vs.view_transform
+    tmp.view_settings.look = vs.look
+    tmp.view_settings.exposure = vs.exposure
+    tmp.view_settings.gamma = vs.gamma
+    tmp.display_settings.display_device = scene.display_settings.display_device
+    tmp.render.image_settings.file_format = 'PNG'
+    tmp.render.image_settings.color_mode = 'RGB'
+    tmp.render.image_settings.color_depth = '8'
+    cd = bpy.data.cameras.new('KalibCam')
+    cd.type = 'ORTHO'
+    cd.ortho_scale = 0.5
+    co = bpy.data.objects.new('KalibCam', cd)
+    tmp.collection.objects.link(co)
+    tmp.camera = co
+    co.location = (0, 0, 1)
+    me = bpy.data.meshes.new('KalibPlane')
+    me.from_pydata([(-1, -1, 0), (1, -1, 0), (1, 1, 0), (-1, 1, 0)], [], [(0, 1, 2, 3)])
+    po = bpy.data.objects.new('KalibPlane', me)
+    tmp.collection.objects.link(po)
+    m, nt, _, N = C.new_material('KalibEmisija')
+    for n in list(nt.nodes):
+        if n.bl_idname != 'ShaderNodeOutputMaterial':
+            nt.nodes.remove(n)
+    em = N.new('ShaderNodeEmission')
+    nt.links.new(em.outputs[0], nt.nodes['Material Output'].inputs['Surface'])
+    me.materials.append(m)
+    c = list(tl)
+    path = CACHE / 'kalibracija.png'
+    CACHE.mkdir(parents=True, exist_ok=True)
+    for _ in range(7):
+        em.inputs['Color'].default_value = (*c, 1.0)
+        tmp.render.filepath = str(path)
+        bpy.ops.render.render(write_still=True, scene=tmp.name)
+        img = bpy.data.images.load(str(path), check_existing=False)
+        img.colorspace_settings.name = 'Non-Color'
+        px = list(img.pixels[:4 * 8 * 8])
+        meas = [sum(px[k::4]) / 64 for k in range(3)]
+        bpy.data.images.remove(img)
+        c = [ci * _srgb_to_lin(t) / max(_srgb_to_lin(mv), 1e-6) for ci, t, mv in zip(c, target, meas)]
+    for ob in (co, po):
+        bpy.data.objects.remove(ob)
+    bpy.data.scenes.remove(tmp)
+    path.unlink(missing_ok=True)
+    data[key] = [round(v, 6) for v in c]
+    store.write_text(json.dumps(data, indent=1))
+    print(f'karta: {hex_color} -> linearno {tuple(round(v, 4) for v in c)} (izmereno {[round(255 * v) for v in meas]})')
+    return tuple(c)
+
+
+def transmission_card(scene, hex_color, center, radius=4.0):
+    """Velika sfera u boji sekcije, vidljiva SAMO zracima prelamanja: kroz staklo i tečnost vidi se
+    pozadina sajta, a staklo ostaje neprovidno u alfa kanalu (kafa u bokalu ne postaje providna)."""
+    bm = bmesh.new()
+    bmesh.ops.create_uvsphere(bm, u_segments=32, v_segments=16, radius=radius)
+    me = bpy.data.meshes.new('Karta')
+    bm.to_mesh(me)
+    bm.free()
+    ob = C.link(bpy.data.objects.new('Karta', me))
+    ob.location = center
+    m, nt, _, N = C.new_material('Karta')
+    for n in list(nt.nodes):
+        if n.bl_idname != 'ShaderNodeOutputMaterial':
+            nt.nodes.remove(n)
+    em = N.new('ShaderNodeEmission')
+    em.inputs['Color'].default_value = (*card_color(scene, hex_color), 1.0)
+    nt.links.new(em.outputs[0], nt.nodes['Material Output'].inputs['Surface'])
+    if hasattr(m, 'emission_sampling'):
+        m.emission_sampling = 'NONE'
+    elif hasattr(m.cycles, 'emission_sampling'):
+        m.cycles.emission_sampling = 'NONE'
+    C.assign(ob, m)
+    C.ray_visibility(ob, camera=False, diffuse=False, glossy=False, transmission=True, scatter=False,
+                     shadow=False)
+    return ob
+
+
+# ---------------------------------------------------------------- svetlo
+
+def lights(scene, which, subjects, stream_objs, key=70.0, strip=10.0, stream_key=None):
+    """Foto-studio iz common.py oko LIGHT_TARGET (POUR: 1 S niže). Mlevena kafa ne prima key ove scene,
+    nego StreamKey na istom mestu u obe scene (između dva key-a), pa se mlaz na šavu ne menja."""
+    dz = 0.0 if which == 'grind' else -S
+    tgt = LIGHT_TARGET + Vector((0.0, 0.0, dz))
+    ls = C.photo_studio_lights(tuple(tgt), subjects, None, key=key, strip=strip, flags=True)
+    if not stream_objs:
+        return ls
+    k = next(o for o in ls if o.name == 'Key')
+    no_stream = bpy.data.collections.new('BezMlaza')
+    for ob in stream_objs:
+        no_stream.objects.link(ob)
+    for co in no_stream.collection_objects:
+        co.light_linking.link_state = 'EXCLUDE'
+    k.light_linking.receiver_collection = no_stream
+    only_stream = bpy.data.collections.new('SamoMlaz')
+    for ob in stream_objs:
+        only_stream.objects.link(ob)
+    mid = LIGHT_TARGET + Vector((0.0, 0.0, -S / 2))
+    kdir = C.direction(C.STUDIO['key_az'], C.STUDIO['key_el'])
+    pos = mid + C.STUDIO['key_dist'] * kdir
+    sk = C.area_light('StreamKey', tuple(pos), tuple(mid), C.STUDIO['key_size'],
+                      key if stream_key is None else stream_key, C.STUDIO['key_kelvin'])
+    sk.light_linking.receiver_collection = only_stream
+    ls.append(sk)
+    return ls
+
+
+# ---------------------------------------------------------------- mlaz mlevene kafe (isti u GRIND i POUR)
+
+def mat_grounds():
+    """Mlevena kafa: mat, malo svetlija od zrna, svaka mrvica druge nijanse."""
+    m, nt, b, N = C.new_material('MlevenaKafa')
+    oi = N.new('ShaderNodeObjectInfo')
+    col = N.mix(N.ramp(oi.outputs['Random'], 0.0, 1.0), (0.050, 0.025, 0.013), (0.120, 0.066, 0.036))
+    N.put(col, b.inputs['Base Color'])
+    b.inputs['Roughness'].default_value = 0.85
+    b.inputs['Specular IOR Level'].default_value = 0.3
+    return m
+
+
+def crumb_mesh(name, rng, size, subdiv=1, lumpy=0.35):
+    bm = bmesh.new()
+    bmesh.ops.create_icosphere(bm, subdivisions=subdiv, radius=1.0)
+    s = (size * rng.uniform(0.8, 1.2), size * rng.uniform(0.6, 0.95), size * rng.uniform(0.45, 0.75))
+    for vert in bm.verts:
+        k = 1.0 + lumpy * rng.uniform(-1, 1)
+        vert.co = (vert.co.x * s[0] * k, vert.co.y * s[1] * k, vert.co.z * s[2] * k)
+    me = bpy.data.meshes.new(name)
+    bm.to_mesh(me)
+    bm.free()
+    return me
+
+
+def stream_fall_frames(z_die=STREAM_DIE_Z, v0=0.12):
+    """Koliko kadrova čestica pada od otvora do z_die (za lifetime)."""
+    h = SPOUT_W.z - z_die
+    t = (-v0 + math.sqrt(v0 * v0 + 2 * 9.81 * h)) / 9.81
+    return t / (SLOW / FPS)
+
+
+def build_grounds(scene, rate=170, end_g=None):
+    """Čestice mlevene kafe iz otvora mlina (Newton, seme fiksno). Isti poziv u grind.py i pour.py daje iste
+    čestice u istom trenutku (šav, opcija C). Vraća (emiter, objekti mrvica za light linking)."""
+    rng = random.Random(SEED * 31 + 5)
+    shapes = bpy.data.collections.new('MlevenoOblici')        # nije u sceni, samo za instance
+    mat = mat_grounds()
+    crumbs = []
+    for k in range(10):
+        ob = bpy.data.objects.new(f'Mrvica{k}', crumb_mesh(f'Mrvica{k}', rng, rng.uniform(0.00028, 0.00060)))
+        ob.data.materials.append(mat)
+        shapes.objects.link(ob)
+        crumbs.append(ob)
+    ob = bpy.data.objects.new('Grudvica', crumb_mesh('Grudvica', rng, 0.0011, subdiv=2, lumpy=0.25))
+    ob.data.materials.append(mat)
+    shapes.objects.link(ob)
+    crumbs.append(ob)
+    for o in crumbs:
+        for p in o.data.polygons:
+            p.use_smooth = True
+
+    # emiter: elipsa 7 x 4,4 mm (tanak mlaz po dubini zbog paralakse na šavu), normala nadole
+    bm = bmesh.new()
+    n = 24
+    vs = [bm.verts.new((0.0035 * math.cos(2 * math.pi * i / n), 0.0022 * math.sin(2 * math.pi * i / n), 0.0))
+          for i in range(n)]
+    bm.faces.new(vs[::-1])                       # normala -Z
+    me = bpy.data.meshes.new('MlazIzvor')
+    bm.to_mesh(me)
+    bm.free()
+    em = C.link(bpy.data.objects.new('MlazIzvor', me))
+    em.location = SPOUT_W - Vector((0.0, 0.0, 0.0008))
+    em.show_instancer_for_render = False
+    em.visible_shadow = False
+    ps = em.modifiers.new('Mlaz', 'PARTICLE_SYSTEM').particle_system
+    ps.seed = SEED
+    st = ps.settings
+    g0, g1 = STREAM_G
+    st.frame_start, st.frame_end = sf(g0), sf(g1)
+    st.count = int(rate * (g1 - g0))
+    st.lifetime = stream_fall_frames()
+    st.lifetime_random = 0.0
+    st.emit_from = 'FACE'
+    st.use_emit_random = True
+    st.distribution = 'RAND'
+    st.physics_type = 'NEWTON'
+    st.normal_factor = 0.12                      # m/s nadole na izlazu
+    st.factor_random = 0.010                     # mlaz se blago širi (±2-3 mm do V60)
+    st.brownian_factor = 0.0
+    st.drag_factor = 0.0
+    st.time_tweak = SLOW * (1.0 / FPS) / 0.04    # čestice računaju 1 kadar = 0,04 s x time_tweak
+    st.render_type = 'COLLECTION'
+    st.instance_collection = shapes
+    st.use_collection_pick_random = True
+    st.particle_size = 1.0
+    st.size_random = 0.45
+    st.use_rotations = True
+    st.rotation_mode = 'NONE'
+    st.rotation_factor_random = 1.0
+    st.phase_factor_random = 2.0
+    st.angular_velocity_mode = 'RAND'
+    st.angular_velocity_factor = 30.0
+    pc = ps.point_cache
+    pc.frame_start = sf(g0)
+    pc.frame_end = sf(end_g if end_g else G_POUR[1])
+    return em, crumbs
+
+
+def bake_particles(scene):
+    with bpy.context.temp_override(scene=scene):
+        bpy.ops.ptcache.bake_all(bake=True)
+
+
+# ---------------------------------------------------------------- zrna (geometrija i materijal, i za POUR)
+BEAN = (0.0110, 0.0080, 0.0034, 0.0022)   # dužina, širina, ispupčena i ravna polu-debljina (m)
+N_SHAPES = 12
+
+
+def bean_shape(k):
+    r = random.Random(1000 + 17 * k)
+    return dict(L=BEAN[0] * r.uniform(0.90, 1.10), W=BEAN[1] * r.uniform(0.90, 1.08),
+                tt=BEAN[2] * r.uniform(0.88, 1.12), tb=BEAN[3] * r.uniform(0.85, 1.15),
+                bend=r.uniform(-0.0009, 0.0009), s_amp=r.uniform(0.00015, 0.00065), s_ph=r.uniform(-0.6, 0.6),
+                asym=r.uniform(-0.12, 0.12), tip=r.uniform(0.85, 1.20), gd=r.uniform(0.0010, 0.0015),
+                gw=r.uniform(0.00055, 0.00080), twist=r.uniform(-0.15, 0.15), lean=r.uniform(-0.25, 0.25))
+
+
+def bean_bm(sh, u=64, v=24, groove=True, scale=1.0):
+    """Zrno: elipsoid ispupčen gore (+Z), ravan dole sa S-urezom uzduž; atribut 'chaff' = ljuspica u urezu."""
+    bm = bmesh.new()
+    bmesh.ops.create_uvsphere(bm, u_segments=u, v_segments=v, radius=1.0)
+    lay = bm.verts.layers.float.new('chaff') if groove else None
+    for vert in bm.verts:
+        a, b, c = vert.co                      # c: osa polova = dužina zrna
+        rr = math.hypot(a, b)
+        if rr > 1e-6:
+            k = rr ** sh['tip'] / rr           # zašiljeniji ili tupiji vrhovi
+            a, b = a * k, b * k
+        X = c * sh['L'] / 2
+        Y = a * sh['W'] / 2 * (1 + sh['asym'] * c)
+        if b >= 0:
+            Z = b * sh['tt'] * (1 + sh['lean'] * a * 0.3)
+            w = 0.0
+        else:
+            Z = -sh['tb'] * ((-b) ** 0.7)
+            yc = sh['s_amp'] * math.sin(math.pi * c + sh['s_ph'])
+            end = max(0.0, 1 - c ** 4)
+            w = 0.0
+            if groove:
+                g = sh['gd'] * math.exp(-((Y - yc) / sh['gw']) ** 2) * end
+                Z += g * min(1.0, -b * 1.6)
+                w = math.exp(-((Y - yc) / (sh['gw'] * 0.75)) ** 2) * max(0.0, 1 - c ** 6) * min(1.0, -b * 2.0)
+        Z += sh['bend'] * (c * c - 0.3)
+        ca, sa = math.cos(sh['twist'] * c), math.sin(sh['twist'] * c)
+        Y, Z = Y * ca - Z * sa, Y * sa + Z * ca
+        vert.co = (X * scale, Y * scale, Z * scale)
+        if lay is not None:
+            vert[lay] = w
+    return bm
+
+
+def bean_meshes():
+    """12 oblika zrna za render (sa urezom i ljuspicom) i isti oblici niske rezolucije za fiziku (x10)."""
+    mat = mat_bean()
+    render, proxy = [], []
+    for k in range(N_SHAPES):
+        sh = bean_shape(k)
+        me = bpy.data.meshes.new(f'ZrnoOblik{k:02d}')
+        bm = bean_bm(sh)
+        bm.to_mesh(me)
+        bm.free()
+        for p in me.polygons:
+            p.use_smooth = True
+        me.materials.append(mat)
+        render.append(me)
+        pm = bpy.data.meshes.new(f'ZrnoFizika{k:02d}')
+        bm = bean_bm(sh, u=10, v=6, groove=False, scale=PHYS_K)
+        bm.to_mesh(pm)
+        bm.free()
+        proxy.append(pm)
+    return render, proxy, mat
+
+
+def mat_bean():
+    """Prženo zrno (tamno, median ~#3A2216-#5A3A28 posle svetla): mrlje prženja, blag sjaj ulja, srebrna
+    ljuspica (silverskin) u urezu, sitna tekstura; svako zrno malo druge nijanse."""
+    m, nt, b, N = C.new_material('Zrno')
+    tc = N.new('ShaderNodeTexCoord')
+    P = tc.outputs['Object']
+    oi = N.new('ShaderNodeObjectInfo')
+    rnd = oi.outputs['Random']
+    base = N.mix(N.ramp(rnd, 0.0, 1.0), (0.034, 0.016, 0.008), (0.072, 0.036, 0.018))
+    mott = N.noise(P, 700.0, detail=3, rough=0.55)
+    base = N.mix(N.ramp(mott, 0.35, 0.70), N.tint(base, (0.80, 0.78, 0.76)), N.tint(base, (1.18, 1.15, 1.10)))
+    chaff = N.new('ShaderNodeAttribute', attribute_type='GEOMETRY', attribute_name='chaff').outputs['Fac']
+    breakup = N.ramp(N.noise(P, 1400.0, detail=2), 0.30, 0.62)
+    cm = N.mul(N.ramp(chaff, 0.25, 0.75), N.math('MULTIPLY_ADD', breakup, 0.8, 0.2))
+    col = N.mix(cm, base, (0.36, 0.26, 0.15))
+    N.put(col, b.inputs['Base Color'])
+    N.put(N.mixf(cm, N.math('MULTIPLY_ADD', N.noise(P, 220.0, detail=2), 0.16, 0.34), 0.80), b.inputs['Roughness'])
+    b.inputs['Specular IOR Level'].default_value = 0.5
+    N.put(N.mixf(cm, 0.18, 0.0), b.inputs['Coat Weight'])
+    b.inputs['Coat Roughness'].default_value = 0.28
+    bump = N.new('ShaderNodeBump')
+    bump.inputs['Distance'].default_value = 1.0
+    N.put(N.mul(N.add(N.noise(P, 2600.0, detail=1), N.mul(mott, 0.5)), 0.000012), bump.inputs['Height'])
+    N.put(bump.outputs['Normal'], b.inputs['Normal'])
+    return m
+
+
+# ================================================================ mlin (lokalno: centar tela (0,0), pod z=0,
+# prednja strana ka -Y); u svetu ga postavlja matrica M (okret oko ose otvora + pomak na SPOUT_W)
 W, D = 0.155, 0.180          # telo: širina (x), dubina (y)
 RC = 0.016                   # radijus vertikalnih ivica tela
 Z_TOP = 0.165                # gornja površina tela
@@ -41,34 +480,18 @@ SPOUT_Z = 0.036              # donja ivica crnog prstena otvora
 DIAL = (-0.026, 0.098)       # točkić za mlevenje na prednjoj strani (x, z)
 HOP_Z0, HOP_TOP = 0.192, 0.319    # stakleni levak
 RIM_R = 0.0825               # unutrašnji radijus crnog prstena na vrhu (otvor za zrna)
-
-BEAN = (0.014, 0.0102, 0.0043, 0.0029)   # zrno: dužina, širina, ispupčena i ravna polu-debljina
-
-
-def parse():
-    p = argparse.ArgumentParser(prog='grind.py')
-    p.add_argument('--out', default='/tmp/nemi-blender/grind', help='folder za kadar_NNNN.png')
-    p.add_argument('--kadrova', type=int, default=90, help='broj kadrova sekvence')
-    p.add_argument('--kadrovi', default='sve', help='"sve" ili lista, npr. 1,45,90')
-    p.add_argument('--res', type=int, default=1600, help='stranica kvadratnog kadra u px')
-    p.add_argument('--uzorci', type=int, default=64)
-    p.add_argument('--izlaz', choices=['mleveno', 'zrna'], default='mleveno',
-                   help='šta curi iz otvora: mlevena kafa ili cela zrna')
-    p.add_argument('--rot', type=float, default=-25.0, help='okret mlina oko otvora (stepeni)')
-    p.add_argument('--usporenje', type=float, default=0.4, help='brzina fizike (1 = stvarno vreme)')
-    p.add_argument('--preroll', type=int, default=65, help='kadrova fizike pre kadra 1')
-    p.add_argument('--pocetna', type=int, default=600, help='zrna u levku na kadru 1')
-    p.add_argument('--tok', type=float, default=4.0, help='zrna po kadru u mlazu odozgo')
-    p.add_argument('--mleveno', type=int, default=150, help='čestica mlevene kafe po kadru')
-    p.add_argument('--podkoraci', type=int, default=8, help='rigid body substeps po kadru')
-    p.add_argument('--seed', type=int, default=7)
-    p.add_argument('--poster', type=int, default=0, help='kadar koji se snima i kao poster.png')
-    p.add_argument('--bez-rendera', action='store_true', help='samo napravi scenu i bake, ispiši stanje')
-    return p.parse_args(C.args())
+HOP_IN = [(0.0362, 0.2000), (0.0362, 0.2045), (0.0388, 0.2095), (0.0832, 0.2572), (0.0848, 0.2620),
+          (0.0852, 0.3185)]   # unutrašnjost levka (r, z) za fiziku
+PHYS_K = 10.0                # uvećanje sveta za Bullet (Manual: mala tela su nestabilna)
 
 
-# --------------------------------------------------------------------------------------------
-# geometrija (pomoćne funkcije; kandidati za common.py)
+def grinder_matrix(rot_deg):
+    """Okret mlina oko vertikalne ose kroz otvor; otvor (izlaz) je tačno na SPOUT_W (x=0, y=0)."""
+    th = math.radians(rot_deg)
+    sx, sy = SPOUT
+    rx, ry = sx * math.cos(th) - sy * math.sin(th), sx * math.sin(th) + sy * math.cos(th)
+    return Matrix.Translation((-rx, -ry, SPOUT_W.z - SPOUT_Z)) @ Matrix.Rotation(th, 4, 'Z')
+
 
 def mesh_object(name, bm, smooth=True, sharp_deg=None, collection=None):
     me = bpy.data.meshes.new(name)
@@ -79,14 +502,23 @@ def mesh_object(name, bm, smooth=True, sharp_deg=None, collection=None):
     if smooth and sharp_deg:
         me.set_sharp_from_angle(angle=math.radians(sharp_deg))
     ob = bpy.data.objects.new(name, me)
-    (collection or bpy.context.collection).objects.link(ob)
+    (collection or bpy.context.scene.collection).objects.link(ob)
+    return ob
+
+
+def bevel(ob, width=0.0004, angle=30.0, segments=2):
+    """Bevel 0,3-0,5 mm na tvrdim ivicama (dijagnoza, tačka 10): odsjaj „uhvati“ ivicu kao na fotografiji."""
+    m = ob.modifiers.new('Bevel', 'BEVEL')
+    m.width, m.segments = width, segments
+    m.limit_method = 'ANGLE'
+    m.angle_limit = math.radians(angle)
+    m.use_clamp_overlap = True
+    m.harden_normals = False
     return ob
 
 
 def lathe2(name, profile, segments=96, closed=False, sharp_deg=40, smooth=True):
-    """Telo okretanja oko Z; profile je lista (r, z). closed=True spaja poslednju tačku sa prvom
-    (puni zid sa debljinom). Tačke na osi (r=0) se spajaju. Normale idu napolje ako profil ide
-    suprotno od kazaljke na satu u ravni (r, z): gore spolja, unutra na vrhu, dole iznutra."""
+    """Telo okretanja oko Z; profile je lista (r, z); closed=True spaja poslednju tačku sa prvom."""
     bm = bmesh.new()
     rings = []
     for i in range(segments):
@@ -104,8 +536,7 @@ def lathe2(name, profile, segments=96, closed=False, sharp_deg=40, smooth=True):
 
 
 def rounded_box(name, x0, x1, y0, y1, z0, z1, rc, rt=0.001, rb=0.001, seg_c=12, seg_e=5):
-    """Kvadar sa zaobljenim vertikalnim ivicama (rc) i zaobljenim gornjim/donjim ivicama (rt, rb).
-    Normale su izračunate tačno (custom normals), pa ravne strane nemaju lažne prelive."""
+    """Kvadar sa zaobljenim vertikalnim ivicama (rc) i zaobljenim gornjim/donjim ivicama (rt, rb)."""
     cx, cy, hx, hy = (x0 + x1) / 2, (y0 + y1) / 2, (x1 - x0) / 2, (y1 - y0) / 2
     prof = []   # (uvlačenje, z, normala_r, normala_z)
     for k in range(seg_e + 1):
@@ -143,509 +574,545 @@ def rounded_box(name, x0, x1, y0, y1, z0, z1, rc, rt=0.001, rb=0.001, seg_c=12, 
         poly.use_smooth = True
     me.normals_split_custom_set_from_vertices(normals)
     ob = bpy.data.objects.new(name, me)
-    bpy.context.collection.objects.link(ob)
+    bpy.context.scene.collection.objects.link(ob)
     return ob
 
 
-def bean_bm(rng, groove=True, u=40, v=20):
-    """Zrno kafe: elipsoid, ispupčen gore (+Z), ravan dole sa urezom uzduž (blago S)."""
-    L, Wb, Tt, Tb = BEAN
-    sx = L / 2 * rng.uniform(0.93, 1.07)
-    sy = Wb / 2 * rng.uniform(0.92, 1.06)
-    tt, tb = Tt * rng.uniform(0.92, 1.08), Tb * rng.uniform(0.9, 1.1)
-    bend = rng.uniform(-0.0012, 0.0012)
-    s_amp = rng.uniform(0.0003, 0.0008)
-    bm = bmesh.new()
-    bmesh.ops.create_uvsphere(bm, u_segments=u, v_segments=v, radius=1.0)
-    for vert in bm.verts:
-        a, b, c = vert.co            # c: osa polova = dužina zrna
-        X, Y = c * sx, a * sy
-        if b >= 0:
-            Z = b * tt
-        else:
-            Z = -tb * ((-b) ** 0.7)  # ravnija donja strana
-            if groove:
-                yc = s_amp * math.sin(math.pi * c)
-                g = 0.0017 * math.exp(-((Y - yc) / 0.00105) ** 2) * max(0.0, 1 - c ** 4)
-                Z += g * min(1.0, -b * 1.6)
-        Z += bend * (c * c - 0.3)
-        vert.co = (X, Y, Z)
-    return bm
+# ---------------------------------------------------------------- materijali mlina
+
+# otisci prstiju i mrlje (lokalne koordinate mlina): (centar, poluose) elipsoida na mestima koja se diraju
+PRINTS = [((0.010, -0.0905, 0.128), (0.010, 0.006, 0.013)), ((0.040, -0.0905, 0.070), (0.011, 0.006, 0.015)),
+          ((-0.062, -0.0905, 0.150), (0.009, 0.006, 0.012)), ((0.0775, -0.040, 0.120), (0.006, 0.012, 0.016)),
+          ((0.0775, 0.010, 0.085), (0.006, 0.010, 0.013)), ((0.055, -0.007, 0.1885), (0.012, 0.008, 0.004))]
 
 
-def chunk_bm(rng):
-    """Komadić mlevene kafe: nepravilan, sa oštrim stranama."""
-    bm = bmesh.new()
-    bmesh.ops.create_icosphere(bm, subdivisions=1, radius=1.0)
-    s = (rng.uniform(0.0008, 0.0012), rng.uniform(0.0007, 0.001), rng.uniform(0.0005, 0.0008))
-    for vert in bm.verts:
-        k = rng.uniform(0.65, 1.2)
-        vert.co = (vert.co.x * s[0] * k, vert.co.y * s[1] * k, vert.co.z * s[2] * k)
-    return bm
-
-
-# --------------------------------------------------------------------------------------------
-# materijali (na osnovu common.py)
-
-def mat_brushed(name, roughness=0.26, color=(0.80, 0.79, 0.77), streaks=(25, 25, 2200), spun=False):
-    """Brušeni inox. Horizontalno brušenje (tangenta oko Z) razvlači odsjaje uspravno, kao na
-    mlinu u videu. spun=True: kružno brušenje oko lokalne Z ose (lice točkića)."""
-    m = C.mat_steel(name, roughness)
-    nt = m.node_tree
-    b = nt.nodes['Principled BSDF']
-    b.inputs['Base Color'].default_value = (*color, 1)
-    b.inputs['Anisotropic'].default_value = 0.75 if spun else 0.6
-    tan = nt.nodes.new('ShaderNodeTangent')
-    tan.direction_type, tan.axis = 'RADIAL', 'Z'
-    nt.links.new(tan.outputs['Tangent'], b.inputs['Tangent'])
-    tc = nt.nodes.new('ShaderNodeTexCoord')
-    nz = nt.nodes.new('ShaderNodeTexNoise')
-    nz.inputs['Detail'].default_value = 3.0
+def mat_steel(name, rough=0.22, color=(0.62, 0.61, 0.59), aniso=0.65, spun=False, prints=True, smudge=1.0):
+    """Brušeni inox: anizotropan (horizontalno brušenje = tangenta oko Z; spun = kružno oko ose dugmeta),
+    fine linije brušenja u hrapavosti i bump-u, mrlje i otisci prstiju (hrapavije, manje anizotropno)."""
+    m, nt, b, N = C.new_material(name)
+    b.inputs['Metallic'].default_value = 1.0
+    b.inputs['Base Color'].default_value = (*color, 1.0)
+    tan = N.new('ShaderNodeTangent', direction_type='RADIAL', axis='Z')
+    N.put(tan.outputs['Tangent'], b.inputs['Tangent'])
+    tc = N.new('ShaderNodeTexCoord')
+    P = tc.outputs['Object']
     if spun:
-        sep = nt.nodes.new('ShaderNodeVectorMath')
-        sep.operation = 'MULTIPLY'
-        sep.inputs[1].default_value = (1, 1, 0)
-        ln = nt.nodes.new('ShaderNodeVectorMath')
-        ln.operation = 'LENGTH'
-        mul = nt.nodes.new('ShaderNodeMath')
-        mul.operation = 'MULTIPLY'
-        mul.inputs[1].default_value = 3000.0
-        nz.noise_dimensions = '1D'
-        nt.links.new(tc.outputs['Object'], sep.inputs[0])
-        nt.links.new(sep.outputs['Vector'], ln.inputs[0])
-        nt.links.new(ln.outputs['Value'], mul.inputs[0])
-        nt.links.new(mul.outputs['Value'], nz.inputs['W'])
+        r = N.vmath('LENGTH', N.vmath('MULTIPLY', P, (1.0, 1.0, 0.0)))
+        streak = N.noise(N.xyz(N.mul(r, 2600.0), 0.0, 0.0), 1.0, detail=3)
     else:
-        mp = nt.nodes.new('ShaderNodeMapping')
-        mp.inputs['Scale'].default_value = streaks
-        nt.links.new(tc.outputs['Object'], mp.inputs['Vector'])
-        nt.links.new(mp.outputs['Vector'], nz.inputs['Vector'])
-    mr = nt.nodes.new('ShaderNodeMapRange')
-    mr.inputs['To Min'].default_value = roughness - 0.07
-    mr.inputs['To Max'].default_value = roughness + 0.07
-    nt.links.new(nz.outputs['Fac'], mr.inputs['Value'])
-    nt.links.new(mr.outputs['Result'], b.inputs['Roughness'])
-    bump = nt.nodes.new('ShaderNodeBump')
-    bump.inputs['Strength'].default_value = 0.04
-    bump.inputs['Distance'].default_value = 0.0001
-    nt.links.new(nz.outputs['Fac'], bump.inputs['Height'])
-    nt.links.new(bump.outputs['Normal'], b.inputs['Normal'])
+        streak = N.noise(N.vmath('MULTIPLY', P, (35.0, 35.0, 2600.0)), 1.0, detail=3)
+    sm = N.mul(N.ramp(N.noise(P, 16.0, detail=4, distortion=0.5), 0.56, 0.78), smudge)
+    marks = sm
+    if prints:
+        for c, ax in PRINTS:
+            q = N.vmath('DIVIDE', N.vmath('SUBTRACT', P, c), ax)
+            d = N.add(N.vmath('LENGTH', q), N.mul(N.sub(N.noise(P, 700.0, detail=1), 0.5), 0.5))
+            marks = N.math('MAXIMUM', marks, N.mul(N.ramp(d, 1.0, 0.55), 0.85))
+    rgh = N.add(N.math('MULTIPLY_ADD', N.sub(streak, 0.5), 0.10, rough), N.mul(marks, 0.11))
+    N.put(rgh, b.inputs['Roughness'])
+    N.put(N.mul(N.math('MULTIPLY_ADD', marks, -0.45, 1.0), aniso), b.inputs['Anisotropic'])
+    bump = N.new('ShaderNodeBump')
+    bump.inputs['Distance'].default_value = 1.0
+    N.put(N.mul(streak, 0.0000025), bump.inputs['Height'])
+    N.put(bump.outputs['Normal'], b.inputs['Normal'])
     return m
 
 
-def mat_hopper_glass(name='HopperGlass'):
-    """Staklo levka: za zrake senke je providno (Transparent), pa su zrna u levku osvetljena kao u
-    videu, bez skupih kaustika."""
-    m = C.mat_glass(name, tint=(0.93, 0.94, 0.94), roughness=0.03)
-    nt = m.node_tree
-    b = nt.nodes['Principled BSDF']
-    b.inputs['IOR'].default_value = 1.5
+def mat_plastic(name, color=(0.016, 0.016, 0.016), rough=0.40):
+    m, nt, b, N = C.new_material(name)
+    tc = N.new('ShaderNodeTexCoord')
+    P = tc.outputs['Object']
+    b.inputs['Base Color'].default_value = (*color, 1.0)
+    N.put(N.math('MULTIPLY_ADD', N.noise(P, 60.0, detail=3), 0.12, rough - 0.06), b.inputs['Roughness'])
+    b.inputs['Specular IOR Level'].default_value = 0.45
+    return m
+
+
+def mat_glass(name, tint=(0.965, 0.980, 0.975), ior=1.5, shadow=0.90, smudge=0.06):
+    """Staklo: za zrake senke delom providno (zrna u levku su osvetljena kao u videu, bez kaustika),
+    sa retkim mrljama (hrapavije) da ne izgleda kao savršen CG."""
+    m, nt, b, N = C.new_material(name)
+    b.inputs['Base Color'].default_value = (*tint, 1.0)
+    b.inputs['Transmission Weight'].default_value = 1.0
+    b.inputs['IOR'].default_value = ior
+    tc = N.new('ShaderNodeTexCoord')
+    P = tc.outputs['Object']
+    N.put(N.mul(N.ramp(N.noise(P, 11.0, detail=3, distortion=0.4), 0.62, 0.80), smudge), b.inputs['Roughness'])
     out = nt.nodes['Material Output']
-    lp = nt.nodes.new('ShaderNodeLightPath')
-    tr = nt.nodes.new('ShaderNodeBsdfTransparent')
-    tr.inputs['Color'].default_value = (0.92, 0.92, 0.92, 1)
-    mix = nt.nodes.new('ShaderNodeMixShader')
-    nt.links.new(lp.outputs['Is Shadow Ray'], mix.inputs['Fac'])
+    lp = N.new('ShaderNodeLightPath')
+    tr = N.new('ShaderNodeBsdfTransparent')
+    tr.inputs['Color'].default_value = (shadow, shadow, shadow, 1.0)
+    mix = N.new('ShaderNodeMixShader')
+    N.put(lp.outputs['Is Shadow Ray'], mix.inputs['Fac'])
     nt.links.new(b.outputs['BSDF'], mix.inputs[1])
     nt.links.new(tr.outputs['BSDF'], mix.inputs[2])
     nt.links.new(mix.outputs['Shader'], out.inputs['Surface'])
     return m
 
 
-def random_tint(m, lo=0.7, hi=1.25):
-    """Svako zrno/komadić malo drugačije nijanse (Object Info > Random)."""
-    nt = m.node_tree
-    b = nt.nodes['Principled BSDF']
-    base = tuple(b.inputs['Base Color'].default_value)
-    oi = nt.nodes.new('ShaderNodeObjectInfo')
-    mr = nt.nodes.new('ShaderNodeMapRange')
-    mr.inputs['To Min'].default_value, mr.inputs['To Max'].default_value = lo, hi
-    hsv = nt.nodes.new('ShaderNodeHueSaturation')
-    hsv.inputs['Color'].default_value = base
-    nt.links.new(oi.outputs['Random'], mr.inputs['Value'])
-    nt.links.new(mr.outputs['Result'], hsv.inputs['Value'])
-    nt.links.new(hsv.outputs['Color'], b.inputs['Base Color'])
-    return m
-
-
-# --------------------------------------------------------------------------------------------
-# mlin
-
 def build_grinder(M):
-    """Pravi sve delove mlina u lokalnim koordinatama i postavlja ih matricom M (okret + pomeraj).
-    Vraća rečnik sa objektima koji trebaju fizici."""
-    steel = mat_brushed('Inox')
-    steel_pol = mat_brushed('InoxPolirani', roughness=0.16)
-    steel_spun = mat_brushed('InoxTockic', roughness=0.2, spun=True)
-    black = C.mat_plastic('CrnaPlastika', color=(0.018, 0.018, 0.018), roughness=0.32)
-    mark = C.mat_plastic('Oznake', color=(0.05, 0.05, 0.05), roughness=0.5)
-    glass = mat_hopper_glass()
+    """Svi delovi mlina u lokalnim koordinatama, postavljeni matricom M. Vraća listu objekata."""
+    steel = mat_steel('Inox')
+    steel_pol = mat_steel('InoxPolirani', rough=0.13, aniso=0.45, prints=False, smudge=0.6)
+    steel_spun = mat_steel('InoxTockic', rough=0.17, aniso=0.75, spun=True, prints=False, smudge=0.7)
+    black = mat_plastic('CrnaPlastika')
+    rubber = mat_plastic('Guma', color=(0.012, 0.012, 0.012), rough=0.62)
+    mark = mat_plastic('Oznake', color=(0.03, 0.03, 0.03), rough=0.55)
+    glass = mat_glass('StakloLevka')
+    objs = []
 
-    def place(ob, local=Matrix()):
+    def place(ob, mat, local=Matrix()):
         ob.matrix_world = M @ local
+        C.assign(ob, mat)
+        objs.append(ob)
         return ob
 
-    parts = {}
-    # telo: gornji deo i uvučeno postolje (niša ispod otvora, kao na kadru iz videa)
-    body = rounded_box('Telo', -W / 2, W / 2, -D / 2, D / 2, Z_OVER, Z_TOP, RC, rt=0.007, rb=0.004)
-    C.assign(place(body), steel)
+    body = rounded_box('Telo', -W / 2, W / 2, -D / 2, D / 2, Z_OVER, Z_TOP, RC, rt=0.0045, rb=0.0035)
+    place(body, steel)
     base = rounded_box('Postolje', -W / 2 + 0.002, W / 2 - 0.002, -D / 2 + RECESS, D / 2 - 0.002,
                        0.0, Z_OVER + 0.004, RC - 0.002, rt=0.001, rb=0.003)
-    C.assign(place(base), steel)
-    parts['body'] = body
-
-    # okrugli „vrat" (burr kućište) ispod levka, sa tankim žlebom po sredini
+    place(base, steel)
     collar = lathe2('Kuciste', [(0.0, Z_TOP - 0.0005), (0.049, Z_TOP - 0.0005), (0.0502, Z_TOP + 0.001),
                                 (0.0502, 0.1765), (0.0488, 0.1772), (0.0488, 0.1782), (0.0502, 0.1789),
-                                (0.0502, 0.1885), (0.0490, 0.1900), (0.0, 0.1900)], segments=128)
-    C.assign(place(collar), steel_pol)
-    parts['collar'] = collar
+                                (0.0502, 0.1885), (0.0490, 0.1900), (0.0, 0.1900)], segments=160)
+    place(bevel(collar), steel_pol)
     gasket = lathe2('Zaptivka', [(0.0355, 0.1895), (0.0452, 0.1895), (0.0458, 0.1905), (0.0458, 0.1960),
                                  (0.0450, 0.1970), (0.0355, 0.1970)], segments=128, closed=True)
-    C.assign(place(gasket), black)
-
-    # stakleni levak (zid 3 mm) i crni prsten na vrhu
+    place(gasket, rubber)
     hop = [(0.0400, HOP_Z0), (0.0400, 0.2040), (0.0425, 0.2085), (0.0870, 0.2560), (0.0885, 0.2620),
            (0.0890, HOP_TOP - 0.001), (0.0888, HOP_TOP), (0.0862, HOP_TOP), (0.0860, HOP_TOP - 0.001),
            (0.0855, 0.2625), (0.0842, 0.2575), (0.0397, 0.2098), (0.0370, 0.2050), (0.0370, HOP_Z0)]
-    hopper = lathe2('Levak', hop, segments=160, closed=True, sharp_deg=50)
-    C.assign(place(hopper), glass)
+    place(lathe2('Levak', hop, segments=192, closed=True, sharp_deg=50), glass)
     ring = [(0.0895, 0.312), (0.0925, 0.312), (0.0935, 0.3132), (0.0935, 0.3268), (0.0925, 0.328),
             (RIM_R + 0.001, 0.328), (RIM_R, 0.3268), (RIM_R, 0.3205), (RIM_R + 0.001, HOP_TOP + 0.0005),
             (0.0895, HOP_TOP + 0.0005)]
-    C.assign(place(lathe2('Poklopac', ring, segments=160, closed=True, sharp_deg=50)), black)
+    place(bevel(lathe2('Poklopac', ring, segments=192, closed=True, sharp_deg=50)), black)
 
-    # sudar za zrna: unutrašnjost levka (malo uža od stakla), dno u grlu i vrh prstena
-    col = [(0.0, 0.2000), (0.0362, 0.2000), (0.0362, 0.2045), (0.0388, 0.2095), (0.0832, 0.2572),
-           (0.0848, 0.2620), (0.0852, HOP_TOP - 0.001), (RIM_R - 0.0007, 0.3205), (RIM_R - 0.0007, 0.3285),
-           (0.0940, 0.3285), (0.0942, 0.300)]
-    collider = lathe2('LevakSudar', col, segments=64, smooth=False)
-    place(collider)
-    collider.hide_render = True
-    collider.display_type = 'WIRE'
-    parts['hopper_collider'] = collider
-
-    # točkić za mlevenje: prsten sa podeocima + dugme sa kružno brušenim licem
     dx, dz = DIAL
     dial_m = Matrix.Translation((dx, -D / 2 + 0.0005, dz)) @ Matrix.Rotation(math.radians(90), 4, 'X')
     bezel = lathe2('TockicPrsten', [(0.0300, -0.001), (0.0350, -0.001), (0.0350, 0.0022), (0.0342, 0.0031),
-                                    (0.0300, 0.0031)], segments=128, closed=True, sharp_deg=50)
-    C.assign(place(bezel, dial_m), steel_pol)
+                                    (0.0300, 0.0031)], segments=160, closed=True, sharp_deg=50)
+    place(bevel(bezel, 0.0003), steel_pol, dial_m)
     knob = lathe2('Tockic', [(0.0, 0.0), (0.0276, 0.0), (0.0276, 0.0026), (0.0290, 0.0040), (0.0290, 0.0250),
                              (0.0284, 0.0266), (0.0268, 0.0277), (0.0230, 0.0281), (0.0, 0.0276)],
-                  segments=128, sharp_deg=50)
-    C.assign(place(knob, dial_m), steel_spun)
+                  segments=160, sharp_deg=50)
+    place(bevel(knob, 0.0003), steel_spun, dial_m)
     for k in range(7):          # podeoci po gornjem luku prstena
         a = math.radians(40 + k * 100 / 6)
         bm = bmesh.new()
         bmesh.ops.create_cube(bm, size=1.0)
         bmesh.ops.scale(bm, vec=(0.0020, 0.0006, 0.0005), verts=bm.verts)
         tick = mesh_object(f'Podeok{k}', bm, smooth=False)
-        loc = Matrix.Translation((0.0323 * math.cos(a), 0.0323 * math.sin(a), 0.0030)) @ \
-            Matrix.Rotation(a, 4, 'Z')
-        C.assign(place(tick, dial_m @ loc), mark)
-    bm = bmesh.new()             # oznaka na licu dugmeta
+        loc = Matrix.Translation((0.0323 * math.cos(a), 0.0323 * math.sin(a), 0.0030)) @ Matrix.Rotation(a, 4, 'Z')
+        place(tick, mark, dial_m @ loc)
+    bm = bmesh.new()
     bmesh.ops.create_cube(bm, size=1.0)
     bmesh.ops.scale(bm, vec=(0.0055, 0.0009, 0.0006), verts=bm.verts)
     a = math.radians(120)
     ind = mesh_object('TockicOznaka', bm, smooth=False)
-    C.assign(place(ind, dial_m @ Matrix.Translation((0.0215 * math.cos(a), 0.0215 * math.sin(a), 0.0280))
-                   @ Matrix.Rotation(a, 4, 'Z')), mark)
+    place(ind, mark, dial_m @ Matrix.Translation((0.0215 * math.cos(a), 0.0215 * math.sin(a), 0.0280))
+          @ Matrix.Rotation(a, 4, 'Z'))
 
-    # nareckano dugme gore levo (tajmer) i jezičak-brava levka desno
-    bm = bmesh.new()
+    bm = bmesh.new()             # nareckano dugme gore levo
     n, r0, h = 72, 0.0155, 0.0135
     rings = []
     for z, kn, rr in ((Z_TOP - 0.001, True, r0), (Z_TOP + h - 0.0018, True, r0), (Z_TOP + h, False, r0 - 0.0016)):
-        ring = []
+        rg = []
         for i in range(n):
             a = 2 * math.pi * i / n
             r = rr - (0.0007 if (kn and i % 2) else 0.0)
-            ring.append(bm.verts.new((r * math.cos(a), r * math.sin(a), z)))
-        rings.append(ring)
+            rg.append(bm.verts.new((r * math.cos(a), r * math.sin(a), z)))
+        rings.append(rg)
     for j in range(2):
         for i in range(n):
             i2 = (i + 1) % n
             bm.faces.new((rings[j][i], rings[j][i2], rings[j + 1][i2], rings[j + 1][i]))
     bm.faces.new(rings[-1])
     knurl = mesh_object('DugmeGore', bm, sharp_deg=35)
-    C.assign(place(knurl, Matrix.Translation((-0.052, -0.045, 0.0))), steel_pol)
+    place(bevel(knurl, 0.0003), steel_pol, Matrix.Translation((-0.052, -0.045, 0.0)))
     tab = rounded_box('Jezicak', 0.030, 0.080, -0.013, -0.001, 0.1862, 0.1900, 0.0055, rt=0.0012, rb=0.0008,
                       seg_c=8, seg_e=3)
-    C.assign(place(tab), steel_pol)
+    place(tab, steel_pol)
 
-    # otvor za mlevenu kafu: crni prsten ispod nadstrešnice
-    sx, sy = SPOUT
-    spout = lathe2('Otvor', [(0.0, 0.0445), (0.0135, 0.0445), (0.0135, SPOUT_Z), (0.0185, SPOUT_Z),
-                             (0.0190, SPOUT_Z + 0.0008), (0.0190, Z_OVER + 0.0005), (0.0, Z_OVER + 0.0005)],
-                   segments=96, sharp_deg=50)
-    C.assign(place(spout, Matrix.Translation((sx, sy, 0.0))), black)
-    return parts
+    sx, sy = SPOUT              # otvor: crni prsten ispod nadstrešnice, šupalj (mlevena kafa izlazi iz njega)
+    spout = lathe2('Otvor', [(0.0105, 0.0445), (0.0105, SPOUT_Z + 0.0012), (0.0118, SPOUT_Z),
+                             (0.0185, SPOUT_Z), (0.0190, SPOUT_Z + 0.0008), (0.0190, Z_OVER + 0.0005),
+                             (0.0, Z_OVER + 0.0005)], segments=96, sharp_deg=50)
+    place(bevel(spout, 0.0003), black, Matrix.Translation((sx, sy, 0.0)))
+    throat = lathe2('OtvorUnutra', [(0.0, 0.0446), (0.0105, 0.0446)], segments=48)
+    place(throat, mat_plastic('OtvorTamno', color=(0.004, 0.003, 0.002), rough=0.9), Matrix.Translation((sx, sy, 0.0)))
+    return objs
 
 
-# --------------------------------------------------------------------------------------------
-# fizika
+# ================================================================ fizika zrna (uvećan svet, keš)
 
-def rb_add(objs, kind):
-    for o in bpy.context.view_layer.objects:
+def r_hopper(z):
+    """Unutrašnji poluprečnik levka na visini z (lokalno)."""
+    for (r0, z0), (r1, z1) in zip(HOP_IN, HOP_IN[1:]):
+        if z0 <= z <= z1:
+            return r0 + (r1 - r0) * (z - z0) / (z1 - z0)
+    return HOP_IN[0][0] if z < HOP_IN[0][1] else HOP_IN[-1][0]
+
+
+def physics_plan(a):
+    """Deterministički plan: punjenje (rešetka u levku, pada pre G1) i mlaz odozgo (red na „traci“).
+    Vraća listu (oblik, start (x, y, z) lokalno u m, rot0, kadar puštanja u G ili None)."""
+    rng = random.Random(a.seed)
+    plan = []
+    sp = 0.0125                     # razmak rešetke (zrno 11 mm)
+    z, layer = 0.214, 0
+    while len(plan) < a.punjenje:
+        rmax = min(0.074, r_hopper(z) - 0.0080)    # zrno (pola dužine 5,5 mm) ne sme u zid na startu
+        off = (layer % 2) * sp / 2
+        nx = int(rmax / sp) + 1
+        for ix in range(-nx, nx + 1):
+            for iy in range(-nx, nx + 1):
+                x = ix * sp + off + rng.uniform(-0.002, 0.002)
+                y = iy * sp * 0.866 + rng.uniform(-0.002, 0.002)
+                if x * x + y * y < rmax * rmax and len(plan) < a.punjenje:
+                    rot = (rng.uniform(0, 6.3), rng.uniform(0, 6.3), rng.uniform(0, 6.3))
+                    plan.append((len(plan) % N_SHAPES, (x, y, z + rng.uniform(-0.002, 0.002)), rot, None))
+        z += sp * 0.9
+        layer += 1
+    # mlaz odozgo: G-20..G40 punom brzinom, G40..G48 se proređuje
+    times = []
+    t = -20.0
+    while t < 48.0:
+        rate = a.tok if t < 40 else a.tok * (48 - t) / 8
+        if rate <= 0.05:
+            break
+        times.append(t)
+        t += 1.0 / rate
+    vq = a.traka * SLOW / FPS        # m po kadru na „traci“ iznad kadra
+    z_rel = 0.950 - (SPOUT_W.z - SPOUT_Z)  # puštanje na z=0,95 u svetu (iznad gornje ivice kadra)
+    placed = []
+    for t in times:
+        for _ in range(200):
+            rr = 0.024 * math.sqrt(rng.random())
+            ang = rng.uniform(0, 2 * math.pi)
+            x, y = rr * math.cos(ang), rr * math.sin(ang)
+            jz = rng.uniform(0.0, 0.010)
+            qz = vq * t + jz
+            if all((x - px) ** 2 + (y - py) ** 2 + (qz - pz) ** 2 > 0.0135 ** 2
+                   for pz, px, py in placed[-80:] if abs(qz - pz) < 0.0135):
+                break
+        placed.append((qz, x, y))
+        rot = (rng.uniform(0, 6.3), rng.uniform(0, 6.3), rng.uniform(0, 6.3))
+        plan.append((len(plan) % N_SHAPES, (x, y, z_rel + jz), rot, t))
+    return plan
+
+
+def _box(name, center, size, rot3, coll):
+    me = bpy.data.meshes.new(name)
+    bm = bmesh.new()
+    bmesh.ops.create_cube(bm, size=1.0)
+    bmesh.ops.scale(bm, vec=size, verts=bm.verts)
+    bm.to_mesh(me)
+    bm.free()
+    ob = bpy.data.objects.new(name, me)
+    coll.objects.link(ob)
+    ob.matrix_world = Matrix.Translation(center) @ rot3.to_4x4()
+    return ob
+
+
+def _staves(prefix, prof, n, thick, coll, ext_top=0.0):
+    """Zid okretanja od kutija (Box oblik ima debljinu, za razliku od mesh sudara)."""
+    obs = []
+    K = PHYS_K
+    for j in range(len(prof) - 1):
+        (r0, z0), (r1, z1) = prof[j], prof[j + 1]
+        if j == len(prof) - 2:
+            z1 += ext_top
+        L = math.hypot(r1 - r0, z1 - z0)
+        tilt = math.atan2(r1 - r0, z1 - z0)
+        rm = (r0 + r1) / 2
+        wdt = 2 * math.pi * (rm + thick) / n * 1.15
+        nr, nz = math.cos(tilt), -math.sin(tilt)
+        c_r, c_z = rm + nr * thick / 2, (z0 + z1) / 2 + nz * thick / 2
+        for i in range(n):
+            ang = 2 * math.pi * (i + 0.5 * (j % 2)) / n
+            rot = Matrix.Rotation(ang, 3, 'Z') @ Matrix.Rotation(tilt, 3, 'Y')
+            obs.append(_box(f'{prefix}{j}_{i}', Vector((c_r * math.cos(ang), c_r * math.sin(ang), c_z)) * K,
+                            Vector((thick, wdt, L * 1.02)) * K, rot, coll))
+    return obs
+
+
+def _rb_add(scene, objs, kind):
+    vl = scene.view_layers[0]
+    for o in vl.objects:
         o.select_set(False)
     for o in objs:
         o.select_set(True)
-    bpy.context.view_layer.objects.active = objs[0]
+    vl.objects.active = objs[0]
     bpy.ops.rigidbody.objects_add(type=kind)
 
 
-def make_beans(a, M, hop_xy, rng, phys_coll, bean_coll, bean_meshes, proxy_meshes, frame0):
-    """Zrna na „pokretnoj traci" iznad kadra: svako zrno se spušta kao kinematičko telo i u svom
-    kadru prelazi u dinamičko (nasleđuje brzinu trake), pa pada u levak."""
-    fps, slow = 30, a.usporenje
-    v0 = 0.8                                   # m/s pri puštanju (stvarno vreme)
-    vq = v0 * slow / fps                       # m po kadru
-    z_rel = 0.53                               # visina puštanja, iznad gornje ivice kadra
-    fill_from, fill_len = frame0 + 2, 30
-    stream_from = -18
-    plan = []
-    for i in range(a.pocetna):                 # punjenje pre kadra 1, šire i gušće
-        plan.append((fill_from + fill_len * i / a.pocetna, 0.060))
-    n_stream = int(a.tok * (a.kadrova - stream_from))
-    for i in range(n_stream):                  # mlaz koji se vidi u kadru
-        plan.append((stream_from + (a.kadrova - stream_from) * i / n_stream, 0.028))
-    placed = []                                # (qz, x, y) u koordinatama trake
-    beans = []
-    for idx, (t_rel, radius) in enumerate(plan):
-        for _ in range(200):
-            rr = radius * math.sqrt(rng.random())
-            ang = rng.uniform(0, 2 * math.pi)
-            x, y = hop_xy[0] + rr * math.cos(ang), hop_xy[1] + rr * math.sin(ang)
-            jz = rng.uniform(0.0, 0.012)
-            qz = vq * t_rel + jz
-            ok = all((x - px) ** 2 + (y - py) ** 2 + (qz - pz) ** 2 > 0.0148 ** 2
-                     for pz, px, py in placed[-120:] if abs(qz - pz) < 0.0148)
-            if ok:
-                break
-        placed.append((qz, x, y))
-        rel = max(int(math.floor(t_rel)), frame0 + 2)
-        var = idx % len(bean_meshes)
-        proxy = bpy.data.objects.new(f'ZrnoF{idx:04d}', proxy_meshes[var])
-        phys_coll.objects.link(proxy)
-        proxy.hide_render = True
-        proxy.display_type = 'BOUNDS'
-        z_at_rel = z_rel + jz + vq * (t_rel - rel)
-        rot0 = Vector((rng.uniform(0, 6.3), rng.uniform(0, 6.3), rng.uniform(0, 6.3)))
-        w = Vector((rng.uniform(-1, 1), rng.uniform(-1, 1), rng.uniform(-1, 1))) * (12 * slow / fps)
-        drift = Vector((rng.uniform(-1, 1), rng.uniform(-1, 1), 0)) * (0.06 * slow / fps)
-        proxy.location = (x - drift.x * (rel - frame0), y - drift.y * (rel - frame0),
-                          z_at_rel + vq * (rel - frame0))
-        proxy.rotation_euler = rot0
-        proxy.keyframe_insert('location', frame=frame0)
-        proxy.keyframe_insert('rotation_euler', frame=frame0)
-        proxy.location = (x, y, z_at_rel)
-        proxy.rotation_euler = rot0 + w * (rel - frame0)
-        proxy.keyframe_insert('location', frame=rel)
-        proxy.keyframe_insert('rotation_euler', frame=rel)
-        render = bpy.data.objects.new(f'Zrno{idx:04d}', bean_meshes[var])
-        bean_coll.objects.link(render)
-        render.parent = proxy
-        render.hide_render = True
-        render.keyframe_insert('hide_render', frame=frame0)
-        render.hide_render = False
-        render.keyframe_insert('hide_render', frame=rel)
-        beans.append((proxy, rel))
-    rb_add([b for b, _ in beans], 'ACTIVE')
-    for proxy, rel in beans:
-        rb = proxy.rigid_body
-        rb.collision_shape = 'CONVEX_HULL'
-        rb.mass = 0.05
-        rb.friction = 0.6
-        rb.restitution = 0.12
-        rb.use_margin = True
-        rb.collision_margin = 0.0004
-        rb.linear_damping = 0.05
-        rb.angular_damping = 0.35
-        rb.kinematic = True
-        proxy.keyframe_insert('rigid_body.kinematic', frame=frame0)
-        proxy.keyframe_insert('rigid_body.kinematic', frame=rel)
-        rb.kinematic = False
-        proxy.keyframe_insert('rigid_body.kinematic', frame=rel + 1)
-    return [b for b, _ in beans]
-
-
-def make_stream(a, M, frame0, rng):
-    """Mlaz iz otvora: čestice (Newton) sa instancama komadića mlevene kafe ili celih zrna."""
-    sx, sy = SPOUT
-    bm = bmesh.new()
-    bmesh.ops.create_circle(bm, cap_ends=True, segments=16, radius=0.0062)
-    bmesh.ops.reverse_faces(bm, faces=bm.faces)
-    em = mesh_object('MlazIzvor', bm, smooth=False)
-    em.matrix_world = M @ Matrix.Translation((sx, sy, SPOUT_Z + 0.002))
-    em.show_instancer_for_render = False
-    em.hide_render = False
-    coll = bpy.data.collections.new('MlazOblici')        # nije u sceni, samo za instance
-    if a.izlaz == 'mleveno':
-        mat = random_tint(C.mat_plastic('MlevenaKafa', color=(0.12, 0.066, 0.036), roughness=0.7), 0.6, 1.35)
-        for k in range(6):
-            ob = mesh_object(f'Komadic{k}', chunk_bm(rng), smooth=False, collection=coll)
-            C.assign(ob, mat)
-        rate, size, size_rand = a.mleveno, 1.0, 0.55
-    else:
-        mat = bpy.data.materials['Zrno']
-        for k in range(4):
-            ob = mesh_object(f'ZrnoMlaz{k}', bean_bm(rng), collection=coll)
-            C.assign(ob, mat)
-        rate, size, size_rand = 6, 1.0, 0.1
-    ps = em.modifiers.new('Mlaz', 'PARTICLE_SYSTEM').particle_system
-    ps.seed = a.seed
-    st = ps.settings
-    st.frame_start, st.frame_end = -24, a.kadrova + 1
-    st.count = int(rate * (st.frame_end - st.frame_start))
-    st.lifetime = 45
-    st.emit_from = 'FACE'
-    st.use_emit_random = True
-    st.physics_type = 'NEWTON'
-    st.normal_factor = 0.22
-    st.factor_random = 0.035
-    st.brownian_factor = 0.0
-    st.time_tweak = a.usporenje * 25.0 / 30.0      # čestice računaju 1 kadar = 1/25 s
-    st.render_type = 'COLLECTION'
-    st.instance_collection = coll
-    st.use_collection_pick_random = True
-    st.particle_size = size
-    st.size_random = size_rand
-    st.use_rotations = True
-    st.rotation_mode = 'NONE'
-    st.rotation_factor_random = 1.0
-    st.phase_factor_random = 2.0
-    st.angular_velocity_mode = 'RAND'
-    st.angular_velocity_factor = 25.0
-    return em
-
-
-# --------------------------------------------------------------------------------------------
-
-def main():
-    a = parse()
-    t_start = time.time()
-    rng = random.Random(a.seed)
-    sc = C.reset()
-    bpy.context.preferences.edit.keyframe_new_interpolation_type = 'LINEAR'
-    C.render_settings(sc, width=a.res, height=a.res, samples=a.uzorci, transparent=True, fps=30)
-    sc.cycles.caustics_reflective = False
-    sc.cycles.caustics_refractive = False
-    sc.cycles.blur_glossy = 0.5
-    sc.cycles.seed = a.seed
-    frame0 = 1 - a.preroll
-    sc.frame_start, sc.frame_end = 1, a.kadrova
-
-    # okret mlina oko otvora: otvor ostaje tačno na x=0
-    th = math.radians(a.rot)
-    sx, sy = SPOUT
-    spout_x = sx * math.cos(th) - sy * math.sin(th)
-    M = Matrix.Translation((-spout_x, 0.0, 0.0)) @ Matrix.Rotation(th, 4, 'Z')
-    hop_xy = (M @ Vector((0, 0, 0))).xy
-
-    C.world(sc)
-    C.studio_lights()
-    C.camera((0.0, -1.228 * math.cos(math.radians(10)), 0.20 + 1.228 * math.sin(math.radians(10))),
-             (0.0, 0.0, 0.20), lens=85)
-
-    parts = build_grinder(M)
-
-    # senka: hvatač samo iza prednje ivice postolja, da mlaz slobodno pada ispod z=0 (preko ivice)
-    catcher = C.shadow_catcher(size=1.0)
-    catcher.scale = (3.0, 3.0, 1.0)
-    catcher.matrix_world = M @ Matrix.Translation((0, -D / 2 + RECESS - 0.004 + 1.5, 0)) @ \
-        Matrix.Diagonal((3.0, 3.0, 1.0, 1.0))
-
-    # zrna
-    bean_mat = random_tint(C.mat_bean('Zrno', color=(0.15, 0.075, 0.037)), 0.7, 1.3)
-    bean_meshes, proxy_meshes = [], []
-    for k in range(4):
-        r1 = random.Random(a.seed * 100 + k)
-        me = bpy.data.meshes.new(f'ZrnoOblik{k}')
-        bm = bean_bm(r1)
-        bm.to_mesh(me)
-        bm.free()
-        for poly in me.polygons:
-            poly.use_smooth = True
-        me.materials.append(bean_mat)
-        bean_meshes.append(me)
-        pm = bpy.data.meshes.new(f'ZrnoFizika{k}')
-        bm = bean_bm(random.Random(a.seed * 100 + k), groove=False, u=8, v=5)
-        bm.to_mesh(pm)
-        bm.free()
-        proxy_meshes.append(pm)
-    phys_coll = bpy.data.collections.new('ZrnaFizika')
-    bean_coll = bpy.data.collections.new('Zrna')
-    sc.collection.children.link(phys_coll)
-    sc.collection.children.link(bean_coll)
-
+def simulate_beans(a, proxy_meshes):
+    """Bullet simulacija u uvećanom svetu (lokalne koordinate levka x10) u istoj sceni, pa se sve fizičko
+    briše. Vraća (oblik[n], položaj[n, F, 3] i kvaternion[n, F, 4] lokalno u m, kadrovi scene[F])."""
+    sc = bpy.context.scene
+    K = PHYS_K
+    plan = physics_plan(a)
+    f0, f1 = sf(-45), sf(G_GRIND[1] + 1)
+    sc.frame_start, sc.frame_end = f0, f1
+    old_g = tuple(sc.gravity)
+    sc.gravity = (0.0, 0.0, -9.81 * K)
+    coll = bpy.data.collections.new('Fizika')
+    sc.collection.children.link(coll)
+    walls = _staves('Levak', HOP_IN, 40, 0.008, coll, ext_top=0.03)
+    walls += _staves('Grlo', [(0.0362, 0.085), (0.0362, 0.2000)], 24, 0.008, coll)
     bpy.ops.rigidbody.world_add()
     rbw = sc.rigidbody_world
     rbw.substeps_per_frame = a.podkoraci
-    rbw.solver_iterations = 12
+    rbw.solver_iterations = 20
     rbw.use_split_impulse = True
-    rbw.time_scale = a.usporenje
-    rbw.point_cache.frame_start = frame0
-    rbw.point_cache.frame_end = a.kadrova
-    rb_add([parts['hopper_collider']], 'PASSIVE')
-    hc = parts['hopper_collider'].rigid_body
-    hc.collision_shape, hc.mesh_source = 'MESH', 'BASE'
-    hc.use_margin, hc.collision_margin, hc.friction, hc.restitution = True, 0.0006, 0.5, 0.1
-    rb_add([parts['body'], parts['collar'], catcher], 'PASSIVE')
-    parts['body'].rigid_body.collision_shape = 'BOX'
-    parts['collar'].rigid_body.collision_shape = 'CYLINDER'
-    catcher.rigid_body.collision_shape = 'BOX'
+    rbw.time_scale = SLOW
+    rbw.point_cache.frame_start, rbw.point_cache.frame_end = f0, f1
+    _rb_add(sc, walls, 'PASSIVE')
+    for w in walls:
+        w.rigid_body.collision_shape = 'BOX'
+        w.rigid_body.friction, w.rigid_body.restitution = 0.5, 0.1
+    # klip u grlu: od G50 se spušta (mlevenje), pa gomila u sredini tone; grlo je u neprovidnom kućištu
+    piston = _box('Klip', Vector((0, 0, 0.2000 - 0.005)) * K, Vector((0.07, 0.07, 0.01)) * K, Matrix.Identity(3), coll)
+    _rb_add(sc, [piston], 'PASSIVE')
+    piston.rigid_body.collision_shape = 'BOX'
+    piston.rigid_body.kinematic = True
+    for g in range(50, G_GRIND[1] + 2):
+        piston.location.z = (0.2000 - 0.005 - a.odvod * smoothstep(50, 96, g)) * K
+        piston.keyframe_insert('location', index=2, frame=sf(g))
 
-    beans = make_beans(a, M, hop_xy, rng, phys_coll, bean_coll, bean_meshes, proxy_meshes, frame0)
-    make_stream(a, M, frame0, rng)
-    print(f'GRIND: scena gotova za {time.time() - t_start:.1f} s, zrna {len(beans)}, '
-          f'otvor x=0, levak x={hop_xy.x:.4f}')
-
-    t = time.time()
+    beans, rel_frames = [], []
+    vq = a.traka * SLOW / FPS
+    for idx, (shape, (x, y, z), rot, t_rel) in enumerate(plan):
+        ob = bpy.data.objects.new(f'ZF{idx:04d}', proxy_meshes[shape])
+        coll.objects.link(ob)
+        ob.rotation_euler = rot
+        if t_rel is None:
+            ob.location = Vector((x, y, z)) * K
+            rel_frames.append(None)
+        else:
+            rel = max(int(math.floor(t_rel)), -44)
+            frac = t_rel - rel
+            z_at = z + vq * frac
+            rr = random.Random(idx)
+            w = Vector(tuple(rr.uniform(-1, 1) for _ in range(3))) * (10 * SLOW / FPS)
+            ob.location = Vector((x, y, z_at + vq * (rel + 45))) * K
+            ob.keyframe_insert('location', frame=f0)
+            ob.keyframe_insert('rotation_euler', frame=f0)
+            ob.location = Vector((x, y, z_at)) * K
+            ob.rotation_euler = Vector(rot) + w * (rel + 45)
+            ob.keyframe_insert('location', frame=sf(rel))
+            ob.keyframe_insert('rotation_euler', frame=sf(rel))
+            rel_frames.append(rel)
+        beans.append(ob)
+    _rb_add(sc, beans, 'ACTIVE')
+    for ob, rel in zip(beans, rel_frames):
+        rb = ob.rigid_body
+        rb.collision_shape = 'CONVEX_HULL'
+        rb.mass = 0.05
+        rb.friction = 0.6
+        rb.restitution = 0.15
+        rb.use_margin = True
+        rb.collision_margin = 0.0004 * K
+        rb.linear_damping = 0.05
+        rb.angular_damping = 0.3
+        if rel is not None:
+            rb.kinematic = True
+            ob.keyframe_insert('rigid_body.kinematic', frame=f0)
+            ob.keyframe_insert('rigid_body.kinematic', frame=sf(rel))
+            rb.kinematic = False
+            ob.keyframe_insert('rigid_body.kinematic', frame=sf(rel) + 1)
+    t0 = time.time()
     with bpy.context.temp_override(scene=sc):
         bpy.ops.ptcache.bake_all(bake=True)
-    n_fr = sc.frame_end - frame0 + 1
-    print(f'GRIND: bake {n_fr} kadrova za {time.time() - t:.1f} s ({(time.time() - t) / n_fr:.2f} s/kadar)')
-
-    # provera: koliko je zrna u levku i gde su ona koja su ispala
-    for f in sorted({1, a.kadrova // 2, a.kadrova}):
+    print(f'GRIND fizika: {len(beans)} zrna, {f1 - f0 + 1} kadrova, bake {time.time() - t0:.0f} s', flush=True)
+    frames = list(range(sf(G_GRIND[0]) - 1, sf(G_GRIND[1]) + 2))
+    pos = np.zeros((len(beans), len(frames), 3), np.float32)
+    quat = np.zeros((len(beans), len(frames), 4), np.float32)
+    for fi, f in enumerate(frames):
         sc.frame_set(f)
-        inside = air = 0
-        where = {'kroz dno': 0, 'preko ivice': 0, 'kroz zid': 0}
-        for p in beans:
-            q = p.matrix_world.translation
-            rho = math.hypot(q.x - hop_xy.x, q.y - hop_xy.y)
-            if q.z > 0.335:
-                air += 1
-            elif 0.195 < q.z and rho < 0.095:
-                inside += 1
-            elif q.z <= 0.195 and rho < 0.05:
-                where['kroz dno'] += 1
-            elif rho > 0.1:
-                where['preko ivice'] += 1
-            else:
-                where['kroz zid'] += 1
-        print(f'GRIND: kadar {f}: u levku {inside}, iznad levka {air}, ispalo {where}')
-        if f == 1 and a.bez_rendera:
-            bad = [(i, p) for i, p in enumerate(beans) if p.matrix_world.translation.z <= 0.335 and
-                   math.hypot(p.matrix_world.translation.x - hop_xy.x, p.matrix_world.translation.y - hop_xy.y) > 0.1]
-            for i, p in bad[:12]:
-                q = p.matrix_world.translation
-                print(f'GRIND:   ispalo #{i} ({q.x:.3f}, {q.y:.3f}, {q.z:.3f})')
+        for bi, ob in enumerate(beans):
+            mw = ob.matrix_world
+            pos[bi, fi] = mw.translation / K
+            quat[bi, fi] = mw.to_quaternion()
+    # očisti fiziku (render ide bez Bullet-a: zrna dobijaju ključne kadrove iz keša)
+    bpy.ops.rigidbody.world_remove()
+    for ob in list(coll.objects):
+        bpy.data.objects.remove(ob)
+    bpy.data.collections.remove(coll)
+    sc.gravity = old_g
+    rel = np.array([-999 if r is None else r for r in rel_frames], np.int32)
+    return np.array([p[0] for p in plan], np.int32), pos, quat, np.array(frames, np.int32), rel
 
+
+def beans_cached(a, proxy_meshes):
+    key = C.source_key(physics_plan, r_hopper, simulate_beans, _staves, bean_shape, bean_bm,
+                       (a.seed, a.punjenje, a.tok, a.traka, a.odvod, a.podkoraci, PHYS_K, SLOW, G_OFF, HOP_IN))
+    path = CACHE / f'zrna_{key}.npz'
+    if path.exists() and not a.ponovo_fizika:
+        d = np.load(path)
+        print(f'GRIND fizika iz keša {path.name}', flush=True)
+        return d['shape'], d['pos'], d['quat'], d['frames'], d['rel']
+    for old in CACHE.glob('zrna_*.npz'):
+        old.unlink()
+    res = simulate_beans(a, proxy_meshes)
+    CACHE.mkdir(parents=True, exist_ok=True)
+    np.savez_compressed(path, shape=res[0], pos=res[1], quat=res[2], frames=res[3], rel=res[4])
+    return res
+
+
+def _fcurves(ob, path, frames, values, interp='LINEAR'):
+    """Ključni kadrovi iz niza (values[F, k]) preko channelbag API-ja (Blender 5: slotted actions)."""
+    ad = ob.animation_data or ob.animation_data_create()
+    if ad.action is None:
+        act = bpy.data.actions.new(ob.name)
+        ad.action = act
+        ad.action_slot = act.slots.new(id_type='OBJECT', name=ob.name)
+    cb = anim_utils.action_ensure_channelbag_for_slot(ad.action, ad.action_slot)
+    values = np.asarray(values, np.float32).reshape(len(frames), -1)
+    ip = {'CONSTANT': 0, 'LINEAR': 1}[interp]
+    for i in range(values.shape[1]):
+        fc = cb.fcurves.new(path, index=i)
+        kp = fc.keyframe_points
+        kp.add(len(frames))
+        co = np.empty(2 * len(frames), np.float32)
+        co[0::2], co[1::2] = frames, values[:, i]
+        kp.foreach_set('co', co)
+        kp.foreach_set('interpolation', [ip] * len(frames))
+        fc.update()
+
+
+def place_beans(shape, pos, quat, frames, rel, M, render_meshes):
+    """Render zrna u svetu (M @ lokalno); zrna koja se ne pomeraju u G1-G96 nemaju animaciju."""
+    coll = bpy.data.collections.new('Zrna')
+    bpy.context.scene.collection.children.link(coll)
+    Mq = M.to_quaternion()
+    Mt = np.array(M, np.float64)
+    wpos = (pos.astype(np.float64) @ Mt[:3, :3].T) + Mt[:3, 3]
+    objs, moving, hidden = [], 0, 0
+    for i in range(len(shape)):
+        q = quat[i].astype(np.float64)
+        wq = np.empty_like(q)
+        for fi in range(len(frames)):                # svet = M.rot @ lokalno
+            wq[fi] = tuple(Mq @ Quaternion(q[fi]))
+        for fi in range(1, len(frames)):             # bez skoka znaka (q i -q su ista rotacija)
+            if np.dot(wq[fi], wq[fi - 1]) < 0:
+                wq[fi] = -wq[fi]
+        lp = pos[i]
+        r = np.hypot(lp[:, 0], lp[:, 1])
+        escaped = bool(np.any((r > 0.094) & (lp[:, 2] < 0.33)) or np.any(lp[:, 2] < 0.08))
+        ob = bpy.data.objects.new(f'Zrno{i:04d}', render_meshes[shape[i]])
+        coll.objects.link(ob)
+        ob.rotation_mode = 'QUATERNION'
+        ob.location = tuple(wpos[i, 0])
+        ob.rotation_quaternion = tuple(wq[0])
+        if escaped:
+            ob.hide_render = True
+            hidden += 1
+            continue
+        dp = np.abs(wpos[i] - wpos[i, 0]).max()
+        dq = 1.0 - np.abs(wq @ wq[0]).min()
+        if dp > 2e-5 or dq > 1e-6:
+            _fcurves(ob, 'location', frames, wpos[i])
+            _fcurves(ob, 'rotation_quaternion', frames, wq)
+            moving += 1
+        if rel[i] > -999 and sf(rel[i]) > frames[0]:   # zrno iz mlaza: skriveno dok je na „traci“
+            vis = (np.array(frames) < sf(rel[i])).astype(np.float32)
+            _fcurves(ob, 'hide_render', frames, vis, interp='CONSTANT')
+        objs.append(ob)
+    print(f'GRIND zrna: {len(objs)} u renderu, {moving} animirano, {hidden} pobeglo (sakriveno)', flush=True)
+    return objs
+
+
+# ================================================================ scena
+
+def parse():
+    p = argparse.ArgumentParser(prog='grind.py')
+    p.add_argument('--out', required=True, help='folder za kadar_GGGG.png i anchors.json')
+    p.add_argument('--kadrovi', default='sve', help='"sve" ili lista G, npr. 1,48,84')
+    p.add_argument('--res', type=int, default=1200, help='širina kadra u px (visina = 1,25 x)')
+    p.add_argument('--uzorci', type=int, default=64)
+    p.add_argument('--adaptive', type=float, default=0.02)
+    p.add_argument('--rot', type=float, default=-25.0, help='okret mlina oko otvora (stepeni)')
+    p.add_argument('--fstop', type=float, default=FSTOP)
+    p.add_argument('--key', type=float, default=70.0)
+    p.add_argument('--strip', type=float, default=10.0)
+    p.add_argument('--punjenje', type=int, default=1450, help='zrna u levku pre G1')
+    p.add_argument('--tok', type=float, default=4.0, help='zrna po kadru u mlazu odozgo')
+    p.add_argument('--traka', type=float, default=0.6, help='brzina zrna pri puštanju, m/s (stvarno vreme)')
+    p.add_argument('--odvod', type=float, default=0.06, help='koliko se klip u grlu spusti G50-G96 (m)')
+    p.add_argument('--mleveno', type=int, default=170, help='čestica mlevene kafe po kadru')
+    p.add_argument('--podkoraci', type=int, default=10)
+    p.add_argument('--seed', type=int, default=SEED)
+    p.add_argument('--poster', action='store_true', help='poster.png = G1')
+    p.add_argument('--bez-zamucenja', dest='bez_zamucenja', action='store_true', help='bez motion blur-a')
+    p.add_argument('--ponovo-fizika', dest='ponovo_fizika', action='store_true')
+    p.add_argument('--bez-rendera', dest='bez_rendera', action='store_true')
+    return p.parse_args(C.args())
+
+
+def build(a):
+    sc = C.reset()
+    bpy.context.preferences.edit.keyframe_new_interpolation_type = 'LINEAR'
+    render_meshes, proxy_meshes, _ = bean_meshes()
+    shape, pos, quat, frames, rel = beans_cached(a, proxy_meshes)
+    for pm in proxy_meshes:
+        bpy.data.meshes.remove(pm)
+
+    render_setup(sc, a.res, round(a.res * GRIND_H), a.uzorci, a.adaptive, motion_blur=not a.bez_zamucenja)
+    sc.frame_start, sc.frame_end = sf(G_GRIND[0]), sf(G_GRIND[1])
+    C.world_hdri(sc, 0.15)
+    cam = rig_camera(sc, 'grind', a.res, a.fstop)
+    transmission_card(sc, BG_GRIND, LIGHT_TARGET)
+
+    M = grinder_matrix(a.rot)
+    parts = build_grinder(M)
+    beans = place_beans(shape, pos, quat, frames, rel, M, render_meshes)
+    em, crumbs = build_grounds(sc, a.mleveno, end_g=G_GRIND[1] + 1)
+    lights(sc, 'grind', parts + beans, crumbs, key=a.key, strip=a.strip)
+    bake_particles(sc)
+    return sc, cam, M
+
+
+def write_anchors(out, data):
+    (pathlib.Path(out) / 'anchors.json').write_text(json.dumps(data, indent=1, ensure_ascii=False))
+
+
+def frame_list(spec, g_range):
+    if spec == 'sve':
+        return list(range(g_range[0], g_range[1] + 1))
+    return [int(x) for x in spec.split(',') if x.strip()]
+
+
+def main():
+    a = parse()
+    t0 = time.time()
+    sc, cam, M = build(a)
+    out = pathlib.Path(a.out)
+    out.mkdir(parents=True, exist_ok=True)
+    sc.frame_set(sf(1))
+    ox, oy = project(sc, cam, SPOUT_W, 'grind')
+    write_anchors(out, {'id': 'grind', 'units': 'S od gornjeg levog ugla punog kadra (W 1, H 1,25)',
+                        'full': {'W': 1, 'H': GRIND_H}, 'osa_x': round(project(sc, cam, (0, 0, 0.6), 'grind')[0], 4),
+                        'otvor': {'x': round(ox, 4), 'y': round(oy, 4)}, 'g_od': G_GRIND[0], 'g_do': G_GRIND[1],
+                        'generator': 'scripts/blender/kafa/grind.py'})
+    print(f'GRIND scena {time.time() - t0:.0f} s; otvor u kadru ({ox:.4f}, {oy:.4f}) S', flush=True)
     if a.bez_rendera:
         return
-    out_dir = a.out.rstrip('/')
-    pathlib.Path(out_dir).mkdir(parents=True, exist_ok=True)
-    frames = list(range(1, a.kadrova + 1)) if a.kadrovi == 'sve' else [int(x) for x in a.kadrovi.split(',')]
-    for f in frames:
-        t = time.time()
-        C.render_frames(sc, out_dir, [f])
-        print(f'GRIND: kadar {f} renderovan za {time.time() - t:.1f} s')
-    if a.poster:
-        sc.frame_set(a.poster)
-        sc.render.filepath = f'{out_dir}/poster.png'
+    for g in frame_list(a.kadrovi, G_GRIND):
+        t1 = time.time()
+        sc.frame_set(sf(g))
+        sc.render.filepath = str(out / f'kadar_{g:04d}.png')
         bpy.ops.render.render(write_still=True)
+        print(f'GRIND kadar G{g}: {time.time() - t1:.1f} s', flush=True)
+    if a.poster:
+        p1 = out / 'kadar_0001.png'
+        if not p1.exists():
+            sc.frame_set(sf(1))
+            sc.render.filepath = str(p1)
+            bpy.ops.render.render(write_still=True)
+        (out / 'poster.png').write_bytes(p1.read_bytes())
 
 
-main()
+if __name__ == '__main__':
+    main()

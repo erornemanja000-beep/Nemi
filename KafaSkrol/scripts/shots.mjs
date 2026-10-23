@@ -5,7 +5,10 @@
 // Na 390×844 i 1440×900 snima početnu po sekcijama (id-jevi iz plana, Interfejs 8), modal /p/guji,
 // /impressum i /credits. Prijavljuje greške u konzoli, neuspele zahteve (≥ 400 i prekinute),
 // zahteve ka drugom originu i horizontalni skrol. Na desktopu meri osu wdth fonta Archivo.
-// Tačke priče (granice i sredine segmenata iz src/story/timeline.ts) dodaje Z12.
+// Priča (Z12): na `?debug` stranica daje window.__story (src/story/Story.tsx). Snimaju se tačke priče
+// (granice i sredine segmenata iz src/story/timeline.ts; telefon po slojevima, reduced motion po blokovima),
+// proverava se boja headera 5 vh pre i posle svake granice (window.__chapter) i strelica „dalje" u GRIND-u.
+// Pregledač se pokreće sa trakom za skrol (bez --hide-scrollbars), kao kod korisnika.
 import { mkdirSync } from 'node:fs'
 import { chromium } from 'playwright'
 
@@ -13,12 +16,18 @@ const out = process.argv[2] ?? 'shots'
 const url = process.argv[3] && !process.argv[3].startsWith('--') ? process.argv[3] : 'http://localhost:4173/'
 const reduced = process.argv.includes('--reduced')
 const origin = new URL(url).origin
-const sections = ['top', 'grind', 'pour', 'sip', 'find-your-cup', 'subscription', 'tasting-set', 'about', 'brew-guide', 'contact', 'footer']
+// #grind, #pour i #sip su u lepljivoj sceni (desktop), pa ih snima prolaz kroz priču ispod
+const sections = ['top', 'find-your-cup', 'subscription', 'tasting-set', 'about', 'brew-guide', 'contact', 'footer']
 const pages = [['modal', 'p/guji'], ['impressum', 'impressum'], ['credits', 'credits']]
 const wait = (ms) => new Promise((r) => setTimeout(r, ms))
 
 mkdirSync(out, { recursive: true })
-const browser = await chromium.launch({ executablePath: process.env.PW_CHROMIUM || undefined })
+const browser = await chromium.launch({ executablePath: process.env.PW_CHROMIUM || undefined, ignoreDefaultArgs: ['--hide-scrollbars'] })
+const debugUrl = (() => {
+  const u = new URL(url)
+  u.searchParams.set('debug', '1')
+  return u.href
+})()
 let failures = 0
 
 for (const [label, viewport] of [['mobile', { width: 390, height: 844 }], ['desktop', { width: 1440, height: 900 }]]) {
@@ -65,6 +74,41 @@ for (const [label, viewport] of [['mobile', { width: 390, height: 844 }], ['desk
     await page.evaluate((y) => window.scrollTo(0, y), y)
     await wait(1200)
     await page.screenshot({ path: `${tag}-${String(i++).padStart(2, '0')}-${id}.png` })
+  }
+
+  // ---- priča: tačke, header na granicama, strelica ----
+  await page.goto(debugUrl, { waitUntil: 'networkidle' })
+  await wait(1200)
+  const story = await page.evaluate(() => (window.__story ? { mode: window.__story.mode, points: window.__story.points(), bounds: window.__story.boundaries(), nav: window.__story.nav() } : null))
+  if (!story) errors.push('window.__story nedostaje (Story.tsx, ?debug)')
+  else {
+    console.log(`[${label}] priča: ${story.mode}, ${story.points.length} tačaka`)
+    let k = 0
+    for (const pt of story.points) {
+      await page.evaluate((y) => window.scrollTo(0, y), pt.y)
+      await wait(1200)
+      await page.screenshot({ path: `${tag}-story-${String(k++).padStart(2, '0')}-${pt.name}.png` })
+    }
+    const vh = viewport.height
+    for (const b of story.bounds) {
+      for (const [dy, want] of [[-0.05 * vh, b.from], [0.05 * vh, b.to]]) {
+        await page.evaluate((y) => window.scrollTo(0, y), Math.max(0, Math.round(b.y + dy)))
+        await wait(250)
+        const got = await page.evaluate(() => window.__chapter?.())
+        if (got !== want) errors.push(`header ${b.from}→${b.to}: na ${dy < 0 ? '−' : '+'}5 vh je „${got}", očekivano „${want}"`)
+      }
+    }
+    if (!mobile) {
+      // strelica „dalje" u GRIND-u vodi na početak POUR pina (±5 vh)
+      await page.evaluate(() => window.scrollTo(0, 0))
+      await wait(400)
+      await page.click('#grind .ch-arrow--next')
+      await wait(reduced ? 400 : 2600)
+      const y = await page.evaluate(() => window.scrollY)
+      if (Math.abs(y - story.nav.pour) > 0.05 * vh) errors.push(`strelica GRIND → POUR: skrol ${y}, očekivano ${story.nav.pour}`)
+    }
+    // para se učitava tek kad zatreba; prelazak na drugu stranicu usred učitavanja bi je prekinuo
+    await page.waitForLoadState('networkidle')
   }
 
   if (!mobile) {

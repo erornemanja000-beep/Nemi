@@ -461,6 +461,18 @@ function LiveStory({ phone }: { phone: boolean }) {
       setActiveChapter(c)
     }
     const kafa = (g: number) => (seqs.current.pour ? kafaYAt(seqs.current.pour.manifest, g) : null) ?? T.FALLBACK_ANCHORS.kafa_y
+    // desktop: sloj koji se ne vidi (SIP ispod POUR-a pre talasa, POUR isečen posle talasa, GRIND iznad
+    // ekrana posle šava) ima opacity 0, pa ga pregledač ne slaže u svakom kadru. Ostaje u DOM-u, čitaču
+    // ekrana i redosledu tastature (fokus vodi na poglavlje, onFocus).
+    const lastLayer: Record<ChapterId, string> = { grind: '', pour: '', sip: '' }
+    const setLayer = (id: ChapterId, on: boolean) => {
+      const v = on ? '' : '0'
+      const l = layers[id]
+      if (l && v !== lastLayer[id]) {
+        l.style.opacity = v
+        lastLayer[id] = v
+      }
+    }
 
     // ---------- desktop ----------
     const applyDesk = (scroll: number) => {
@@ -529,6 +541,10 @@ function LiveStory({ phone }: { phone: boolean }) {
       else if (p >= 1 || (p > 0 && waveTopAt(p, startY / vh) * vh <= line)) chapter = 'sip'
       else if (vh - seam * vh <= line) chapter = 'pour'
       setChapter(chapter)
+
+      setLayer('grind', y < T.DESK.seam[1])
+      setLayer('pour', p < 1)
+      setLayer('sip', y >= T.DESK.wave[0])
 
       const live = y >= T.DESK.wave[0] && y < T.DESK.end + 100 ? '1' : '0'
       if (live !== sipLive) el.dataset.sipLive = sipLive = live
@@ -751,6 +767,7 @@ function LiveStory({ phone }: { phone: boolean }) {
       for (const id of IDS) {
         const w = words[id]
         if (w) w.style.transform = ''
+        layers[id]?.style.removeProperty('opacity')
       }
     }
   }, [phone, clockA, clockB, clockS])

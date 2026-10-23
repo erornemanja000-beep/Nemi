@@ -1,7 +1,8 @@
 // Harness za sekvence (samo dev, /dev/seq). GRIND i POUR scena su jedna ispod druge, bez razmaka, na
 // zajedničkom satu G. Skrol je linearno vezan za G1–G192 po segmentima iz plana (Interfejs 2):
 // GRIND pin → prelaz (obe scene, šav) → POUR pin → talas. Panel dole levo: G, nivo i brojači.
-// Brojevi su kopija tabele iz plana dok Z12 ne napravi src/story/timeline.ts.
+// Desktop brojevi su iz src/story/timeline.ts (Z12). Telefon u priči nema šav (odluka direktora 2),
+// pa telefonski čvorovi ovde važe samo za harness (proveravaju zajednički sat na nivou m).
 // Za Playwright: window.__devSeq.scrollToG(g) i window.__devSeq.state().
 // Reduced motion i Save-Data: dva statična bloka sa posterima, bez zahteva za kadrove.
 import { useEffect, useRef, useState } from 'react'
@@ -12,11 +13,11 @@ import { ScrollTrigger, scrollToTarget } from '../lib/motion'
 import { createClock, useSequence, type FrameRequest, type Sequence } from '../lib/sequence'
 import { useIsPhone, useReducedMotion, useSaveData } from '../lib/useMedia'
 import { SeqCanvas } from '../story/SeqCanvas'
+import { DESK_G, LOAD_PLAN, RETAIN, type Knot } from '../story/timeline'
 
 /** [vh (telefon: svh) od vrha, G na početku segmenta]; poslednji red je kraj talasa */
-type Knot = readonly [y: number, g: number]
 const KNOTS: Record<'desktop' | 'phone', readonly Knot[]> = {
-  desktop: [[0, 1], [200, 65], [300, 97], [540, 177], [640, 192]],
+  desktop: DESK_G,
   phone: [[0, 1], [150, 65], [250, 97], [430, 177], [510, 192]],
 }
 
@@ -45,10 +46,12 @@ function seamAt(knots: readonly Knot[], y: number) {
   return Math.min(Math.max((y - a) / (b - a), 0), 1)
 }
 
-// učitavanje u delovima (storyboard 8), posle `load`; veći broj ide pre
+// učitavanje u delovima (storyboard 8, LOAD_PLAN iz timeline.ts), posle `load`; veći broj ide pre.
+// Harness traži sve delove odmah (bez pragova skrola), redom prioriteta.
 type Plan = readonly (readonly [FrameRequest, number])[]
-const GRIND_PLAN: Plan = [[{ step: 6 }, 60], [{ step: 2 }, 50], [{}, 40]]
-const POUR_PLAN: Plan = [[{ from: 65, to: 96 }, 45], [{ step: 6 }, 30], [{}, 20]]
+const planFor = (id: 'grind' | 'pour'): Plan => LOAD_PLAN.filter((s) => s.id === id).map((s) => [s.req, s.priority] as const)
+const GRIND_PLAN = planFor('grind')
+const POUR_PLAN = planFor('pour')
 
 function useLoadPlan(seq: Sequence | null, plan: Plan) {
   useEffect(() => {
@@ -93,7 +96,7 @@ export default function DevSeq() {
   const still = reduced || saveData
   const grind = useSequence('grind')
   const pour = useSequence('pour')
-  const [clock] = useState(() => createClock())
+  const [clock] = useState(() => createClock([], { retain: RETAIN }))
   const track = useRef<HTMLDivElement>(null)
   const stage = useRef<HTMLDivElement>(null)
   const panel = useRef<HTMLPreElement>(null)

@@ -1,7 +1,7 @@
 ---
 name: storyboard
 description: Odeljenje Skice. Pravi knjigu snimanja (storyboard) za video, kadar po kadar, sa trajanjem, kretanjem kamere, prelazima, zvukom i početnim i završnim kadrom za AI klipove. Koristi ga pre pisanja video promptova i pre montaže (uvodni video sajta, Instagram reel, 9:16 verzije).
-tools: Read, Write, Edit, Grep, Glob, Bash
+tools: Read, Write, Edit, Grep, Glob, Bash, WebSearch, WebFetch
 model: inherit
 color: cyan
 ---
@@ -17,6 +17,14 @@ Pogledaj kako je rađeno do sada:
 - kadrovi u `frames/`.
 
 Iz postojećih videa možeš da izvučeš kadrove za referencu (`ffmpeg -ss <vreme> -frames:v 1`) u privremeni folder.
+
+## Istraživanje
+
+Pravila istraživanja su u `CLAUDE.md` (sekcija Istraživanje).
+
+- **Za reel i 9:16:** proveri aktuelne zahteve platforme iz zvaničnih izvora (Meta, Instagram): trajanje, rezoluciju i bezbedne zone gde tekst ne prekriva interfejs.
+- **Za AI klipove:** proveri `studio/znanje/ai-alati.md`, jer trajanje i mogućnosti zavise od alata.
+- **Šta danas zadržava gledaoca:** pogledaj `studio/znanje/trendovi.md` i par aktuelnih reklama iste branše, pre svega prve 1–2 sekunde.
 
 ## Pravila
 

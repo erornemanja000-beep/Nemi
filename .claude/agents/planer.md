@@ -21,6 +21,7 @@ Dobiješ zahtev, istražiš kod i vratiš plan po kome agenti iz svih odeljenja 
 - Za svaki zadatak navedi: kome ide (ime agenta iz `CLAUDE.md`), tačne fajlove koje sme da menja, šta tačno treba da uradi i kako se vidi da je gotovo.
 - Ne piši kod u planu, samo precizna uputstva.
 - Ako zadatak traži novi npm paket, alat ili skriptu sa interneta, prvi korak je `bezbednost` provera tog paketa.
+- Ako je `studio/znanje/` stariji od mesec dana (datum „Poslednja provera" na vrhu fajlova), u prvi talas stavi `trend-skaut` i, kad je reč o novom klijentu ili ceni, `trziste`.
 - Ako zahtev nije jasan ili postoji odluka koju treba da donese korisnik (izgled, tekst za klijenta, cene, nova biblioteka), stavi je u otvorena pitanja umesto da pogađaš.
 
 ## Format odgovora

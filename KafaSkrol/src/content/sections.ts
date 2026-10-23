@@ -4,6 +4,7 @@
 //   {p3} {p6} {p12} formatPrice(giftPriceCents(n)). Tačan izlaz proverava scripts/check-content.ts.
 import type { L, Link } from './types.ts'
 import { legalPages } from './legal.ts'
+import { media } from './media.ts'
 import { productBySlug } from './products.ts'
 import { shop } from './shop.ts'
 
@@ -34,6 +35,18 @@ if (!tastingSet) throw new Error('sections.ts: nema proizvoda tasting-set u prod
 
 /** Link u footeru; `short` je kraći natpis za 390 px. */
 type FooterLink = Link & { short?: L }
+
+/**
+ * Link ispod koraka Brew guide-a (skica 9b, „→ Gooseneck Kettle"). `product` je slug iz products.ts: natpis je
+ * ime proizvoda, a link vodi na /p/<slug>. Proizvod koji se ne prikazuje (oprema bez cene) nema ni link.
+ */
+type StepLink = { product: string } | Link
+
+/**
+ * Korak 3 pokazuje SIP poster tek kad je SIP pravi render (placeholder: false u media.ts i seq.json).
+ * Privremeni kadrovi imaju natpis „S064 PLATZHALTER", pa do tada stoji fotografija iz media.photos.
+ */
+const sipRendered = media.seq.sip.ready && media.seq.sip.placeholder === false
 
 export const sections = {
   subscription: {
@@ -126,7 +139,10 @@ export const sections = {
         de: 'Handfilter, Papierfilter, Waage, Wasserkocher, Timer.',
       } satisfies L,
     },
-    /** `photo` je id iz media.photos; korak 3 koristi SIP poster (media.seq.sip.poster, alt iz chapters SIP). */
+    /**
+     * `photo` je id iz media.photos; korak 3 koristi SIP poster (media.seq.sip.poster, alt iz chapters SIP),
+     * a dok SIP nema pravi render fotografiju `sipStandIn`. `links` su linkovi iz skice ispod koraka.
+     */
     steps: [
       {
         id: 'grind',
@@ -136,6 +152,8 @@ export const sections = {
           de: '18\u00a0g Kaffee mittelfein mahlen, etwa wie Speisesalz. Den Papierfilter mit heißem Wasser ausspülen und das Wasser weggießen.',
         },
         photo: 'guide-1',
+        // mlin nema cenu (PrAG), pa se link pojavi tek kad je dobije
+        links: [{ product: 'burr-grinder' }],
       },
       {
         id: 'pour',
@@ -145,6 +163,8 @@ export const sections = {
           de: 'Timer starten. 50\u00a0g Wasser mit 93\u00a0°C aufgießen und 45 Sekunden aufquellen lassen. Dann langsam in Kreisen gießen, bis die Waage 288\u00a0g zeigt.',
         },
         photo: 'guide-2',
+        // dripper nema cenu: za sada se vidi samo kuvalo
+        links: [{ product: 'ceramic-dripper' }, { product: 'gooseneck-kettle' }],
       },
       {
         id: 'sip',
@@ -154,8 +174,11 @@ export const sections = {
           de: 'Durchlaufen lassen. Nach etwa 3:00 ist er fertig. Kanne einmal schwenken und einschenken.',
         },
         photo: null,
+        links: [{ label: shop.title, href: '#find-your-cup' }],
       },
-    ] satisfies { id: 'grind' | 'pour' | 'sip'; title: L; text: L; photo: string | null }[],
+    ] satisfies { id: 'grind' | 'pour' | 'sip'; title: L; text: L; photo: string | null; links: StepLink[] }[],
+    /** Privremena fotografija u koraku 3 (id iz media.photos); null kad je SIP pravi render. Credits je navodi. */
+    sipStandIn: sipRendered ? null : 'shop-1',
     tip: {
       label: { en: 'Tip', de: 'Tipp' } satisfies L,
       text: { en: 'Too sour? Grind finer. Too bitter? Grind coarser.', de: 'Zu sauer? Feiner mahlen. Zu bitter? Gröber mahlen.' } satisfies L,
@@ -183,8 +206,8 @@ export const sections = {
       label: { en: 'Café', de: 'Café' } satisfies L,
       /** u jednom redu: redovi spojeni sa „ · " (tekstovi.md) */
       rows: [
-        { days: { en: 'Mon–Fri', de: 'Mo–Fr' }, time: { en: '8:00–18:00', de: '8–18 Uhr' } },
-        { days: { en: 'Sat', de: 'Sa' }, time: { en: '9:00–17:00', de: '9–17 Uhr' } },
+        { days: { en: 'Mon–Fri', de: 'Mo–Fr' }, time: { en: '8:00–18:00', de: '8–18\u00a0Uhr' } },
+        { days: { en: 'Sat', de: 'Sa' }, time: { en: '9:00–17:00', de: '9–17\u00a0Uhr' } },
         { days: { en: 'Sun & public holidays', de: 'Sonn- und Feiertag' }, time: { en: 'closed', de: 'geschlossen' } },
       ] satisfies { days: L; time: L }[],
     },
@@ -194,7 +217,7 @@ export const sections = {
     } satisfies L,
     cupping: {
       en: 'First Saturday of the month, 10:00, €29 per person. Book by email.',
-      de: 'Jeden ersten Samstag im Monat, 10 Uhr, €\u00a029 pro Person. Anmeldung per Mail.',
+      de: 'Jeden ersten Samstag im Monat, 10\u00a0Uhr, €\u00a029 pro Person. Anmeldung per Mail.',
     } satisfies L,
     cuppingLabel: { en: 'Cupping', de: 'Cupping' } satisfies L,
     /** {email} = brand.email; domen .example je rezervisan */

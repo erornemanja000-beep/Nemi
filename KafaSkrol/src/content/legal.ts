@@ -206,6 +206,11 @@ export const credits = {
       source: 'Pexels',
     },
   } satisfies Record<string, { photo: L; usedIn: L; source: string }>,
+  /**
+   * Dodatak koloni „Used in" za fotografiju koja privremeno stoji u koraku 3 Brew guide-a
+   * (sections.brewGuide.sipStandIn); nestaje kad je SIP pravi render.
+   */
+  standIn: { en: 'Brew guide, step 3 (until the render is in)', de: 'Zubereitung, Schritt 3 (bis das Rendering da ist)' } satisfies L,
   /** Red o snimku pare; autor, originalni naslov (ne prevodi se), link i licenca su media.steamCredit. */
   steam: {
     photo: { en: 'Steam over a cup (video, edited)', de: 'Dampf über einer Tasse (Video, bearbeitet)' } satisfies L,

@@ -9,12 +9,13 @@ import { chapters } from './src/content/chapters.ts'
 import { media } from './src/content/media.ts'
 import { site } from './src/content/site.ts'
 
-// Isti CSP i X-Robots-Tag kao u netlify.toml: uskladiti sa netlify.toml.
+// Ista zaglavlja kao u netlify.toml (CSP, X-Robots-Tag, COOP …): uskladiti sa netlify.toml.
 const securityHeaders = {
   'X-Robots-Tag': 'noindex, nofollow, noarchive',
   'X-Content-Type-Options': 'nosniff',
   'Referrer-Policy': 'strict-origin-when-cross-origin',
   'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
+  'Cross-Origin-Opener-Policy': 'same-origin',
   'Content-Security-Policy':
     "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; media-src 'self' blob:; " +
     "font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'",
@@ -76,7 +77,7 @@ function siteHtml(): Plugin {
 }
 
 /**
- * Kao netlify.toml: mediji (i u preview-u bundle) koji ne postoje vraćaju 404, a ne index.html sa 200.
+ * Kao netlify.toml: mediji i licence (i u preview-u bundle) koji ne postoje vraćaju 404, a ne index.html sa 200.
  * Bez ovoga Vite-ov SPA fallback daje HTML umesto slike ili seq.json, pa se greška ne vidi.
  */
 function missingFiles404(): Plugin {
@@ -97,10 +98,10 @@ function missingFiles404(): Plugin {
   return {
     name: 'kafa-missing-files-404',
     configureServer(server) {
-      server.middlewares.use(guard(resolve(server.config.publicDir), ['/media/']))
+      server.middlewares.use(guard(resolve(server.config.publicDir), ['/media/', '/licenses/']))
     },
     configurePreviewServer(server) {
-      server.middlewares.use(guard(resolve(server.config.root, server.config.build.outDir), ['/media/', '/assets/']))
+      server.middlewares.use(guard(resolve(server.config.root, server.config.build.outDir), ['/media/', '/assets/', '/licenses/']))
     },
   }
 }

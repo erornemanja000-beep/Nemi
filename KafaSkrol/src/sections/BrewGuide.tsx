@@ -1,16 +1,22 @@
 // Brew guide (skica: sekcija 9b, „3 koraka = 3 poglavlja"). Naslov (kraći na telefonu), recept,
 // „You need", tri koraka sa slikom (GUIDE-1, GUIDE-2 i SIP poster), savet, preporuka i dugme.
+// Korak 3: dok SIP nema pravi render, umesto postera sa natpisom „S064 PLATZHALTER" stoji privremena
+// fotografija (sections.brewGuide.sipStandIn). Ispod koraka su linkovi iz skice („→ Gooseneck Kettle"
+// otvara modal proizvoda, „→ Find your cup" vodi na prodavnicu); oprema bez cene nema link.
 // Koraci se pojavljuju redom sa razmakom 60 ms (reveal.ts; u reduced motion odmah).
 // Dugme „Shop filter coffee" (odluka direktora, z13-izmene.md): href /?brew=filter#find-your-cup je
 // rezerva (novi tab, bez JS-a), a običan klik ne učitava stranicu ponovo, nego javi prodavnici filter
 // događajem `kafa:shop-filter` (sluša ga Shop, Z9) i skroluje do #find-your-cup.
 import type { MouseEvent } from 'react'
+import { Link } from 'react-router-dom'
 import { Button } from '../components/Button'
 import { Photo } from '../components/Photo'
 import { chapters } from '../content/chapters'
 import { media } from '../content/media'
+import { productBySlug } from '../content/products'
 import { sections } from '../content/sections'
 import { useLang } from '../i18n/LangContext'
+import { isListed } from '../lib/filters'
 import { scrollToTarget } from '../lib/motion'
 import { useReveal } from '../lib/reveal'
 
@@ -22,10 +28,54 @@ const sipAlt = chapters.items.find((c) => c.id === 'sip')?.alt
 const FRAME = 'block aspect-[4/3] h-auto w-full rounded-md'
 const SIZES = '(min-width: 48rem) 30vw, 100vw'
 
+const linkClass = 'inline-flex min-h-tap items-center gap-s2 underline underline-offset-[3px] hover:text-accent-text'
+
+type Step = (typeof guide.steps)[number]
+
+/** Linkovi ispod koraka: proizvod (samo ako se prikazuje u prodavnici) ili sekcija. */
+function StepLinks({ links }: { links: Step['links'] }) {
+  const { tx } = useLang()
+  const items = links.flatMap((link) => {
+    if (!('product' in link)) return [{ key: link.href, label: tx(link.label), href: link.href, route: false }]
+    const product = productBySlug(link.product)
+    if (!product || !isListed(product)) return []
+    return [{ key: product.slug, label: tx(product.name), href: `/p/${product.slug}`, route: true }]
+  })
+  if (items.length === 0) return null
+  // mt-auto: linkovi stoje na dnu kartice, poravnati u sva tri koraka
+  return (
+    <div className="mt-auto pt-s4">
+      <ul className="m-0 flex list-none flex-wrap gap-x-s4 border-t border-dashed border-line-strong p-0 pt-s1 font-bold md:text-small">
+        {items.map((item) => {
+          const label = (
+            <>
+              <span aria-hidden="true">→</span>
+              {item.label}
+            </>
+          )
+          return (
+            <li key={item.key}>
+              {item.route ? (
+                <Link to={item.href} className={linkClass}>
+                  {label}
+                </Link>
+              ) : (
+                <a href={item.href} className={linkClass}>
+                  {label}
+                </a>
+              )}
+            </li>
+          )
+        })}
+      </ul>
+    </div>
+  )
+}
+
 function StepImage({ photo }: { photo: string | null }) {
   const { tx } = useLang()
   if (photo) return <Photo id={photo} sizes={SIZES} className={`${FRAME} object-cover`} />
-  // korak 3: SIP poster (providna pozadina) na boji SIP poglavlja
+  // korak 3 kad je SIP pravi render: poster (providna pozadina) na boji SIP poglavlja
   const { d, m } = sipPoster.poster
   return (
     <div data-chapter="sip" className={`${FRAME} overflow-hidden bg-bg`}>
@@ -67,7 +117,7 @@ export function BrewGuide() {
   return (
     <section id="brew-guide" aria-labelledby="t-brew-guide" className="scroll-mt-header bg-bg px-gutter py-s8 text-text md:py-s9">
       <div className="mx-auto max-w-site">
-        <h2 id="t-brew-guide" className="type-display m-0 text-h2 leading-none">
+        <h2 id="t-brew-guide" className="type-display m-0 text-section leading-none">
           <span className="md:hidden">{tx(guide.titleShort)}</span>
           <span className="max-md:hidden">{tx(guide.title)}</span>
         </h2>
@@ -79,13 +129,14 @@ export function BrewGuide() {
         <ol ref={reveal} className="mt-s6 mb-0 grid list-none gap-s4 p-0 md:grid-cols-3 md:gap-s5">
           {guide.steps.map((step, i) => (
             <li key={step.id} data-reveal className="flex flex-col rounded-card bg-surface p-s4 shadow-soft">
-              <StepImage photo={step.photo} />
+              <StepImage photo={step.photo ?? guide.sipStandIn} />
               {/* broj daje <ol>; vidljiv broj je ukras */}
               <p aria-hidden="true" className="type-eyebrow mt-s4 mb-0 text-muted">
                 {String(i + 1).padStart(2, '0')}
               </p>
               <h3 className="type-display mt-s2 mb-0 text-[1.75rem] leading-none">{tx(step.title)}</h3>
               <p className="mt-s3 mb-0">{tx(step.text)}</p>
+              <StepLinks links={step.links} />
             </li>
           ))}
         </ol>

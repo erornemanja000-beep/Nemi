@@ -65,10 +65,10 @@ export function About() {
 
         <div ref={reveal}>
           <div data-reveal>
-            <h2 id="t-about" className="type-display m-0 text-h2 leading-none">{tx(about.title)}</h2>
+            <h2 id="t-about" className="type-display m-0 text-section leading-none">{tx(about.title)}</h2>
             <p className="mt-s3 mb-0 font-bold">{tx(about.subtitle)}</p>
             <p className="mt-s4 mb-0 max-w-[34rem]">{tf(about.text)}</p>
-            <p className="mt-s5 mb-s5 max-w-[34rem] border-t border-dashed border-line-strong pt-s3 text-small text-muted">{tx(about.demo)}</p>
+            <p className="mt-s5 mb-s5 max-w-[34rem] border-t border-dashed border-line-strong pt-s3 text-muted md:text-small">{tx(about.demo)}</p>
             <Button href={about.cta.href}>{tx(about.cta.label)}</Button>
           </div>
         </div>

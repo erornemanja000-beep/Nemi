@@ -22,8 +22,8 @@ npm run dev          # http://localhost:5173 (dev rute: /dev/seq, /dev/wave, /de
 ```bash
 npm run build        # tsc -b && vite build → dist/
 npm run lint         # oxlint
-npm run check        # formati (scripts/check-data.ts) i sadržaj: cene, L polja, linkovi, mediji (scripts/check-content.ts)
-npx vite preview     # http://localhost:4173, sa istim zaglavljima (CSP, X-Robots-Tag) kao Netlify
+npm run check        # formati (scripts/check-data.ts) i sadržaj: cene, L polja, linkovi, mediji, seq.json (scripts/check-content.ts)
+npx vite preview     # http://localhost:4173, sa istim zaglavljima (CSP, X-Robots-Tag, COOP) kao Netlify
 node scripts/shots.mjs <folder> [url] [--reduced]   # snimci na 390 i 1440 + greške, zahtevi, skrol
 ```
 
@@ -31,8 +31,10 @@ node scripts/shots.mjs <folder> [url] [--reduced]   # snimci na 390 i 1440 + gre
 (npr. `PW_CHROMIUM=/opt/pw-browsers/chromium`).
 
 Stack: Vite 8 · React 19 · TypeScript 6 · Tailwind CSS 4 · GSAP 3 + ScrollTrigger · Lenis.
-Verzije su tačne (bez `^`), iste kao u `RealEstates/package-lock.json`. Paketi se instaliraju sa
-`--ignore-scripts`; novi paket ide tek posle provere (`bezbednost`).
+Verzije su tačne (bez `^`), iste kao u `RealEstates/package-lock.json`. `overrides` drži `rolldown` na 1.2.14
+(proverena verzija iz RealEstates; Vite 8.3.5 traži `~1.2.14`). `.npmrc` ima `ignore-scripts=true` (install
+skripte paketa se ne pokreću ni lokalno, `npm run …` radi) i `save-exact=true`. Novi paket ide tek posle
+provere (`bezbednost`).
 
 ## Objava
 
@@ -41,10 +43,11 @@ Poseban Netlify sajt iz istog repoa (pravi ga korisnik kad sajt bude spreman):
 - **Base directory:** `KafaSkrol`. Build, publish (`dist`), `NODE_VERSION` i `NPM_FLAGS = --ignore-scripts`
   su u `KafaSkrol/netlify.toml`.
 - SPA preusmerenje: svaka ruta (`/p/guji`, `/impressum`, `/credits` …) dobija `index.html`;
-  mediji i bundle koji ne postoje vraćaju 404.
+  mediji, bundle i licence (`/media/*`, `/assets/*`, `/licenses/*`) koji ne postoje vraćaju 404.
 - Zaglavlja: `X-Robots-Tag: noindex, nofollow, noarchive`, CSP samo sa `'self'`, `nosniff`,
-  `Referrer-Policy`, `Permissions-Policy`. Isti CSP stoji u `vite.config.ts` (`preview.headers`):
-  menjaju se oba mesta zajedno.
+  `Referrer-Policy`, `Permissions-Policy`, `Cross-Origin-Opener-Policy: same-origin`. Ista zaglavlja stoje
+  u `vite.config.ts` (`preview.headers`): menjaju se oba mesta zajedno. HSTS šalje Netlify sam na HTTPS
+  domenu (proverava se posle objave).
 
 ## Mapa foldera
 
@@ -52,6 +55,7 @@ Poseban Netlify sajt iz istog repoa (pravi ga korisnik kad sajt bude spreman):
 index.html            bez imena brenda; naslov, opis i <noscript> upisuje vite.config.ts
 vite.config.ts        plugin za index.html, chunk „motion" (gsap + lenis), preview zaglavlja
 netlify.toml          build, SPA preusmerenje, zaglavlja, keš
+.npmrc                ignore-scripts i save-exact za npm
 public/
   media/              sekvence (seq/), para (steam/), fotografije (photos/), kese (bags/)
   licenses/           OFL licence fontova
@@ -93,7 +97,8 @@ Kod čita medije samo preko `src/content/media.ts`. Novi renderi ulaze bez izmen
    Medij sa `ready: false` se ne traži: umesto njega stoji obojena kutija iste razmere. Za sekvence
    `SEQ_PLACEHOLDER` i `geometry` moraju da budu isti kao `placeholder`, `full` i `crop` u `seq.json`
    (poster stoji na mestu isečka pre `seq.json`; red o privremenim kadrovima u Credits nestaje kad su
-   sve tri `false`).
+   sve tri `false`). `npm run check` poredi `geometry` i `placeholder` sa svakim `seq.json`. Kad SIP dobije
+   `placeholder: false`, korak 3 Brew guide-a sam prelazi sa privremene fotografije na SIP poster.
 3. Para (`public/media/steam/`): webm je prvi izvor, mp4 drugi. Fotografije: `<id>-sm.webp` i
    `<id>-lg.webp`. Izvor, autor, licenca i sha256 svakog stock fajla su u `studio/kafa-skrol/izvori.md`.
 

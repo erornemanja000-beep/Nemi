@@ -2,7 +2,8 @@
 // Proverava src/content/*.ts prema studio/kafa-skrol/tekstovi.md i planu (Z11 „Gotovo kad"):
 //   Grundpreis svakog proizvoda i cene iz tekstova (pretplata, poklon, Probierset), da svako L polje ima
 //   en i de, jedinstvene slugove, SIP kartice, broj proizvoda po filteru (Z9), nelomljivi razmak,
-//   oznake {…}, linkove, medije sa `ready: true` i da u sadržaju nema imena brenda.
+//   oznake {…}, linkove, medije sa `ready: true`, geometriju i `placeholder` sekvenci prema seq.json i da u
+//   sadržaju nema imena brenda.
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { brand, fill, storageKeys } from '../src/config/site.ts'
 import { chapters } from '../src/content/chapters.ts'
@@ -13,6 +14,7 @@ import { giftPriceCents, sections, subscriptionPriceCents } from '../src/content
 import { shop } from '../src/content/shop.ts'
 import { site } from '../src/content/site.ts'
 import type { BrewGroup, FlavorGroup, L, Lang, Product, RoastGroup, TypeGroup } from '../src/content/types.ts'
+import { isListed } from '../src/lib/filters.ts'
 import { formatGrams, formatPrice, formatUnitPrice, NBSP } from '../src/lib/format.ts'
 
 let failed = 0
@@ -330,9 +332,27 @@ eq('footer „Vertrag widerrufen" vodi na /widerruf', sections.footer.withdraw.h
 
 const photoIds = Object.keys(media.photos)
 eq('Credits: red za svaku fotografiju', Object.keys(credits.photos).sort().join(','), [...photoIds].sort().join(','))
-const usedPhotos = [...sections.about.photos, sections.contact.photo, ...sections.brewGuide.steps.map((s) => s.photo).filter((p) => p !== null)]
+const guide = sections.brewGuide
+const usedPhotos = [...sections.about.photos, sections.contact.photo, ...guide.steps.map((s) => s.photo), guide.sipStandIn].filter((p) => p !== null)
 for (const id of usedPhotos) ok(`fotografija postoji u media.photos: ${id}`, id in media.photos)
-eq('Brew guide: koraci 1 i 2 su GUIDE-1 i GUIDE-2, korak 3 SIP poster', sections.brewGuide.steps.map((s) => s.photo ?? 'sip').join(','), 'guide-1,guide-2,sip')
+eq('Brew guide: koraci 1 i 2 su GUIDE-1 i GUIDE-2, korak 3 SIP poster', guide.steps.map((s) => s.photo ?? 'sip').join(','), 'guide-1,guide-2,sip')
+// korak 3: privremena fotografija tačno dok SIP nema pravi render (inače se vidi „S064 PLATZHALTER")
+const sipRendered = media.seq.sip.ready && media.seq.sip.placeholder === false
+eq('Brew guide korak 3: privremena fotografija dok SIP nije pravi render', guide.sipStandIn !== null, !sipRendered)
+ok('Brew guide: privremena fotografija nije korak 1 ili 2', !guide.steps.some((s) => s.photo === guide.sipStandIn))
+// linkovi ispod koraka (skica 9b): proizvodi postoje; link se vidi samo za proizvod iz prodavnice (isListed)
+for (const step of guide.steps) {
+  for (const link of step.links) if ('product' in link) ok(`Brew guide ${step.id}: link na postojeći proizvod`, Boolean(productBySlug(link.product)), link.product)
+}
+const shownLinks = guide.steps.flatMap((s) =>
+  s.links.flatMap((l) => {
+    if (!('product' in l)) return [l.href]
+    const p = productBySlug(l.product)
+    return p && isListed(p) ? [`/p/${p.slug}`] : []
+  }),
+)
+ok('Brew guide: vide se linkovi na kuvalo i prodavnicu', shownLinks.includes('/p/gooseneck-kettle') && shownLinks.includes('#find-your-cup'), shownLinks.join(', '))
+ok('Credits: tekst za privremenu fotografiju koraka 3', Boolean(credits.standIn.en && credits.standIn.de))
 ok('kontakt fotografija ima natpis Symbolbild', media.photos['kontakt-1']?.caption?.de === 'Symbolbild')
 
 // ============================================================================================
@@ -348,6 +368,26 @@ for (const p of Object.values(media.photos)) {
 for (const s of Object.values(media.seq)) {
   if (s.ready) [s.manifest, s.poster.d.src, s.poster.m.src].forEach((src) => fileOk(`sekvenca ${s.id}`, src))
 }
+
+// geometrija i `placeholder` u media.ts moraju da budu isti kao u seq.json (README, „Renderi"): poster stoji
+// na mestu isečka pre seq.json, pa bi razlika dala skok pri zameni kadrom; placeholder vodi red u Credits
+type SeqJson = { full?: Record<string, unknown>; crop?: Record<string, unknown>; placeholder?: unknown }
+const sameNumbers = (a: Record<string, number>, b: Record<string, unknown> | undefined) =>
+  Boolean(b) && Object.keys(a).length === Object.keys(b ?? {}).length && Object.entries(a).every(([k, v]) => b?.[k] === v)
+for (const s of Object.values(media.seq)) {
+  if (!s.ready || !existsSync(pub(s.manifest))) continue
+  let json: SeqJson = {}
+  try {
+    json = JSON.parse(readFileSync(pub(s.manifest), 'utf8')) as SeqJson
+  } catch (e) {
+    ok(`sekvenca ${s.id}: seq.json je ispravan JSON`, false, String(e))
+    continue
+  }
+  ok(`sekvenca ${s.id}: geometry.full = seq.json full`, sameNumbers(s.geometry.full, json.full), `${JSON.stringify(s.geometry.full)} / ${JSON.stringify(json.full)}`)
+  ok(`sekvenca ${s.id}: geometry.crop = seq.json crop`, sameNumbers(s.geometry.crop, json.crop), `${JSON.stringify(s.geometry.crop)} / ${JSON.stringify(json.crop)}`)
+  ok(`sekvenca ${s.id}: seq.json ima placeholder true ili false`, typeof json.placeholder === 'boolean', String(json.placeholder))
+  eq(`sekvenca ${s.id}: placeholder u media.ts = seq.json`, s.placeholder, json.placeholder)
+}
 for (const [which, s] of Object.entries(media.steam)) {
   if (s.ready) [...s.sources.d, ...s.sources.m].forEach((v) => fileOk(`para ${which}`, v.src))
 }
@@ -356,6 +396,7 @@ for (const img of [...Object.values(media.bags), ...Object.values(media.gear)]) 
 }
 for (const f of credits.fonts.files) fileOk('licenca fonta', f.href)
 ok('Credits pare: autor i link', Boolean(steamCredit.author && steamCredit.url.startsWith('https://')))
+ok('Credits pare: link na Mixkit licencu', steamCredit.licenseUrl.startsWith('https://mixkit.co/license/'), steamCredit.licenseUrl)
 
 // primer koji koristi kartica SIP (aria-label), da format veličine ostane „250 g"
 eq('SIP aria-label primer', fill(chapters.card.aria.en, { name: 'Guji', place: 'Ethiopia', price: formatPrice(1790, 'en'), size: formatGrams(250, 'en') }), nb('Guji, Ethiopia, €17.90 for 250 g. View coffee'))

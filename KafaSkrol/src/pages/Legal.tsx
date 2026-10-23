@@ -1,7 +1,8 @@
 // Jedna stranica za sve pravne slugove iz legal.ts (demo stub, Z3 tačka 3). Naslov, podnaslov (AGB),
 // uvod „Konzept / Demo", zajednički tekst (Cookies ga menja svojim, Datenschutz dodaje svoj ispod),
 // pa spisak „What goes here": svaka stavka ima demo tekst, link, onemogućeno dugme ili čip „not in demo".
-// [FEHLT] se ne prikazuje doslovno. Footer (linkovi na ostale pravne stranice) dodaje App.tsx.
+// [FEHLT] se ne prikazuje doslovno. Napomene (uvod, demo tekst stavke) su na telefonu 16 px, od md 14 px.
+// Footer (linkovi na ostale pravne stranice) dodaje App.tsx.
 // PageMeta (deli ga i Credits.tsx): naslov kartice, header u stanju „page", vrh stranice i fokus na H1.
 import { useEffect, useLayoutEffect, useRef, type RefObject } from 'react'
 import { Link, Navigate } from 'react-router-dom'
@@ -56,7 +57,7 @@ function Entry({ entry }: { entry: LegalEntry }) {
         )}
         {!done && <span className={chip}>{tx(legal.missing)}</span>}
       </h3>
-      {entry.text && <p className="mt-s2 mb-0 max-w-[40rem] text-small">{tx(entry.text)}</p>}
+      {entry.text && <p className="mt-s2 mb-0 max-w-[40rem] md:text-small">{tx(entry.text)}</p>}
       {entry.action && (
         <Button disabled className="mt-s3">
           {tx(entry.action)}
@@ -83,7 +84,7 @@ export default function Legal({ slug }: { slug: LegalSlug }) {
             {tx(page.title)}
           </h1>
           {page.subtitle && <p className="mt-s3 mb-0 font-bold hyphens-auto">{tx(page.subtitle)}</p>}
-          <p className="mt-s5 mb-0 inline-block rounded-sm border border-dashed border-line-strong px-s4 py-s3 text-small font-bold">{tx(page.intro)}</p>
+          <p className="mt-s5 mb-0 inline-block rounded-sm border border-dashed border-line-strong px-s4 py-s3 font-bold md:text-small">{tx(page.intro)}</p>
           {!ownTextOnly && <p className="mt-s5 mb-0 max-w-[40rem]">{tx(legal.text)}</p>}
           {page.body && <p className="mt-s4 mb-0 max-w-[40rem]">{tx(page.body)}</p>}
 

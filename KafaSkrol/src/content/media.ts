@@ -211,4 +211,6 @@ export const steamCredit = {
   url: 'https://mixkit.co/free-stock-video/demonstration-video-of-a-steaming-cup-of-coffee-43935/',
   /** licenca proverena na stranici klipa 23.10.2026 (izvori.md) */
   license: 'Mixkit Stock Video Free License',
+  /** tekst licence na mixkit.co (isti link kao u studio/kafa-skrol/stock-video.md), proveren 23.10.2026 */
+  licenseUrl: 'https://mixkit.co/license/modal/videoFree/',
 }

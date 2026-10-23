@@ -1,7 +1,14 @@
-/* Zajednički stilovi (Z1). Posle Z1 ovaj fajl menja samo Z13: zadaci imaju svoje CSS fajlove. */
+/* Zajednički stilovi (Z1). Posle Z1 ovaj fajl menjaju samo zadaci za zajedničke fajlove (Z13, Z19): ostali imaju svoje CSS fajlove. */
 @import "tailwindcss";
 @import "./styles/fonts.css";
 @import "./styles/tokens.css";
+
+/* Tokeni kojih još nema u tokens.css (kopija dizajnerskog fajla ostaje ista). */
+:root {
+  /* naslovi sekcija ispod priče (O nama, Brew guide, Kontakt, prodavnica): 40 → 72 px.
+     Odluka direktora, talas 4 (Z15 tačka 14): vraća veličinu iz odobrene skice (.sec h2.t). */
+  --fs-section: clamp(2.5rem, 1.5rem + 4vw, 4.5rem);
+}
 
 /* Desktop raspored priče: od 64rem širine i 600 px visine (plan, Interfejs 1).
    Isti upit je DESKTOP_QUERY u src/lib/useMedia.ts. Sve ostalo je telefonski raspored. */
@@ -70,6 +77,7 @@
   --text-backword-xl: var(--fs-word-xl);
   --text-chapter: var(--fs-chapter);
   --text-h2: var(--fs-h2);
+  --text-section: var(--fs-section);
   --text-h3: var(--fs-h3);
   --text-logo: var(--fs-logo);
   --text-logo-sub: var(--fs-logo-sub);
@@ -115,13 +123,15 @@
 }
 
 /* ---------- Tipografske uloge (tokeni, mockup.html) ---------- */
-/* Naslovi: Archivo, wght 800, wdth 88, verzal (.chapter__title, .peek h2). Veličinu daje text-chapter / text-h2. */
+/* Naslovi: Archivo, wght 800, wdth 88, verzal (.chapter__title, .peek h2). Veličinu daje text-chapter / text-h2 /
+   text-section. balance: redovi naslova su slične dužine, bez jedne reči u poslednjem redu („…OF / BEANS"). */
 @utility type-display {
   font-family: var(--font-display);
   font-weight: var(--font-display-wght);
   font-variation-settings: "wdth" var(--font-display-wdth);
   letter-spacing: var(--tracking-chapter);
   text-transform: uppercase;
+  text-wrap: balance;
 }
 /* Pozadinske reči: Fraunces SOFT/WONK (.word). */
 @utility type-word {
@@ -160,6 +170,10 @@
     font: 400 var(--fs-body) / var(--lh-body) var(--font-text);
     -webkit-font-smoothing: antialiased;
     overflow-x: clip;
+  }
+  /* bez usamljene reči u poslednjem redu pasusa („…tasting / set."); pregledač bez podrške lomi kao i do sada */
+  p {
+    text-wrap: pretty;
   }
   :focus-visible {
     outline: 2px solid var(--color-focus);

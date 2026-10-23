@@ -3,9 +3,13 @@
 // šalje ništa, nego prikazuje toast iz sadržaja (showToast, Toast.tsx čita ga preko aria-live).
 // #tasting-set: opis i cena seta (400 g) i „Add tasting set" (addToCart sam prikazuje toast).
 // Sve cene se računaju iz centi (format.ts): oznake {price} {was} {unit} {shipping} {p3} {p6} {p12}.
+// Iznad naslova su kese (skica: „[SLIKA: kutija / kese]" i „[SLIKA: 4 male kese]"): 2 za pretplatu i 4 male
+// za Probierset. Dok render kese nije spreman (media.bags ready: false), crta se CSS kesa kao u prodavnici.
+// Uslovi i demo red su na telefonu 16 px (kao tekst), od md 14 px.
 import { Fragment, type ReactNode } from 'react'
 import { Button } from '../components/Button'
 import { fill } from '../config/site'
+import { media } from '../content/media'
 import { productBySlug } from '../content/products'
 import { giftPriceCents, sections, subscriptionPriceCents } from '../content/sections'
 import { shop } from '../content/shop'
@@ -29,6 +33,37 @@ function withNodes(text: string, nodes: Record<string, ReactNode>): ReactNode[] 
     if (key && key in nodes) return <Fragment key={i}>{nodes[key]}</Fragment>
     return fill(part)
   })
+}
+
+/** Kese po ključu iz media.bags: On Repeat (primer „Your coffee") i Guji; četiri kafe iz seta (Guji, Nyeri, Huila, Tarrazú). */
+const SUB_BAGS = ['roast', 'origin']
+const SET_BAGS = ['origin', 'origin', 'flavor', 'flavor']
+
+/** Red kesa iznad naslova kartice. Ukras (aria-hidden, alt=""): sadržaj je u tekstu kartice. */
+function Bags({ ids, variant }: { ids: string[]; variant: 'sub' | 'set' }) {
+  return (
+    <div aria-hidden="true" className={`sub-visual sub-visual--${variant}`}>
+      {ids.map((id, i) => {
+        const image = media.bags[id]
+        if (!image?.ready) return <span key={i} className="sub-bag" />
+        const first = image.srcs[0]
+        return (
+          <img
+            key={i}
+            src={first.src}
+            srcSet={image.srcs.map((s) => `${s.src} ${s.width}w`).join(', ')}
+            sizes={variant === 'sub' ? '9rem' : '5rem'}
+            width={first.width}
+            height={Math.round(first.width / image.ratio)}
+            alt=""
+            loading="lazy"
+            decoding="async"
+            className="sub-bag-img"
+          />
+        )
+      })}
+    </div>
+  )
 }
 
 const strong = (text: string) => <strong className="whitespace-nowrap font-extrabold">{text}</strong>
@@ -60,6 +95,7 @@ export function Subscription() {
       <div ref={reveal} className="mx-auto grid max-w-site items-start gap-s5 lg:grid-cols-[7fr_5fr] lg:gap-s6">
         {/* ---------- Pretplata ---------- */}
         <article data-reveal className="rounded-card bg-surface p-s5 shadow-soft md:p-s6">
+          <Bags ids={SUB_BAGS} variant="sub" />
           <h2 id="t-subscription" className="type-display m-0 text-h2 leading-none">{tx(sub.title)}</h2>
           <p className="mt-s3 mb-0 font-bold">{tx(sub.subtitle)}</p>
 
@@ -80,7 +116,7 @@ export function Subscription() {
             ))}
           </ul>
 
-          <p className="mt-s4 mb-0 text-small text-muted">{tx(sub.terms)}</p>
+          <p className="mt-s4 mb-0 text-muted md:text-small">{tx(sub.terms)}</p>
           <p className="mt-s3 mb-0 md:text-small">
             {withNodes(tx(sub.gift.text), {
               p3: strong(price(giftPriceCents(3))),
@@ -95,7 +131,7 @@ export function Subscription() {
               {tx(sub.buttons.gift)}
             </Button>
           </div>
-          <p className="mt-s3 mb-0 text-small text-muted">{tx(sub.demo)}</p>
+          <p className="mt-s3 mb-0 text-muted md:text-small">{tx(sub.demo)}</p>
         </article>
 
         {/* ---------- Probierset ----------
@@ -103,6 +139,7 @@ export function Subscription() {
             pomerio i cilj sidra #tasting-set */}
         <div id="tasting-set" className="scroll-mt-header">
           <article data-reveal aria-labelledby="t-tasting-set" className="rounded-card bg-surface p-s5 shadow-soft md:p-s6">
+            <Bags ids={SET_BAGS} variant="set" />
             <h2 id="t-tasting-set" className="type-display m-0 text-h2 leading-none">
               <span className="md:hidden">{tx(set.titleShort)}</span>
               <span className="max-md:hidden">{tx(set.title)}</span>

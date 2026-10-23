@@ -9,8 +9,11 @@
   # paketi se instaliraju bez install skripti (pravilo iz CLAUDE.md, proverava `bezbednost`)
   NPM_FLAGS = "--ignore-scripts"
 
-# Mediji i bundle koji ne postoje vraćaju 404, a ne index.html (inače bi slika dobila HTML sa 200).
-# Netlify ne primenjuje ova pravila kad fajl postoji, pa postojeći fajlovi idu normalno.
+# 404 za fajlove koji ne postoje (Netlify docs, „Redirect options" i „Rewrites and proxies", 23.10.2026):
+# - pravilo važi samo kad fajla nema („shadowing"), pa postojeći mediji, bundle i licence idu normalno;
+# - odgovor ima status 404, a telo je sadržaj `to` (ovde index.html). Slika, seq.json ili licenca koja
+#   ne postoji tako dobija grešku 404, a ne HTML sa 200;
+# - važi prvo pravilo koje se poklopi, pa ova tri stoje pre SPA pravila /* ispod.
 [[redirects]]
   from = "/media/*"
   to = "/index.html"
@@ -21,13 +24,19 @@
   to = "/index.html"
   status = 404
 
+[[redirects]]
+  from = "/licenses/*"
+  to = "/index.html"
+  status = 404
+
 # SPA: sve ostale rute (/p/guji, /impressum, /credits …) daje index.html, a ruter bira stranicu.
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
 
-# Isti CSP i X-Robots-Tag stoje u vite.config.ts (preview.headers): uskladiti oba mesta.
+# Ista zaglavlja (CSP, X-Robots-Tag, COOP …) stoje u vite.config.ts (preview.headers): uskladiti oba mesta.
+# HSTS se ovde ne piše: Netlify ga sam šalje na HTTPS domenima (proverava `bezbednost` posle objave).
 [[headers]]
   for = "/*"
   [headers.values]
@@ -35,6 +44,7 @@
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+    Cross-Origin-Opener-Policy = "same-origin"
     Content-Security-Policy = "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; media-src 'self' blob:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
 
 # Bundle iz Vite-a ima heš u imenu fajla: keš godinu dana.

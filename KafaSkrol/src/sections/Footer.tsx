@@ -1,11 +1,14 @@
 // Footer (skica: sekcija 11). Tamna traka u ulogama SIP poglavlja (data-chapter="sip": espresso,
 // svetao krem tekst; kontrasti su u dizajn.md). Redom:
-//   1. newsletter: samo e-mail i kućica koja nije štiklirana; greške preko aria-describedby, uspeh je
-//      demo poruka (role="status"). Ništa se ne šalje: nema action-a ni mrežnog zahteva.
+//   1. newsletter: samo e-mail i kućica koja nije štiklirana (22 px, accent-color svetao krem); greške
+//      preko aria-describedby, uspeh je demo poruka (role="status"). Ništa se ne šalje: nema action-a ni
+//      mrežnog zahteva.
 //   2. logo i jezik, pa tri kolone linkova iz sections.footer (telefon: logo preko cele širine, kolone u dve).
 //   3. dugme „Vertrag widerrufen" na /widerruf i mesto za Gewährleistungslabel (obeležen placeholder),
 //      pa stalna napomena „Konzept / Demo", copyright i Credits.
 // Razmak ispod je ≥ 72 px (--space-9 = 96 px), da chat balon ne pokrije poslednje dugme.
+// Linkovi su najmanje 44 × 44 px (min-w-tap i za kratke: „Abo", „AGB"). Napomene (demo, greške, copyright)
+// su na telefonu 16 px, od md 14 px.
 // Sidra (#about…) vode na početnu kad footer stoji na pravnoj stranici, kao u headeru.
 import { useId, useState, type ChangeEvent, type FormEvent } from 'react'
 import { Link, useLocation } from 'react-router-dom'
@@ -23,7 +26,7 @@ const nl = footer.newsletter
 /** Ista provera kao forma u RealEstates: nešto@nešto.xx, bez razmaka. */
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
 
-const linkClass = 'inline-flex min-h-tap items-center no-underline hover:underline underline-offset-[3px]'
+const linkClass = 'inline-flex min-h-tap min-w-tap items-center no-underline hover:underline underline-offset-[3px]'
 
 type Field = 'email' | 'consent'
 
@@ -85,7 +88,7 @@ function Newsletter() {
           <Button type="submit">{tx(nl.button)}</Button>
         </div>
         {errors.email && (
-          <p id={ids.emailErr} className="mt-s2 mb-0 text-small font-bold text-accent-text">
+          <p id={ids.emailErr} className="mt-s2 mb-0 font-bold text-accent-text md:text-small">
             {tx(nl.errors.email)}
           </p>
         )}
@@ -96,19 +99,19 @@ function Newsletter() {
             aria-invalid={errors.consent || undefined}
             aria-describedby={errors.consent ? ids.consentErr : undefined}
             onChange={change}
-            className="mt-[2px] size-5 flex-none cursor-pointer accent-accent-text"
+            className="mt-[2px] size-[22px] flex-none cursor-pointer accent-pp-cream-light"
           />
           <span>{tx(nl.consent)}</span>
         </label>
         {errors.consent && (
-          <p id={ids.consentErr} className="mt-s1 mb-0 text-small font-bold text-accent-text">
+          <p id={ids.consentErr} className="mt-s1 mb-0 font-bold text-accent-text md:text-small">
             {tx(nl.errors.consent)}
           </p>
         )}
         {/* demo red; posle ispravne prijave isti tekst je potvrda. Prazan role="status" stoji stalno u
             DOM-u, da čitač pročita tekst kad se upiše. */}
-        {!sent && <p className="mt-s3 mb-0 text-small text-muted">{tx(nl.demo)}</p>}
-        <p role="status" className="mt-s3 mb-0 text-small font-bold text-accent-text empty:mt-0">
+        {!sent && <p className="mt-s3 mb-0 text-muted md:text-small">{tx(nl.demo)}</p>}
+        <p role="status" className="mt-s3 mb-0 font-bold text-accent-text empty:mt-0 md:text-small">
           {sent ? tx(nl.demo) : null}
         </p>
       </form>
@@ -183,13 +186,13 @@ export function Footer() {
             <Button variant="outline" to={footer.withdraw.href}>
               {tx(footer.withdraw.label)}
             </Button>
-            <div role="note" aria-label={tx(footer.guarantee.aria)} className="max-w-[26rem] rounded-sm border-[1.5px] border-muted px-s4 py-s3 text-small">
+            <div role="note" aria-label={tx(footer.guarantee.aria)} className="max-w-[26rem] rounded-sm border-[1.5px] border-muted px-s4 py-s3 md:text-small">
               <span className="md:hidden">{tx(footer.guarantee.short)}</span>
               <span className="max-md:hidden">{tx(footer.guarantee.text)}</span>
             </div>
           </div>
-          <p className="mt-s5 mb-0 max-w-[44rem] rounded-sm border border-dashed border-muted px-s4 py-s3 text-small font-bold">{tx(site.demo)}</p>
-          <p className="mt-s3 mb-0 flex flex-wrap items-center gap-x-s4 text-small text-muted">
+          <p className="mt-s5 mb-0 max-w-[44rem] rounded-sm border border-dashed border-muted px-s4 py-s3 font-bold md:text-small">{tx(site.demo)}</p>
+          <p className="mt-s3 mb-0 flex flex-wrap items-center gap-x-s4 text-muted md:text-small">
             <span>{tf(footer.copyright)}</span>
             <Link to="/credits" className={linkClass}>
               {tx(credits.link)}

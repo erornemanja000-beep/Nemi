@@ -4,13 +4,16 @@
 // Desktop: tabela (Foto · Urheber · Quelle · Lizenz). Telefon: isti redovi kao lista, bez tabele od
 // četiri kolone na 390 px. Spoljni linkovi imaju rel="noopener noreferrer".
 // Red o privremenim kadrovima stoji dok bar jedna sekvenca u media.ts nema `placeholder: false`
-// (SeqMedia.placeholder, isto kao seq.json); kad pravi renderi stignu, nestaje sam. Footer dodaje App.tsx.
-import { useRef, type ReactNode } from 'react'
+// (SeqMedia.placeholder, isto kao seq.json); kad pravi renderi stignu, nestaje sam. Isto važi za dodatak
+// „Brew guide, step 3" uz fotografiju koja privremeno stoji u koraku 3 (sections.brewGuide.sipStandIn).
+// Licenca snimka pare je link na tekst Mixkit licence (steamCredit.licenseUrl). Footer dodaje App.tsx.
+import { useRef } from 'react'
 import { Button } from '../components/Button'
 import { Icon } from '../components/Icon'
 import { fill } from '../config/site'
 import { credits } from '../content/legal'
 import { media, steamCredit } from '../content/media'
+import { sections } from '../content/sections'
 import type { L } from '../content/types'
 import { useLang } from '../i18n/LangContext'
 import { PageMeta } from './Legal'
@@ -28,6 +31,9 @@ type Row = {
 
 const photoTexts = credits.photos as Record<string, RowText | undefined>
 
+/** „Shop; Brew guide, step 3 (…)" za privremenu fotografiju koraka 3 */
+const withStandIn = (usedIn: L): L => ({ en: `${usedIn.en}; ${credits.standIn.en}`, de: `${usedIn.de}; ${credits.standIn.de}` })
+
 const rows: Row[] = Object.values(media.photos).flatMap((p) => {
   const text = photoTexts[p.id]
   if (!p.ready || !text) return []
@@ -35,7 +41,7 @@ const rows: Row[] = Object.values(media.photos).flatMap((p) => {
     {
       id: p.id,
       photo: text.photo,
-      usedIn: text.usedIn,
+      usedIn: p.id === sections.brewGuide.sipStandIn ? withStandIn(text.usedIn) : text.usedIn,
       author: p.credit.author,
       source: { label: text.source, href: p.credit.url },
       license: { label: p.credit.license, href: p.credit.licenseUrl },
@@ -51,7 +57,7 @@ if (media.steam.pour.ready || media.steam.sip.ready) {
     note: credits.steam.note,
     author: steamCredit.author,
     source: { label: credits.steam.source, title: steamCredit.title, href: steamCredit.url },
-    license: { label: steamCredit.license },
+    license: { label: steamCredit.license, href: steamCredit.licenseUrl },
   })
 }
 
@@ -59,12 +65,19 @@ const hasPlaceholders = Object.values(media.seq).some((s) => s.placeholder !== f
 
 const linkClass = 'inline-flex min-h-tap items-center gap-1 underline underline-offset-[3px] hover:text-accent-text'
 
-/** Spoljni link; ikonica ide u red teksta (i kad se dug naslov prelomi), visina reda ≥ 44 px. */
-function External({ href, children }: { href: string; children: ReactNode }) {
+/**
+ * Spoljni link; ikonica ide u red teksta (i kad se dug naslov prelomi), visina reda ≥ 44 px. Poslednja reč i
+ * ikonica su zajedno (whitespace-nowrap), da ikonica ne pređe sama u novi red („… Free License / ↗").
+ */
+function External({ href, children }: { href: string; children: string }) {
+  const cut = children.lastIndexOf(' ') + 1
   return (
     <a href={href} rel="noopener noreferrer" className="inline-block py-[11px] underline underline-offset-[3px] hover:text-accent-text">
-      {children}
-      <Icon name="external" className="ml-1 inline size-3.5 align-[-1px]" />
+      {children.slice(0, cut)}
+      <span className="whitespace-nowrap">
+        {children.slice(cut)}
+        <Icon name="external" className="ml-1 inline size-3.5 align-[-1px]" />
+      </span>
     </a>
   )
 }
@@ -73,12 +86,7 @@ function Source({ row }: { row: Row }) {
   const { lang } = useLang()
   // originalni naslov klipa se ne prevodi, menjaju se samo navodnici
   const title = row.source.title && (lang === 'de' ? `„${row.source.title}“` : `“${row.source.title}”`)
-  return (
-    <External href={row.source.href}>
-      {row.source.label}
-      {title && `: ${title}`}
-    </External>
-  )
+  return <External href={row.source.href}>{title ? `${row.source.label}: ${title}` : row.source.label}</External>
 }
 
 function License({ row }: { row: Row }) {
@@ -109,7 +117,7 @@ export default function Credits() {
           <p className="mt-s3 mb-0 font-bold">{tx(credits.subtitle)}</p>
           <p className="mt-s4 mb-0 max-w-[40rem]">{tx(credits.text)}</p>
 
-          <p className="mt-s6 mb-s3 text-small text-muted">{tx(credits.note)}</p>
+          <p className="mt-s6 mb-s3 text-muted md:text-small">{tx(credits.note)}</p>
 
           {/* desktop i tablet: tabela */}
           <table className="hidden w-full border-collapse text-left text-small md:table">

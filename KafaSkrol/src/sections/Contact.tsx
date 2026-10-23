@@ -2,7 +2,8 @@
 // dani prženja, cupping, adresa za firme i dugme „Write to us" (mailto). Desno apstraktna „mapa"
 // (SVG, aria-hidden, bez pravih ulica i podataka) i KONTAKT-1 sa čipom „Symbolbild" i natpisom.
 // Sve je izmišljeno za demo (sections.ts). Telefon i e-mail su samo u src/config/site.ts.
-// Telefon: tekst, pa mapa, pa fotografija.
+// Telefon: tekst, pa mapa, pa fotografija. Demo napomene i natpis fotografije su na telefonu 16 px
+// (kao tekst), od md 14 px.
 import { Button } from '../components/Button'
 import { Photo } from '../components/Photo'
 import { brand, fill } from '../config/site'
@@ -61,19 +62,19 @@ export function Contact() {
     <section id="contact" aria-labelledby="t-contact" className="scroll-mt-header bg-surface px-gutter py-s8 text-text md:py-s9">
       <div className="mx-auto grid max-w-site gap-s7 lg:grid-cols-[5fr_6fr] lg:gap-s8">
         <div>
-          <h2 id="t-contact" className="type-display m-0 text-h2 leading-none">{tx(contact.title)}</h2>
+          <h2 id="t-contact" className="type-display m-0 text-section leading-none">{tx(contact.title)}</h2>
           <p className="mt-s3 mb-0 font-bold">{tx(contact.subtitle)}</p>
 
           <address className="mt-s5 not-italic">
             <p className="m-0">
-              {contact.address.line} <span className="text-small text-muted">{tx(contact.address.note)}</span>
+              {contact.address.line} <span className="text-muted md:text-small">{tx(contact.address.note)}</span>
             </p>
             <p className="m-0 flex flex-wrap items-center gap-x-s4">
               <span>
                 <a href={brand.phoneHref} className={link}>
                   {phone}
                 </a>{' '}
-                <span className="text-small text-muted">{tx(contact.phone.note)}</span>
+                <span className="text-muted md:text-small">{tx(contact.phone.note)}</span>
               </span>
               <a href={`mailto:${email}`} className={link}>
                 {email}
@@ -122,7 +123,7 @@ export function Contact() {
                   </span>
                 )}
               </div>
-              <figcaption className="mt-s2 text-small text-muted">{tx(contact.photoCaption)}</figcaption>
+              <figcaption className="mt-s2 text-muted md:text-small">{tx(contact.photoCaption)}</figcaption>
             </figure>
           )}
         </div>

@@ -275,9 +275,9 @@ def mat_coffee_liquid(name, foam=False, density=900.0):
         top = N.ramp(N.sub(z, level), -0.0006, -0.0002)
         edge = N.sub(radius, r)
         vor, _ = N.voronoi(P, 900.0)
-        ring = N.mul(N.mul(top, N.ramp(edge, 0.0055, 0.0010)), N.ramp(vor, 0.10, 0.45, 0.55, 1.0))
+        ring = N.mul(N.mul(top, N.ramp(edge, 0.0035, 0.0008)), N.ramp(vor, 0.10, 0.45, 0.45, 0.9))
         pb = N.new('ShaderNodeBsdfPrincipled')
-        pb.inputs['Base Color'].default_value = (0.30, 0.165, 0.075, 1.0)
+        pb.inputs['Base Color'].default_value = (0.15, 0.080, 0.036, 1.0)
         pb.inputs['Roughness'].default_value = 0.45
         mix = N.new('ShaderNodeMixShader')
         N.put(ring, mix.inputs['Fac'])
@@ -371,7 +371,7 @@ def mat_kettle_src(obj):
     P = tc.outputs['Object']
     d1, c1 = N.voronoi(N.vmath('MULTIPLY', P, (1.0, 1.0, 0.62)), 92.0, randomness=0.85)
     d2, _ = N.voronoi(P, 300.0, randomness=1.0)
-    dent = N.add(N.mul(N.mul(d1, d1), -0.00042), N.mul(N.mul(d2, d2), -0.00004))
+    dent = N.add(N.mul(N.mul(d1, d1), -0.00020), N.mul(N.mul(d2, d2), -0.00003))
     cr, _, _ = N.split(c1)
     sm = N.ramp(N.noise(P, 14.0, detail=4, distortion=0.5), 0.55, 0.78)
     rough = N.add(N.add(N.math('MULTIPLY_ADD', cr, 0.06, 0.20), N.mul(sm, 0.10)),
@@ -808,11 +808,10 @@ def build(a):
     em, crumbs = GR.build_grounds(sc, a.mleveno, end_g=GR.G_POUR[1])
     # trake pozadi i blenda samo na staklo, inox i vodu (papir i zrna bi isprale u sivo)
     shiny = [o for o in subjects if o not in filt_objs and o is not bed]
-    GR.lights(sc, 'pour', shiny, crumbs, key=a.key, strip=a.strip, refl=a.odsjaj, refl_subjects=kparts,
-              no_key=[catcher])
-    # pult: nizak key bi bacio senku od 60 cm unazad (preko ivice pulta); pult dobija meko svetlo odozgo
-    # (samo on ga prima), pa ostaje kontaktna senka ispod bokala i zrna
-    top = C.area_light('PultSvetlo', (0.02, -0.05, 0.75), (0.02, 0.0, 0.0), (0.9, 0.9), 60.0, 5600)
+    GR.lights(sc, 'pour', shiny, crumbs, key=a.key, strip=a.strip, refl=a.odsjaj, refl_subjects=kparts)
+    # pult: nizak key baca dugu senku unazad (do zadnje ivice pulta); meko svetlo odozgo koje prima SAMO pult
+    # je ublažava (key se ne isključuje sa pulta: shadow catcher tada zatamni ceo pult jednolično)
+    top = C.area_light('PultSvetlo', (0.02, -0.05, 0.75), (0.02, 0.0, 0.0), (0.9, 0.9), 45.0, 5600)
     only_c = bpy.data.collections.new('SamoPult')
     only_c.objects.link(catcher)
     top.light_linking.receiver_collection = only_c

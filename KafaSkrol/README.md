@@ -64,6 +64,7 @@ scripts/
   check-content.ts    npm run check: sadržaj prema tekstovi.md, brend, mediji sa ready: true
   shots.mjs           snimci i provera u Playwright-u
   placeholder_seq.py  privremeni kadrovi sekvenci (Z2)
+  pack_seq.py         pakovanje Blender rendera u public/media/seq (Z21)
 src/
   config/site.ts      brend, e-mail, demo telefon, fill(), prekidači (features), ključevi localStorage
   content/            sav tekst i podaci (EN + DE), čist podatak; types.ts su tipovi

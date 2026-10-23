@@ -339,7 +339,7 @@ eq('Brew guide: koraci 1 i 2 su GUIDE-1 i GUIDE-2, korak 3 SIP poster', guide.st
 // korak 3: privremena fotografija tačno dok SIP nema pravi render (inače se vidi „S064 PLATZHALTER")
 const sipRendered = media.seq.sip.ready && media.seq.sip.placeholder === false
 eq('Brew guide korak 3: privremena fotografija dok SIP nije pravi render', guide.sipStandIn !== null, !sipRendered)
-ok('Brew guide: privremena fotografija nije korak 1 ili 2', !guide.steps.some((s) => s.photo === guide.sipStandIn))
+ok('Brew guide: privremena fotografija nije korak 1 ili 2', guide.sipStandIn === null || !guide.steps.some((s) => s.photo === guide.sipStandIn))
 // linkovi ispod koraka (skica 9b): proizvodi postoje; link se vidi samo za proizvod iz prodavnice (isListed)
 for (const step of guide.steps) {
   for (const link of step.links) if ('product' in link) ok(`Brew guide ${step.id}: link na postojeći proizvod`, Boolean(productBySlug(link.product)), link.product)

@@ -6,7 +6,7 @@
 import type { Lang } from '../content/types.ts'
 
 /** Nelomljivi razmak (U+00A0). */
-export const NBSP = ' '
+export const NBSP = '\u00a0'
 
 /** Datum u kalendaru (bez sata i zone). month je 1–12. */
 export type CalendarDate = { year: number; month: number; day: number }

@@ -1,0 +1,84 @@
+// STUB iz Z1 (doradu radi Z12): tri statična bloka od 100vh sa posterima. Pravu priču (sticky scena,
+// sekvence, talas, kartice) piše Z12. Slojevi već imaju konačne id-jeve, klase i data-chapter.
+import { useEffect, useRef } from 'react'
+import { chapters } from '../content/chapters'
+import { media } from '../content/media'
+import type { Chapter } from '../content/types'
+import { useLang } from '../i18n/LangContext'
+import { setActiveChapter } from '../lib/chapterStore'
+import { DESKTOP_QUERY } from '../lib/useMedia'
+import { BackWord } from './BackWord'
+import { ChapterText } from './ChapterText'
+
+function Poster({ chapter, priority }: { chapter: Chapter; priority: boolean }) {
+  const { tx } = useLang()
+  const seq = media.seq[chapter.id]
+  const { d, m } = seq.poster
+  if (!seq.ready) {
+    return <div role="img" aria-label={tx(chapter.alt)} className="aspect-[4/5] w-[min(80vw,28rem)] rounded-card bg-placeholder" />
+  }
+  return (
+    <picture>
+      <source media={DESKTOP_QUERY} srcSet={d.src} width={d.width} height={d.height} />
+      <img
+        src={m.src}
+        width={m.width}
+        height={m.height}
+        alt={tx(chapter.alt)}
+        fetchPriority={priority ? 'high' : 'auto'}
+        loading={priority ? 'eager' : 'lazy'}
+        decoding="async"
+        className="h-auto max-h-[80svh] w-auto"
+      />
+    </picture>
+  )
+}
+
+export function Story() {
+  const root = useRef<HTMLDivElement>(null)
+
+  // header prati sloj koji prelazi liniju headera; ispod priče je 'page'
+  useEffect(() => {
+    const el = root.current
+    if (!el) return
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (!e.isIntersecting) continue
+          const id = (e.target as HTMLElement).dataset.chapter
+          if (id === 'grind' || id === 'pour' || id === 'sip') setActiveChapter(id)
+        }
+      },
+      { rootMargin: '0px 0px -95% 0px' },
+    )
+    el.querySelectorAll('[data-chapter]').forEach((s) => io.observe(s))
+    const out = new IntersectionObserver(([e]) => {
+      if (!e.isIntersecting && e.boundingClientRect.top < 0) setActiveChapter('page')
+    }, { rootMargin: '0px 0px -95% 0px' })
+    out.observe(el)
+    return () => {
+      io.disconnect()
+      out.disconnect()
+    }
+  }, [])
+
+  return (
+    <div id="top" ref={root}>
+      {chapters.items.map((chapter, i) => (
+        <section
+          key={chapter.id}
+          id={chapter.id}
+          data-chapter={chapter.id}
+          aria-labelledby={`t-${chapter.id}`}
+          className={`layer-${chapter.id} relative flex min-h-svh flex-col gap-s7 overflow-hidden bg-bg px-gutter pt-[calc(var(--header-h)+var(--space-5))] pb-s8 text-text lg:flex-row lg:items-center lg:justify-between lg:pl-inset`}
+        >
+          <BackWord chapter={chapter.id} className="absolute bottom-s5 left-[3%] z-(--z-word) lg:text-backword-xl" />
+          <ChapterText chapter={chapter} className="lg:w-measure" />
+          <div className="relative z-(--z-object) flex justify-center lg:flex-1">
+            <Poster chapter={chapter} priority={i === 0} />
+          </div>
+        </section>
+      ))}
+    </div>
+  )
+}

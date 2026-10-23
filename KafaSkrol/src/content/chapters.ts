@@ -1,6 +1,6 @@
 // Poglavlja GRIND → POUR → SIP, staklene kartice i kontrole (tekstovi.md). STUB iz Z1, proverava i
 // dopunjuje ga Z11. vite.config.ts čita chapters.items (naslov, tekst i alt na EN) za <noscript>.
-// Nelomljivi razmak ( ) ide u „18 g", „93 °C" i „1.950 m" (tekstovi.md).
+// Nelomljivi razmak (U+00A0) ide u „18 g", „93 °C" i „1.950 m" (tekstovi.md).
 import type { Chapter, L, SipCard } from './types.ts'
 
 const items: Chapter[] = [
@@ -25,8 +25,8 @@ const items: Chapter[] = [
     eyebrow: { en: 'Section 2', de: 'Kapitel 2 · Aufgießen' },
     title: { en: 'Pour', de: 'Pour' },
     text: {
-      en: 'Pour-over takes its time: 18 g of coffee, water at 93 °C, three minutes. Let it bloom, pour in slow circles, then wait for the last drop. Our guide walks you through it.',
-      de: 'Filterkaffee braucht Zeit: 18 g Kaffee, Wasser mit 93 °C, drei Minuten. Erst aufquellen lassen, dann in ruhigen Kreisen gießen und auf den letzten Tropfen warten. Die Anleitung zeigt jeden Schritt.',
+      en: 'Pour-over takes its time: 18\u00a0g of coffee, water at 93\u00a0°C, three minutes. Let it bloom, pour in slow circles, then wait for the last drop. Our guide walks you through it.',
+      de: 'Filterkaffee braucht Zeit: 18\u00a0g Kaffee, Wasser mit 93\u00a0°C, drei Minuten. Erst aufquellen lassen, dann in ruhigen Kreisen gießen und auf den letzten Tropfen warten. Die Anleitung zeigt jeden Schritt.',
     },
     cta: { label: { en: 'Brew guide', de: 'Zur Anleitung' }, href: '#brew-guide' },
     word: 'Percolate',
@@ -61,7 +61,7 @@ const sipCards: SipCard[] = [
     label: { en: 'Origin', de: 'Herkunft' },
     sub: { en: 'Where it grows', de: 'Wo er wächst' },
     product: 'guji',
-    line: { en: 'Ethiopia · 1,950–2,200 m', de: 'Äthiopien · 1.950–2.200 m' },
+    line: { en: 'Ethiopia · 1,950–2,200\u00a0m', de: 'Äthiopien · 1.950–2.200\u00a0m' },
   },
   {
     label: { en: 'Flavor', de: 'Geschmack' },

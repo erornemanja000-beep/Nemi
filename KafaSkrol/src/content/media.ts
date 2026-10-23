@@ -85,7 +85,8 @@ function seq(id: ChapterId, poster: SeqMedia['poster'], ready: boolean): SeqMedi
   return { id, base, manifest: `${base}/seq.json`, poster, ready }
 }
 
-const SEQ_READY = { grind: false, pour: false, sip: false }
+// seq.json postoji za sve tri (Z2 privremeni kadrovi, 23.10.2026)
+const SEQ_READY = { grind: true, pour: true, sip: true }
 
 /** Para: odluka direktora 4. webm je prvi izvor, mp4 drugi; A ide u POUR, B u SIP. */
 function steam(name: 'steam-cup-a' | 'steam-cup-b', width: number, height: number): SteamMedia {
@@ -115,10 +116,10 @@ export const media: MediaManifest = {
       d: { src: '/media/seq/pour/poster-d.webp', width: 864, height: 1200 },
       m: { src: '/media/seq/pour/poster-m.webp', width: 576, height: 800 },
     }, SEQ_READY.pour),
-    // poster SIP = S64; isečak SIP-a određuje Z2 („po probi"), dimenzije uskladiti sa seq.json
+    // poster SIP = S64, isečak 0,64 × 0,86 S (Z2 seq.json; pravi render može da ga promeni)
     sip: seq('sip', {
-      d: { src: '/media/seq/sip/d/0064.webp', width: 1200, height: 1200 },
-      m: { src: '/media/seq/sip/poster-m.webp', width: 800, height: 800 },
+      d: { src: '/media/seq/sip/d/0064.webp', width: 768, height: 1032 },
+      m: { src: '/media/seq/sip/poster-m.webp', width: 512, height: 688 },
     }, SEQ_READY.sip),
   },
   steam: {

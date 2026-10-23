@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="theme-color" content="#E6DDCE" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <!-- naslov, opis i og: upisuje vite.config.ts iz src/config/site.ts i src/content/site.ts -->
+    <!--site-head-->
+    <!-- GRIND poster (G1) je LCP: iste putanje kao media.seq.grind.poster u src/content/media.ts -->
+    <link rel="preload" as="image" type="image/webp" href="/media/seq/grind/d/0001.webp" media="(min-width: 64rem) and (min-height: 600px)" fetchpriority="high" />
+    <link rel="preload" as="image" type="image/webp" href="/media/seq/grind/m/0001.webp" media="not all and (min-width: 64rem) and (min-height: 600px)" fetchpriority="high" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <!--site-noscript-->
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

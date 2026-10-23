@@ -260,7 +260,8 @@ LOOK = dict(
     peel=0.6,          # „pomorandžina kora" glazure i laka (bilo 1,0)
     handle_bump=0.40,  # reljef gline na dršci (0,4x)
     spots=1.0,         # smeđe pege kao u referenci
-    streak=0.50,       # smeđe pruge od oboda naniže (glazura se tanji i curi)
+    streak=0.50,
+    band=0.85,         # smeđ pojas ispod oboda kao u referenci (do ~16 mm, u prugama)       # smeđe pruge od oboda naniže (glazura se tanji i curi)
     inside=0.80,       # unutrašnjost tamni ka kafi (deblja glazura + senka; kafa ne ogleda svetao zid)
 )
 
@@ -382,6 +383,12 @@ def mat_stoneware(body, seed=7, look=None):
     streak = N.ramp(N.noise(N.vmath('MULTIPLY', P, (1.0, 1.0, 0.12)), 70.0, detail=3), 0.50, 0.72)
     streak = N.mul(N.mul(streak, N.ramp(z, GLAZE_Z + 0.006, RIM_Z - 0.010)), N.sub(1.0, inner))
     glaze = N.mix(N.mul(streak, K['streak']), glaze, (0.15, 0.095, 0.055))
+    # smeđ pojas ispod oboda (glazura je tu tanka, gvožđe iz gline probija), donja ivica u prugama naniže
+    band_lo = N.math('MULTIPLY_ADD', N.noise(N.vmath('MULTIPLY', P, (1.0, 1.0, 0.10)), 90.0, detail=3), -0.016,
+                     RIM_Z - 0.004)
+    band = N.mul(N.ramp(N.sub(z, band_lo), -0.002, 0.003), N.sub(1.0, inner))
+    band = N.mul(band, N.ramp(N.noise(P, 120.0, detail=3), 0.30, 0.60, 0.55, 1.0))
+    glaze = N.mix(N.mul(band, K['band']), glaze, (0.115, 0.072, 0.040))
     glaze = N.mix(N.mul(ring, N.mul(ring_env, 0.35)), glaze, (0.17, 0.105, 0.060))   # glazura puca na grebenima
     glaze = N.mix(N.mul(peb_top, 0.25), glaze, (0.15, 0.098, 0.060))          # zrnca gline probijaju
     glaze = N.mix(N.mul(N.sub(1.0, pool), 0.15), glaze, (0.24, 0.17, 0.11))    # tanje = toplije
@@ -392,6 +399,11 @@ def mat_stoneware(body, seed=7, look=None):
     spots = N.mul(N.ramp(N.sub(spot_d, spot_r), 0.02, -0.03), N.ramp(sr, 0.22, 0.32))
     spots = N.mul(spots, N.ramp(N.noise(P, 40.0, detail=2), 0.20, 0.40, 0.65, 1.0))
     glaze = N.mix(N.mul(spots, 0.85 * K['spots']), glaze, (0.050, 0.026, 0.013))
+    sp2_d, sp2_c = N.voronoi(P, 300.0)                                         # drugi sloj, sitnije (0,4-1 mm)
+    sp2 = N.mul(N.ramp(sp2_d, N.math('MULTIPLY_ADD', N.split(sp2_c)[1], 0.12, 0.10), 0.06),
+                N.ramp(N.split(sp2_c)[0], 0.45, 0.55))
+    sp2 = N.mul(sp2, N.ramp(N.noise(P, 22.0, detail=2), 0.35, 0.60, 0.25, 1.0))
+    glaze = N.mix(N.mul(sp2, 0.75 * K['spots']), glaze, (0.060, 0.032, 0.016))
     blot = N.mul(N.ramp(N.noise(P, 24.0, detail=3, distortion=0.6), 0.64, 0.76), N.sub(1.0, inner))
     glaze = N.mix(N.mul(blot, 0.55 * K['spots']), glaze, (0.085, 0.050, 0.028))   # mekane smeđe mrlje
     fleck_d, _ = N.voronoi(P, 650.0)

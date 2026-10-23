@@ -34,8 +34,8 @@ export const products: Product[] = [
     kind: 'gear',
     name: { en: 'Gooseneck Kettle', de: 'Schwanenhals-Wasserkocher' },
     description: {
-      en: 'Electric, set to the degree. Holds 93 °C while you pour.',
-      de: 'Elektrisch, gradgenau einstellbar. Hält 93 °C, während du gießt.',
+      en: 'Electric, set to the degree. Holds 93\u00a0°C while you pour.',
+      de: 'Elektrisch, gradgenau einstellbar. Hält 93\u00a0°C, während du gießt.',
     },
     sizes: [],
     priceCents: 16900,

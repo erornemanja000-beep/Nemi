@@ -34,7 +34,7 @@ export function useReveal<T extends HTMLElement>() {
     )
 
     const arm = () => {
-      const items = root.matches('[data-reveal]') ? [root] : []
+      const items: HTMLElement[] = root.matches('[data-reveal]') ? [root] : []
       items.push(...root.querySelectorAll<HTMLElement>('[data-reveal]'))
       for (const el of items) {
         if (el.classList.contains('reveal-in') || el.classList.contains('reveal-pending')) continue

@@ -42,6 +42,18 @@ export const site = {
   chat: {
     open: { en: 'Open chat', de: 'Chat öffnen' } satisfies L,
   },
+  /** aria natpisi headera (tekstovi.md); {n} menja fill(). */
+  aria: {
+    mainNav: { en: 'Main menu', de: 'Hauptmenü' } satisfies L,
+    menu: { en: 'Menu', de: 'Menü' } satisfies L,
+    menuOpen: { en: 'Open menu', de: 'Menü öffnen' } satisfies L,
+    menuClose: { en: 'Close menu', de: 'Menü schließen' } satisfies L,
+    search: { en: 'Open search', de: 'Suche öffnen' } satisfies L,
+    cart: { en: 'Cart, {n} items', de: 'Warenkorb, {n} Artikel' } satisfies L,
+    cartOne: { en: 'Cart, 1 item', de: 'Warenkorb, 1 Artikel' } satisfies L,
+    cartTitle: { en: 'Your cart', de: 'Dein Warenkorb' } satisfies L,
+    close: { en: 'Close', de: 'Schließen' } satisfies L,
+  },
   /** Stalna napomena o demou (footer, traka nad prodavnicom, <noscript>). */
   demo: {
     en: 'Concept / demo — not a real shop. Brand, coffees, farms, address and prices are made up.',

@@ -65,9 +65,9 @@
   --font-text: var(--font-text);
   --font-label: var(--font-label);
 
-  /* veličine slova (tokeni --fs-*) */
-  --text-word: var(--fs-word);
-  --text-word-xl: var(--fs-word-xl);
+  /* veličine slova (tokeni --fs-*); pozadinska reč je text-backword, jer je text-word boja */
+  --text-backword: var(--fs-word);
+  --text-backword-xl: var(--fs-word-xl);
   --text-chapter: var(--fs-chapter);
   --text-h2: var(--fs-h2);
   --text-h3: var(--fs-h3);
@@ -112,6 +112,36 @@
   --ease-out: var(--ease-out);
   --ease-in-out: var(--ease-in-out);
   --ease-settle: var(--ease-settle);
+}
+
+/* ---------- Tipografske uloge (tokeni, mockup.html) ---------- */
+/* Naslovi: Archivo, wght 800, wdth 88, verzal (.chapter__title, .peek h2). Veličinu daje text-chapter / text-h2. */
+@utility type-display {
+  font-family: var(--font-display);
+  font-weight: var(--font-display-wght);
+  font-variation-settings: "wdth" var(--font-display-wdth);
+  letter-spacing: var(--tracking-chapter);
+  text-transform: uppercase;
+}
+/* Pozadinske reči: Fraunces SOFT/WONK (.word). */
+@utility type-word {
+  font-family: var(--font-word);
+  font-weight: var(--font-word-wght);
+  font-variation-settings: var(--font-word-settings);
+  line-height: var(--lh-word);
+  letter-spacing: -0.02em;
+}
+/* Meni, natpisi, dugmad: Figtree 700, 13 px, verzal sa razmakom (.nav a). */
+@utility type-label {
+  font: 700 var(--fs-label) / 1 var(--font-label);
+  letter-spacing: var(--tracking-nav);
+  text-transform: uppercase;
+}
+/* Iznad naslova poglavlja (.eyebrow). */
+@utility type-eyebrow {
+  font: 700 var(--fs-eyebrow) / 1 var(--font-label);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
 }
 
 /* ---------- Osnova (iz mockup.html) ---------- */

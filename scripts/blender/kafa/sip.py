@@ -2,7 +2,7 @@
 
 Fotorealistična verzija (dokaz koncepta 23.10.2026, uz dijagnozu recenzenta). Šolja ulazi odozgo,
 okreće se ~28° i smiruje se; poslednjih ~12 kadrova miruje (kraj skrola). Metri, pod z=0, centar (0,0),
-kamera spreda 24° odozgo, lens 85, f/8, kvadrat.
+kamera spreda 22° odozgo, lens 85, f/8, kvadrat.
 
 Svetlo „foto-studio" (photo_studio_lights, predlog za common.py): tamna okolina (HDRI 0,1), jedan key
 prozor 0,6x0,9 m na 1,3 m levo-gore-napred iza prozorskog okvira (krst se ogleda u glazuri), dve uske
@@ -61,7 +61,7 @@ KEY_AZ, KEY_EL, KEY_DIST = -140.0, 20.0, 1.30     # key prozor levo-gore-napred;
 KEY_SIZE = (0.60, 0.90)
 STRIP_AZ, STRIP_DIST = (158.0, 22.0), 0.40         # uske trake pozadi levo i desno (ispred zida)
 FLAG_AZ, FLAG_DIST = -30.0, 0.42                   # crna zastava desno napred
-SUN_SPOT = (0.05, 0.25)                            # (x, z) na zidu kroz koju sunce gađa sredinu prozora
+SUN_SPOT = (0.0, 0.10)                            # (x, z) na zidu kroz koju sunce gađa sredinu prozora
 FRAME_TILT = 30.0                                  # okvir zarotiran oko svoje normale (van kadra)
 HDRI_WINDOW_AZ = -42.0  # azimut prozora u neokrenutom HDRI-ju (izmereno iz EXR-a)
 
@@ -331,7 +331,8 @@ def build_set(backdrop):
     bpy.ops.mesh.primitive_plane_add(size=4.0, location=(0, 0.6, 0))
     floor = bpy.context.active_object
     floor.name = 'Floor'
-    C.assign(floor, mat_surface('Floor', SIP_FLOOR, rough=(0.42, 0.62), spec=0.45, bump=0.000035, gain=0.55, desat=0.35))
+    C.assign(floor, mat_surface('Floor', SIP_FLOOR, rough=(0.55, 0.75), spec=0.25, bump=0.000035, gain=0.90,
+                                desat=0.35))
     if not backdrop:
         floor.is_shadow_catcher = True
         return floor, None
@@ -373,12 +374,17 @@ def flag(name, loc, aim, size):
     return ob
 
 
-def photo_studio_lights(target, wall=None, key=110.0, strip=8.0, sun=5.0, bg=6.0, sun_spot=SUN_SPOT, flags=True):
+def photo_studio_lights(target, subjects, wall=None, key=110.0, strip=4.0, sun=5.0, bg=6.0, sun_spot=SUN_SPOT,
+                        flags=True):
     """Foto-studio (predlog za common.py): jedan key prozor levo-gore-napred iza prozorskog okvira,
     dve uske trake pozadi, crna zastava desno; uz zid i toplo sunce kroz isti okvir koje pada samo na zid.
 
     Fill skoro ne postoji (samo tamni HDRI), pa je odnos key:fill oko 5-8:1 i svetlo pada sleva udesno.
-    Zid ne dobija key (light linking = „cutter" u studiju), nego svoje meko svetlo sleva + sunce kroz okvir."""
+    Zid ne dobija key (light linking = „cutter" u studiju), nego svoje meko svetlo sleva + sunce kroz okvir.
+    Trake (sa saćem) svetle samo predmet (subjects), da ne preplave sto."""
+    only_subj = bpy.data.collections.new('OnlySubjects')
+    for ob in subjects:
+        only_subj.objects.link(ob)
     tgt = Vector(target)
     kdir = direction(KEY_AZ, KEY_EL)
     key_pos = tgt + KEY_DIST * kdir
@@ -386,9 +392,9 @@ def photo_studio_lights(target, wall=None, key=110.0, strip=8.0, sun=5.0, bg=6.0
     t = Vector((a.y, -a.x, 0.0))                      # horizontala u ravni prozora (t x a = +Z)
     win = key_pos - 0.06 * a                          # ravan okvira 6 cm ispred key svetla
 
-    # okvir: zid oko otvora + 2x3 okna sa prečkama 3,5 cm; baca senku i vidi se u odsjaju, kameri nevidljiv
-    W, H, bar, margin = KEY_SIZE[0] + 0.04, KEY_SIZE[1] + 0.04, 0.035, 0.55
-    cols, rows = 2, 3
+    # okvir: zid oko otvora + 3x4 okna sa prečkama 6 cm; baca senku i vidi se u odsjaju, kameri nevidljiv
+    W, H, bar, margin = KEY_SIZE[0] + 0.04, KEY_SIZE[1] + 0.04, 0.06, 0.55
+    cols, rows = 3, 4
     rects = [(-W / 2 - margin, -H / 2 - margin, -W / 2, H / 2 + margin),       # levo
              (W / 2, -H / 2 - margin, W / 2 + margin, H / 2 + margin),         # desno
              (-W / 2, H / 2, W / 2, H / 2 + margin),                           # gore
@@ -419,7 +425,7 @@ def photo_studio_lights(target, wall=None, key=110.0, strip=8.0, sun=5.0, bg=6.0
     kd = bpy.data.lights.new('Key', 'AREA')
     kd.shape, kd.size, kd.size_y = 'RECTANGLE', KEY_SIZE[0], KEY_SIZE[1]
     kd.energy = key
-    kd.use_temperature, kd.temperature = True, 5000
+    kd.use_temperature, kd.temperature = True, 5800
     ko = link(bpy.data.objects.new('Key', kd))
     ko.location = key_pos
     ko.rotation_euler = (-a).to_track_quat('-Z', 'Z').to_euler()
@@ -429,8 +435,9 @@ def photo_studio_lights(target, wall=None, key=110.0, strip=8.0, sun=5.0, bg=6.0
     # trake pozadi: tanke svetle linije duž leve i desne ivice šolje
     for i, az in enumerate(STRIP_AZ):
         pos = tgt + STRIP_DIST * direction(az, 18.0) + Vector((0.0, 0.0, 0.10))
-        lights.append(area_light(f'Strip{i}', pos, tgt + Vector((0.0, 0.0, 0.01)), (0.12, 1.0), strip, 5200,
-                                 spread=40.0))
+        so = area_light(f'Strip{i}', pos, tgt + Vector((0.0, 0.0, 0.01)), (0.12, 1.0), strip, 6500, spread=40.0)
+        so.light_linking.receiver_collection = only_subj
+        lights.append(so)
     if flags:
         fpos = tgt + FLAG_DIST * direction(FLAG_AZ, 12.0)
         flag('FlagRight', fpos, tgt, (0.45, 0.70))
@@ -443,8 +450,6 @@ def photo_studio_lights(target, wall=None, key=110.0, strip=8.0, sun=5.0, bg=6.0
         for co in no_wall.collection_objects:
             co.light_linking.link_state = 'EXCLUDE'
         ko.light_linking.receiver_collection = no_wall
-        for lo in lights[1:]:
-            lo.light_linking.receiver_collection = no_wall
         # pozadina: meko svetlo sleva koje pada udesno, samo na zid
         bgl = area_light('WallLight', tgt + Vector((-0.55, -0.15, 0.25)), Vector((0.10, WALL_Y, 0.08)),
                          (0.5, 0.5), bg, 5200)
@@ -454,11 +459,18 @@ def photo_studio_lights(target, wall=None, key=110.0, strip=8.0, sun=5.0, bg=6.0
         s = (win - Vector((sun_spot[0], WALL_Y, sun_spot[1]))).normalized()
         sd = bpy.data.lights.new('Sun', 'SUN')
         sd.energy = sun
-        sd.angle = math.radians(4.0)                  # mekša ivica senke nego pravo sunce (izmaglica, zavesa)
+        sd.angle = math.radians(1.5)                  # malo mekša ivica senke nego pravo sunce (0,53°)
         sd.use_temperature, sd.temperature = True, 4200
         so = link(bpy.data.objects.new('Sun', sd))
         so.rotation_euler = (-s).to_track_quat('-Z', 'Y').to_euler()
         so.light_linking.receiver_collection = only_wall
+        # šolja ne baca senku od ovog sunca (ono je ne osvetljava), pa na zidu ostaje samo šara okvira
+        not_subj = bpy.data.collections.new('NotSubjects')
+        for ob in subjects:
+            not_subj.objects.link(ob)
+        for co in not_subj.collection_objects:
+            co.light_linking.link_state = 'EXCLUDE'
+        so.light_linking.blocker_collection = not_subj
         lights.append(so)
     return lights
 
@@ -505,26 +517,27 @@ def mat_stoneware(body, seed=7):
     hnd = N.new('ShaderNodeAttribute', attribute_type='GEOMETRY', attribute_name='handle').outputs['Fac']
 
     # --- ivica glazure: talasasta linija + kapi (rastojanje u metrima, < 0 = glazura)
-    w1 = N.noise(N.vmath('ADD', N.vmath('SCALE', u, scale=1.3), (3.1, 7.7, 1.9)), 1.0, detail=3, rough=0.55)
+    w1 = N.noise(N.vmath('ADD', N.vmath('SCALE', u, scale=1.3), (3.1, 7.7, 1.9)), 1.0, detail=2, rough=0.45)
     w2 = N.noise(N.vmath('ADD', N.vmath('SCALE', u, scale=4.0), (8.2, 1.3, 4.4)), 1.0, detail=1)
     w3 = N.noise(N.vmath('ADD', N.vmath('SCALE', u, scale=8.0), (2.4, 5.1, 9.3)), 1.0, detail=2)   # 4-8 mm
-    z0 = N.add(N.math('MULTIPLY_ADD', N.sub(w1, 0.5), 0.0260, GLAZE_Z), N.mul(N.sub(w2, 0.5), 0.0080))
-    z0 = N.math('MULTIPLY_ADD', N.sub(w3, 0.5), 0.0050, z0)
+    z0 = N.add(N.math('MULTIPLY_ADD', N.sub(w1, 0.5), 0.0140, GLAZE_Z), N.mul(N.sub(w2, 0.5), 0.0060))
+    z0 = N.math('MULTIPLY_ADD', N.sub(w3, 0.5), 0.0065, z0)
     d = N.sub(z0, z)
+    zr = N.add(N.sub(z, z0), GLAZE_Z)          # visina u odnosu na lokalnu liniju glazure (kapi kreću sa nje)
 
     # kapi: široki jezici (glazura se slegla) i uže kapi sa zadebljanim vrhom, nejednaki razmaci;
     # neke stoje u paru (0,06-0,12 rad), pa se preko smooth-min spajaju u jednu široku kap
     drips, angles = [], []
-    while len(drips) < 12:
+    while len(drips) < 16:
         if angles and rnd.random() < 0.3:
             a = angles[-1] + rnd.choice((-1, 1)) * rnd.uniform(0.06, 0.12)
         else:
             a = rnd.uniform(0, 2 * math.pi)
-            if any(abs(math.atan2(math.sin(a - b), math.cos(a - b))) < 0.22 for b in angles):
+            if any(abs(math.atan2(math.sin(a - b), math.cos(a - b))) < 0.18 for b in angles):
                 continue
         angles.append(a)
-        if len(drips) < 3:
-            drips.append((a, rnd.uniform(0.0025, 0.0075), rnd.uniform(0.0060, 0.0130), 1.0))
+        if len(drips) < 1:
+            drips.append((a, rnd.uniform(0.0025, 0.0060), rnd.uniform(0.0050, 0.0090), 1.0))
         else:
             drips.append((a, rnd.uniform(0.0040, 0.0200), rnd.uniform(0.0030, 0.0062), rnd.uniform(0.95, 1.12)))
     beads = None
@@ -532,11 +545,11 @@ def mat_stoneware(body, seed=7):
         top = GLAZE_Z + 0.004
         bot = GLAZE_Z - length
         h = N.mul(r, N.vmath('LENGTH', N.vmath('SUBTRACT', u, (math.cos(a), math.sin(a), 0.0))))
-        zc = N.math('MAXIMUM', N.math('MINIMUM', z, top), bot)
+        zc = N.math('MAXIMUM', N.math('MINIMUM', zr, top), bot)
         # kap se sužava naniže (vrat), a na kraju se skuplja u kapljicu
         taper = N.math('MULTIPLY_ADD', N.sub(zc, bot), 0.45 * wid / (top - bot), 0.85 * wid)
-        neck = N.sub(N.vmath('LENGTH', N.xyz(h, N.sub(z, zc), 0.0)), taper)
-        bead = N.sub(N.vmath('LENGTH', N.xyz(h, N.sub(z, bot + wid * 0.30), 0.0)), wid * bead_k * 0.9)
+        neck = N.sub(N.vmath('LENGTH', N.xyz(h, N.sub(zr, zc), 0.0)), taper)
+        bead = N.sub(N.vmath('LENGTH', N.xyz(h, N.sub(zr, bot + wid * 0.30), 0.0)), wid * bead_k * 0.9)
         beads = bead if beads is None else N.math('MINIMUM', beads, bead)
         d = N.math('SMOOTH_MIN', d, N.math('MINIMUM', neck, bead), 0.0060)
     d = N.math('MULTIPLY_ADD', N.sub(N.noise(P, 240.0, detail=2), 0.5), 0.0018, d)   # neravna ivica
@@ -576,8 +589,8 @@ def mat_stoneware(body, seed=7):
     peb_top = N.ramp(pebble, 0.55, 0.05)                        # 1 na vrhu zrnca
     grain = N.noise(P, 2600.0, detail=1)
     clay_var = N.noise(P, 90.0, detail=4)
-    clay = N.mix(clay_var, (0.0115, 0.0078, 0.0062), (0.024, 0.0165, 0.0128))
-    clay = N.mix(N.mul(peb_top, 0.55), clay, (0.052, 0.038, 0.031))
+    clay = N.mix(clay_var, (0.0080, 0.0055, 0.0045), (0.0165, 0.0115, 0.0090))
+    clay = N.mix(N.mul(peb_top, 0.55), clay, (0.040, 0.029, 0.024))
     grog_d, _ = N.voronoi(P, 520.0)
     clay = N.mix(N.mul(N.ramp(grog_d, 0.10, 0.04), 0.7), clay, (0.10, 0.075, 0.058))
     clay = N.mix(N.mul(ring, N.mul(ring_env, 0.30)), clay, (0.034, 0.024, 0.019))   # grebeni malo svetliji
@@ -585,21 +598,24 @@ def mat_stoneware(body, seed=7):
 
     # --- glazura: ovsena krem-siva sa zelenkastim tonom; oblaci, gvožđe, reljef gline kroz tanku glazuru
     gv = N.noise(P, 55.0, detail=5, rough=0.62)
-    glaze = N.mix(N.ramp(gv, 0.30, 0.72), (0.150, 0.150, 0.118), (0.360, 0.365, 0.315))
+    # ovsena: sivo-zelena (topao odsjaj stola i zida je posle pomera ka krem tonu kao u referenci)
+    glaze = N.mix(N.ramp(gv, 0.36, 0.64), (0.090, 0.100, 0.090), (0.300, 0.350, 0.335))
     cloud = N.ramp(N.noise(P, 30.0, detail=4, distortion=0.5), 0.48, 0.72)
-    glaze = N.mix(N.mul(cloud, 0.40), glaze, (0.17, 0.115, 0.070))              # smeđi oblaci
+    glaze = N.mix(N.mul(cloud, 0.55), glaze, (0.15, 0.105, 0.068))              # smeđi oblaci
     top_tone = N.ramp(z, GLAZE_Z + 0.010, RIM_Z - 0.002)                      # ka obodu glazura je tanja
     glaze = N.mix(N.mul(top_tone, 0.15), glaze, (0.21, 0.140, 0.085))
     glaze = N.mix(N.mul(ring, N.mul(ring_env, 0.35)), glaze, (0.17, 0.105, 0.060))   # glazura puca na grebenima
     glaze = N.mix(N.mul(peb_top, 0.25), glaze, (0.15, 0.098, 0.060))          # zrnca gline probijaju
     glaze = N.mix(N.mul(N.sub(1.0, pool), 0.15), glaze, (0.24, 0.17, 0.11))    # tanje = toplije
-    spot_d, _ = N.voronoi(P, 160.0)
-    spots = N.mul(N.ramp(spot_d, 0.22, 0.08), N.ramp(N.noise(P, 45.0, detail=2), 0.28, 0.52))
-    glaze = N.mix(N.mul(spots, 0.95), glaze, (0.060, 0.030, 0.016))           # tačke gvožđa ~1,5 mm
+    spot_d, _ = N.voronoi(P, 120.0)
+    spots = N.mul(N.ramp(spot_d, 0.24, 0.09), N.ramp(N.noise(P, 45.0, detail=2), 0.15, 0.40))
+    glaze = N.mix(spots, glaze, (0.040, 0.022, 0.012))                        # tačke gvožđa ~2 mm
     fleck_d, _ = N.voronoi(P, 650.0)
     glaze = N.mix(N.mul(N.ramp(fleck_d, 0.17, 0.05), N.ramp(N.noise(P, 30.0), 0.3, 0.6, 0.4, 0.9)), glaze,
                   (0.09, 0.050, 0.026))                                          # sitne pegice ~0,5 mm
     glaze = N.mix(N.mul(edge_in, 0.55), glaze, (0.21, 0.115, 0.060))          # tanka ivica -> karamel
+    thin = N.mul(N.ramp(nd, 0.0008, 0.0080, 1.0, 0.0), N.ramp(N.noise(P, 48.0, detail=3), 0.35, 0.62, 0.25, 0.75))
+    glaze = N.mix(N.mul(thin, N.sub(1.0, inner)), glaze, (0.13, 0.080, 0.046))  # pojas gde glazura tanji i puca
     glaze = N.mix(N.mul(dome, 0.10), glaze, (0.40, 0.40, 0.34))               # debela kapljica -> malo svetlija
     rim_brk = N.mul(N.ramp(z, RIM_Z - 0.0085, RIM_Z - 0.0025), N.ramp(N.noise(P, 300.0), 0.25, 0.6, 0.6, 1.0))
     glaze = N.mix(N.mul(rim_brk, 0.92), glaze, (0.10, 0.050, 0.026))         # obod: glazura puca u smeđe
@@ -624,13 +640,13 @@ def mat_stoneware(body, seed=7):
     N.put(N.mixf(mask, 0.10, 0.25), bsdf.inputs['Coat Weight'])
     N.put(N.mixf(mask, 0.40, c_rough), bsdf.inputs['Coat Roughness'])
     # glazura je staklasta: malo svetla uđe i rasprši se (mekši prelaz senke na glazuri)
-    N.put(N.mul(mask, 0.22), bsdf.inputs['Subsurface Weight'])
-    bsdf.inputs['Subsurface Radius'].default_value = (1.0, 0.62, 0.38)
+    N.put(N.mul(mask, 0.12), bsdf.inputs['Subsurface Weight'])
+    bsdf.inputs['Subsurface Radius'].default_value = (0.8, 0.75, 0.62)    # neutralno: crveni radijus = „koža"
     bsdf.inputs['Subsurface Scale'].default_value = 0.0012
 
     # --- normala: Bevel zaobli spoj drške i ivice stope (bez oboda, tanak je), pa sitni reljef preko
     geo = N.new('ShaderNodeNewGeometry')
-    bev = N.new('ShaderNodeBevel', samples=6)
+    bev = N.new('ShaderNodeBevel', samples=4)
     near_handle = N.math('MAXIMUM', hnd, N.mul(N.ramp(N.math('COSINE', theta), 0.90, 0.985), N.ramp(r, 0.040, 0.046)))
     N.put(N.math('MULTIPLY_ADD', near_handle, 0.0016, 0.0012), bev.inputs['Radius'])
     base_n = N.mixv(N.ramp(z, RIM_Z - 0.006, RIM_Z - 0.003), bev.outputs['Normal'], geo.outputs['Normal'])
@@ -664,15 +680,15 @@ def mat_coffee(coffee):
     rr = N.vmath('LENGTH', N.xyz(x, y, 0.0))
     swirl = N.noise(P, 110.0, detail=4, distortion=1.4)
     patch = N.noise(P, 38.0, detail=3, distortion=0.8)
-    crema = N.add(N.mul(N.ramp(rr, 0.0372, 0.0412), N.ramp(swirl, 0.38, 0.58, 0.35, 1.0)),
-                  N.mul(N.ramp(patch, 0.64, 0.72), N.ramp(swirl, 0.45, 0.62, 0.0, 0.6)))
+    crema = N.add(N.mul(N.ramp(rr, 0.0396, 0.0422), N.ramp(swirl, 0.38, 0.58, 0.35, 1.0)),
+                  N.mul(N.ramp(patch, 0.72, 0.78), N.ramp(swirl, 0.45, 0.62, 0.0, 0.5)))
     crema = N.math('MINIMUM', crema, 1.0)
     bub, _ = N.voronoi(P, 1500.0)
     big, _ = N.voronoi(P, 420.0, randomness=0.8)
     big_m = N.mul(N.ramp(big, 0.22, 0.12), N.ramp(rr, 0.036, 0.041))           # krupniji mehurići uz zid
     foam = N.mix(N.ramp(swirl, 0.3, 0.7), (0.11, 0.050, 0.022), (0.24, 0.125, 0.058))
     foam = N.mix(N.mul(N.ramp(bub, 0.30, 0.05), 0.35), foam, (0.32, 0.19, 0.095))
-    col = N.mix(crema, (0.010, 0.0045, 0.0020), foam)
+    col = N.mix(crema, (0.0045, 0.0020, 0.0009), foam)
     N.put(col, bsdf.inputs['Base Color'])
     N.put(N.mixf(crema, 0.03, 0.32), bsdf.inputs['Roughness'])
     bsdf.inputs['IOR'].default_value = 1.34
@@ -832,8 +848,6 @@ def build(args):
 
     world_hdri(scene, args.hdri_strength, args.hdri_rot)
     floor, wall = build_set(args.backdrop)
-    photo_studio_lights((0.0, 0.0, 0.055), wall, key=args.key, strip=args.strip, sun=args.sun, bg=args.bg,
-                        sun_spot=tuple(float(v) for v in args.sun_spot.split(',')), flags=not args.no_flags)
 
     rig = bpy.data.objects.new('MugRig', None)
     scene.collection.objects.link(rig)
@@ -841,6 +855,9 @@ def build(args):
     coffee = build_coffee(rig)
     C.assign(body, mat_stoneware(body))
     C.assign(coffee, mat_coffee(coffee))
+    photo_studio_lights((0.0, 0.0, 0.055), [body, coffee], wall, key=args.key, strip=args.strip, sun=args.sun,
+                        bg=args.bg, sun_spot=tuple(float(v) for v in args.sun_spot.split(',')),
+                        flags=not args.no_flags)
 
     clock = amount = None
     if args.steam:
@@ -849,7 +866,7 @@ def build(args):
         C.assign(steam, sm)
         steam.visible_shadow = False
 
-    # kamera: spreda, 24° odozgo, lens 85; fokus malo ispred ose šolje, f/8 (cela šolja oštra, zid mekan)
+    # kamera: spreda, 22° odozgo, lens 85; fokus malo ispred ose šolje, f/8 (cela šolja oštra, zid mekan)
     elev, dist = math.radians(args.elev), args.dist
     target = (0.010, 0.0, args.frame_z)
     cam = C.camera((target[0], -dist * math.cos(elev), target[2] + dist * math.sin(elev)), target, lens=85)
@@ -896,11 +913,11 @@ def main():
     ap.add_argument('--exposure', type=float, default=0.0)
     ap.add_argument('--backdrop', action='store_true', help='sto i zid umesto providne pozadine')
     ap.add_argument('--fstop', type=float, default=8.0)
-    ap.add_argument('--elev', type=float, default=24.0, help='ugao kamere odozgo (°)')
+    ap.add_argument('--elev', type=float, default=22.0, help='ugao kamere odozgo (°)')
     ap.add_argument('--dist', type=float, default=0.60)
     ap.add_argument('--frame-z', dest='frame_z', type=float, default=0.050)
-    ap.add_argument('--key', type=float, default=110.0, help='key prozor (area 0,6x0,9 m), W')
-    ap.add_argument('--strip', type=float, default=8.0, help='svaka od dve trake pozadi, W')
+    ap.add_argument('--key', type=float, default=70.0, help='key prozor (area 0,6x0,9 m), W')
+    ap.add_argument('--strip', type=float, default=10.0, help='svaka od dve trake pozadi, W (svetle samo šolju)')
     ap.add_argument('--sun', type=float, default=5.0, help='sunce na zidu (gobo), W/m²')
     ap.add_argument('--sun-spot', dest='sun_spot', default=f'{SUN_SPOT[0]},{SUN_SPOT[1]}',
                     help='x,z tačke na zidu kroz koju sunce gađa sredinu prozora (pomera šaru okvira)')

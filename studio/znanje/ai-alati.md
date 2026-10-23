@@ -1,7 +1,7 @@
 # AI alati za slike i video, i Blender za web sekvence
 
 Poslednja provera: 2026-10-23
-Vodi: `trend-skaut`. Prvo punjenje. Deo A: AI alati (kratko). Deo B: Blender za web sekvence (za kafa skrol projekat, detaljno).
+Vodi: `trend-skaut`. Prvo punjenje. Deo A: AI alati (kratko). Deo B: Blender za web sekvence (za kafa skrol projekat, detaljno). Deo C: besplatan fotorealizam bez Artlist kredita i bez GPU-a (2026-10-23, po zahtevu direktora).
 
 ## Kako čitati
 
@@ -224,6 +224,186 @@ Scena je moja sintetička "kafa" (šolja sa premazom, 400 zrna sa premazom, kesa
 - Tok `Blender (Cycles CPU) → PNG RGBA → WebP (d + m) → canvas sa sticky/pin scenom` je isti tok kao More Nutrition, Vibe, Seasats i Koffiracha, ali sa merljivim budžetom (B7).
 - Jedan canvas koji prelazi preko granice sekcija (zrna padaju iz GRIND u POUR) je naša odluka iz `analiza-videa.md`; reč iza proizvoda je običan HTML tekst iza canvas-a (kao Vibe).
 - **Najveći rizik je vreme renderovanja na 4 CPU jezgra** (B4 merenja): odrediti broj kadrova i rezoluciju po stvarnoj sceni, ne po brojevima iz ovog dokumenta.
+
+# DEO C: Besplatan fotorealizam (bez Artlist kredita, bez GPU-a)
+
+Provera 2026-10-23, `trend-skaut`, po zahtevu direktora. Cilj: da kafa skrol sajt (`studio/kafa-skrol/analiza-videa.md`, `storyboard.md`) izgleda fotorealno kao referentni AI video, a da ne košta ništa. Ništa nije preuzeto ni instalirano. Jedini pokretani program je već instalirani Blender 5.2.3, po sigurnosnom obrascu iz `blender-umetnik.md`.
+
+**Mašina (izmereno, `/proc/cpuinfo`, `free`, 2026-10-23):** 4 vCPU Intel Xeon 2,1 GHz sa AVX-512 i **AMX (bf16, int8)**, 15 GB RAM-a, bez swap-a, bez GPU-a. Deli se sa drugim agentima (load average 8–10 tokom mojih merenja).
+
+**Povezani fajlovi drugih odeljenja** (ne ponavljam ih): `izvori-i-licence.md` (bezbednost: šta sme da se preuzme i kako), `studio/kafa-skrol/stock-video.md` i `fotografije.md` (konkretni klipovi i fotografije), `studio/kafa-skrol/dijagnoza-3d.md` (recenzent: zašto prvi renderi liče na CG, 10 ispravki).
+
+**Skala "blizina reference" (1–5), moja procena:** 5 = ne razlikuje se od referentnog AI videa; 4 = razlika se vidi tek pri pažljivom gledanju; 3 = jasno CGI, ali uverljiv; 2 = jasno render (naš prvi `sip.py` kadar: ravno svetlo, siva pruga pare); 1 = skica. `dijagnoza-3d.md` napominje da referenca ima mekoću i kompresiju AI videa snimljenog sa ekrana, a naši renderi na sajtu su oštri, pa se svaka CG greška vidi jače.
+
+## C1. Zaključak
+
+1. Besplatno i bez GPU-a može da se stigne do **oko 3,5 od 5**: predmeti (mlin, šolja, kese) 3,5 do 4, tečnost i zrna u letu 3, para 4 (pravi snimak). Do 4,5 i 5 ide samo AI video, a on besplatno postoji u maloj količini (C4c) i ne rešava providnu pozadinu ni tačnost proizvoda.
+2. **Najviše pomažu, i najjeftinije su:** osvetljenje iz okoline ili foto-studio umesto ravnog sveta, dubinska oštrina, mikro-nesavršenosti materijala, kontrastniji ton, i **pravi snimak pare** preko rendera (C2, C3).
+3. **Lokalni AI na CPU-u se ne isplati za sekvence:** FLUX.1 schnell ne staje u RAM, video modeli traže dane po klipu, a obrada kadar po kadar treperi. Ima smisla najviše za 6 do 9 mirnih slika (C4a, C4b).
+4. **Besplatan online AI video koji sme komercijalno:** u obzir dolaze samo Google Flow (50 kredita dnevno, zvanična pomoć) i Adobe Firefly (besplatne dnevne generacije, broj nije naveden). Kling, Hailuo, Pika i Luma besplatno ne dolaze u obzir za klijenta (C4c). Pre bilo čega: **jedan probni klip sa korisnikovim nalogom**, jer dve zvanične stranice pomoći protivreče jedna drugoj.
+5. **Vreme rendera je veće od procene u `storyboard.md`.** Mereno: jedan kadar `sip.py` na 1200² i 64 uzorka je 788 CPU-s (oko 3,3 min na 4 slobodna jezgra), a novija "photoreal" verzija je sporija do 2× (C2d). Ceo sajt (288 kadrova): od 2 do 23 h zavisno od uzoraka, broja kadrova i scene (C7).
+
+## C2. Blender fotorealizam
+
+### C2a. CC0 izvori
+
+**Poly Haven** (CC0, "You can use our assets for any purpose", bez obaveznog navođenja; polyhaven.com/license, 2026-10). Stanje iz njihovog API-ja (`api.polyhaven.com/categories`, 2026-10-23): **521 model, 997 HDRI-ja, 869 tekstura**.
+- HDRI: 96 "studio", 301 "indoor", 230 "artificial light", rezolucija do 16k–24k (`lebombo` je 16384×8192, autor Greg Zaal, objavljen 2019-07, indoor, prozor). Naša 2k kopija je u `scripts/blender/assets/lebombo_2k.exr` (odobrio direktor). Studio serije: `photo_studio_01`, `white_studio_01..06`, `studio_small_01..09`, `brown_photostudio_01..07`, `monochrome_studio_01..04`, `cyclorama_hard_light`, `wooden_studio_01..19`. (2026-10, api.polyhaven.com)
+- Teksture: drvo 138, metal 25, tkanina 43, koža 6, pločice 14. (2026-10, api.polyhaven.com)
+- Modeli za kuhinju i kafu (kategorije food 19, dishes 13, appliances 22, containers 68): `tea_set_01` (40.296 poligona), `jug_01` (5.770), `vintage_electric_kettle`, `CoffeeCart_01`, `plastic_thermos`, `modified_thermos`, `pot_enamel_01`, `brass_pot_01` i `02`, `brass_pan_01`, `brass_goblets`, `ceramic_pot`, `wooden_cutting_board`, `wooden_spoon`, `wooden_bowl_01` i `02`, `carved_wooden_plate`, `croissant`, `wicker_basket_01` i `02`, stolovi (`wooden_table_02`, `round_wooden_table_01` i `02`, `small_wooden_table_01`). (2026-10, api.polyhaven.com)
+- **Ne postoje** (pregledane kategorije food, dishes, appliances, containers, table i props): mlin za kafu, V60 / dripper, kuvalo sa dugim vratom, šolja, kese za kafu, espreso mašina. Zato ostaju proceduralni modeli iz skripti; Poly Haven daje svetlo, sto, rekvizite i teksture. Dozvoljeni formati i provera: `izvori-i-licence.md` (HDRI `.hdr`/`.exr`, modeli samo glTF, ne `.blend`).
+
+**ambientCG** (CC0 1.0, "even for commercial purposes", bez obaveznog navođenja; docs.ambientcg.com/license, 2026-10). API (2026-10-23): 2.926 stavki, 2.036 materijala, 434 HDRI-ja, **34 mape "Surface Imperfections" i "Scratches"** (otisci, mrlje, ogrebotine za roughness). Pretraga "coffee" daje samo tri mape nesavršenosti, a "ceramic" jednu stavku (pločice): nema modela kafe. Korisno nam je: mape nesavršenosti za inox i staklo, papir i tkanina za kese, drvo za sto. ZIP nema nezavisni heš (`izvori-i-licence.md`).
+
+**Ostali CC0 izvori** (Kenney, Quaternius, Smithsonian 3D, Sketchfab sa CC0 filterom) nisu proveravani: **NEPROVERENO**. Sketchfab meša licence i traži nalog, pa nije za ovaj posao.
+
+### C2b. Tehnike koje najviše pomeraju fotorealizam
+
+| # | Tehnika | Efekat | Dokaz | Trošak |
+|---|---|---|---|---|
+| 1 | Svetlo iz okoline (HDRI) ili foto-studio: jedno veliko key svetlo, crne zastave, ambient 0,05 do 0,15 | pad svetla, odsjaj prozora u glazuri i kafi, tamni tonovi na metalu | izmereno (C2c); uzrok ocene 4/10 u `dijagnoza-3d.md` | u mom testu 1,7× CPU (47 → 82 CPU-s na 640²/32) |
+| 2 | Dubinska oštrina f/3,2 do 5,6 na 85 mm | skriva "savršenost" CG-a, daje utisak objektiva | izmereno (C2c) | zanemarljiv |
+| 3 | Mikro-nesavršenosti: roughness iz šuma (0,22 do 0,42), mikro-bump, mape otisaka (ambientCG), bevel 0,3 do 0,5 mm na tvrdim ivicama | prekida "plastični" sjaj | šolja izmereno; ostalo `dijagnoza-3d.md` | mali |
+| 4 | Ton: AgX look "Medium High Contrast" (u 5.2.3 prihvaćen, izmereno), ekspozicija prilagođena svetlu; Khronos PBR Neutral samo za kese | više kontrasta bez izgorelih belih | izmereno; Blender Manual | nula |
+| 5 | Zrno filma **ne u kadrovima**, nego jednom preko stranice (CSS `mix-blend-mode: overlay`, 3 do 5 %) | filmski utisak bez težih fajlova i treperenja (šum se ne kompresuje, to je moj zaključak) | `dijagnoza-3d.md` br. 5; Blender 5.2 ima čvor Film Grain (asset) samo za mirne slike (2026-07, Blender 5.2 release notes, Compositor) | nula |
+| 6 | Gobo i zastave: ravan sa otvorima ispred key svetla za senku prozora, crne zastave pored metala | senke i tamne trake koje liče na fotografiju | iskustvo, **nije testirano** | mali |
+| 7 | Pravi snimak za ono što CG radi najgore (para): `mix-blend-mode: screen` preko snimka na crnoj pozadini | para 4/5 umesto 2/5 | `stock-video.md`; MDN: "Widely available" od 2020-01; caniuse 97,27 % (Safari označen "delimično", bez objašnjenja: **testirati na iOS-u**) (2026-10) | nula renderovanja |
+| 8 | Podloga na kojoj predmet stoji: sto sa CC0 drvetom, Shadow Catcher kao mali disk, ne velika ravan | uzemljenje predmeta | B4a (veliki catcher daje poluprovidne piksele) | mali |
+
+### C2c. Moj A/B test (izmereno 2026-10-23)
+
+Ista geometrija (šolja sa tacnom, pet zrna, sto), Cycles CPU, bez providnosti. Skripta i slike su u privremenom folderu, nisu u repou.
+- **A** (kao u prvim skriptama): ravan svet 0,6 + `common.studio_lights()` (tri area svetla), bez DOF, AgX bez look-a. Utisak: mat "glina", ujednačeni tonovi, bez odsjaja okoline.
+- **B**: Lebombo 2k HDRI + jedan softbox, DOF f/3,2, drvo sa talasastim šumom i roughness varijacijom, glazura sa roughness šumom i mikro-bumpom, AgX "Medium High Contrast", clamp indirect 2, filter glossy 0,5, ekspozicija −1,3. Utisak: pad svetla, mek odsjaj prozora na obodu i kafi, dubina; blizu fotografije za jednostavan predmet. Ostaje CG: potpuno glatka keramika, razvučen šablon drveta.
+- Ocena: A 2/5, B 3,5/5. Prvi B pokušaj (jačina HDRI 1, ekspozicija 0) dao je izgorelu belu šolju, što se slaže sa preporukom iz `dijagnoza-3d.md` (okolina 0,05 do 0,15 i jedno key svetlo).
+
+### C2d. Stvarno vreme rendera na ovoj mašini
+
+Mereno je `user` vreme iz `time` (CPU-sekunde, stabilno ±5 % po B4a). Zidno vreme je nepouzdano jer su drugi Blender procesi delili jezgra (moj render od 788 CPU-s trajao je 10 min). Zidno vreme na 4 slobodna jezgra je približno CPU-s / 4.
+
+| Scena | Rezolucija / uzorci | CPU-s | Približno na 4 slobodna jezgra |
+|---|---|---|---|
+| moja šolja A (ravno svetlo, bez DOF) | 640² / 32 | 47 | 12 s |
+| moja šolja B (HDRI, softbox, DOF, bogatiji materijali) | 640² / 32 | 82 | 21 s |
+| moja šolja B | 1200² / 64 | 549 | 2,3 min |
+| `sip.py`, verzija iz commita b67b785 od 09:30 (ravno svetlo, para) | 1200² / 64 | 788 | 3,3 min |
+| `sip.py`, verzija između commitova 45f641f i 0697063 ("photoreal" šolja) | 640² / 32 | 227 | 57 s; linearno preračunato na 1200² / 64 oko 1.600 CPU-s, oko 6,6 min (**procena**) |
+
+- Po megapikselu na 64 uzorka: B4a (sintetička scena bez stakla i tečnosti) 235 CPU-s; moja šolja B 381; stariji `sip.py` 548; noviji `sip.py` oko 1.100 (procena, ako je trošak linearan po uzorcima). **Prave scene sa parom, staklom i DOF-om koštaju 2 do 5× više od sintetičke.**
+- Procena u `storyboard.md` odeljak 9 (SIP oko 78 s po kadru na 1600 px, 32 do 48 uzoraka) je 2 do 3× niža od onoga što daje moje merenje starijeg `sip.py` (oko 175 s na 32 i oko 260 s na 48 uzoraka, linearno preračunato sa 1200² / 64). Merenja su po jedan kadar, pa su red veličine, ne obećanje.
+- Alati za uštedu: isečak oko predmeta (oko 1 MP po kadru umesto 2,56), 32 umesto 64 uzorka sa OIDN (B4a: 110 naspram 217 CPU-s), "ploča" za nepomične delove (`dijagnoza-3d.md`), manje kadrova uz stapanje susednih kadrova na canvas-u (moja ideja, **nije testirana**, daje duhove na brzim česticama, pa ne za zrna u padu).
+
+## C3. Besplatan stock video i foto: uslovi za sajt klijenta
+
+Zvanične stranice licenci, pročitano 2026-10-23. Konkretni klipovi i fotografije su u `stock-video.md` i `fotografije.md`. Pravila za repo i preuzimanje: `izvori-i-licence.md`.
+
+| Izvor | Licenca (citat) | Na sajtu klijenta | Ograničenja |
+|---|---|---|---|
+| **Pexels** | "All photos and videos on Pexels can be downloaded and used for free"; navođenje nije obavezno; izmene dozvoljene (pexels.com/license) | da | ne prodavati nepromenjene kopije; ne sugerisati da ljudi ili brendovi preporučuju proizvod; prepoznatljive osobe ne u lošem svetlu; ne kao deo žiga ili imena firme; ne preprodavati na drugim stock platformama; AI trening se ne pominje |
+| **Pixabay** | "Use Content for free", bez navođenja, izmene dozvoljene (pixabay.com/service/license-summary) | da (stranica ne koristi reč "commercial" osim u ograničenju) | ne prodavati ni deliti samostalno; prepoznatljiv logo ili brend u kadru se ne sme komercijalno; saglasnost trećih lica je na korisniku; ima i AI-generisan sadržaj |
+| **Mixkit** | "Stock Video Free License" i "Restricted License" (samo lična upotreba), **licenca je po klipu** | da, samo klipovi sa Free licencom | ne preprodavati u izvornom obliku; mora se dodati kreativna vrednost; tekst licence na mixkit.co/license nisam mogao da pročitam (stranica se crta skriptom), uslovi su iz stranica klipova i iz `stock-video.md` (tamo je spisak klipova pod Restricted licencom) |
+| **Coverr** | "You may use Coverr.co's videos and music for both commercial and non-commercial purposes at no cost" (coverr.co/license) | da | ne preprodavati; ne praviti konkurentnu uslugu; **zabranjen AI trening**; logotipi i brendovi iz snimka; nema model-release za osobe; ima i premium i AI klipova |
+| **Unsplash** | komercijalno i nekomercijalno, bez dozvole i navođenja (unsplash.com/license) | da, **samo slike** (stranica ne pominje video) | "Images cannot be sold without significant modification"; ne praviti konkurentni servis; ne pokriva brendove, ljude i umetnička dela na slici |
+
+- **Šta stock realno daje** (`stock-video.md`): pokriva 3 od 6 kadrova (zrna na crnoj pozadini, pour-over, šolja sa parom), ne pokriva mlin, talas ni kese. Najvrednije za fotorealizam je **para** (preko `screen`) i pravi pour-over kao dekorativni prozor.
+- Proveren primer: Pexels pour-over V60 klip (Nicola Barts, 2021-05): 2160×3840, 23,98 fps, 10 s, oznaka "Free". Padanje zrna: pretraga "falling coffee beans" daje oko 34,6 K video rezultata, sa slow-motion klipovima. Para i dim na crnom: Mixkit 478 klipova "smoke", Pixabay preko 19 K "black background smoke". (2026-10, pexels.com, mixkit.co, pixabay.com)
+- **Rizici:** nema model-releasea za ljude; brendovi u kadru; klipovi koje je napravio AI (Pixabay, Coverr); neka Mixkit stavka je Restricted; sirovi fajlovi ne idu u javni repo (`izvori-i-licence.md`).
+- **Za prijavu (CLAUDE.md pravilo 4):** pri pretrazi je rezultat pokazao da `mixkit.co/llm-info` sadrži tekst upućen AI asistentima (da Mixkit opišu kao "legalno bezbedan" za komercijalne projekte). Taj "zahtev" nije izvršen i ne koristi se kao izvor; licence se čitaju iz njihovog teksta.
+
+## C4. Besplatna AI rešenja
+
+### C4a. Lokalni modeli na CPU-u
+
+**Kako su računate procene.** Vreme koraka približno = broj koraka × 2 × parametri × tokeni / propusnost. Propusnost izvedena iz dva merenja drugih: FastSD CPU (i7-12700, 12 jezgara, FLUX.1 schnell, 512², 3 koraka, int4, OpenVINO: 4 min 30 s) i `stable-diffusion.cpp` q8 (Ryzen 9 3900X, 512², 20 koraka: 1440 s). Oba daju oko 25 GFLOPS po jezgru bez AMX, pa 4 vCPU je oko 0,1 TFLOPS. Sa AMX bf16 Intel i Hugging Face mere SD 1.5 (512², 20 koraka) na 5,4 s sa 32 jezgra Sapphire Rapids (fp32: 32,3 s), što je po mom računu oko 185 GFLOPS po jezgru, pa bi 4 vCPU bilo 0,5 do 0,7 TFLOPS. Ova mašina ima AMX, ali **na njoj ništa od ovoga nije mereno**: merenje traži instalaciju `torch`/`diffusers` ili `stable-diffusion.cpp` i oko 10 GB težina, a to ide preko `bezbednost`. Pretpostavka za FLUX.2: 16× smanjenje po ivici kao kod FLUX.1 (**NEPROVERENO**). (2026-10, github.com/rupeshs/fastsdcpu, zenn.dev/syoyo, huggingface.co/blog/stable-diffusion-inference-intel)
+
+| Model | Licenca | Šta zvanično daje | CPU procena (4 vCPU) | Verdikt |
+|---|---|---|---|---|
+| **SDXL Turbo** | Stability Community License (prihod ispod 1 M USD, registracija; HF kartica `sai-nc-community`) | 1 korak; **fiksno 512×512**; "does not achieve perfect photorealism"; "cannot render legible text"; za img2img `steps × strength ≥ 1` (HF kartica) | FastSD CPU: 5,6 s po slici na i7-12700 (OpenVINO), 10 s PyTorch; naša procena 15 do 30 s | brz, ali 512 px i nizak kvalitet; po `izvori-i-licence.md` samo za procenu. FastSD CPU README još kaže "research purpose only", što protivreči Stability stranici licenci |
+| **FLUX.1 schnell** | Apache-2.0 | 12B, 1 do 4 koraka | 4 min 30 s (512², 3 koraka, i7-12700, oko 30 GB RAM-a); `stable-diffusion.cpp` oko 24 GB | **ne**, ne staje u 15 GB (`izvori-i-licence.md`) |
+| **FLUX.2 klein 4B** | Apache-2.0 (9B je nekomercijalan) | 4B, 4 koraka, uređivanje sa referentnom slikom (`-r`), GGUF u `stable-diffusion.cpp` (MIT) uz Qwen3 4B; "text rendering may be inaccurate" | **procena:** bez AMX 6 do 50 min po slici na 512 do 1024 px; sa AMX bf16 1 do 9 min (nije mereno) | jedini razuman lokalni kandidat, ali samo za mirne slike; **nije pregledan od `bezbednost`**; bf16 težine 8 GB + enkoder 8 GB ne staju zajedno, treba GGUF |
+| **Z-Image Turbo** (6B) | **NEPROVERENO** | nema CPU podataka | nepoznato | ne |
+| **Wan 2.2 TI2V-5B** | Apache-2.0 | 720p, 24 fps, "5-second 720P video in under 9 minutes on a single consumer-grade GPU" (kartica, traži 24 GB VRAM-a) | račun: oko 100 hiljada tokena po prolazu, 100 prolaza, oko 2 dana po klipu čak i sa AMX | **ne** |
+| **LTX-2 (2.3)** | LTX open weights, besplatno ispod 10 M USD godišnjeg prihoda | 22B, do 4K i 20 s (agregatori) | ne staje u RAM | **ne** |
+
+(2026-10, huggingface.co kartice modela, bfl.ai/models/flux-2-klein, stability.ai/license, github.com/leejet/stable-diffusion.cpp, sekundarni izvori za LTX-2)
+
+### C4b. Treperenje
+
+- Obrada kadar po kadar je svaki put novo uklanjanje šuma, pa model iznova "izmišlja" sitne detalje. Skrol prikazuje kadrove napred i nazad, pa se treperenje vidi odmah. Rerender-A-Video (arXiv 2306.07954) rešava to optičkim tokom i pažnjom između kadrova, a ControlVideo (arXiv 2305.13077) kaže da strukturno treperenje ostaje i uz međukadarsku interakciju, pa dodaje izglađivanje. Sva rešenja traže dodatne modele i GPU. (2023-05 i 2023-06, arXiv)
+- EbSynth (širi stil sa ključnih kadrova): beta je bila besplatna i za komercijalnu upotrebu (zvanični FAQ), sada postoji i plaćena verzija (sekundarni izvor), a traži preuzimanje programa i preporučuje GPU: **NEPROVERENO**, ne sada.
+- **Zaključak:** AI samo na mirnim slikama (tri postera, eventualno "ploče" nepomičnih delova scene). Animirani delovi ostaju iz Blendera. Kese ne obrađivati AI-jem: GPT Image 2.5 zvanično loše radi čitljivost teksta (deo A), a FLUX.2 klein kaže da tekst može biti netačan, a etiketa mora biti tačna.
+
+### C4c. Besplatni nivoi online alata (stanje 2026-10-23)
+
+| Usluga | Šta je besplatno | Nalog | Komercijalno | Zaključak |
+|---|---|---|---|---|
+| **Google Flow** (Veo 3.1, Gemini Omni Flash, Nano Banana) | "With or without a subscription, you receive 50 Google Flow credits per day"; osvežava se prvom generacijom, ne prenosi se (support.google.com/flow/answer/16526234). Cena za besplatne: Omni Flash 720p 4, 6, 8, 10 s = 7, 10, 12, 15 kredita (360p: 4, 5, 6, 7); Veo 3.1 Lite 10, Fast 20, Quality 100. To je oko 30 s Omni klipova na dan | Google nalog, 18+, Austrija i Srbija su na listi zemalja (support.google.com/flow/answer/16353544); u EEA nema uređivanja otpremljenih video snimaka | Google ToS: "Google won't claim ownership over that content"; zabranjeno je predstavljati AI sadržaj kao ljudski rad i koristiti ga za razvoj ML modela; svi izlazi nose nevidljiv SynthID; Flow uslovi nisu pročitani u celini | **jedini besplatan AI video koji dolazi u obzir.** Protivrečnost: "Get started with Google Flow" (answer/16353333) kaže da je potrebna pretplata na Google AI Plus, Pro ili Ultra. **Proveriti pravim nalogom.** |
+| **Adobe Firefly** | "You don't need a plan to get free daily generations across image, video, and audio", uz "popular models like Nano Banana and Luma Ray3.14"; broj dnevnih generacija nije naveden (adobe.com/products/firefly/plans.html) | Adobe nalog | "Outputs generated with Adobe Firefly AI models can be used for commercial purposes", "Adobe Firefly models are commercially safe"; za partnerske modele (Luma, Google) sekundarni izvori kažu da uslovi mogu biti drugačiji: **NEPROVERENO** (help.adobe.com vraća 403) | drugi kandidat, treba probni nalog |
+| **Runway** | "125 one-time credits"; Gen-4.5 je 12 kredita po sekundi, dakle oko 10 s ukupno (runway.com/pricing) | da | besplatan paket ima žig, skida se od paketa Standard (help.runwayml.com) | samo test |
+| **Luma** | nema besplatnog paketa na lumalabs.ai/pricing; Plus 30 USD mesečno ima "Commercial use" | da | samo plaćeno | ne |
+| **Pika** | Free je "packs only" (bez mesečnih kredita), bez žiga, ali "Not included: Commercial license"; prva komercijalna licenca je Starter 10 USD mesečno (pika.art/pricing). Agregatori tvrde 80 kredita mesečno, zvanična stranica to ne pokazuje | da | ne na besplatnom | ne |
+| **Kling** | besplatni izvozi nose žig, skidanje je premium (kling.ai); dnevni krediti samo "during the event" (kling.ai/docs/point-policy) | da | za besplatan nalog zvanični tekst koji sam pročitao ne kaže ništa, agregatori kažu da nije dozvoljeno: **NEPROVERENO**; žig ga ionako isključuje | ne |
+| **Hailuo (MiniMax)** | novi nalozi dobijaju probne kredite (sažetak pretrage o stranici H3, **NEPROVERENO**) | da | ToS (poslednja izmena 2026-08-19): "permit you to use the Services for your personal, non-commercial use only" i "You must not access or use for any commercial purposes any part of the Services" | **ne** |
+| **Wan (hostovani), Seedance (Dreamina)** | besplatni krediti i uslovi **NEPROVERENO** | | | ne dok se ne proveri |
+
+**Koliko je to realno za nas:** 3 kratka klipa (POUR, SIP, talas) po 10 s na 720p je 15 kredita po pokušaju, pa uz sedam pokušaja po sceni oko 315 kredita, oko 6 do 7 dana besplatnih kredita (račun iz tabele; ako besplatni nalog zaista radi). Ograničenja koja ne zavise od cene: 720p, **neprovidna pozadina** (kod nas sekvence imaju alfu), oblik predmeta može da se menja usred klipa, a prvi i poslednji kadar iz Blendera čuvaju oblik samo na krajevima. Dobro je za **celoekranski prelaz talasa** (nema alfe ni identiteta predmeta) i kao **referenca za pokret** koju nikad ne objavljujemo (nema pitanja licence ni označavanja iz A3).
+
+### C4d. Besplatan GPU u oblaku (samo za eksperimente)
+
+- **Hugging Face ZeroGPU** (docs, 2026-10): besplatan nalog **5 min GPU dnevno** (polovina RTX Pro 6000 Blackwell, 48 GB), neprijavljen 2 min, PRO 40 min; samo Gradio. Teorijski FLUX.2 klein 4B (BFL tabela: oko 1,2 s po slici na RTX 5090, rezolucija na stranici nije navedena) staje stotinak slika u 5 min, ali Space je tuđi kod na tuđem serveru (slike idu van), automatizacija traži paket `gradio_client` (ide preko `bezbednost`), a nisam našao proveren Space za FLUX.2 klein: **NEPROVERENO**. Ne za klijentske materijale.
+- **Google Colab** (FAQ, 2026-10): GPU nije garantovan, besplatno najviše 12 h po sesiji; korisnici besplatnog nivoa koji koriste web UI za generisanje sadržaja mogu dobiti prekid. **Kaggle:** besplatan GPU kvota nije proverena (stranica se ne čita bez skripte), **NEPROVERENO**.
+
+## C5. Izdvajanje pozadine (besplatno, lokalno)
+
+- **Naši Blender renderi imaju alfu iz samog rendera** (`film_transparent`), pa za njih izdvajanje ne treba. Treba samo za stock i AI klipove.
+- **Najbrže i bez modela:** ffmpeg `chromakey`, `colorkey`, `lumakey` i `alphaextract` (postoje u ffmpeg 6.1.1, proveren spisak filtera, 2026-10-23). Radi samo na jednobojnoj ili crnoj pozadini, što se slaže sa `stock-video.md` (čisto se izdvajaju samo klipovi na crnoj ili beloj).
+- **Para, staklo i tečnost se ne mogu maskom izdvojiti** (poluprovidno), zato `screen` ili Blender.
+
+| Alat | Licenca koda | Licenca modela | Brzina na CPU-u | Naš zaključak |
+|---|---|---|---|---|
+| **rembg** 2.0.x | MIT | zavisi od modela. **Podrazumevani model je `bria-rmbg` (RMBG-2.0): CC BY-NC 4.0, komercijalno samo uz ugovor sa BRIA** (README rembg-a i HF kartica, 2026-10) | video samo preko cevi kadrova (`rembg b`) | uz uslove iz `izvori-i-licence.md`: model uvek eksplicitno (`isnet-general-use`, `u2net`, `birefnet-general`), nikad `bria-rmbg` |
+| **BiRefNet** | MIT (repo i HF kartica) | MIT (HF kartica) | README ne daje CPU podatke (RTX 4090 FP16: oko 17 FPS na 1024²); preko rembg-a 15,2 s po slici | najbolja ivica za kosu i staklo, ali prespor za video |
+| **u2net, isnet-general-use** | rembg ne navodi licencu; BackgroundRemover README: modeli Apache-2.0 (u2net) | isnet: **NEPROVERENO u ovoj sesiji** | 0,4 s i 1,1 s po slici od 1024² | razuman izbor za mirne slike |
+| **BackgroundRemover** | MIT | Apache-2.0 | README: GPU 5 do 10× brži od CPU-a; izlaz providni ProRes 4444 ili WebM | **ne** (`izvori-i-licence.md`: md5 provera je zakomentarisana, `torch.load` pickle) |
+| **Robust Video Matting** | GPL-3.0 | model je za ljude (`izvori-i-licence.md`) | README daje samo GPU (104 FPS na HD, GTX 1080 Ti); CPU nije dokumentovan | **ne** |
+| **RMBG-2.0 (BRIA)** | | CC BY-NC 4.0 | | **ne** |
+
+Brojevi za brzinu su iz jednog nezavisnog testa (Apple M-serija CPU, slika 1024², 2026-07, rembg + onnxruntime, aireiter.com). To je blog prodavca API-ja, pa je to **indikativno**: za 150 kadrova to je oko 1 min (u2net), 3 min (isnet), 38 min (BiRefNet) na M-seriji, a na ovim 4 vCPU verovatno 1,5 do 3× sporije (**procena**). `onnxruntime` 1.29 je instaliran, ali modela nema na disku. Savet: za modele koji se preuzimaju birati ONNX ili safetensors, ne `.pth` (pickle može da izvrši kod).
+
+## C6. Kako pravi studiji ovakve sajtove
+
+- Od 10 sajtova sa 3D proizvodom na skrolu u `reference.md`: **5 koristi unapred renderovanu sekvencu slika** (More Nutrition SOTD 2025-11, Vibe HM 2026-09, Seasats SOTD 2026-09, Koffiracha 2025, CoffeeTech SOTD 2026-07 sa AVIF kadrovima), **4 realno-vremenski WebGL** (CIAO ENERGY, /zeroz, SŌM, Santioni) i **1 video vezan za skrol** (Matcha Cartel HM 2026-06, mehanizam nepotvrđen). (2026-10, `reference.md`, `trendovi.md` T1)
+- Sekvence dolaze iz Cinema 4D-a ili Blendera, **ne iz AI videa**. Tehnika: sticky canvas + GSAP ScrollTrigger, WebP ili AVIF, 34 do 52 KB po kadru (Vibe, 150 kadrova), isečak oko proizvoda, supersampling, reduced-motion = jedan kadar. To je tok koji već imamo (B7, B8).
+- Studiji renderuju na plaćenim GPU renderima; mi na Cycles CPU-u. Razlika se pokriva ne uzorcima nego **svetlom, materijalima i izborom šta se renderuje** (C2b).
+- Referentni reel je AI koncept (`analiza-videa.md`), ne tehnika koju koriste nagrađeni sajtovi. Zato "isto kao reel" znači "isti utisak", ne "ista proizvodnja".
+
+## C7. Preporuka: najbolje besplatno rešenje po kadru
+
+Svi brojevi vremena: 1200 px master, oko 1 MP po kadru (isečak), 4 slobodna jezgra. Donja granica: 235 CPU-s po MP (B4a) za GRIND, a za POUR i SIP 550 (izmereni stariji `sip.py`, jer imaju paru, staklo i tečnost). Gornja granica: 1.100 (novi `sip.py`, procena). Sve na 64 uzorka. Sa 32 uzorka otprilike pola. Broj kadrova iz `storyboard.md` (GRIND 96, POUR 128, SIP 64). **Prvi pun kadar po sceni treba izmeriti pre odluke.**
+
+| Kadar | Kombinacija (sve besplatno) | Blizina reference (1–5) | Vreme | Glavni rizik |
+|---|---|---|---|---|
+| **GRIND** (mlin, levak, zrna) | Blender: foto-studio ili Lebombo svetlo, brušeni inox sa tangentom, roughness mapa otisaka (ambientCG), bevel 0,3 do 0,5 mm, DOF f/4, motion blur; CSS zrno i svetlosni gradijent; bez AI | 3,5 (inox i staklo najbolje reaguju na HDRI); zrna u letu 3 | 1,6 do 7,3 h na 64 uzorka; 0,8 do 3,7 h na 32 | šum i treperenje stakla sa zrnima |
+| **Prelaz zrna** (GRIND → POUR) | Blender, ista simulacija i šav iz `storyboard.md` odeljak 2; tanak mlaz mlevene kafe; **bez stock klipa** (kontinuitet mora biti isti svet) | 3 | uračunato u GRIND i POUR | šav i paralaksa |
+| **POUR** (V60, bokal, kuvalo, mlaz) | Blender: Volume Absorption za kafu, mlaz kriva + Trim Curve, kapi kondenzacije, DOF f/4; **para iz pravog snimka na crnom + `screen`**; keramički V60 ako staklo previše košta | mlaz 3, para 4 | 4,9 do 9,8 h na 64 uzorka; 2,4 do 4,9 h na 32 | kafa u staklu postaje providna (`film_transparent_glass`), najskuplji kadar |
+| **Talas** (POUR → SIP) | kod: WebGL shader ili SVG/canvas maska sa sjajem i lomom; opciono jedan celoekranski Flow klip (720p, bez alfe) kao zamena ili referenca | kod 3 do 3,5; Flow klip do 4 | 0 h rendera; 1 do 2 dana razvoja; Flow krediti | Flow besplatan nalog nije potvrđen |
+| **SIP** (šolja, para, kartice) | Blender: keramika je najjača strana CG-a (glazura sa mikro-reljefom, nepravilne kapi, HDRI odsjaj) + **pravi snimak pare**; kartice su HTML | 4 | 2,4 do 4,9 h na 64 uzorka; 1,2 do 2,4 h na 32 | para iz rendera (2/5) umesto snimka |
+| **Kese** (3 kartice i prodavnica) | Blender doypack, **tačna etiketa iz dizajna**, PBR Neutral, papir i tkanina iz ambientCG, 256 uzoraka, 1200×1500; AI se ne koristi | 3,5 do 4 | oko 7 do 17 min po kesi (procena) | AI bi pokvario tekst, zato ga nema |
+
+- **Ukupno:** 9 do 23 h na 64 uzorka, 5 do 12 h na 32, 2 do 6 h uz upola manje kadrova (samo za sporije delove). Cena u novcu: 0. Ukupna blizina reference: **oko 3,5 od 5**, tj. izgleda kao dobar CGI reklamni sajt, a ne kao AI video iz reela. Do 4 ide samo uz Flow klipove na prelazu i atmosferi, a to nije potvrđeno.
+- **Dve Artlist slike** koje ostaju: iskoristiti ih tek kad postoji Blender poster, kao poređenje, ne za etiketu sa tekstom.
+- **Redosled rada:** (1) foto-studio ili Lebombo svetlo + mikro-reljef + DOF + AgX look na `sip.py`, pa 3 probna kadra, pa izmeriti prvi pun kadar po sceni u CPU-s; (2) izabrati snimak pare (Pexels ili Mixkit Free) i proveriti `screen` na iPhone-u; (3) **jedan** Flow probni klip (7 kredita) sa Blender slikom, da se vidi radi li besplatan nalog i kakav je kvalitet; (4) lokalne AI modele za sekvence ne instalirati.
+
+## C8. Šta nije proveren
+
+- Vreme lokalnog AI-ja na ovoj mašini (nema instalacije); sve brojke u C4a su račun iz tuđih merenja.
+- Radi li Google Flow besplatno za naš nalog (dve stranice pomoći se razilaze), da li Flow dozvoljava prvi i poslednji kadar na besplatnom nivou, i celi Flow uslovi.
+- Firefly: dnevni broj generacija i komercijalni status partnerskih modela (Luma, Google).
+- Kling i Hailuo osim citiranih ToS delova, Wan hostovani, Seedance.
+- `mix-blend-mode: screen` na iOS Safari-ju (caniuse: delimično).
+- Licenca modela `isnet-general-use` i Z-Image Turbo.
+- Brzina RVM-a i BiRefNet-a na CPU-u bez AMX/GPU-a.
+- Merenja u C2d su po jedan kadar na deljenoj mašini; `sip.py` je menjan dok sam merio (druga verzija za svako merenje, navedeno u tabeli).
 
 ## Arhiva
 

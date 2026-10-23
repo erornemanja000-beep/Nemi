@@ -1,6 +1,6 @@
 ---
 name: bezbednost
-description: Bezbednosni pregled. Pregleda izmene pre commit-a i objavljivanja (tajni ključevi, Netlify funkcije, forme, XSS, privatnost podataka gostiju). Takođe proverava svaki novi npm paket, alat, MCP server, plugin ili skriptu sa interneta PRE instalacije. Koristi ga uvek kad se dodaje nešto spolja i pre objavljivanja sajta. Ništa ne instalira i ne pokreće tuđi kod.
+description: Odeljenje Kontrola. Bezbednosni pregled. Pregleda izmene pre commit-a i objavljivanja (tajni ključevi, Netlify funkcije, forme, XSS, privatnost podataka gostiju). Takođe proverava svaki novi npm paket, alat, MCP server, plugin ili skriptu sa interneta PRE instalacije. Koristi ga uvek kad se dodaje nešto spolja i pre objavljivanja sajta. Ništa ne instalira i ne pokreće tuđi kod.
 tools: Read, Grep, Glob, Bash
 model: inherit
 color: red

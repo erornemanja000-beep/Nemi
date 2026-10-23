@@ -21,6 +21,15 @@ Ove izmene su predložili agenti talasa 1–2. Radi ih **jedan** programer u Z13
 | `KafaSkrol/src/lib/cart.ts` | koristi `shop.shipping.feeCents` i `freeFromCents` iz sadržaja umesto sopstvenih konstanti | Z11 (radi Z8, ne Z13) |
 | `KafaSkrol/src/content/types.ts` + `media.ts` | `SeqMedia.geometry: { full: {W,H}, crop: {x0,y0,w,h} }`: grind `{1,1.25}` / `{0.22,0,0.56,1.25}`; pour `{1,1}` / `{0.26,0,0.72,1}`; sip `{1,1}` / `{0.2,0,0.64,0.86}`. Poster tada stoji na mestu isečka pre `seq.json` i u reduced motion | Z5 |
 
+| `KafaSkrol/src/main.tsx` | `import './index.css'` ide **iznad** `import App`. Inače se CSS komponenti učita pre Tailwind-a, a preflight (`base`) pregazi `@layer components`. Kad se popravi, proveriti `wave.css`, `chrome.css`, `shop.css` i `sections.css`; `chapters.css` sada ima `@layer properties, theme, base, components, utilities;` kao zaštitu | Z7 |
+
+**Za Z12 (iz Z7):**
+- Slojevi imaju klase `ch-layer` i `ch-stage`. Redosled u sloju je `SceneBackdrop`, `ChapterText`, scena (`BackWord`, platno, `Sparkle`), pa `SipCards` kao direktno dete sloja i `ChapterNav`.
+- `--table-y` se stavlja na sloj.
+- Na telefonu je SIP sloj oko 144svh, a `mapa-skrola` kaže oko 120. Traka kartica se podiže preko `--sip-cards-pull`.
+- Kartice uleću redom 2 → 1 → 0.
+- Na 1024 px mlin po procentima iz mockupa pokriva kolonu teksta. Treba ga suziti ili pomeriti.
+
 **Za Z12 (napomena direktora):** na desktopu je jedan dekodiran `d` kadar oko 4 MB, a tokom šava oko 400 MB. Zato `createClock(..., { retain: 16 })`.
 
 Dopunjava se kako stižu izveštaji Z5–Z10.

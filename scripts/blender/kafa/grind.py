@@ -323,11 +323,62 @@ def stream_fall_frames(z_die=STREAM_DIE_Z, v0=0.12):
     return t / (SLOW / FPS)
 
 
-def build_grounds(scene, rate=170, end_g=None):
+STREAM_BURSTS = (54.0, 60.5, 66.0, 72.0, 78.5, 84.0)   # kratki naleti gušćeg mlaza (G)
+
+
+def stream_pulse(g):
+    """Blagi pulsevi brzine na izlazu (mlin ne izbacuje ravnomerno): 0,8-1,2 x osnovne brzine (jači pulsevi
+    prave pravilne praznine u mlazu, kao bar-kod)."""
+    t = g - STREAM_G[0]
+    return 1.0 + 0.13 * math.sin(2 * math.pi * t / 6.5) + 0.07 * math.sin(2 * math.pi * t / 2.7 + 1.3)
+
+
+def _stream_system(em, name, seed, shapes, g_from, g_to, count, v0, rand, size_rand, end_g, ang=30.0):
+    ps = em.modifiers.new(name, 'PARTICLE_SYSTEM').particle_system
+    ps.seed = seed
+    st = bpy.data.particles.new(name)
+    ps.settings = st
+    st.frame_start, st.frame_end = sf(0) + g_from, sf(0) + g_to
+    st.count = max(1, int(count))
+    st.lifetime = stream_fall_frames()
+    st.lifetime_random = 0.0
+    st.emit_from = 'FACE'
+    st.use_emit_random = True
+    st.distribution = 'RAND'
+    st.physics_type = 'NEWTON'
+    st.normal_factor = v0                        # m/s nadole na izlazu
+    st.factor_random = rand                      # širenje mlaza (sve strane, pa i po dubini: šav)
+    st.brownian_factor = 0.0
+    st.drag_factor = 0.0
+    st.time_tweak = SLOW * (1.0 / FPS) / 0.04    # čestice računaju 1 kadar = 0,04 s x time_tweak
+    st.render_type = 'COLLECTION'
+    st.instance_collection = shapes
+    st.use_collection_pick_random = True
+    st.particle_size = 1.0
+    st.size_random = size_rand
+    st.use_rotations = True
+    st.rotation_mode = 'NONE'
+    st.rotation_factor_random = 1.0
+    st.phase_factor_random = 2.0
+    st.angular_velocity_mode = 'RAND'
+    st.angular_velocity_factor = ang
+    pc = ps.point_cache
+    pc.frame_start = sf(int(math.floor(g_from)))
+    pc.frame_end = sf(end_g if end_g else G_POUR[1])
+    return st
+
+
+def build_grounds(scene, rate=600, end_g=None):
     """Čestice mlevene kafe iz otvora mlina (Newton, seme fiksno). Isti poziv u grind.py i pour.py daje iste
-    čestice u istom trenutku (šav, opcija C). Vraća (emiter, objekti mrvica za light linking)."""
+    čestice u istom trenutku (šav, opcija C). Da mlaz ne bude jednoličan „konopac“:
+    - glavni mlaz ima pulseve brzine (ključevi normal_factor po kadru; brže čestice sustižu sporije, pa se
+      mlaz zgušnjava i proređuje);
+    - 6 kratkih naleta (posebni sistemi od 2,5 kadra) daju talase gustine;
+    - retke grudvice (2-3 mm) sa jačim nasumičnim pravcem padaju malo sa strane.
+    Vraća (emiter, objekti mrvica i grudvica za light linking)."""
     rng = random.Random(SEED * 31 + 5)
     shapes = bpy.data.collections.new('MlevenoOblici')        # nije u sceni, samo za instance
+    clumps = bpy.data.collections.new('MlevenoGrudvice')
     mat = mat_grounds()
     crumbs = []
     for k in range(10):
@@ -339,6 +390,12 @@ def build_grounds(scene, rate=170, end_g=None):
     ob.data.materials.append(mat)
     shapes.objects.link(ob)
     crumbs.append(ob)
+    for k in range(3):
+        ob = bpy.data.objects.new(f'GrudvicaVelika{k}', crumb_mesh(f'GrudvicaVelika{k}', rng,
+                                                                   rng.uniform(0.0011, 0.0015), subdiv=2, lumpy=0.3))
+        ob.data.materials.append(mat)
+        clumps.objects.link(ob)
+        crumbs.append(ob)
     for o in crumbs:
         for p in o.data.polygons:
             p.use_smooth = True
@@ -356,37 +413,16 @@ def build_grounds(scene, rate=170, end_g=None):
     em.location = SPOUT_W - Vector((0.0, 0.0, 0.0008))
     em.show_instancer_for_render = False
     em.visible_shadow = False
-    ps = em.modifiers.new('Mlaz', 'PARTICLE_SYSTEM').particle_system
-    ps.seed = SEED
-    st = ps.settings
     g0, g1 = STREAM_G
-    st.frame_start, st.frame_end = sf(g0), sf(g1)
-    st.count = int(rate * (g1 - g0))
-    st.lifetime = stream_fall_frames()
-    st.lifetime_random = 0.0
-    st.emit_from = 'FACE'
-    st.use_emit_random = True
-    st.distribution = 'RAND'
-    st.physics_type = 'NEWTON'
-    st.normal_factor = 0.12                      # m/s nadole na izlazu
-    st.factor_random = 0.010                     # mlaz se blago širi (±2-3 mm do V60)
-    st.brownian_factor = 0.0
-    st.drag_factor = 0.0
-    st.time_tweak = SLOW * (1.0 / FPS) / 0.04    # čestice računaju 1 kadar = 0,04 s x time_tweak
-    st.render_type = 'COLLECTION'
-    st.instance_collection = shapes
-    st.use_collection_pick_random = True
-    st.particle_size = 1.0
-    st.size_random = 0.45
-    st.use_rotations = True
-    st.rotation_mode = 'NONE'
-    st.rotation_factor_random = 1.0
-    st.phase_factor_random = 2.0
-    st.angular_velocity_mode = 'RAND'
-    st.angular_velocity_factor = 30.0
-    pc = ps.point_cache
-    pc.frame_start = sf(g0)
-    pc.frame_end = sf(end_g if end_g else G_POUR[1])
+    st = _stream_system(em, 'Mlaz', SEED, shapes, g0, g1, rate * (g1 - g0), 0.12, 0.010, 0.45, end_g)
+    for g in range(g0, g1 + 1):                  # pulsevi brzine (isti ključevi u obe scene)
+        st.normal_factor = 0.12 * stream_pulse(g)
+        st.keyframe_insert('normal_factor', frame=sf(g))
+    for k, b0 in enumerate(STREAM_BURSTS):
+        _stream_system(em, f'MlazNalet{k}', SEED + 11 + k, shapes, b0, b0 + 2.5, rate * 0.9 * 2.5, 0.15, 0.013, 0.5,
+                       end_g)
+    _stream_system(em, 'MlazGrudvice', SEED + 29, clumps, g0 + 2, g1, 0.8 * (g1 - g0 - 2), 0.10, 0.030, 0.35,
+                   end_g, ang=14.0)
     return em, crumbs
 
 

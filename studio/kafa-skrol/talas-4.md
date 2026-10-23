@@ -159,7 +159,10 @@ Snimci su u `pregled/z15/`:
 
 - **Z18 + Z19:** gotovo (commit „section, footer and config fixes"). rolldown je 1.2.14 (isti integrity kao u RealEstates), a `npm audit` daje 0.
 - **Z17:** gotovo (commit „header, cart and shop fixes"). Na 16 kombinacija nema nalaza.
+- **Z12 i Z20:** priča je spojena i popravljena (talas je ćilibarno sočivo, kartice stoje oko šolje). Vreme kadra na 1440 je 24 ms na opterećenoj mašini; tester meri ponovo na rasterećenoj.
+- **Za Z22:** u `timeline.ts` treba promeniti `FALLBACK_ANCHORS` na `pult_y` 0,8851 i `kafa_y` ~0,92 (`pregled/blender/pour-anchors.json`). Druga mogućnost je da `media.ts` dobije `anchors`, kao `geometry`.
 - **Ostaci za sledeći krug:**
+  - prvi JS je 189,5 KB gzip, a budžet je 180 (isto je bilo i pre Z12);
   - EN „2–4 working days" bez preloma (`2–⁠4`) u `shop.ts`;
   - klizač panela modala na desktopu viri preko zaobljenog ugla (`.pm-panel`, `scrollbar-color` / `scrollbar-gutter`);
   - tester proverava: toast iznad lepljive trake modala na telefonu, nestanak toast-a pri otvaranju korpe, dugme modala na 1024×768;

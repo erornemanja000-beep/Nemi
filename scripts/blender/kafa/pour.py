@@ -325,12 +325,14 @@ def mat_filter_src(obj):
     P = tc.outputs['Object']
     x, y, z = N.sep(P)
     th = N.math('ARCTAN2', y, x)
-    crepe = N.noise(N.vmath('MULTIPLY', P, (140.0, 140.0, 1100.0)), 1.0, detail=3, rough=0.55, distortion=0.6)
+    # krep: talasaste bore ~1,5-2,5 mm (4-7 px na 1200 px), izdužene oko obima, + sitniji sloj
+    crepe = N.noise(N.vmath('MULTIPLY', P, (70.0, 70.0, 420.0)), 1.0, detail=3, rough=0.55, distortion=0.9)
+    fine = N.noise(N.vmath('MULTIPLY', P, (160.0, 160.0, 1000.0)), 1.0, detail=2, distortion=0.5)
     soft = N.noise(P, 38.0, detail=3)
-    h = N.add(N.mul(crepe, 0.000035), N.mul(soft, 0.00030))
-    for a0 in (0.6, 2.7, 4.4):
+    h = N.add(N.add(N.mul(crepe, 0.00055), N.mul(fine, 0.00009)), N.mul(soft, 0.00035))   # šum daje ~±0,15 oko 0,5
+    for a0, w in ((0.6, 0.00035), (2.7, 0.00028), (4.4, 0.00040), (5.6, 0.00020)):
         da = N.math('ABSOLUTE', N.math('SINE', N.mul(N.sub(th, a0), 0.5)))   # ~ugaono rastojanje / 2
-        h = N.sub(h, N.mul(N.math('EXPONENT', N.mul(N.mul(da, da), -9000.0)), 0.00025))
+        h = N.sub(h, N.mul(N.math('EXPONENT', N.mul(N.mul(da, da), -6000.0)), w))
     fib = N.noise(P, 900.0, detail=2)
     alb = N.mix(N.ramp(fib, 0.3, 0.7), (0.74, 0.72, 0.68), (0.82, 0.80, 0.76))
     N.put(alb, b.inputs['Base Color'])
@@ -370,18 +372,21 @@ def mat_filter_baked(imgs):
 
 
 def mat_kettle_src(obj):
-    """Proceduralni kovani inox za pečenje: Voronoi udubljenja (uspravno izdužena, ~11 mm), sitni tragovi
-    čekića, mrlje i otisci (hrapavost)."""
+    """Proceduralni satenski inox za pečenje: krupna udubljenja su u geometriji (kuvalo/dimple), mapa daje
+    samo mekano talasanje limа (smooth Voronoi, ~25 mm, 0,04 mm), fine linije brušenja i mrlje (hrapavost)."""
     m, nt, b, N = C.new_material('KuvaloIzvor')
     tc = N.new('ShaderNodeTexCoord', object=obj)
     P = tc.outputs['Object']
-    d1, c1 = N.voronoi(N.vmath('MULTIPLY', P, (1.0, 1.0, 0.62)), 92.0, randomness=0.85)
-    d2, _ = N.voronoi(P, 300.0, randomness=1.0)
-    dent = N.add(N.mul(N.mul(d1, d1), -0.00020), N.mul(N.mul(d2, d2), -0.00003))
-    cr, _, _ = N.split(c1)
+    vor = N.new('ShaderNodeTexVoronoi', feature='SMOOTH_F1')
+    N.put(N.vmath('MULTIPLY', P, (1.0, 1.0, 0.7)), vor.inputs['Vector'])
+    vor.inputs['Scale'].default_value = 40.0
+    vor.inputs['Smoothness'].default_value = 1.0
+    soft = vor.outputs['Distance']
+    streak = N.noise(N.vmath('MULTIPLY', P, (30.0, 30.0, 1800.0)), 1.0, detail=2)
+    dent = N.add(N.mul(N.mul(soft, soft), -0.00004), N.mul(streak, 0.0000015))
     sm = N.ramp(N.noise(P, 14.0, detail=4, distortion=0.5), 0.55, 0.78)
-    rough = N.add(N.add(N.math('MULTIPLY_ADD', cr, 0.06, 0.20), N.mul(sm, 0.10)),
-                  N.mul(N.noise(N.vmath('MULTIPLY', P, (30.0, 30.0, 1800.0)), 1.0, detail=2), 0.05))
+    rough = N.add(N.add(N.math('MULTIPLY_ADD', N.noise(P, 60.0, detail=2), 0.04, 0.24), N.mul(sm, 0.08)),
+                  N.mul(streak, 0.05))
     maps = {'height': N.math('MULTIPLY_ADD', dent, 1000.0, 1.0), 'rough': rough}
     return m, maps
 
@@ -398,6 +403,7 @@ def mat_kettle_baked(imgs):
     N.put(tan.outputs['Tangent'], b.inputs['Tangent'])
     bump = N.new('ShaderNodeBump')
     bump.inputs['Distance'].default_value = 0.001
+    bump.inputs['Strength'].default_value = 0.6          # slabije normale: mekan odsjaj, ne zgužvana folija
     N.put(N.split(h)[0], bump.inputs['Height'])
     N.put(bump.outputs['Normal'], b.inputs['Normal'])
     return m
@@ -547,8 +553,11 @@ def filter_papir(rebake):
         if s <= 0:
             continue
         wob = 0.5 * math.sin(3 * th + 0.7) + 0.3 * math.sin(5 * th + 2.1) + 0.2 * math.sin(9 * th + 0.3)
-        r = math.hypot(x, y) * (1 + 0.012 * wob * s * s)
-        v.co = (r * math.cos(th), r * math.sin(th), z + 0.0010 * wob * s ** 2)
+        edge = 0.55 * math.sin(7 * th + 1.1) + 0.30 * math.sin(11 * th + 0.4) + 0.15 * math.sin(19 * th + 2.5)
+        fold = sum(a * math.exp(-((math.atan2(math.sin(th - c), math.cos(th - c))) / 0.07) ** 2)
+                   for c, a in ((0.6, 1.0), (2.7, -0.7), (4.4, 1.2), (5.6, -0.5)))
+        r = math.hypot(x, y) * (1 + 0.012 * wob * s * s + 0.022 * fold * s ** 1.5)
+        v.co = (r * math.cos(th), r * math.sin(th), z + (0.0010 * wob + 0.0006 * edge) * s ** 2 - 0.0012 * abs(fold) * s ** 3)
     weld(f)
     solidify(f, 0.00025, 1.0)
     m = baked_material(f, mat_filter_src, mat_filter_baked, 'filter', (4096, 1024), rebake, prof)
@@ -581,18 +590,21 @@ def kuvalo(steel_pol, black):
     body = C.lathe('KuvaloTelo', body_prof, segments=192, uv=arc_v(body_prof))
 
     def dimple(th, z):
-        lo, hi, row_h, nn = 0.022, 0.126, 0.026, 16
+        """Krupna meka udubljenja u vodoravnim redovima (kao kovano kuvalo u referenci f_090): 10 oko obima,
+        5 redova, smaknuti za pola; profil cos² u oba pravca, bez oštrih ivica između udubljenja."""
+        lo, hi, nn = 0.020, 0.128, 10
         if z <= lo or z >= hi:
             return 0.0
-        u = (z - lo) / row_h
-        row = math.floor(u)
-        a = 0.5 + 0.5 * math.cos(nn * (th + (row % 2) * math.pi / nn))
-        return a ** 1.5 * math.sin(math.pi * (u - row)) * min(1.0, (z - lo) / 0.008, (hi - z) / 0.008)
+        u = (z - lo) / (hi - lo) * 5.0
+        row = min(int(u), 4)
+        fz = math.sin(math.pi * (u - row)) ** 2
+        fth = (0.5 + 0.5 * math.cos(nn * th + (row % 2) * math.pi + 0.35 * row)) ** 1.2
+        return fz * fth * min(1.0, (z - lo) / 0.010, (hi - z) / 0.010)
 
     for v in body.data.vertices:
         x, y, z = v.co
         th = math.atan2(y, x)
-        r = math.hypot(x, y) * (1 - 0.010 * dimple(th, z))
+        r = math.hypot(x, y) * (1 - 0.026 * dimple(th, z))
         v.co = (r * math.cos(th), r * math.sin(th), z)
     weld(body)
     sub = body.modifiers.new('Subsurf', 'SUBSURF')

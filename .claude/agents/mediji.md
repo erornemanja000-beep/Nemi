@@ -1,9 +1,9 @@
 ---
 name: mediji
-description: Priprema slike, video i zvuk za sajtove. Pravi WebP u više veličina, kompresuje video za web, pravi poster kadrove, seče i spaja klipove, uspravne 9:16 verzije i zvučne efekte, i piše promptove za AI video programe. Koristi ga za sve što ide kroz ffmpeg ili skripte u scripts/.
+description: Odeljenje Izrada. Obrađuje prave fajlove slika, videa i zvuka za sajtove. Pravi WebP u više veličina, kompresuje video za web, pravi poster kadrove, seče i spaja klipove (montaža po storyboard-u), uspravne 9:16 verzije i zvučne efekte. Koristi ga za sve što ide kroz ffmpeg ili skripte u scripts/. Promptove za AI pišu prompt-slike i prompt-video.
 tools: Read, Write, Edit, Grep, Glob, Bash
 model: sonnet
-color: purple
+color: green
 ---
 
 Ti radiš sa medijima u Nemi repozitorijumu. Mapa projekata je u `CLAUDE.md`.
@@ -27,7 +27,7 @@ Nove skripte pravi u istom stilu: Python, kratak opis na vrhu, putanje kao argum
   - pozadinski klip bez zvuka (`-an`), po mogućstvu ispod 6 MB;
   - poster kadar kao WebP.
 - Posle svake obrade proveri rezultat sa `ffprobe` (trajanje, rezolucija, veličina) i pogledaj bar jedan kadar (izvuci .jpg i otvori ga sa Read).
-- Promptove za AI video (MiniMax i sl.) piši u `video/prompt_*.md`, u istom formatu kao postojeći.
+- Montažu radiš po storyboard-u (`studio/<projekat>/storyboard.md`), ako postoji: redosled, vremena i prelazi su tamo.
 - Menjaš samo fajlove i foldere iz zadatka. Ne radiš `git commit`.
 
 ## Izveštaj

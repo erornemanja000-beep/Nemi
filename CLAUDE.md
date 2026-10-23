@@ -15,24 +15,47 @@ Beleške o napretku su u `NAPREDAK.md`.
 
 Tekstovi na sajtovima klijenata su podrazumevano na nemačkom. Sve mora da radi na 390 px, na 1440 px i sa `prefers-reduced-motion`.
 
-## Tim agenata (`.claude/agents/`)
+## Studio: odeljenja i agenti (`.claude/agents/`)
 
-| Agent | Uloga | Menja fajlove |
+Glavni agent je direktor: raspoređuje posao, pokreće agente paralelno, spaja rezultate, pita korisnika za odluke i radi commit. Agenti ne mogu sami da pozivaju druge agente, sve ide preko direktora.
+
+| Odeljenje | Agenti | Šta predaje |
 |---|---|---|
-| `planer` | deli zadatak na delove koji mogu paralelno | ne |
-| `programer` | radi jedan zadatak, samo u fajlovima koje dobije | da |
-| `mediji` | slike, video, zvuk, AI promptovi (ffmpeg, `scripts/`) | da |
-| `tester` | build, lint, Playwright na telefonu i desktopu | ne |
-| `bezbednost` | pregled izmena i provera svakog novog paketa ili alata pre instalacije | ne |
+| 1. Planiranje | `istrazivac`, `planer` | brief sa činjenicama i referencama; plan u talasima |
+| 2. Ideje | `kreativac`, `tekstopisac` | 2–3 smera koncepta; tekstovi DE/EN |
+| 3. Skice | `skicar`, `storyboard` | skica sajta (PNG) i mapa skrola; storyboard videa |
+| 4. Dizajn | `dizajner`, `animator` | dizajn sistem i mockup (PNG); kod za pokret |
+| 5. Promptovi | `prompt-slike`, `prompt-video` | promptovi za AI slike i AI video |
+| 6. Izrada | `programer`, `mediji` | kod sajta; obrađene slike, video i zvuk |
+| 7. Kontrola | `tester`, `recenzent`, `bezbednost` | radi li; kako izgleda; da li je bezbedno |
 
-Tok rada za veći zadatak:
+Isti agent može da radi u više primeraka odjednom: tri `kreativac`-a sa različitim polaznim tačkama, dva `planer`-a (jedan za sajt, jedan za video), više `programer`-a na različitim fajlovima.
 
-1. `planer` napravi plan u talasima.
-2. Zadaci iz istog talasa idu **istovremeno**: više `programer` / `mediji` agenata, svaki sa svojim fajlovima. Dva agenta nikad ne dobijaju isti fajl u istom talasu.
-3. Posle poslednjeg talasa `tester` i `bezbednost` rade istovremeno.
-4. Glavni agent popravlja nalaze (ili ih vraća programeru), pa radi commit i push.
+Radni materijal odeljenja ide u `studio/<projekat>/`. Ne objavljuje se, jer Netlify objavljuje samo `dist` foldere.
 
-Mali zadaci (jedan-dva fajla) ne traže ceo tim. Uradi ih direktno, pa pusti `tester`-a.
+```
+studio/<projekat>/
+  brief.md          istrazivac
+  ideje/smer-N.md   kreativac (svaki svoj fajl)
+  tekstovi.md       tekstopisac
+  skice/            skicar (skica.html, PNG, mapa-skrola.md)
+  storyboard.md     storyboard
+  dizajn/           dizajner (tokens.css, mockup.html, PNG, dizajn.md)
+  promptovi/        prompt-slike (slike.md), prompt-video (video.md)
+```
+
+Stari promptovi ostaju u `video/prompt_*.md`, a kadrovi za AI klipove u `frames/`.
+
+### Faze novog projekta (u svakoj fazi agenti rade istovremeno)
+
+1. **Brief:** `istrazivac`.
+2. **Ideje:** 2–3 `kreativac`-a, svaki sa drugom polaznom tačkom. → **Korisnik bira smer.**
+3. **Skice:** `skicar`, `storyboard` i `tekstopisac` zajedno.
+4. **Dizajn i promptovi:** `dizajner`, `prompt-slike` i `prompt-video` zajedno, pa `recenzent` ocenjuje mockup. → **Korisnik odobrava dizajn.**
+5. **Izrada:** `planer` podeli posao u talase. U istom talasu rade `programer`-i, `animator` i `mediji`, svaki na svojim fajlovima. Dva agenta nikad ne dobijaju isti fajl u istom talasu.
+6. **Kontrola:** `tester`, `recenzent` i `bezbednost` zajedno. Direktor popravlja nalaze ili ih vraća autoru, pa radi commit i push.
+
+Za izmenu postojećeg sajta preskaču se faze koje ne trebaju (npr. samo 5 i 6). Mali zadaci (jedan-dva fajla) ne traže tim, nego se rade direktno, pa ide `tester`. Svaki agent troši tokene, pa se pokreće samo onoliko agenata koliko zadatak stvarno traži.
 
 ## Pravila
 

@@ -244,6 +244,7 @@ def animate(n_frames, setter, target, path, index=-1):
 def materijali():
     m = {}
     m['glass'] = shadow_light(C.mat_glass('Glass'), 0.8)
+    m['glass_drops'] = mat_glass_drops()
     m['steel'] = C.mat_steel('KettleSteel', roughness=0.26)
     bsdf_of(m['steel']).inputs['Base Color'].default_value = (0.40, 0.39, 0.38, 1)   # tamniji inox
     m['black'] = C.mat_plastic('KettleBlack', color=(0.018, 0.017, 0.016), roughness=0.42)
@@ -256,6 +257,29 @@ def materijali():
     m['top'] = mat_coffee_top()
     m['steam'] = []
     return m
+
+
+def mat_glass_drops():
+    """Unutrašnja strana bokala: staklo sa sitnim kapljicama kondenzacije iznad kafe (kao u videu)."""
+    mat = shadow_light(C.mat_glass('GlassDrops'), 0.8)
+    b = bsdf_of(mat)
+    nt = N(mat.node_tree)
+    tc = nt.new('ShaderNodeTexCoord')
+    sep = nt.new('ShaderNodeSeparateXYZ')
+    nt.link(tc.outputs['Object'], sep.inputs[0])
+    vor = nt.new('ShaderNodeTexVoronoi', Scale=380.0, Randomness=1.0)
+    nt.link(tc.outputs['Object'], vor.inputs['Vector'])
+    sepc = nt.new('ShaderNodeSeparateColor')
+    nt.link(vor.outputs['Color'], sepc.inputs[0])
+    size = nt.math('ADD', 0.12, nt.math('MULTIPLY', sepc.outputs['Red'], 0.30))
+    dome = nt.math('SUBTRACT', 1.0, nt.math('DIVIDE', vor.outputs['Distance'], size), clamp=True)
+    keep = nt.maprange(sepc.outputs['Green'], 0.35, 0.40)                 # samo deo ćelija ima kap
+    band = nt.math('MULTIPLY', nt.maprange(sep.outputs['Z'], 0.012, 0.03), nt.maprange(sep.outputs['Z'], 0.08, 0.10, 1.0, 0.0))
+    h = nt.math('MULTIPLY', nt.math('MULTIPLY', nt.math('SQRT', dome), keep), band)
+    bump = nt.new('ShaderNodeBump', Strength=0.8, Distance=0.0006)
+    nt.link(h, bump.inputs['Height'])
+    nt.link(bump.outputs['Normal'], b.inputs['Normal'])
+    return mat
 
 
 def mat_filter():
@@ -336,7 +360,7 @@ def mat_coffee_top():
 def bokal(m):
     prof = profil(SERVER_PROFIL, 4)
     srv = C.lathe('Server', prof, segments=128)
-    # izliv (kljun) na -X strani: gornja ivica se izvlači napolje i malo nagore
+    # izliv (kljun) na -X strani: gornja ivica se izvlači napolje, ispod ploče drippera
     for v in srv.data.vertices:
         x, y, z = v.co
         th = math.atan2(y, x)
@@ -347,7 +371,9 @@ def bokal(m):
             v.co = (r * math.cos(th), r * math.sin(th), z)
     weld(srv)
     C.assign(srv, m['glass'])
+    srv.data.materials.append(m['glass_drops'])
     solidify(srv, SERVER_DEBLJINA, -1.0, subsurf=1)
+    srv.modifiers['Solidify'].material_offset = 1          # unutrašnja ljuska dobija kapljice
     # drška desno
     pts = catmull([(0.034, 0, 0.106), (0.052, 0, 0.1085), (0.071, 0, 0.104), (0.080, 0, 0.088),
                    (0.080, 0, 0.064), (0.071, 0, 0.046), (0.054, 0, 0.037), (0.045, 0, 0.036)], 8)
@@ -495,7 +521,7 @@ def kuvalo(m):
     body.data.materials.append(m['steel'])
     body.data.materials.append(m['black'])
     for poly in body.data.polygons:
-        if poly.center.z < 0.0115:
+        if poly.center.z < 0.014:
             poly.material_index = 1
     sub = body.modifiers.new('Subsurf', 'SUBSURF')
     sub.levels = sub.render_levels = 1

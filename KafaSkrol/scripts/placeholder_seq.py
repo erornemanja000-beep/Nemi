@@ -10,14 +10,15 @@ Brojevi kadrova, isecci, sidra, `steps` i posteri su tacno po tackama 2-4 Interf
   grind  sat G, G1-G96,   pun kadar 1 x 1,25, isecak x 0,22-0,78;  d 96 kadrova, m 48 (svaki drugi)
   pour   sat G, G65-G192, pun kadar 1 x 1,    isecak x 0,26-0,98;  d 128, m 64
   sip    sat S, S1-S64,   pun kadar 1 x 1,    isecak x 0,20-0,84 / y 0-0,86;  d 64, m 32
-Nivoi: d (1200 px za S) i m (800 px za S), bez l. WebP sa alfom, q 60, method 6.
+Nivoi: d (1200 px za S) i m (800 px za S), bez l. WebP sa alfom, q 60, alpha_quality 60, method 6.
+d se crta bez nadsempliranja, m sa 2x; ukupno ~2,7 MB (budzet <= 3 MB).
 Posteri: grind d/0001 i m/0001 (= G1); pour poster-d i poster-m (G150); sip d/0064 i poster-m (S64).
 
 Mlaz mlevene kafe je niz tacaka u zajednickim koordinatama sveta (y u kadru GRIND; POUR kamera je tacno 1 S
 nize, pa je y_pour = y_grind - 1). Otvor je aktivan G52-G88, a rep pada do oko G110. Zato se tacke na savu
 poklapaju piksel na piksel. Kuvalo se naginje 12 -> 32 stepeni (G110-G120) i vraca (G164-G176), nivo u bokalu
 raste 0 -> 38 % (G136-G192, `kafa_y` po kadru za G177-G192), solja se spusta S1-S14.
-U donjem levom uglu isecka je oznaka kadra (G084, S032) i rec PLATZHALTER.
+U uglu isecka je oznaka kadra (G084, S032) i rec PLATZHALTER (grind dole levo u kvadratu, pour i sip gore levo).
 
 Zastita: folder ciji seq.json ima "placeholder": false (pravi render) se nikad ne prepisuje, ni sa --force.
 Folder sa sadrzajem bez naseg seq.json ("placeholder": true) prepisuje se samo sa --force.
@@ -38,10 +39,13 @@ import sys
 from PIL import Image, ImageChops, ImageDraw, ImageFont
 
 VERSION = 'placeholder-1'
-SS = 2             # nadsempliranje pri crtanju, pa BOX (prosek 2x2) na pravu velicinu: manje nivoa alfe nego Lanczos
 QUALITY = 60
 ALPHA_QUALITY = 60
 LEVELS = {'d': 1200, 'm': 800}
+# nadsempliranje po nivou (px za S -> faktor), pa BOX na pravu velicinu (manje nivoa alfe nego Lanczos).
+# d se crta bez njega: 1200 px pregledac ionako skalira, a sa 2x bi set bio ~0,5 MB veci (ukupno > 3 MB).
+SS = {1200: 1, 800: 2}
+LABEL_PX = {1200: 17, 800: 22}   # visina slova oznake u pikselima fajla (m je na telefonu ~2x umanjen)
 
 GRIND_PH = (0xBD, 0xB6, 0xAC)   # --color-placeholder (krem)
 POUR_PH = (0xB3, 0xA6, 0x9B)    # --color-placeholder (terakota)
@@ -169,8 +173,10 @@ class Canvas:
         self.x0, self.y0, cw, ch = crop
         self.base = base      # boja ispod potpuno providnih piksela (WebP onda ne pakuje lazne ivice)
         self.size = (round(cw * px), round(ch * px))
-        self.k = px * SS
-        self.img = Image.new('RGBA', (self.size[0] * SS, self.size[1] * SS), (0, 0, 0, 0))
+        self.ss = SS.get(px, 2)
+        self.k = px * self.ss
+        self.label_px = LABEL_PX.get(px, 20) * self.ss
+        self.img = Image.new('RGBA', (self.size[0] * self.ss, self.size[1] * self.ss), (0, 0, 0, 0))
 
     def p(self, x, y):
         return ((x - self.x0) * self.k, (y - self.y0) * self.k)
@@ -196,7 +202,7 @@ class Canvas:
                 xs += [cx - r, cx + r]
                 ys += [cy - r, cy + r]
             elif kind == 'text':
-                (x, y), font = self.p(s[1], s[2]), ImageFont.load_default(size=max(8, round(s[4] * self.k)))
+                (x, y), font = self.p(s[1], s[2]), ImageFont.load_default(size=max(6, round(s[4] * self.k)))
                 l, t, r, b = font.getbbox(s[3])
                 out.append(('text', x, y, s[3], font))
                 xs += [x + l, x + r]
@@ -243,19 +249,23 @@ class Canvas:
                 d.text((x - ox, y - oy), s, font=font, fill=255)
         return m
 
-    def label(self, x, y, text):
-        """Oznaka kadra: neprovidna tamna pilula sa svetlim tekstom (tekst je samo u RGB, ne u alfi), gornji levi ugao u (x, y) S."""
-        size = 0.014
-        font = ImageFont.load_default(size=max(8, round(size * self.k)))
-        l, t, r, b = font.getbbox(text)
-        tw, th = (r - l) / self.k, (b - t) / self.k
-        pad = 0.006
-        w, h = tw + 2 * pad, th + 2 * pad
-        self.draw([('poly', rrect_pts(x, y, w, h, h / 2))], INK_DEEP)
-        self.draw([('text', x + pad - l / self.k, y + pad - t / self.k, text, size)], CREAM_LIGHT)
+    def label(self, x, y, frame):
+        """Oznaka kadra u dva reda (npr. G084 / PLATZHALTER), gornji levi ugao u (x, y) S.
+        Neprovidna tamna plocica sa svetlim tekstom: tekst je samo u RGB ravni, ne u alfi, pa je fajl manji."""
+        size = self.label_px / self.k
+        font = ImageFont.load_default(size=self.label_px)
+        lines = [frame, 'PLATZHALTER']
+        boxes = [font.getbbox(t) for t in lines]
+        lh = max(b[3] for b in boxes) / self.k
+        tw = max(b[2] - b[0] for b in boxes) / self.k
+        pad, gap = 0.45 * size, 0.3 * size
+        w, h = tw + 2 * pad, 2 * lh + gap + 2 * pad - boxes[0][1] / self.k
+        self.draw([('poly', rrect_pts(x, y, w, h, 0.35 * size))], INK_DEEP)
+        for i, (t, b) in enumerate(zip(lines, boxes)):
+            self.draw([('text', x + pad - b[0] / self.k, y + pad - boxes[0][1] / self.k + i * (lh + gap), t, size)], CREAM_LIGHT)
 
     def result(self):
-        im = self.img.resize(self.size, Image.BOX)
+        im = self.img if self.ss == 1 else self.img.resize(self.size, Image.BOX)
         a = im.getchannel('A')
         out = Image.new('RGBA', im.size, self.base + (0,))
         out.paste(im, (0, 0), a.point([0] + [255] * 255))
@@ -283,7 +293,7 @@ def _rng_beans():
     while t < 47.5:
         rate = 1.35 if t < 40 else 1.15
         t += rng.uniform(0.35, 1.15) / rate
-        beans.append(dict(t0=t, x=0.5 + clamp(rng.gauss(0, 0.017), -0.042, 0.042), vx=rng.uniform(-0.0007, 0.0007),
+        beans.append(dict(t0=t, x=0.5 + clamp(rng.gauss(0, 0.024), -0.05, 0.05), vx=rng.uniform(-0.0007, 0.0007),
                           rot=rng.uniform(0, 180), spin=rng.uniform(-9, 9), s=rng.uniform(0.9, 1.1)))
     return beans
 
@@ -369,7 +379,7 @@ def draw_grind(c, g):
     c.draw([('poly', [(0.478, 0.795), (0.522, 0.795), (0.514, SPOUT_Y), (0.486, SPOUT_Y)])], INK_DEEP, 0.85)
     # mlaz mlevene kafe
     c.draw([('circle', x, y, r) for x, y, r in grounds_at(g)], GROUNDS)
-    c.label(0.232, 0.952, f'G{g:03d} · PLATZHALTER')
+    c.label(0.232, 0.895, f'G{g:03d}')
 
 
 # ---------------- POUR ----------------
@@ -472,11 +482,11 @@ def draw_pour(c, g):
             foam = [(x, y - 0.0025) for x, y in surf] + [(x, y + 0.0025) for x, y in reversed(surf)]
             c.draw([('poly', foam)], (0xD6, 0xB4, 0x8C), 0.55, clip=[('poly', cone_inner())])
     # kapanje iz V60 u bokal (G132-G192)
-    if 132 <= g and lv >= 0 and g <= 192:
+    if 132 <= g <= 192:
         y_end = kafa_y(g) if lv > 0 else CARAFE_IN_BOT
         y0 = CONE_BOT_Y + 22 * KD
         if 140 <= g <= 170:
-            c.draw([('line', [(0.5, y0), (0.5, y_end)], 0.0028)], COFFEE, 0.8)
+            c.draw([('line', [(0.5, y0), (0.5, y_end)], 0.0026)], COFFEE, 0.6)
         else:
             drops = []
             step = 2 if g < 140 else 4
@@ -511,7 +521,7 @@ def draw_pour(c, g):
         c.draw([('line', pts, 0.0075)], CREAM_LIGHT, 0.75)
     # mlaz mlevene kafe iz GRIND sveta (y_pour = y_grind - 1), do povrsine u filteru
     c.draw([('circle', x, y - 1, r) for x, y, r in grounds_at(g) if y - 1 < top], GROUNDS)
-    c.label(0.275, 0.915, f'G{g:03d} · PLATZHALTER')
+    c.label(0.275, 0.10, f'G{g:03d}')
 
 
 # ---------------- SIP ----------------
@@ -561,7 +571,7 @@ def draw_sip(c, s):
     glaze = mapped([(20, 0), (456, 0)] + edge[::-1], sm)
     c.draw([('poly', glaze)], WHITE, 0.2, clip=[('poly', body)])
     c.draw([('poly', ellipse_pts(*sm(236, 30), 196 * SK, 20 * SK, 0, 40))], (0x2A, 0x1A, 0x12), 0.35)
-    c.label(0.215, 0.822, f'S{s:03d} · PLATZHALTER')
+    c.label(0.215, 0.03, f'S{s:03d}')
 
 
 DRAW = {'grind': draw_grind, 'pour': draw_pour, 'sip': draw_sip}
@@ -739,7 +749,7 @@ def main():
         for name, (n, b) in sizes.items():
             grand += b
             print(f'{sid:5s} {name:14s} {n:4d} fajl(ova) {b / 1024:8.1f} KB' + (f'  (prosek {b / n / 1024:.1f} KB)' if n > 1 else ''))
-    print(f'ukupno {grand / 1024 / 1024:.2f} MB')
+    print(f'ukupno {grand} B = {grand / 1e6:.2f} MB ({grand / 1024 / 1024:.2f} MiB)')
 
 
 if __name__ == '__main__':

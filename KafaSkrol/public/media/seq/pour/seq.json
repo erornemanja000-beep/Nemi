@@ -1,0 +1,89 @@
+{
+  "id": "pour",
+  "version": "placeholder-1",
+  "placeholder": true,
+  "clock": "G",
+  "g_od": 65,
+  "g_do": 192,
+  "fps": 30,
+  "full": {
+    "W": 1,
+    "H": 1
+  },
+  "crop": {
+    "x0": 0.26,
+    "y0": 0,
+    "w": 0.72,
+    "h": 1
+  },
+  "sets": {
+    "d": {
+      "px": 1200,
+      "w": 864,
+      "h": 1200,
+      "count": 128,
+      "every": 1
+    },
+    "m": {
+      "px": 800,
+      "w": 576,
+      "h": 800,
+      "count": 64,
+      "every": 2
+    }
+  },
+  "poster": {
+    "d": "poster-d.webp",
+    "m": "poster-m.webp"
+  },
+  "steps": [
+    {
+      "name": "prelaz",
+      "from": 65,
+      "to": 96
+    },
+    {
+      "name": "pin",
+      "from": 97,
+      "to": 176
+    },
+    {
+      "name": "talas",
+      "from": 177,
+      "to": 192
+    }
+  ],
+  "anchors": {
+    "osa_x": 0.5,
+    "ivica_v60": {
+      "x": 0.5,
+      "y": 0.47,
+      "rx": 0.128,
+      "ry": 0.03
+    },
+    "pult_y": 0.95,
+    "kafa_y": {
+      "from": 177,
+      "values": [
+        0.8484,
+        0.8469,
+        0.8455,
+        0.844,
+        0.8425,
+        0.8411,
+        0.8396,
+        0.8381,
+        0.8367,
+        0.8352,
+        0.8337,
+        0.8322,
+        0.8308,
+        0.8293,
+        0.8278,
+        0.8264
+      ]
+    }
+  },
+  "units": "S (stranica kvadrata kadra), od gornjeg levog ugla punog kadra; steps i kafa_y u kadrovima sata",
+  "generator": "KafaSkrol/scripts/placeholder_seq.py"
+}

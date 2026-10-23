@@ -92,9 +92,9 @@ Izvori: Blender Manual (izvor `.rst` fajlovi, grana `main` = 5.2 LTS), Release n
 
 ## B2. Cycles ili EEVEE bez GPU-a (headless)
 - **Zvanično: EEVEE renderuje samo na GPU-u i nema plan za CPU (softverski) render.** "Headless" nije podržan na Windows serverima bez ekrana. CPU je i dalje potreban za pripremu geometrije. (2026-10, Blender Manual, EEVEE "Limitations", odeljak Hardware and GPU Requirements)
-- Zaključak: na mašini bez GPU-a (naše okruženje: 4 CPU jezgra) koristi se **Cycles na CPU-u**. EEVEE se na takvoj mašini može pokrenuti samo preko softverskog OpenGL-a (Mesa llvmpipe + Xvfb), što je nepodržano i po izveštajima zajednice vrlo sporo (jedan korisnik: kadar od 2 s trajao je 50 s). Ne planirati. (2026-10, Manual + devtalk.blender.org)
+- Zaključak: na mašini bez GPU-a (naše okruženje: 4 CPU jezgra) koristi se **Cycles na CPU-u**. Zajednica (devtalk.blender.org) navodi da EEVEE preko Xvfb-a radi, ali vrlo sporo (kadar od 2 s trajao je 50 s, i to na instanci sa GPU-om); da li bi Mesa llvmpipe radio, tema ne potvrđuje, a Manual to ne podržava. Ne planirati. (2026-10, Manual + devtalk.blender.org)
 - Šta se gubi: Cycles je fizički tačniji ("Cycles će uvek dati fizički tačnije rendere", Manual), lomi svetlo kroz staklo i tečnost bez trikova. Cena: sporije (B4).
-- Izmereno: [[EEVEE_TEST]]
+- **Izmereno (2026-10-23, Blender 5.2.3, ova mašina bez GPU-a):** pokušaj renderovanja sa `scene.render.engine = 'BLENDER_EEVEE'` u pozadinskom režimu (`-b`) staje na grešci `Couldn't open libEGL.so.1: cannot open shared object file` i ne daje sliku. U 5.2.3 je jedini ugrađeni identifikator EEVEE motora `BLENDER_EEVEE` (stariji nazivi tipa `BLENDER_EEVEE_NEXT` iz verzija 4.2 do 4.5 ne važe, to poslednje je iz mog znanja i nije proveravano). Znači: ovde je Cycles jedini put. (2026-10, izmereno)
 
 ## B3. Komanda za render bez ekrana (Manual, Command Line)
 Pokretanje se radi isključivo preko sigurnog obrasca iz `.claude/agents/blender-umetnik.md` (`unshare -n … --factory-startup --offline-mode -Y …`). Argumenti koji su bitni za render (Manual, "Command Line Arguments" i "Rendering"):
@@ -107,10 +107,10 @@ Pokretanje se radi isključivo preko sigurnog obrasca iz `.claude/agents/blender
 | Podešavanje | Polazno | Izvor |
 |---|---|---|
 | Motor / uređaj | Cycles, CPU | Manual (EEVEE samo GPU) |
-| Max samples (render) | 64 za neprozirne predmete, 128 za staklo i tečnost | iskustvo + merenje B4 |
-| Noise Threshold | 0,02 (nacrt 0,05) | Manual: "tipične vrednosti od 0,1 do 0,001" |
+| Max samples (render) | 64 za neprozirne predmete (ili maks. 128 uz prag 0,02), više samo za staklo i tečnost posle probnog kadra | merenje B4a (32 do 64 + OIDN je dovoljno za scenu bez stakla) |
+| Noise Threshold | 0,02 | Manual: "tipične vrednosti od 0,1 do 0,001"; merenje B4a (adaptivno je radilo posle 64 uzorka) |
 | Min samples | 0 (automatski). Ako tanak mlaz kafe treperi, 16–32 | Manual (0 = automatski) |
-| Denoise | OpenImageDenoise, Passes **Albedo + Normal**, Prefilter **Accurate**, Quality **High** | Manual: OIDN "obično daje najviši kvalitet", Albedo "najmanje preporučeno" |
+| Denoise | OpenImageDenoise, Passes **Albedo + Normal**; za probe Balanced + prefilter Fast (oko +10 CPU-s po kadru), za finalne kadrove High + Accurate (oko +25 CPU-s, 47,7 dB naspram 46,8 dB) | Manual: OIDN "obično daje najviši kvalitet", Albedo "najmanje preporučeno"; merenje B4a |
 | Denoise na GPU-u | isključeno (nema GPU-a) | Manual |
 | Animated seed | probati oba, odlučiti na probnom nizu | Manual preporučuje uključeno za animaciju; **OIDN ne garantuje stabilnost kroz vreme** (OIDN README: RT filter "nije vremenski stabilan") |
 | Bounces | total 6, diffuse 2, glossy 3, transmission 4 (6–8 samo za staklo i tečnost), volume 0 (1–2 za paru) | Manual: više odbijanja = više šuma, staklo traži najviše |
@@ -130,12 +130,55 @@ Pokretanje se radi isključivo preko sigurnog obrasca iz `.claude/agents/blender
 | Izlaz | PNG RGBA 8-bit kao međufajl, pa kodiranje u WebP | vidi B7 |
 
 - Blender sam može da snimi **WebP** (8-bit, alfa) i **AVIF** (8, 10, 12-bit, alfa), ali bez podešavanja osim kvaliteta. Za nadzor nad kvalitetom bolji je PNG pa `cwebp`/ffmpeg (naš `scripts/freiraum/frames.py` koristi ffmpeg `libwebp`). (2026-10, Blender Manual, Image Formats)
-- **Procena vremena (formula):** ukupno = broj kadrova × sekunde po kadru. Sekunde po kadru rastu otprilike linearno sa brojem piksela i sa brojem uzoraka. Prvo izmeriti 3 kadra (početak, sredina, najteži), pa množiti.
-- **[[MERENJA]]**
+- **Procena vremena (formula):** ukupno = broj kadrova × sekunde po kadru. Trošak po kadru raste linearno sa brojem piksela, a sa brojem uzoraka do tačke gde adaptivno uzorkovanje počne da prekida piksele (B4a). Prvo izmeriti 3 kadra (početak, sredina, najteži), pa množiti, i računati u CPU-sekundama (B4a).
+
+### B4a. Izmereno na ovoj mašini (2026-10-23, Blender 5.2.3, 4 CPU niti, bez GPU-a)
+Scena je moja sintetička "kafa" (šolja sa premazom, 400 zrna sa premazom, kesa, dva area svetla, providna pozadina, Shadow Catcher ravan), nije naša stvarna scena i nema stakla ni tečnosti. Brojevi su **red veličine**, ne obećanje. Skripte su u privremenom folderu, ne u repou.
+
+**Mašinu dele drugi procesi.** U isto vreme su radili drugi Blender procesi (druga odeljenja), pa je zidno vreme za isto podešavanje variralo do 3× (iskorišćenost CPU-a 31 do 93 %). **CPU-sekunde su stabilne (±5 %)**, zato planirati u CPU-sekundama i deliti brojem slobodnih jezgara (4 kad nema drugih Blender procesa). Render sekvence je serijski posao, ne puštati ga uporedo sa tuđim renderima.
+
+| 720×1280, Albedo + Normal | CPU-sekundi po kadru | PSNR prema referenci (512 uzoraka + OIDN) |
+|---|---|---|
+| 16 uzoraka + OIDN (Balanced, prefilter Fast) | 59 | 43,6 dB |
+| 32 uzorka + OIDN (Balanced / Fast) | 110 | 45,4 dB |
+| 64 uzorka + OIDN (Balanced / Fast) | 217–219 | 46,8 dB |
+| 64 uzorka + OIDN (High / Accurate) | 233–235 | 47,7 dB |
+| 64 uzorka + OIDN (Fast / bez prefiltra) | 219–226 | 46,0 dB |
+| 64 uzorka, bez denoisera | 209 | 41,0 dB |
+| 128 maks. uzoraka + OIDN (Balanced / Fast) | 281 | 48,1 dB |
+| 128 maks. uzoraka, bez denoisera | nije mereno (zidno 83 s) | 43,0 dB |
+| 512 uzoraka + OIDN, bez adaptivnog (referenca) | nije mereno (zidno 467 s) | |
+
+- Svi redovi: Noise Threshold 0,02. Razlika od reference ispod 1,7/255 po pikselu već pri 16 uzoraka; **32 do 64 uzorka sa denoiserom je dovoljno za ovakvu scenu**. Denoiser vredi više od udvostručavanja uzoraka: 64 uzorka bez njega je gore (2,27/255) od 16 sa njim (1,68/255).
+- **Adaptivno uzorkovanje (0,02) je radilo posao tek posle 64 uzorka:** do 64 trošak je skoro linearan (oko 3,4 CPU-s po uzorku), a 128 maks. uzoraka je koštalo samo 28 % više od 64. Izbor je "maks. 128, prag 0,02" ili fiksnih 64.
+- **Denoise nije usko grlo na 64 uzorka:** dodaje oko 10 CPU-s (Balanced / Fast) do oko 25 CPU-s (High / Accurate) po kadru. Same za sebe (1 uzorak, zidno): bez denoisera 2,2–2,6 s, High + Accurate (Albedo + Normal) 14,9 s, High + Accurate (samo Albedo) 8,1 s, Balanced + Fast 5,8 s, Fast + bez prefiltra 4,6 s.
+- **Po pikselima linearno:** 1080×1920 (2,07 MP) na 64 uzorka je 486 CPU-s (oko 235 CPU-s po megapikselu). Zato je isečak oko proizvoda (B7) najjeftinija ušteda.
+- **Procena za naš projekat** (račun iz 235 CPU-s po MP na 64 uzorka, prava scena može biti jeftinija ili skuplja; zidno vreme na 4 slobodna jezgra):
+
+| Kadar | Megapiksela | Po kadru | 100 kadrova | Tri poglavlja |
+|---|---|---|---|---|
+| 900×1200 (isečak oko proizvoda) | 1,08 | oko 65 s | oko 1,8 h | oko 5,4 h |
+| 1600×1600 | 2,56 | oko 150 s | oko 4,2 h | oko 12,5 h |
+
+  Telefon set se pravi **smanjivanjem istog rendera**, ne novim renderom. Ako rade i tuđi Blender procesi, računati 2 do 3× duže.
+- **Nije mereno:** treperenje između susednih kadrova (OIDN to ne garantuje, vidi tabelu iznad), staklo i tečnost (traže više uzoraka i odbijanja), Mantaflow bake.
+- Senka na providnoj pozadini (Shadow Catcher): u mom probnom kadru velika ravan daje crnu RGB senku sa alfa 0,08 do 0,46, čak i daleko od predmeta (33 % piksela je poluprovidno). Zato **mali disk ispod predmeta** ili ublažiti ivice radijalno, ne veliku ravan preko celog kadra. (2026-10, izmereno)
 
 ## B5. Fizika zrna (Rigid Body)
 - **Šta Manual kaže:** Rigid body simulira kretanje čvrstih tela (menja položaj i orijentaciju, ne oblik). Aktivna tela se simuliraju, pasivna miruju. Samo mesh objekti. Za stabilnost: **izbegavati male objekte ("trenutno su nestabilni"), po mogućstvu najmanje 20 cm u prečniku**; izbegavati mesh oblike sudara za mala i brza tela (trouglovi nemaju debljinu); povećati broj koraka u sekundi i broj iteracija rešavača; margina sudara može da se poveća da mesh dobije "debljinu"; kad skaliranje nije potrebno, primeniti ga (`Ctrl-A`). **"Bake To Keyframes"** pretvara dinamiku u obične ključne kadrove. (2026-10, Blender Manual, Rigid Body, Tips)
-- **Zrno kafe je oko 1 cm, a Manual traži 20 cm. To je glavni rizik.** Preporuka (iskustvo, **nije u Manual-u**): simulirati u uvećanoj sceni (npr. 10–20× uvećano, gravitacija i brzina prilagođeni) sa **maskom proksi-zrna** (200–400 niskopoligonskih zrna, oblik Convex Hull ili Sphere), pa pečenjem (`Bake To Keyframes`) i zamenom proksija detaljnim zrnom (instance). Mlin, levak i dripper su pasivna tela. Zrna puštati u talasima (uključivanje dinamike po ključnom kadru). Isto sa Mantaflow-om (B6) važi za CPU troškove.
+- **Zrno kafe je oko 1 cm, a Manual traži 20 cm. To je glavni rizik.** Preporuka (iskustvo, **nije u Manual-u**, ali provereno u mom testu ispod): simulirati u uvećanoj sceni (10× uvećano, gravitacija pomnožena istim brojem, `scene.gravity = (0, 0, -98.1)`) sa **proksi-zrnima** (200–400 niskopoligonskih zrna, oblik Convex Hull), pa pečenjem (`Bake To Keyframes`) i zamenom proksija detaljnim zrnom (instance). Mlin, levak i dripper su pasivna tela (oblik Box ili Convex Hull, ne Mesh). Zrna puštati u talasima (uključivanje dinamike po ključnom kadru).
+- **Pogodak koji često poremeti test:** `Object → Apply → Scale` mora bez lokacije (`transform_apply(location=False, rotation=False, scale=True)`), inače se ishodište objekta vraća u koordinatni početak, geometrija ostaje pomerena i Bullet za Box i Sphere oblike kolizije koristi pogrešno mesto (u mom prvom pokušaju su sva 250 zrna propala kroz pod). (2026-10, izmereno)
+- **Izmereno (2026-10-23, 250 zrna veličine 1,1 × 0,76 × 0,54 cm, levak od 4 kosa zida, 120 kadrova, 2 CPU niti pod opterećenjem):**
+
+| Postavka | Vreme simulacije | Propalo kroz pod | Preliveno van levka |
+|---|---|---|---|
+| prava razmera, 10 podkoraka, 10 iteracija | 62 s | 10 | 69 |
+| 10× uvećano, 10 podkoraka, 10 iteracija | 23–24 s | 7 | 42–48 |
+| 20× uvećano, 10 podkoraka, 10 iteracija | 18 s | 12 | 51 |
+| **10× uvećano, 30 podkoraka, 20 iteracija** | **128 s** | **0** | **1** |
+| 10× uvećano, 30 podkoraka, 20 iteracija, pod debljine 5 cm, razmak spawna 1,2 cm | 93 s | 0 | 8 |
+
+  Zaključak: **uvećanje razmere ubrza simulaciju 2,5 do 3,4×, ali stabilnost daje tek veći broj koraka u sekundi i iteracija rešavača** (kako i Manual kaže). Svejedno je simulacija zanemarljiva prema renderu (minuti naspram sati). Posle baka obavezno proveriti i ukloniti zrna koja su pobegla. Test je na jednoj sceni i nije opšti recept.
 - **Veliki broj zrna (hiljade):** Geometry Nodes **Simulation zone** (Manual: rezultat jednog kadra utiče na sledeći; keš automatski tokom reprodukcije; "bake to disk" za render farmu, kadrovi mogu da se renderuju bez redosleda; navedeni primer: simulacije zasnovane na sferama uz čvor Index of Nearest). Zrno kao sfera je gruba aproksimacija, ali za gomilu je dovoljno. (2026-10, Blender Manual, Simulation Zone)
 - **Mlevenje:** ne simulirati. Zrna nestaju u mlinu, a mleveno kafa raste kao gomila (promena oblika / pomeranje temena + instance sitnih delova). (Preporuka, iskustvo.)
 
@@ -155,18 +198,19 @@ Pokretanje se radi isključivo preko sigurnog obrasca iz `.claude/agents/blender
 **Format.**
 - **WebP je podrazumevani za sekvencu.** Podrška 97,08 % (caniuse, 2026-09); lossy WebP može i sa alfa kanalom, "tipično oko 3 puta manji od PNG-a" (Google); u proseku 25–35 % manji od JPEG-a; najveća dimenzija 16.383 px; lossy WebP čuva boju u 8-bit YUV 4:2:0 (MDN), pa sitan tekst na etiketi i obojene ivice mogu da omekšaju. (2026-09, caniuse + MDN + developers.google.com/speed/webp)
 - **AVIF za mirne slike** (poster, hero fotografija): podrška 96,33 %, MDN kaže medijana 50 % manji od JPEG-a, ali **nema progresivno prikazivanje**. iOS Safari 16.0 podržava samo mirne slike (bez noise synthesis), Safari 16.4 pun. **Brzina dekodiranja AVIF-a na telefonu: izvori se ne slažu, NEPROVERENO**, izmeriti na ciljnom telefonu pre nego što se sekvenca prebaci na AVIF. (2026-09, caniuse + MDN)
+- **Izmereno (2026-10-23, jedan RGBA kadar 720×1280 iz moje probne scene, PNG 763 KB):** WebP lossy sa alfa kanalom bez gubitaka 82–92 KB (kvalitet 50–80, 41–44 dB prema PNG-u). Sa `alpha_quality 80` 67–73 KB (alfa se razlikuje najviše za 1/255), dakle alfa bez gubitaka košta oko 17–20 KB po kadru. Blender direktno: WEBP kvalitet 80 je 92 KB, 60 je 86 KB. **AVIF iz Blendera: kvalitet 60 je 26 KB, ali alfa kanal odstupa do 31/255 (kvalitet 45: do 48/255)**, pa se ivice providnosti kvare. Scena ima velike glatke površine, pa su veličine manje nego za fotografije. U našem repou su fotografski kadrovi 720×1280 bez alfa 52–58 KB. Zaključak: za providne sekvence WebP + `alpha_quality` oko 80; AVIF samo ako se alfa proveri na ivicama. (2026-10, izmereno)
 - Uvek `<picture>` sa rezervom (AVIF → WebP → JPEG/PNG) za mirne slike (MDN). Za kadrove sekvence format se bira eksplicitno (ime fajla `.webp`), ne pregovaranjem na CDN-u (Vibe: 34–52 KB WebP naspram 360–600 KB PNG za isti URL).
 
 **Kodiranje (polazne vrednosti, proveriti okom na etiketi i ivicama):**
-- `cwebp`: `-q` 70–80 (podrazumevano 75), `-m 6` (sporije, manje), **`-sharp_yuv`** (oštrija RGB→YUV konverzija, važna za tekst i ivice; sporije), `-alpha_q` 85–100 (podrazumevano 100 = bez gubitka alfa kanala; niže = manji fajl, ali moguće crtanje po ivici), `-exact` isključeno (podrazumevano, bolje se kompresuje). ffmpeg `libwebp` (kao u `frames.py`) je prihvatljiv. (2026-10, developers.google.com/speed/webp/docs/cwebp)
+- `cwebp`: `-q` 70–80 (podrazumevano 75), `-m 6` (sporije, manje), **`-sharp_yuv`** (oštrija RGB→YUV konverzija, važna za tekst i ivice; sporije), `-alpha_q` 80–100 (podrazumevano 100 = bez gubitka alfa kanala; u mom testu je 80 dao oko 20 % manji kadar uz grešku alfe do 1/255, ali ivice ipak proveriti), `-exact` isključeno (podrazumevano, bolje se kompresuje). ffmpeg `libwebp` (kao u `frames.py`) je prihvatljiv. (2026-10, developers.google.com/speed/webp/docs/cwebp)
 - Testirati **ivice na svetloj i tamnoj pozadini** (halo od providnosti).
-- Alati `cwebp`, `avifenc`, libvips i slični su spoljašnji programi: ako ih nema u okruženju, preuzimanje i instalacija idu preko `bezbednost`. U okruženju postoje ffmpeg i Pillow 12.3.
+- Alati `cwebp`, `avifenc`, libvips i slični su spoljašnji programi: ako ih nema u okruženju, preuzimanje i instalacija idu preko `bezbednost`. U okruženju postoje ffmpeg i Pillow 12.3. To je u redu za naše sopstvene Blender renderove; za tuđe slike i snimke važe pravila iz `studio/znanje/izvori-i-licence.md` (izolovan ffmpeg, venv sa Pillow 13.0.0).
 
 **Dimenzije i broj kadrova.**
 - Renderovati **uski isečak oko proizvoda**, ne ceo ekran (Vibe: isečeno na limenku + referentna kutija). Broj piksela pada 3–5×, a to je i vreme renderovanja.
 - Prikazna veličina u CSS pikselima × `min(DPR, 2)` = potrebna širina. Desktop set: duža strana 1280–1600 px. Telefon set: duža strana do 960 px (naš postojeći 540×960). Moguće renderovati 1,33× pa smanjiti na 0,75× (Vibe: supersampling radi oštrijih ivica).
 - Broj kadrova: **60–90 po poglavlju** za 1–2 visine ekrana skrola, 120 samo za brzu radnju (padanje zrna). Naš `Player` glatko pomera indeks ka cilju, pa niži broj kadrova ne deluje kao "trzanje" (`cur += (target - cur) × 0,22`). (2026-10, repo + Vibe)
-- Budžet (preporuka izvedena iz naših i Vibe merenja): **do 40 KB po kadru na telefonu, do 60 KB na desktopu; do 3,5 MB po sekvenci na telefonu**; ceo sajt pre prve sekvence do oko 2 MB; svaka sekvenca se učitava tek kad se približi (Vibe: do 2,5 visine ekrana ranije; mi u `freiraum` prvo svaki 6. kadar, pa popunjavamo).
+- Budžet (preporuka izvedena iz naših i Vibe merenja): **do 40 KB po kadru na telefonu, do 60 KB na desktopu; do 3,5 MB po sekvenci na telefonu**. Pun RGBA kadar 720×1280 iz moje probne scene je 67–92 KB (gore), pa se budžet drži samo isečkom oko proizvoda i smanjenom rezolucijom telefon seta; ceo sajt pre prve sekvence do oko 2 MB; svaka sekvenca se učitava tek kad se približi (Vibe: do 2,5 visine ekrana ranije; mi u `freiraum` prvo svaki 6. kadar, pa popunjavamo).
 
 **Memorija na telefonu (račun, nije izvor).** Dekodiran kadar zauzima širina × visina × 4 bajta: 720×1280 = oko 3,5 MB, 80 kadrova odjednom = oko 280 MB. Zato držati dekodirane samo kadrove oko trenutnog položaja (klizni prozor) ili osloniti se na to da ih browser odbaci. iOS Safari ograničava ukupnu memoriju canvas-a (WebKit upozorenje "Total canvas memory use exceeds the maximum limit (384 MB)", granica zavisi od uređaja i verzije, **tačna vrednost NEPROVERENA**), zato jedan canvas po sekvenci i bez novih canvas-a po kadru. (2026-10, WebKit Bugzilla 195325, 190280)
 

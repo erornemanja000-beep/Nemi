@@ -157,9 +157,12 @@ body{width:2048px;height:3072px;overflow:hidden}
 
     const SAFE = 2048 - 2 * 171;                  // 1706 px
     const brand = document.getElementById('brand');
-    const l1 = brand.firstElementChild;
-    l1.style.display = 'inline-block';
-    fit(l1, SAFE); brand.style.fontSize = l1.style.fontSize; l1.style.fontSize = ''; l1.style.display = '';
+    // širi od dva reda imena staje tačno u sigurnu zonu (kod KORN / KANNE je to drugi red)
+    const lines = [...brand.children];
+    lines.forEach(l => { l.style.display = 'inline-block'; });
+    const widest = lines.reduce((a, b) => (b.getBoundingClientRect().width > a.getBoundingClientRect().width ? b : a));
+    fit(widest, SAFE); brand.style.fontSize = widest.style.fontSize; widest.style.fontSize = '';
+    lines.forEach(l => { l.style.display = ''; });
     const sub = document.getElementById('sub');
     sub.style.display = 'inline-block';
     // širina bez poslednjeg razmaka slova

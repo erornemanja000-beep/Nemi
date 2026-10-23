@@ -1,4 +1,6 @@
-# Etiketa za kese (Z4): POUR / PLAY · kafa-skrol
+# Etiketa za kese (Z4): KORN / KANNE · kafa-skrol
+
+> 23.10.2026: ime je promenjeno iz POUR / PLAY (brend iz referentnog videa) u izmišljeno KORN / KANNE. Sada je drugi red širi, pa skript ime podešava po širem redu. Mere u tabeli ispod važe za staro ime.
 
 Dizajner, 23.10.2026. Ovo je predaja za `blender-umetnik` preko direktora. Zadatak je Z4 iz `plan-izrade.md`: jedna etiketa u tri boje za `scripts/blender/kafa/bags.py`.
 

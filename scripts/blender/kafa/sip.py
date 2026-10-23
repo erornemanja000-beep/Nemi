@@ -128,7 +128,7 @@ class Nodes:
 
 def new_material(name):
     m = bpy.data.materials.new(name)
-    if hasattr(m, 'use_nodes') and not m.use_nodes:  # u 5.x je uvek uključeno
+    if m.node_tree is None:  # u 5.x materijal uvek ima čvorove (use_nodes je zastareo)
         m.use_nodes = True
     nt = m.node_tree
     return m, nt, nt.nodes['Principled BSDF'], Nodes(nt)
@@ -307,11 +307,11 @@ def mat_stoneware(body, seed=7):
 
     # --- glazura: krem-siva sa toplim tonom; oblaci, tačke gvožđa, reljef gline kroz tanku glazuru
     gv = N.noise(P, 55.0, detail=5, rough=0.62)
-    glaze = N.mix(N.ramp(gv, 0.30, 0.72), (0.165, 0.128, 0.085), (0.395, 0.328, 0.240))
+    glaze = N.mix(N.ramp(gv, 0.30, 0.72), (0.150, 0.112, 0.072), (0.345, 0.280, 0.198))
     cloud = N.ramp(N.noise(P, 30.0, detail=4, distortion=0.5), 0.48, 0.72)
     glaze = N.mix(N.mul(cloud, 0.65), glaze, (0.20, 0.120, 0.070))              # smeđi oblaci
     top_tone = N.ramp(z, GLAZE_Z + 0.010, RIM_Z - 0.002)                      # ka obodu glazura je tanja
-    glaze = N.mix(N.mul(top_tone, 0.5), glaze, (0.21, 0.140, 0.088))
+    glaze = N.mix(N.mul(top_tone, 0.6), glaze, (0.19, 0.120, 0.072))
     glaze = N.mix(N.mul(peb_top, 0.60), glaze, (0.14, 0.088, 0.052))          # zrnca gline probijaju
     spot_d, _ = N.voronoi(P, 210.0)
     spots = N.mul(N.ramp(spot_d, 0.26, 0.10), N.ramp(N.noise(P, 45.0, detail=2), 0.40, 0.58))
@@ -319,7 +319,7 @@ def mat_stoneware(body, seed=7):
     fleck_d, _ = N.voronoi(P, 900.0)
     glaze = N.mix(N.mul(N.ramp(fleck_d, 0.18, 0.05), 0.8), glaze, (0.12, 0.065, 0.034))
     glaze = N.mix(N.mul(edge_in, 0.5), glaze, (0.21, 0.115, 0.060))           # tanka ivica -> karamel
-    rim_brk = N.mul(N.ramp(z, RIM_Z - 0.0045, RIM_Z - 0.0008), N.ramp(N.noise(P, 300.0), 0.3, 0.6, 0.55, 1.0))
+    rim_brk = N.mul(N.ramp(z, RIM_Z - 0.0060, RIM_Z - 0.0010), N.ramp(N.noise(P, 300.0), 0.3, 0.6, 0.55, 1.0))
     glaze = N.mix(rim_brk, glaze, (0.15, 0.072, 0.034))                       # obod: glazura puca u smeđe
 
     N.put(N.mix(mask, clay, glaze), bsdf.inputs['Base Color'])
@@ -375,7 +375,7 @@ def mat_coffee(coffee):
 def mat_steam(steam, glow=0.6):
     """Tanki pramenovi pare: listovi šuma koji se dižu i šire, gusti samo iznad sredine šolje."""
     m = bpy.data.materials.new('Steam')
-    if hasattr(m, 'use_nodes') and not m.use_nodes:
+    if m.node_tree is None:
         m.use_nodes = True
     nt = m.node_tree
     for n in list(nt.nodes):

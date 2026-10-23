@@ -41,7 +41,7 @@ KONUS_R0 = 0.0085               # unutrašnji poluprečnik konusa na dnu (otvor)
 KONUS_Z1 = 0.2035               # gornja ivica konusa
 FILTER_RAZMAK = 0.0022          # papir je toliko odmaknut od stakla (rebra su između)
 FILTER_VRH = 0.1126             # vrh papirnog konusa (viri kroz otvor, kao pravi V60 filter)
-NIVO_DRIPPER = 0.188            # površina kafe u filteru
+NIVO_DRIPPER = 0.195            # površina kafe u filteru (blizu ivice, kao u videu)
 NIVO_BOKAL = (0.010, 0.043)     # nivo kafe u bokalu na prvom i poslednjem kadru
 
 KUVALO_NAGIB = 31.0             # stepeni, izliv nadole ka -X
@@ -246,12 +246,12 @@ def materijali():
     m['glass'] = shadow_light(C.mat_glass('Glass'), 0.8)
     m['glass_drops'] = mat_glass_drops()
     m['steel'] = C.mat_steel('KettleSteel', roughness=0.26)
-    bsdf_of(m['steel']).inputs['Base Color'].default_value = (0.40, 0.39, 0.38, 1)   # tamniji inox
+    bsdf_of(m['steel']).inputs['Base Color'].default_value = (0.52, 0.505, 0.49, 1)   # tamniji inox
     m['black'] = C.mat_plastic('KettleBlack', color=(0.018, 0.017, 0.016), roughness=0.42)
     m['coffee'] = C.mat_coffee_liquid('Coffee')
     m['coffee_thin'] = C.mat_coffee_liquid('CoffeeThin', color=(0.32, 0.13, 0.045))     # tanak mlaz je ćilibaran
     m['water'] = C.mat_water('Water')
-    m['bean'] = C.mat_bean('Bean')
+    m['bean'] = C.mat_bean('Bean', color=(0.065, 0.032, 0.015))    # tamnije prženo, kao u videu
     m['filter'] = mat_filter()
     m['bed'] = mat_bed()
     m['top'] = mat_coffee_top()
@@ -274,9 +274,9 @@ def mat_glass_drops():
     size = nt.math('ADD', 0.12, nt.math('MULTIPLY', sepc.outputs['Red'], 0.30))
     dome = nt.math('SUBTRACT', 1.0, nt.math('DIVIDE', vor.outputs['Distance'], size), clamp=True)
     keep = nt.maprange(sepc.outputs['Green'], 0.35, 0.40)                 # samo deo ćelija ima kap
-    band = nt.math('MULTIPLY', nt.maprange(sep.outputs['Z'], 0.012, 0.03), nt.maprange(sep.outputs['Z'], 0.08, 0.10, 1.0, 0.0))
+    band = nt.math('MULTIPLY', nt.maprange(sep.outputs['Z'], 0.040, 0.058), nt.maprange(sep.outputs['Z'], 0.085, 0.102, 1.0, 0.0))
     h = nt.math('MULTIPLY', nt.math('MULTIPLY', nt.math('SQRT', dome), keep), band)
-    bump = nt.new('ShaderNodeBump', Strength=0.8, Distance=0.0006)
+    bump = nt.new('ShaderNodeBump', Strength=0.6, Distance=0.0006)
     nt.link(h, bump.inputs['Height'])
     nt.link(bump.outputs['Normal'], b.inputs['Normal'])
     return mat
@@ -294,9 +294,10 @@ def mat_filter():
     nt.link(tc.outputs['Object'], noise.inputs['Vector'])
     zz = nt.math('ADD', sep.outputs['Z'], nt.math('MULTIPLY', nt.math('SUBTRACT', noise.outputs['Fac'], 0.5), 0.006))
     wet = nt.maprange(zz, NIVO_DRIPPER + 0.006, NIVO_DRIPPER + 0.0015, 0.0, 1.0)
-    col = nt.mix_color(wet, (0.84, 0.82, 0.77, 1), (0.10, 0.048, 0.022, 1))
+    col = nt.mix_color(wet, (0.86, 0.84, 0.79, 1), (0.055, 0.026, 0.011, 1))
     nt.link(col, b.inputs['Base Color'])
-    nt.link(nt.maprange(wet, 0, 1, 0.85, 0.35, smooth=False), b.inputs['Roughness'])
+    nt.link(nt.maprange(wet, 0, 1, 0.85, 0.45, smooth=False), b.inputs['Roughness'])
+    nt.link(nt.maprange(wet, 0, 1, 0.25, 0.0, smooth=False), b.inputs['Subsurface Weight'])
     return mat
 
 
@@ -431,7 +432,7 @@ def dripper(m):
     cone = C.lathe('DripperCone', profil(cone_pts, 3), segments=128)
     C.assign(cone, m['glass'])
     solidify(cone, 0.0025, 1.0, subsurf=1)
-    # spiralna rebra iznutra (između stakla i papira)
+    # spiralna rebra na staklu (u videu se vide kao svetle linije, pa su spolja)
     for k in range(12):
         th0 = 2 * math.pi * k / 12
         pts, rad = [], []
@@ -439,9 +440,9 @@ def dripper(m):
             u = i / 39
             z = 0.131 + u * 0.067
             th = th0 + 0.85 * u
-            r = r_konus(z) - 0.0007
+            r = r_konus(z) + 0.0029 - 0.0002
             pts.append(Vector((r * math.cos(th), r * math.sin(th), z)))
-            rad.append(0.00085 * min(1.0, 4 * u, 4 * (1 - u)) + 0.0002)
+            rad.append(0.0009 * min(1.0, 4 * u, 4 * (1 - u)) + 0.0002)
         tube(f'Rib{k:02d}', pts, rad, segs=8, mat=m['glass'])
     # drška desno
     hp = catmull([(0.048, 0, 0.199), (0.064, 0, 0.2015), (0.078, 0, 0.197), (0.0855, 0, 0.185),
@@ -515,7 +516,7 @@ def kuvalo(m):
     for v in body.data.vertices:
         x, y, z = v.co
         th = math.atan2(y, x)
-        r = math.hypot(x, y) * (1 - 0.011 * dimple(th, z))
+        r = math.hypot(x, y) * (1 - 0.015 * dimple(th, z))
         v.co = (r * math.cos(th), r * math.sin(th), z)
     weld(body)
     body.data.materials.append(m['steel'])
@@ -628,7 +629,7 @@ def para_ravni(m, n_frames):
     """Para kao 3 providne ravni sa šumom (brže od volumena na CPU-u)."""
     planes = []
     specs = [  # x, y, rotZ, širina, visina, drift, providnost, seme
-        (0.000, -0.004, 0, 0.26, 0.30, 0.060, 0.60, 0.0),
+        (0.000, -0.004, 0, 0.26, 0.30, 0.060, 0.68, 0.0),
         (-0.010, 0.016, 22, 0.24, 0.26, 0.085, 0.45, 3.7),
         (0.012, -0.022, -16, 0.20, 0.21, 0.035, 0.40, 7.1),
     ]
@@ -677,7 +678,7 @@ def mat_steam(name, h, drift, alpha, seed, n_frames):
     dens = nt.math('MULTIPLY', nt.math('MULTIPLY', hmask, vmask), nt.math('MULTIPLY', wisps, alpha))
     # emisija + providnost: nema stohastičkog biranja zatvarača, pa je alfa glatka i bez zrna
     emit = nt.new('ShaderNodeEmission', Color=(0.97, 0.95, 0.92, 1),
-                  Strength=nt.maprange(sep.outputs['X'], 0.06, -0.08, 0.75, 1.05, smooth=False))
+                  Strength=nt.maprange(sep.outputs['X'], 0.06, -0.08, 1.5, 2.1, smooth=False))
     tr = nt.new('ShaderNodeBsdfTransparent')
     mix = nt.new('ShaderNodeMixShader', Fac=dens)
     nt.link(tr.outputs[0], mix.inputs[1])
@@ -758,6 +759,8 @@ def parse():
     p.add_argument('--uzorci', type=int, default=32)
     p.add_argument('--poster', type=int, default=0, help='kadar koji se snima i kao poster.png (0 = ne)')
     p.add_argument('--para', choices=['ravni'], default='ravni')
+    p.add_argument('--kamera', choices=['nagib', 'rigk'], default='nagib',
+                   help="'nagib' = 10° odozgo (dogovor iz zadatka); 'rigk' = horizontalna kamera sa shift-om iz storyboard.md")
     p.add_argument('--kamera-daljina', type=float, default=1.15)
     return p.parse_args(C.args())
 
@@ -771,9 +774,12 @@ def main():
     scene.cycles.caustics_refractive = False
     scene.cycles.blur_glossy = 1.0
     scene.cycles.sample_clamp_indirect = 6.0
+    scene.render.use_persistent_data = True   # brže za celu sekvencu (BVH statičnih predmeta ostaje)
+    scene.view_settings.exposure = -1.0   # sa studio_lights() tamni predmeti (zrna, kafa) izlaze presvetli
     svet(scene)
     C.studio_lights()
-    catcher = C.shadow_catcher()
+    # 1,6 m: daleka ivica ploče pada ispod pare (sa 6 m se kroz paru videla vodoravna linija)
+    catcher = C.shadow_catcher(size=1.6)
     # kroz staklo i kafu catcher bi se video kao siva ploča: zraci prelamanja i odsjaja ga preskaču
     catcher.visible_transmission = False
     catcher.visible_glossy = False
@@ -800,9 +806,15 @@ def main():
                                             (base.x, base.y + math.radians(0.8) * math.sin(2 * math.pi * t), base.z)),
             pivot, 'rotation_euler', 1)
 
-    el = math.radians(10)
-    target = Vector((0, 0, 0.215))
-    cam = C.camera(target + a.kamera_daljina * Vector((0, -math.cos(el), math.sin(el))), target, lens=85)
+    if a.kamera == 'rigk':
+        # storyboard.md, rig K: kadar 45 x 45 cm na ravni y=0 (z od -0,0225 do 0,4275), oko na z=0,4725,
+        # kamera horizontalna, pa vertikale ostaju paralelne i šav sa GRIND (0,45 m više) se poklapa
+        cam = C.camera((0, -1.0625, 0.4725), (0, 0, 0.4725), lens=85)
+        cam.data.shift_y = (0.2025 - 0.4725) / 0.45
+    else:
+        el = math.radians(10)
+        target = Vector((0, 0, 0.215))
+        cam = C.camera(target + a.kamera_daljina * Vector((0, -math.cos(el), math.sin(el))), target, lens=85)
     print(f'[pour] vrh izliva {tuple(round(c, 4) for c in tip_w)}, kamera {tuple(round(c, 4) for c in cam.location)}')
 
     if a.render == 'proba':

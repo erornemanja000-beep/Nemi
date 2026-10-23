@@ -60,6 +60,7 @@ def parse():
     p.add_argument('--pocetna', type=int, default=600, help='zrna u levku na kadru 1')
     p.add_argument('--tok', type=float, default=4.0, help='zrna po kadru u mlazu odozgo')
     p.add_argument('--mleveno', type=int, default=150, help='čestica mlevene kafe po kadru')
+    p.add_argument('--podkoraci', type=int, default=8, help='rigid body substeps po kadru')
     p.add_argument('--seed', type=int, default=7)
     p.add_argument('--poster', type=int, default=0, help='kadar koji se snima i kao poster.png')
     p.add_argument('--bez-rendera', action='store_true', help='samo napravi scenu i bake, ispiši stanje')
@@ -569,7 +570,7 @@ def main():
         me.materials.append(bean_mat)
         bean_meshes.append(me)
         pm = bpy.data.meshes.new(f'ZrnoFizika{k}')
-        bm = bean_bm(random.Random(a.seed * 100 + k), groove=False, u=10, v=6)
+        bm = bean_bm(random.Random(a.seed * 100 + k), groove=False, u=8, v=5)
         bm.to_mesh(pm)
         bm.free()
         proxy_meshes.append(pm)
@@ -580,8 +581,8 @@ def main():
 
     bpy.ops.rigidbody.world_add()
     rbw = sc.rigidbody_world
-    rbw.substeps_per_frame = 12
-    rbw.solver_iterations = 25
+    rbw.substeps_per_frame = a.podkoraci
+    rbw.solver_iterations = 12
     rbw.use_split_impulse = True
     rbw.time_scale = a.usporenje
     rbw.point_cache.frame_start = frame0
@@ -603,22 +604,34 @@ def main():
     t = time.time()
     with bpy.context.temp_override(scene=sc):
         bpy.ops.ptcache.bake_all(bake=True)
-    print(f'GRIND: bake {sc.frame_end - frame0 + 1} kadrova za {time.time() - t:.1f} s')
+    n_fr = sc.frame_end - frame0 + 1
+    print(f'GRIND: bake {n_fr} kadrova za {time.time() - t:.1f} s ({(time.time() - t) / n_fr:.2f} s/kadar)')
 
-    # provera: koliko je zrna u levku, koliko je ispalo
+    # provera: koliko je zrna u levku i gde su ona koja su ispala
     for f in sorted({1, a.kadrova // 2, a.kadrova}):
         sc.frame_set(f)
-        inside = out = air = 0
+        inside = air = 0
+        where = {'kroz dno': 0, 'preko ivice': 0, 'kroz zid': 0}
         for p in beans:
             q = p.matrix_world.translation
             rho = math.hypot(q.x - hop_xy.x, q.y - hop_xy.y)
-            if q.z > 0.45:
+            if q.z > 0.335:
                 air += 1
-            elif 0.195 < q.z < 0.335 and rho < 0.095:
+            elif 0.195 < q.z and rho < 0.095:
                 inside += 1
-            elif q.z <= 0.335:
-                out += 1
-        print(f'GRIND: kadar {f}: u levku {inside}, iznad/u vazduhu {air}, ispalo {out}')
+            elif q.z <= 0.195 and rho < 0.05:
+                where['kroz dno'] += 1
+            elif rho > 0.1:
+                where['preko ivice'] += 1
+            else:
+                where['kroz zid'] += 1
+        print(f'GRIND: kadar {f}: u levku {inside}, iznad levka {air}, ispalo {where}')
+        if f == 1 and a.bez_rendera:
+            bad = [(i, p) for i, p in enumerate(beans) if p.matrix_world.translation.z <= 0.335 and
+                   math.hypot(p.matrix_world.translation.x - hop_xy.x, p.matrix_world.translation.y - hop_xy.y) > 0.1]
+            for i, p in bad[:12]:
+                q = p.matrix_world.translation
+                print(f'GRIND:   ispalo #{i} ({q.x:.3f}, {q.y:.3f}, {q.z:.3f})')
 
     if a.bez_rendera:
         return

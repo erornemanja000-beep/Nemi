@@ -59,9 +59,10 @@ SIP_FLOOR = '#7C4532'   # --color-floor, sto ispod šolje
 KEY_AZ, KEY_EL, KEY_DIST = -140.0, 20.0, 1.30     # key prozor levo-gore-napred; donja ivica ~0°, pa se
                                                    # prozor ogleda u skoro vertikalnom zidu šolje
 KEY_SIZE = (0.60, 0.90)
-STRIP_AZ, STRIP_DIST = (146.0, 34.0), 0.45         # uske trake pozadi levo i pozadi desno
+STRIP_AZ, STRIP_DIST = (158.0, 22.0), 0.40         # uske trake pozadi levo i desno (ispred zida)
 FLAG_AZ, FLAG_DIST = -30.0, 0.42                   # crna zastava desno napred
 SUN_SPOT = (0.05, 0.25)                            # (x, z) na zidu kroz koju sunce gađa sredinu prozora
+FRAME_TILT = 30.0                                  # okvir zarotiran oko svoje normale (van kadra)
 HDRI_WINDOW_AZ = -42.0  # azimut prozora u neokrenutom HDRI-ju (izmereno iz EXR-a)
 
 
@@ -406,7 +407,8 @@ def photo_studio_lights(target, wall=None, key=110.0, strip=8.0, sun=5.0, bg=6.0
     bm.free()
     frame = link(bpy.data.objects.new('WindowFrame', me))
     frame.matrix_world = Matrix(((t.x, a.x, 0.0, win.x), (t.y, a.y, 0.0, win.y),
-                                 (0.0, 0.0, 1.0, win.z), (0.0, 0.0, 0.0, 1.0)))
+                                 (0.0, 0.0, 1.0, win.z), (0.0, 0.0, 0.0, 1.0))) @ \
+        Matrix.Rotation(math.radians(FRAME_TILT), 4, 'Y')   # nagnut okvir: kose trake senke kao u videu
     ray_visibility(frame, camera=False, diffuse=False, transmission=False, scatter=False)
     fm, _, fb, _ = new_material('WindowFrame')
     fb.inputs['Base Color'].default_value = (0.02, 0.018, 0.016, 1)
@@ -452,7 +454,7 @@ def photo_studio_lights(target, wall=None, key=110.0, strip=8.0, sun=5.0, bg=6.0
         s = (win - Vector((sun_spot[0], WALL_Y, sun_spot[1]))).normalized()
         sd = bpy.data.lights.new('Sun', 'SUN')
         sd.energy = sun
-        sd.angle = math.radians(2.5)                  # mekša ivica senke nego pravo sunce (izmaglica)
+        sd.angle = math.radians(4.0)                  # mekša ivica senke nego pravo sunce (izmaglica, zavesa)
         sd.use_temperature, sd.temperature = True, 4200
         so = link(bpy.data.objects.new('Sun', sd))
         so.rotation_euler = (-s).to_track_quat('-Z', 'Y').to_euler()
@@ -524,7 +526,7 @@ def mat_stoneware(body, seed=7):
         if len(drips) < 3:
             drips.append((a, rnd.uniform(0.0025, 0.0075), rnd.uniform(0.0060, 0.0130), 1.0))
         else:
-            drips.append((a, rnd.uniform(0.0030, 0.0185), rnd.uniform(0.0026, 0.0058), rnd.uniform(1.0, 1.28)))
+            drips.append((a, rnd.uniform(0.0040, 0.0200), rnd.uniform(0.0030, 0.0062), rnd.uniform(0.95, 1.12)))
     beads = None
     for a, length, wid, bead_k in drips:
         top = GLAZE_Z + 0.004
@@ -532,7 +534,7 @@ def mat_stoneware(body, seed=7):
         h = N.mul(r, N.vmath('LENGTH', N.vmath('SUBTRACT', u, (math.cos(a), math.sin(a), 0.0))))
         zc = N.math('MAXIMUM', N.math('MINIMUM', z, top), bot)
         # kap se sužava naniže (vrat), a na kraju se skuplja u kapljicu
-        taper = N.math('MULTIPLY_ADD', N.sub(zc, bot), 0.55 * wid / (top - bot), 0.72 * wid)
+        taper = N.math('MULTIPLY_ADD', N.sub(zc, bot), 0.45 * wid / (top - bot), 0.85 * wid)
         neck = N.sub(N.vmath('LENGTH', N.xyz(h, N.sub(z, zc), 0.0)), taper)
         bead = N.sub(N.vmath('LENGTH', N.xyz(h, N.sub(z, bot + wid * 0.30), 0.0)), wid * bead_k * 0.9)
         beads = bead if beads is None else N.math('MINIMUM', beads, bead)
@@ -548,11 +550,12 @@ def mat_stoneware(body, seed=7):
     halo = N.mul(N.ramp(d, 0.0, 0.0013, 1.0, 0.0), N.ramp(N.noise(P, 160.0), 0.35, 0.65, 0.35, 1.0))
 
     # --- tragovi kola: spirala (faza raste sa uglom, pa nema šava), nepravilan korak, jače u donjem delu
-    phase = N.add(N.math('MULTIPLY_ADD', z, 2 * math.pi / 0.0074, theta), N.mul(N.noise(P, 22.0, detail=2), 3.2))
-    ring = N.math('POWER', N.math('MULTIPLY_ADD', N.math('SINE', phase), 0.5, 0.5), 1.6)   # 0..1, oštriji grebeni
+    phase = N.add(N.math('MULTIPLY_ADD', z, 2 * math.pi / 0.0085, theta), N.mul(N.noise(P, 18.0, detail=3), 5.0))
+    ring = N.math('POWER', N.math('MULTIPLY_ADD', N.math('SINE', phase), 0.5, 0.5), 1.3)   # 0..1
+    ring = N.mul(ring, N.ramp(N.noise(P, 26.0, detail=2), 0.30, 0.65, 0.45, 1.0))          # negde jedva vidljivi
     ring_env = N.mul(N.ramp(z, 0.009, 0.017), N.mixf(N.ramp(z, 0.050, 0.064), 1.0, 0.35))
     ring_env = N.mul(N.mul(ring_env, N.sub(1.0, hnd)), N.mixf(inner, 1.0, 0.45))
-    ring_h = N.mul(N.mul(ring, ring_env), 0.00034)
+    ring_h = N.mul(N.mul(ring, ring_env), 0.00028)
 
     # --- debljina glazure: tanka uz ivicu, zadebljan rub (površinski napon), kupole na kapljicama
     lip = N.mul(N.ramp(nd, 0.0, 0.0009), N.ramp(nd, 0.0009, 0.0034, 1.0, 0.50))
@@ -573,32 +576,33 @@ def mat_stoneware(body, seed=7):
     peb_top = N.ramp(pebble, 0.55, 0.05)                        # 1 na vrhu zrnca
     grain = N.noise(P, 2600.0, detail=1)
     clay_var = N.noise(P, 90.0, detail=4)
-    clay = N.mix(clay_var, (0.021, 0.0135, 0.0100), (0.040, 0.027, 0.020))
-    clay = N.mix(N.mul(peb_top, 0.55), clay, (0.072, 0.052, 0.040))
+    clay = N.mix(clay_var, (0.0115, 0.0078, 0.0062), (0.024, 0.0165, 0.0128))
+    clay = N.mix(N.mul(peb_top, 0.55), clay, (0.052, 0.038, 0.031))
     grog_d, _ = N.voronoi(P, 520.0)
-    clay = N.mix(N.mul(N.ramp(grog_d, 0.10, 0.04), 0.8), clay, (0.13, 0.095, 0.070))
-    clay = N.mix(N.mul(ring, N.mul(ring_env, 0.35)), clay, (0.055, 0.038, 0.028))   # grebeni malo svetliji
+    clay = N.mix(N.mul(N.ramp(grog_d, 0.10, 0.04), 0.7), clay, (0.10, 0.075, 0.058))
+    clay = N.mix(N.mul(ring, N.mul(ring_env, 0.30)), clay, (0.034, 0.024, 0.019))   # grebeni malo svetliji
     clay = N.mix(N.mul(halo, 0.6), clay, (0.085, 0.036, 0.016))             # rđasti oreol oko glazure
 
     # --- glazura: ovsena krem-siva sa zelenkastim tonom; oblaci, gvožđe, reljef gline kroz tanku glazuru
     gv = N.noise(P, 55.0, detail=5, rough=0.62)
-    glaze = N.mix(N.ramp(gv, 0.30, 0.72), (0.160, 0.150, 0.118), (0.385, 0.370, 0.305))
+    glaze = N.mix(N.ramp(gv, 0.30, 0.72), (0.150, 0.150, 0.118), (0.360, 0.365, 0.315))
     cloud = N.ramp(N.noise(P, 30.0, detail=4, distortion=0.5), 0.48, 0.72)
-    glaze = N.mix(N.mul(cloud, 0.30), glaze, (0.20, 0.125, 0.075))              # smeđi oblaci
+    glaze = N.mix(N.mul(cloud, 0.40), glaze, (0.17, 0.115, 0.070))              # smeđi oblaci
     top_tone = N.ramp(z, GLAZE_Z + 0.010, RIM_Z - 0.002)                      # ka obodu glazura je tanja
     glaze = N.mix(N.mul(top_tone, 0.15), glaze, (0.21, 0.140, 0.085))
     glaze = N.mix(N.mul(ring, N.mul(ring_env, 0.35)), glaze, (0.17, 0.105, 0.060))   # glazura puca na grebenima
     glaze = N.mix(N.mul(peb_top, 0.25), glaze, (0.15, 0.098, 0.060))          # zrnca gline probijaju
     glaze = N.mix(N.mul(N.sub(1.0, pool), 0.15), glaze, (0.24, 0.17, 0.11))    # tanje = toplije
-    spot_d, _ = N.voronoi(P, 210.0)
-    spots = N.mul(N.ramp(spot_d, 0.26, 0.10), N.ramp(N.noise(P, 45.0, detail=2), 0.40, 0.58))
-    glaze = N.mix(N.mul(spots, 0.9), glaze, (0.085, 0.040, 0.020))            # tačke gvožđa
-    fleck_d, _ = N.voronoi(P, 900.0)
-    glaze = N.mix(N.mul(N.ramp(fleck_d, 0.18, 0.05), 0.8), glaze, (0.12, 0.065, 0.034))
+    spot_d, _ = N.voronoi(P, 160.0)
+    spots = N.mul(N.ramp(spot_d, 0.22, 0.08), N.ramp(N.noise(P, 45.0, detail=2), 0.28, 0.52))
+    glaze = N.mix(N.mul(spots, 0.95), glaze, (0.060, 0.030, 0.016))           # tačke gvožđa ~1,5 mm
+    fleck_d, _ = N.voronoi(P, 650.0)
+    glaze = N.mix(N.mul(N.ramp(fleck_d, 0.17, 0.05), N.ramp(N.noise(P, 30.0), 0.3, 0.6, 0.4, 0.9)), glaze,
+                  (0.09, 0.050, 0.026))                                          # sitne pegice ~0,5 mm
     glaze = N.mix(N.mul(edge_in, 0.55), glaze, (0.21, 0.115, 0.060))          # tanka ivica -> karamel
-    glaze = N.mix(N.mul(dome, 0.35), glaze, (0.46, 0.43, 0.35))               # debela kapljica -> svetlija
-    rim_brk = N.mul(N.ramp(z, RIM_Z - 0.0060, RIM_Z - 0.0010), N.ramp(N.noise(P, 300.0), 0.3, 0.6, 0.55, 1.0))
-    glaze = N.mix(rim_brk, glaze, (0.15, 0.072, 0.034))                       # obod: glazura puca u smeđe
+    glaze = N.mix(N.mul(dome, 0.10), glaze, (0.40, 0.40, 0.34))               # debela kapljica -> malo svetlija
+    rim_brk = N.mul(N.ramp(z, RIM_Z - 0.0085, RIM_Z - 0.0025), N.ramp(N.noise(P, 300.0), 0.25, 0.6, 0.6, 1.0))
+    glaze = N.mix(N.mul(rim_brk, 0.92), glaze, (0.10, 0.050, 0.026))         # obod: glazura puca u smeđe
     craze_d, _ = N.voronoi(N.vmath('MULTIPLY', P, (1.0, 1.0, 0.7)), 140.0, feature='DISTANCE_TO_EDGE')
     craze = N.mul(N.ramp(craze_d, 0.0, 0.03, 1.0, 0.0), N.ramp(N.noise(P, 20.0), 0.45, 0.6))
     glaze = N.mix(N.mul(craze, 0.30), glaze, (0.12, 0.075, 0.045))            # krakelir (fine pukotine)
@@ -895,7 +899,7 @@ def main():
     ap.add_argument('--elev', type=float, default=24.0, help='ugao kamere odozgo (°)')
     ap.add_argument('--dist', type=float, default=0.60)
     ap.add_argument('--frame-z', dest='frame_z', type=float, default=0.050)
-    ap.add_argument('--key', type=float, default=140.0, help='key prozor (area 0,6x0,9 m), W')
+    ap.add_argument('--key', type=float, default=110.0, help='key prozor (area 0,6x0,9 m), W')
     ap.add_argument('--strip', type=float, default=8.0, help='svaka od dve trake pozadi, W')
     ap.add_argument('--sun', type=float, default=5.0, help='sunce na zidu (gobo), W/m²')
     ap.add_argument('--sun-spot', dest='sun_spot', default=f'{SUN_SPOT[0]},{SUN_SPOT[1]}',

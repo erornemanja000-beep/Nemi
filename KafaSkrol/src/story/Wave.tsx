@@ -273,7 +273,7 @@ function createEngine(els: Els, variant: WaveVariant, pourRef: WaveProps['pourCl
       }
       if (next === 'before') pourRef.current?.style.removeProperty('clip-path')
     } else if (lens && !active) {
-      lens.style.willChange = variant === 'desktop' ? 'transform, filter' : 'transform'
+      lens.style.willChange = 'transform'
     }
     active = on
     mode = next
@@ -493,7 +493,7 @@ export function Wave({ pourClip, sipLens, variant, className = '', ref }: WavePr
 
   return (
     <>
-      {/* telo tečnosti: multiply na korenu, da SIP ostane živ i čitljiv */}
+      {/* telo tečnosti (gradijent); mešanje je na korenu, da radi i kad Story da z-index */}
       <div ref={tintRef} className={`wave wave--tint ${className}`} data-variant={variant} aria-hidden="true">
         <svg className="wave__svg" data-w="svg" preserveAspectRatio="none" focusable="false">
           <defs>
@@ -509,14 +509,8 @@ export function Wave({ pourClip, sipLens, variant, className = '', ref }: WavePr
       {/* ivice, sjaj površine i odsjaji */}
       <div ref={rootRef} className={`wave wave--lines ${className}`} data-variant={variant} aria-hidden="true">
         <svg className="wave__svg" data-w="svg" preserveAspectRatio="none" focusable="false">
-          <defs>
-            <linearGradient id={`${id}-sheen`} x1="0" y1="0" x2="0" y2="1">
-              <stop className="wave__stop--sheen" offset="0" />
-              <stop className="wave__stop--sheen-end" offset="0.35" />
-            </linearGradient>
-          </defs>
-          <path data-w="fill" fill={`url(#${id}-sheen)`} />
           <g data-w="lines" opacity="0">
+            <path data-w="top" className="wave__line wave__sheen" transform="translate(0 16)" />
             <path data-w="bottom" className="wave__line wave__glow" transform="translate(0 -7)" />
             <path data-w="bottom" className="wave__line wave__under" />
             <path data-w="top" className="wave__line wave__shine-soft" transform="translate(0 3)" />

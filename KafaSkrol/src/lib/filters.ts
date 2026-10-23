@@ -6,7 +6,7 @@
 //   - u prodavnici je samo ono što ima cenu (oprema sa priceCents: null se ne prikazuje, PrAG).
 // Filter iz linka: ?brew=filter|espresso (filtersFromSearch). Filter iz drugih sekcija: događaj
 // SHOP_FILTER_EVENT na window, sa detail { brew } (odluka direktora, z13-izmene.md).
-import type { BrewGroup, FlavorGroup, Product, RoastGroup, TypeGroup } from '../content/types.ts'
+import type { BrewGroup, FlavorGroup, L, Product, RoastGroup, TypeGroup } from '../content/types.ts'
 import type { SortId } from '../content/shop.ts'
 
 export type FilterState = {
@@ -36,6 +36,11 @@ const isBrew = (v: unknown): v is BrewGroup => typeof v === 'string' && (BREW_ID
 export function isListed(p: Product): boolean {
   if (p.kind === 'gear') return p.priceCents != null
   return p.sizes.length > 0
+}
+
+/** Oznake na kartici i u modalu: prženje, za šta, tag („House blend", „Limited lot", „Decaf"). */
+export function productTags(p: Product): L[] {
+  return [p.roast, p.bestFor, p.tag].filter((t): t is L => !!t)
 }
 
 /** Najniža cena (centi): prvo pakovanje kafe/seta ili cena opreme. Za sortiranje. */
@@ -90,11 +95,11 @@ export function hasActiveFilters(f: FilterState): boolean {
   return f.brew.length + f.flavor.length + f.roast.length + f.type.length > 0
 }
 
-/** Uključuje ili isključuje vrednost u grupi. */
-export function toggleFilter<K extends FilterGroupId>(f: FilterState, group: K, value: FilterState[K][number]): FilterState {
-  const list = f[group] as FilterState[K][number][]
+/** Uključuje ili isključuje vrednost u grupi (vrednosti dolaze iz shop.filters.*.options). */
+export function toggleFilter(f: FilterState, group: FilterGroupId, value: string): FilterState {
+  const list: readonly string[] = f[group]
   const next = list.includes(value) ? list.filter((v) => v !== value) : [...list, value]
-  return { ...f, [group]: next }
+  return { ...f, [group]: next } as FilterState
 }
 
 /** Ključ stanja (za fade mreže pri promeni). */

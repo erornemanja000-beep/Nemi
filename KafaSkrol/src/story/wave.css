@@ -14,19 +14,20 @@
 @layer components {
   .wave,
   .wave-static {
-    /* telo tečnosti je sloj sa mix-blend-mode: multiply: SIP ostaje živ i čitljiv, samo potamni i
-       dobije ćilibarni ton (normalno mešanje bi ga zamaglilo). Odozgo svetla ćilibarna, dole tamna kafa. */
-    --wave-amber-light: #f2c88f;
-    --wave-amber: #d99552;
-    --wave-coffee: #7a4526;
-    --wave-fill-top: 0.9;
-    --wave-fill-mid: 0.92;
-    --wave-fill-bottom: 0.88;
+    /* telo tečnosti: zasićene, tamne ćilibarne boje sa srednjom providnošću, da SIP ostane živ i
+       čitljiv (svetla boja bi ga zamaglila). Odozgo svetla ćilibarna, dole tamna kafa (~0,88 najviše).
+       Normalno mešanje, ne multiply: multiply traži dodatni prolaz preko cele scene (izmereno: +8–9 ms
+       po kadru na 1440 u Playwright-u bez GPU-a). */
+    --wave-amber-light: #b8692a;
+    --wave-amber: #8c4519;
+    --wave-coffee: #3d1d0d;
+    --wave-fill-top: 0.42;
+    --wave-fill-mid: 0.58;
+    --wave-fill-bottom: 0.82;
     /* ivice i odsjaji (normalno mešanje) */
     --wave-meniscus: #24130b;
     --wave-shine: #fff4e0;
-    --wave-sheen: #ffe6bf; /* blag sjaj površine pri vrhu trake */
-    --wave-sheen-alpha: 0.2;
+    --wave-sheen: #ffe6bf; /* blag sjaj površine odmah ispod gornje ivice */
     --wave-glow: #f0b266;
     /* sočivo: živ SIP sloj iza trake (Wave čita ove tri vrednosti pri merenju, ne u petlji) */
     --wave-lens-scale: 1.04;
@@ -39,16 +40,18 @@
 
   /* ---------- Živi talas: sloj preko POUR i SIP scene ---------- */
   /* Wave crta dva sloja jedan na drugom, oba sa istim className (Story sme da da z-index):
-     .wave--tint je telo tečnosti sa mix-blend-mode: multiply NA SAMOM korenu, pa se meša sa POUR i SIP
-     slojem ispod i kad je stacking context; .wave--lines su ivice i odsjaji, normalno mešanje. */
+     .wave--tint je telo tečnosti, .wave--lines su ivice i odsjaji. Svaki je svoj sloj na kompozitoru
+     (will-change), pa promena putanje ne precrtava POUR i SIP ispod. Mešanje se menja ovde
+     (--wave-tint-blend), npr. multiply uz svetlije boje, ako ga recenzent želi. */
   .wave {
     position: absolute;
     inset: 0;
     pointer-events: none;
     overflow: hidden;
     visibility: hidden; /* Wave ga pali samo za 0 < p < 1 */
+    will-change: transform;
   }
-  .wave--tint { mix-blend-mode: multiply; }
+  .wave--tint { mix-blend-mode: var(--wave-tint-blend, normal); }
   .wave__svg {
     position: absolute;
     inset: 0;
@@ -56,8 +59,6 @@
     height: 100%;
     overflow: visible;
   }
-  .wave__stop--sheen { stop-color: var(--wave-sheen); stop-opacity: var(--wave-sheen-alpha); }
-  .wave__stop--sheen-end { stop-color: var(--wave-sheen); stop-opacity: 0; }
   .wave__stop--top { stop-color: var(--wave-amber-light); stop-opacity: var(--wave-fill-top); }
   .wave__stop--mid { stop-color: var(--wave-amber); stop-opacity: var(--wave-fill-mid); }
   .wave__stop--bottom { stop-color: var(--wave-coffee); stop-opacity: var(--wave-fill-bottom); }
@@ -72,6 +73,8 @@
   .wave__meniscus { stroke: var(--wave-meniscus); stroke-width: 1.5; stroke-opacity: 0.92; }
   .wave__shine { stroke: var(--wave-shine); stroke-width: 2; stroke-opacity: 0.5; }
   .wave__shine-soft { stroke: var(--wave-shine); stroke-width: 6; stroke-opacity: 0.12; }
+  /* sjaj površine: široka bleda linija odmah ispod ivice (kao potez, ne ispuna: manja površina za crtanje) */
+  .wave__sheen { stroke: var(--wave-sheen); stroke-width: 26; stroke-opacity: 0.07; }
   /* donja ivica: tanka tamna linija i topao sjaj iznad nje (svetlo koje prolazi kroz tečnost) */
   .wave__under { stroke: var(--wave-meniscus); stroke-width: 1; stroke-opacity: 0.55; }
   .wave__glow { stroke: var(--wave-glow); stroke-width: 16; stroke-opacity: 0.2; }

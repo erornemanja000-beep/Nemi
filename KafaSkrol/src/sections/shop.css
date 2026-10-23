@@ -1,0 +1,404 @@
+/* Prodavnica i modal proizvoda (Z9): čipovi filtera, mreža, kartica, CSS kesa, siluete opreme,
+   izbor veličine i mlevenja, dijalog /p/:slug. Boje, slova, razmaci i trajanja su tokeni; kesa i
+   pozadina slike su iz mockup.html (.glass-card__pack, .pack, .ph-chip).
+   Prelom prodavnice je 64rem širine (Tailwind lg), bez uslova za visinu: prodavnica nije zakačena priča.
+   Sve je u @layer components, pa Tailwind klase (utilities) imaju prednost. */
+
+/* isti redosled slojeva kao Tailwind (vidi story/chapters.css): bez ovoga bi preflight gazio ove stilove */
+@layer properties, theme, base, components, utilities;
+
+@layer components {
+  /* ---------- Filteri: čipovi; telefon = horizontalna traka koja izlazi do ivice ekrana ---------- */
+  .shop-strip {
+    display: flex;
+    gap: var(--space-2);
+    margin-inline: calc(var(--gutter) * -1);
+    padding-inline: var(--gutter);
+    padding-bottom: 2px; /* prsten fokusa ne sme da se iseče */
+    overflow-x: auto;
+    scroll-padding-inline: var(--gutter);
+    scrollbar-width: none;
+    overscroll-behavior-x: contain;
+  }
+  .shop-strip::-webkit-scrollbar {
+    display: none;
+  }
+  .shop-chip {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap);
+    padding: 0 1.05rem;
+    border: 1.5px solid var(--color-line-strong); /* 3,30:1 na kremu */
+    border-radius: var(--radius-pill);
+    background: transparent;
+    color: var(--color-text);
+    font: 600 var(--fs-small) / 1 var(--font-text);
+    white-space: nowrap;
+    cursor: pointer;
+  }
+  .shop-chip:hover {
+    border-color: var(--color-text);
+  }
+  .shop-chip[aria-pressed="true"] {
+    border-color: var(--color-btn-bg);
+    background: var(--color-btn-bg);
+    color: var(--color-btn-text);
+  }
+
+  /* Oznaka „Konzept / Demo" u traci (skica: isprekidan okvir) */
+  .shop-demo-note {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border: 1.5px dashed var(--color-line-strong);
+    border-radius: var(--radius-pill);
+    font: 700 var(--fs-micro) / 1.2 var(--font-label);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  /* ---------- Izbor sortiranja i mlevenja (izvorni <select> sa strelicom) ---------- */
+  .shop-select {
+    position: relative;
+    display: block;
+  }
+  .shop-select select {
+    width: 100%;
+    min-height: var(--tap);
+    padding: 0 2.5rem 0 0.85rem;
+    border: 1.5px solid var(--color-line-strong);
+    border-radius: var(--radius-sm);
+    background: var(--color-surface);
+    color: var(--color-text);
+    font: 600 var(--fs-small) / 1.2 var(--font-text);
+    appearance: none;
+    cursor: pointer;
+  }
+  .shop-select__icon {
+    position: absolute;
+    top: 50%;
+    right: 0.75rem;
+    width: 16px;
+    height: 16px;
+    pointer-events: none;
+    transform: translateY(-50%) rotate(90deg);
+  }
+
+  /* ---------- Mreža: 2 kolone na telefonu, 3 od 64rem ---------- */
+  .shop-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-3);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .shop-grid > li {
+    display: flex;
+  }
+  /* oprema na telefonu: traka sa prstom (mapa-skrola) */
+  @media not all and (min-width: 64rem) {
+    .shop-grid--strip {
+      display: flex;
+      margin-inline: calc(var(--gutter) * -1);
+      padding-inline: var(--gutter);
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scroll-padding-inline: var(--gutter);
+      scrollbar-width: none;
+      overscroll-behavior-x: contain;
+    }
+    .shop-grid--strip::-webkit-scrollbar {
+      display: none;
+    }
+    .shop-grid--strip > li {
+      flex: 0 0 62%;
+      scroll-snap-align: start;
+    }
+  }
+  @media (min-width: 64rem) {
+    .shop-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--space-5);
+    }
+  }
+
+  /* ---------- Kartica ---------- */
+  .shop-card {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    overflow: hidden;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-card);
+    background: var(--color-surface);
+    color: var(--color-text);
+  }
+  .shop-card__media,
+  .pm-media {
+    position: relative;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    /* pozadina slike iz mockup.html (.glass-card__pack) */
+    background: linear-gradient(160deg, #d9d2c8, #c5bdb2);
+    color: var(--color-placeholder);
+  }
+  .shop-card__media {
+    aspect-ratio: 4 / 3;
+    margin: var(--space-2) var(--space-2) 0;
+    border-radius: var(--radius-md);
+  }
+  .shop-visual__img {
+    width: auto;
+    height: 92%;
+    object-fit: contain;
+  }
+
+  /* CSS kesa (mockup .pack), dok render kese nije spreman */
+  .shop-bag {
+    position: relative;
+    width: auto;
+    height: 74%;
+    aspect-ratio: 0.62;
+    margin-top: 6%;
+    border-radius: 6px 6px 10px 10px;
+    background: linear-gradient(180deg, #b2a99e 0 14%, #a79d92 14% 100%);
+    box-shadow:
+      inset 0 -12px 0 rgb(0 0 0 / 0.06),
+      0 10px 18px -8px rgb(27 21 13 / 0.45);
+  }
+  .shop-bag::after {
+    content: "";
+    position: absolute;
+    left: 14%;
+    right: 14%;
+    top: 40%;
+    height: 22%;
+    border-radius: 3px;
+    background: #e9e3da;
+  }
+  /* siva silueta opreme (mockup .ph-fill) */
+  .shop-gear {
+    width: auto;
+    height: 70%;
+    max-width: 80%;
+    fill: currentColor;
+  }
+
+  /* čip „Demo" na slici (mockup .ph-chip) */
+  .shop-demo {
+    position: absolute;
+    top: var(--space-2);
+    left: var(--space-2);
+    padding: 5px 9px;
+    border-radius: var(--radius-pill);
+    background: var(--pp-paper);
+    color: var(--pp-ink);
+    box-shadow: var(--shadow-soft);
+    font: 700 var(--fs-micro) / 1 var(--font-label);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  /* oznake (prženje, za šta, tag) */
+  .shop-tag {
+    padding: 3px 8px;
+    border: 1.5px solid var(--color-line-strong);
+    border-radius: var(--radius-pill);
+    font: 700 0.6875rem / 1.2 var(--font-label);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  /* ---------- Izbor veličine i mlevenja (radio dugmad kao segmenti i čipovi) ---------- */
+  .shop-seg {
+    display: flex;
+    gap: 0;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+  .shop-seg__opt {
+    position: relative;
+    flex: 1;
+    display: grid;
+    place-items: center;
+    min-height: var(--tap);
+    padding: 0 var(--space-3);
+    border: 1.5px solid var(--color-line-strong);
+    background: transparent;
+    color: var(--color-text);
+    font: 600 var(--fs-small) / 1.2 var(--font-text);
+    text-align: center;
+    cursor: pointer;
+  }
+  .shop-seg__opt:first-of-type {
+    border-radius: var(--radius-sm) 0 0 var(--radius-sm);
+  }
+  .shop-seg__opt:last-of-type {
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  }
+  .shop-seg__opt + .shop-seg__opt {
+    margin-left: -1.5px;
+  }
+  .shop-seg__opt:has(input:checked),
+  .pm-grind__opt:has(input:checked) {
+    z-index: 1;
+    border-color: var(--color-btn-bg);
+    background: var(--color-btn-bg);
+    color: var(--color-btn-text);
+  }
+  .shop-seg__opt:has(input:focus-visible),
+  .pm-grind__opt:has(input:focus-visible) {
+    z-index: 2;
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+  }
+  .pm-grind {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+  .pm-grind__opt {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap);
+    padding: 0 1rem;
+    border: 1.5px solid var(--color-line-strong);
+    border-radius: var(--radius-pill);
+    font: 600 var(--fs-small) / 1.2 var(--font-text);
+    cursor: pointer;
+  }
+
+  /* ---------- Dostava: dekor SHOP-BG-2 (pozadina slike je već krem) ---------- */
+  .shop-ship-photo {
+    display: block;
+    width: 100%;
+    height: 100%;
+    max-height: 18rem;
+    aspect-ratio: 2 / 1;
+    object-fit: cover;
+    object-position: 50% 45%;
+  }
+  @media (min-width: 64rem) {
+    .shop-ship-photo {
+      max-height: none;
+      aspect-ratio: auto;
+      min-height: 100%;
+    }
+  }
+
+  /* ---------- Modal proizvoda (/p/:slug): <dialog> u top layer-u ---------- */
+  .pm {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--color-text);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  .pm::backdrop {
+    background: rgb(27 21 13 / 0.55);
+  }
+  .pm[open]::backdrop {
+    animation: pm-fade var(--dur-base) var(--ease-out);
+  }
+  .pm__panel {
+    position: relative;
+    min-height: 100%;
+    background: var(--color-bg);
+  }
+  .pm[open] .pm__panel {
+    animation: pm-in var(--dur-base) var(--ease-out);
+  }
+  .pm__bar {
+    position: sticky;
+    top: 0;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding: var(--space-2) var(--space-3) var(--space-2) var(--space-2);
+    background: var(--color-bg);
+    border-bottom: 1px solid var(--color-line);
+  }
+  .pm-media {
+    aspect-ratio: 4 / 3;
+    max-height: 42svh;
+    margin: var(--space-3) var(--gutter) 0;
+    border-radius: var(--radius-card);
+  }
+  .pm-media .shop-bag {
+    height: 70%;
+  }
+  .pm-dl {
+    display: grid;
+    grid-template-columns: minmax(7rem, auto) 1fr;
+    gap: var(--space-2) var(--space-4);
+    margin: 0;
+  }
+  .pm-dl dt {
+    font: 700 var(--fs-micro) / 1.5 var(--font-label);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    padding-top: 2px;
+  }
+  .pm-dl dd {
+    margin: 0;
+  }
+
+  @media (min-width: 64rem) {
+    .pm {
+      padding: var(--space-7) var(--gutter);
+    }
+    .pm__panel {
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      max-width: 66rem;
+      margin: 0 auto;
+      overflow: clip;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-float);
+    }
+    .pm__bar {
+      border-bottom: 0;
+      padding: var(--space-3) var(--space-3) 0 var(--space-4);
+    }
+    .pm-media {
+      position: sticky;
+      top: var(--space-9);
+      aspect-ratio: 4 / 5;
+      max-height: none;
+      margin: 0;
+    }
+  }
+}
+
+@keyframes pm-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}
+@keyframes pm-fade {
+  from {
+    opacity: 0;
+  }
+}

@@ -15,11 +15,13 @@ const shipping = {
 /**
  * Tekst o dostavi (tekstovi.md, „Dostava") u tri dela, da pravna stranica Versand & Zahlung može da
  * prikaže dostavu i preuzimanje posebno. Ceo tekst za prodavnicu je shippingInfo.text.
+ * DE „2–4 Werktage" se ne lomi (Z15): U+00A0 ispred reči i U+2060 (word joiner) posle crte, jer pregledač
+ * sme da prelomi red posle „–".
  */
 const shippingParts = {
   delivery: {
     en: 'Free shipping within Austria from €45, otherwise €4.50. We roast on Tuesdays and Fridays and ship within one working day. Delivery in Austria takes 2–4 working days.',
-    de: 'Innerhalb Österreichs versandkostenfrei ab €\u00a045, sonst €\u00a04,50. Wir rösten dienstags und freitags und versenden innerhalb eines Werktags. Die Lieferung in Österreich dauert 2–4 Werktage.',
+    de: 'Innerhalb Österreichs versandkostenfrei ab €\u00a045, sonst €\u00a04,50. Wir rösten dienstags und freitags und versenden innerhalb eines Werktags. Die Lieferung in Österreich dauert 2–\u20604\u00a0Werktage.',
   } satisfies L,
   pickup: {
     en: 'Or pick up your order free of charge at the café in 1070 Vienna.',
@@ -122,6 +124,8 @@ export const shop = {
     size: { en: 'Size', de: 'Größe' } satisfies L,
     grind: { en: 'Grind', de: 'Mahlgrad' } satisfies L,
     addToCart: { en: 'Add to cart', de: 'In den Warenkorb' } satisfies L,
+    /** Kratak natpis dugmeta ispod 40rem (kartica prodavnice, traka modala na telefonu), Z15. */
+    addToCartShort: { en: 'Add', de: 'In den Korb' } satisfies L,
   },
   /** Čip „Demo" na SIP kartici i kartici u prodavnici (Z3 tačka 4). */
   card: {

@@ -528,9 +528,11 @@ function LiveStory({ phone }: { phone: boolean }) {
         card.style.pointerEvents = 'none'
       })
 
-      // para: POUR od G124, gasi se do p ≈ 0,2; SIP od S20
-      const oPour = T.span(T.STEAM_POUR.from, T.STEAM_POUR.full, g) * (1 - T.span(0, T.STEAM_POUR.waveOff, p))
-      const oSip = T.span(T.STEAM_SIP.from, T.STEAM_SIP.full, s)
+      // para: POUR od G124, gasi se do p ≈ 0,2; SIP od S20. Samo dok je scena u ekranu: skok preko
+      // priče (meni → prodavnica) inače bi na trenutak pustio video koji se odmah prekida.
+      const onStage = y > -100 && y < T.DESK.end + 100
+      const oPour = onStage ? T.span(T.STEAM_POUR.from, T.STEAM_POUR.full, g) * (1 - T.span(0, T.STEAM_POUR.waveOff, p)) : 0
+      const oSip = onStage ? T.span(T.STEAM_SIP.from, T.STEAM_SIP.full, s) : 0
       setSteam('pour', oPour)
       setSteam('sip', oSip)
 
@@ -592,8 +594,11 @@ function LiveStory({ phone }: { phone: boolean }) {
         cardsBox.dataset.in = lastCardsIn = '1'
       }
 
-      const oPour = T.span(T.STEAM_POUR.from, T.STEAM_POUR.full, gPour) * (1 - T.span(0, T.STEAM_POUR.waveOff, p))
-      const oSip = T.span(T.STEAM_SIP.from, T.STEAM_SIP.full, s)
+      // para samo dok je njen sloj u ekranu (vidi desktop)
+      const pourIn = m.pourTop - scroll < H && B > 0
+      const sipIn = B < H && m.sipBottom - scroll > 0
+      const oPour = pourIn ? T.span(T.STEAM_POUR.from, T.STEAM_POUR.full, gPour) * (1 - T.span(0, T.STEAM_POUR.waveOff, p)) : 0
+      const oSip = sipIn ? T.span(T.STEAM_SIP.from, T.STEAM_SIP.full, s) : 0
       setSteam('pour', oPour)
       setSteam('sip', oSip)
 

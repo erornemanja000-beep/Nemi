@@ -158,9 +158,14 @@ export function Shop() {
         </p>
 
         {/* naslov i SHOP-1 */}
-        <div className="mt-s5 grid gap-s5 lg:mt-s6 lg:grid-cols-12 lg:items-center lg:gap-s7">
+        <div className="mt-s5 grid gap-s5 lg:mt-s6 lg:grid-cols-12 lg:items-start lg:gap-s7">
           <div className="lg:col-span-7">
-            <h2 ref={titleRef} id="t-shop" tabIndex={-1} className="type-display m-0 text-h2 leading-none focus:outline-none">
+            <h2
+              ref={titleRef}
+              id="t-shop"
+              tabIndex={-1}
+              className="type-display m-0 text-[length:var(--fs-section,clamp(2.5rem,1.5rem+4vw,4.5rem))] leading-none focus:outline-none"
+            >
               {tx(shop.title)}
             </h2>
             <p className="m-0 mt-s3 max-w-[34rem] text-[1.125rem] leading-snug font-semibold">{tx(shop.subtitle)}</p>
@@ -179,8 +184,8 @@ export function Shop() {
           </div>
         </div>
 
-        {/* filteri */}
-        <div className="mt-s6 grid gap-s4 border-y border-line py-s4 lg:mt-s7 lg:grid-cols-[1fr_1.15fr_1.35fr_1.4fr] lg:gap-s5 lg:py-s5">
+        {/* filteri: telefon = grupe jedna ispod druge (trake), od 64rem grupe u redu i u novi red kad ne staju */}
+        <div className="mt-s6 grid gap-s4 border-y border-line py-s4 lg:mt-s7 lg:flex lg:flex-wrap lg:gap-x-s7 lg:gap-y-s4 lg:py-s5">
           {chipGroups.map((g) => {
             const selected: readonly string[] = filters[g.id]
             const labelId = `shop-filter-${g.id}`
@@ -201,7 +206,8 @@ export function Shop() {
                     </button>
                   ))}
                 </div>
-                {g.help && <p className="m-0 mt-s2 text-micro text-muted">{tx(g.help)}</p>}
+                {/* od 64rem pomoćni tekst ne širi grupu: širok je koliko čipovi (w-0 + min-w-full) */}
+                {g.help && <p className="m-0 mt-s2 text-micro text-muted lg:w-0 lg:min-w-full">{tx(g.help)}</p>}
               </div>
             )
           })}
@@ -234,20 +240,21 @@ export function Shop() {
           </label>
         </div>
 
-        {/* mreža po grupama */}
+        {/* mreža po grupama (shop.css): grupa sa jednom karticom zauzima jednu kolonu, pa na telefonu
+            Sets i Equipment stoje jedna pored druge; oprema sa više kartica je na telefonu traka */}
         <div ref={revealRef}>
           <div ref={gridRef} className="shop-groups mt-s5">
             {groups.map((g) => (
               <section
                 key={g.id}
                 aria-labelledby={`shop-group-${g.id}`}
-                className="shop-group mt-s6 first:mt-0 lg:mt-0"
-                style={{ '--span': Math.min(g.items.length, 3) } as CSSProperties}
+                className="shop-group"
+                style={{ '--span': Math.min(g.items.length, 3), '--span-sm': g.items.length > 1 ? 2 : 1 } as CSSProperties}
               >
                 <h3 id={`shop-group-${g.id}`} className="m-0 mb-s3 type-label text-text">
                   {tx(groupLabel[g.id])} · {g.items.length}
                 </h3>
-                <ul role="list" className={`shop-grid ${g.id === 'equipment' ? 'shop-grid--strip' : ''}`}>
+                <ul role="list" className={`shop-grid ${g.id === 'equipment' && g.items.length > 1 ? 'shop-grid--strip' : ''}`}>
                   {g.items.map((p) => (
                     <li key={p.slug} data-reveal className="min-w-0">
                       <ProductCard product={p} roast={roast} />
@@ -258,7 +265,7 @@ export function Shop() {
             ))}
 
             {list.length === 0 && (
-              <div className="grid justify-items-center gap-s4 rounded-card bg-surface px-s5 py-s7 text-center">
+              <div className="col-span-full grid justify-items-center gap-s4 rounded-card bg-surface px-s5 py-s7 text-center">
                 <Photo id="shop-bg-1" sizes="8rem" className="aspect-square h-auto w-32 rounded-full object-cover object-top" />
                 <p className="m-0 text-h3 font-bold">{tx(F.empty)}</p>
                 <Button onClick={reset}>{tx(F.reset)}</Button>
@@ -276,8 +283,9 @@ export function Shop() {
               {tx(shop.shippingInfo.cta.label)}
             </Button>
           </div>
-          {/* dekor: visina je rezervisana (telefon 2:1, desktop visina teksta), da sidra ispod ne kasne */}
-          <div className="shop-ship-media mt-s5 lg:mt-0" aria-hidden="true">
+          {/* dekor: visina je rezervisana (telefon 2:1, desktop visina teksta), da sidra ispod ne kasne;
+              na desktopu odmaknut od razdelnika, da ga zrna ne dodiruju */}
+          <div className="shop-ship-media mt-s5 lg:my-s6" aria-hidden="true">
             <Photo id="shop-bg-2" sizes="(min-width: 64rem) 45vw, 100vw" />
           </div>
         </div>

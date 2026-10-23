@@ -1,5 +1,6 @@
 // Jedan fiksni header (mockup.html, dizajn.md): boje prate aktivno poglavlje (data-chapter iz
-// useActiveChapter(), prelaz --dur-base). Van početne je uvek „page" (krem).
+// useActiveChapter(), prelaz --dur-base). Van početne (osim modala /p/:slug i /dev/* u dev-u) je uvek
+// „page" (krem).
 //   desktop (lg): logo, 5 stavki menija u sredini, EN · DE, pilula „Shop now", pretraga, korpa sa brojem
 //   telefon (64 px): logo, korpa i meni (meni nosi pretragu, jezik i „Shop now")
 // Širine (izmereno, EN je duži): logo ~225 px, meni ~500 px, desni deo ~330 px. Zato je meni tačno na
@@ -61,8 +62,9 @@ export function Header() {
   const closeSearch = useCallback(() => setSearchOpen(false), [])
 
   const onHome = pathname === '/'
-  // modal proizvoda (/p/:slug) stoji preko početne, pa header i dalje prati priču
-  const overHome = onHome || pathname.startsWith('/p/')
+  // modal proizvoda (/p/:slug) stoji preko početne, pa header i dalje prati priču; isto i dev harness-i
+  // (/dev/*, samo u dev-u), da se POUR i SIP mogu porediti sa mockupom
+  const overHome = onHome || pathname.startsWith('/p/') || (import.meta.env.DEV && pathname.startsWith('/dev/'))
   const chapter = overHome ? active : 'page'
   // providan na vrhu stranice i iznad zakačene priče na desktopu; inače pozadina poglavlja
   const solid = scrolled && !(overHome && chapter !== 'page' && !isPhone && !reduced)

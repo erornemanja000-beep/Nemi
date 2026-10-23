@@ -2,10 +2,12 @@
 
 Stakleni bokal (kao Hario server) sa staklenim V60 i papirnim filterom (pravi konus 60°, krep tekstura,
 šav). Od G65 odozgo, preko šava sa GRIND-om, u filter pada mlevena kafa (iste čestice kao u grind.py, iz
-istog emitera i u istom trenutku). Od G104 se kovano/brušeno gooseneck kuvalo (bliže kameri, odsečeno
-desnom ivicom kadra) nagne i tanak mlaz vode (staklena cev po balističkoj putanji) pada u filter; nivo u
-filteru raste, papir vlaži odozdo, od G130 kaplje kafa (Volume Absorption) i nivo u bokalu raste, od G166
-se kuvalo vraća i počinje drawdown. Na pultu leže 4 zrna. Para NIJE u renderu (pravi snimak preko CSS-a).
+istog emitera i u istom trenutku; poslednje mrvice padnu oko G110). Kovano/brušeno gooseneck kuvalo
+(bliže kameri, odsečeno desnom ivicom kadra) se od G100 do G112 primakne i nagne oko drške (12° -> 32°),
+od G112 tanak mlaz vode (staklena cev po balističkoj putanji) pada u filter (stiže za ~10 kadrova); nivo
+u filteru raste, papir vlaži odozdo, od G130 kaplje kafa (Volume Absorption), od G136 teče tanak mlaz i
+nivo u bokalu raste, kondenzacija se pojavi na staklu; od G166 se kuvalo vraća, rep mlaza pada, počinje
+drawdown. Na pultu leže 4 zrna. Para NIJE u renderu (pravi snimak preko CSS-a).
 
 Zajednički svet (kamera rig K, sat G, mlaz mlevene kafe, karta za transmisiju, svetlo) je u grind.py i
 ovde se uvozi. Kamera je ista kao u GRIND-u, tačno 1 S niže. Kadar scene = G + grind.G_OFF; fajlovi se
@@ -21,7 +23,9 @@ Pokretanje iz korena repoa:
     [--uzorci 64] [--poster] [--fstop 5] [--bez-zamucenja] [--ponovo-peci]
 
 --kadrovi su globalni G (65-192). Izlaz: kadar_LLLL.png (L = G - 64, RGBA 1200 x 1200), anchors.json
-(sidra u S: ivica_v60, pult_y, kafa_y od G177), po želji poster.png (= G150).
+(sidra u S: ivica_v60, pult_y = zadnja ivica pulta, baza_y, kafa_y od G177), po želji poster.png (= G150).
+Vreme (23.10.2026, 1200 px, 64 uzorka): ~340-390 CPU-s po kadru (~1,5 min na 4 slobodna jezgra); prvo
+pečenje mapa ~80 s (posle iz keša).
 """
 import argparse
 import math
@@ -68,6 +72,7 @@ MLAZ_BRZINA = 0.42              # m/s na izlazu iz izliva
 MLAZ_R0 = 0.00185
 DRSKA = Vector((0.095, 0.0, 0.120))   # tačka okreta (hvat na dršci), lokalno u kuvalu
 PULT_ZADNJA = 0.070             # zadnja ivica pulta (y): senka samo na pultu, iza je zid sekcije
+KUVALO_SKLONJENO = (0.050, 0.010)   # u mirovanju je kuvalo toliko desno/gore (x, z): izliv dalje od mlaza mlevene kafe
 
 
 def r_konus(z):
@@ -245,7 +250,8 @@ def mat_glass_drops(level_fn):
     dome = N.math('SUBTRACT', 1.0, N.math('DIVIDE', d, size), clamp=True)
     keep = N.ramp(cg, 0.40, 0.46)
     band = N.mul(N.ramp(z, 0.050, 0.068), N.ramp(z, 0.112, 0.124, 1.0, 0.0))
-    h = N.mul(N.mul(N.math('SQRT', dome), keep), band)
+    fog = value_node(N, 'Kondenzacija', 0.0)            # 0 dok je bokal hladan, 1 kad se napuni vrelom kafom
+    h = N.mul(N.mul(N.mul(N.math('SQRT', dome), keep), band), fog)
     bump = N.new('ShaderNodeBump')
     bump.inputs['Distance'].default_value = 1.0
     N.put(N.mul(h, 0.0005), bump.inputs['Height'])
@@ -752,7 +758,7 @@ def build(a):
     sc.frame_start, sc.frame_end = sf(GR.G_POUR[0]), sf(GR.G_POUR[1])
     C.world_hdri(sc, 0.15)
     cam = GR.rig_camera(sc, 'pour', a.res, a.fstop)
-    GR.transmission_card(sc, GR.BG_POUR, GR.LIGHT_TARGET - Vector((0, 0, GR.S)))
+    GR.transmission_card(sc, GR.BG_POUR, GR.LIGHT_TARGET - Vector((0, 0, GR.S)), glossy_bounces=1)
 
     glass = GR.mat_glass('Staklo', tint=(0.97, 0.98, 0.975), shadow=0.85, smudge=0.04)
     steel_pol = GR.mat_steel('KuvaloIzlivInox', rough=0.14, aniso=0.4, prints=False, smudge=0.8)
@@ -764,7 +770,9 @@ def build(a):
     C.assign(liq, coffee_mat)
     C.assign(cut, coffee_mat)
     subjects.append(liq)
-    subjects += bokal(glass, mat_glass_drops(carafe_level))
+    drops_mat = mat_glass_drops(carafe_level)
+    fog_v = next(n for n in drops_mat.node_tree.nodes if n.label == 'Kondenzacija').outputs[0]
+    subjects += bokal(glass, drops_mat)
     subjects += dripper(glass)
     filt_objs, bed = filter_papir(a.ponovo_peci)
     fmat = filt_objs[0].data.materials[0]
@@ -809,22 +817,22 @@ def build(a):
     # trake pozadi i blenda samo na staklo, inox i vodu (papir i zrna bi isprale u sivo)
     shiny = [o for o in subjects if o not in filt_objs and o is not bed]
     GR.lights(sc, 'pour', shiny, crumbs, key=a.key, strip=a.strip, refl=a.odsjaj, refl_subjects=kparts)
-    # pult: nizak key baca dugu senku unazad (do zadnje ivice pulta); meko svetlo odozgo koje prima SAMO pult
-    # je ublažava (key se ne isključuje sa pulta: shadow catcher tada zatamni ceo pult jednolično)
-    top = C.area_light('PultSvetlo', (0.02, -0.05, 0.75), (0.02, 0.0, 0.0), (0.9, 0.9), 45.0, 5600)
-    only_c = bpy.data.collections.new('SamoPult')
-    only_c.objects.link(catcher)
-    top.light_linking.receiver_collection = only_c
+    # pult: nizak key baca dugu senku unazad, do zadnje ivice pulta (tu i u stvarnosti pada sa ivice). Svetla
+    # sa light linking-om na shadow catcher-u ne koristiti: catcher tada zatamni ceo pult jednolično.
 
     # ---------------- animacija po kadru G
     dt = GR.SLOW / GR.FPS
     rest = pivot.rotation_euler.copy()
+    rest_loc = pivot.location.copy()
     for g in range(GR.G_POUR[0], GR.G_POUR[1] + 1):
         f = sf(g)
         tilt = kettle_tilt(g) + 0.25 * math.sin(2 * math.pi * (g - 118) / 40.0) * GR.smoothstep(118, 126, g) \
             * (1 - GR.smoothstep(160, 166, g))
         pivot.rotation_euler = (rest.x, -math.radians(tilt), rest.z)
         pivot.keyframe_insert('rotation_euler', frame=f)
+        away = 1.0 - GR.smoothstep(98, 112, g) + GR.smoothstep(166, 180, g)
+        pivot.location = rest_loc + Vector((KUVALO_SKLONJENO[0], 0.0, KUVALO_SKLONJENO[1])) * away
+        pivot.keyframe_insert('location', frame=f)
         # mlaz vode: glava izlazi G112 (kuvalo je nagnuto) i stiže do filtera za t_fall; rep kreće G166
         fall_frames = t_fall / dt
         s1.default_value = min(1.0, max(0.0, (g - 112) / fall_frames)) if g >= 112 else 0.0
@@ -857,6 +865,8 @@ def build(a):
         cut.keyframe_insert('location', frame=f)
         lvl_v.default_value = lv
         lvl_v.keyframe_insert('default_value', frame=f)
+        fog_v.default_value = GR.smoothstep(136, 170, g)
+        fog_v.keyframe_insert('default_value', frame=f)
         rad_v.default_value = r_in(max(lv, 0.001))
         rad_v.keyframe_insert('default_value', frame=f)
     GR.bake_particles(sc)

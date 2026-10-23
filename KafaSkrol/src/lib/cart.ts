@@ -1,7 +1,7 @@
 // Korpa (plan, Interfejs 8). Sve sume su u centima. Dostava (Austrija) je iz sadržaja,
 // shop.shipping: feeCents ispod freeFromCents, od freeFromCents (uključivo) besplatna.
 // Čuva se u localStorage pod storageKeys.cart; druga kartica pregledača dobija izmene preko `storage`.
-// addToCart sam prikazuje toast (Toast.tsx). Stanje „otvorena" se ne čuva.
+// addToCart sam prikazuje toast (Toast.tsx), openCart ga skida. Stanje „otvorena" se ne čuva.
 import { useSyncExternalStore } from 'react'
 import { storageKeys } from '../config/site'
 import { products } from '../content/products'
@@ -129,7 +129,11 @@ export function setQty(key: string, qty: number) {
 }
 
 export const removeLine = (key: string) => setQty(key, 0)
-export const openCart = () => commit({ ...state, open: true })
+/** Otvara korpu i skida toast: korpa pokazuje stavku, a toast bi na telefonu pokrio njeno dno (Z14). */
+export function openCart() {
+  commit({ ...state, open: true })
+  clearToast()
+}
 export const closeCart = () => {
   if (state.open) commit({ ...state, open: false })
 }

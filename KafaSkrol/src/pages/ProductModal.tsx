@@ -1,7 +1,11 @@
 // Modal proizvoda na /p/:slug, preko početne (Home je roditeljska ruta, pa prodavnica ostaje ispod).
-//   - Ljuska je Overlay iz CartDrawer.tsx (Z8): role="dialog" + aria-modal, zarobljen fokus, Esc, klik na
-//     pozadinu, lockScroll i data-lenis-prevent. Na telefonu je ceo ekran (variant „sheet"), a od 64rem
-//     panel u sredini (.pm-panel u sections/shop.css). Nivo je isti kao paneli headera, ispod toast-a.
+//   - Ljuska je Overlay (components/Overlay.tsx, Z8): role="dialog" + aria-modal, zarobljen fokus, Esc,
+//     klik na pozadinu, lockScroll i data-lenis-prevent. Na telefonu je ceo ekran (variant „sheet"), a od
+//     64rem panel u sredini (.pm-panel u sections/shop.css). Nivo je isti kao paneli headera, ispod toast-a.
+//   - Redosled (Z15): opis, pa izbor veličine i mlevenja, cena i dugme, pa tabela (Origin … Roasted on).
+//     Ispod 64rem su cena i dugme lepljiva traka na dnu dijaloga (.pm-buy), a tabela i demo napomena
+//     idu iznad nje (CSS order), pa je dugme uvek u ekranu. U DOM-u (i za tastaturu) redosled je isti na
+//     svim širinama.
 //   - Esc, „×", klik na pozadinu i „Back to the shop" zatvaraju: ako je modal otvoren iz aplikacije, korak
 //     nazad u istoriji (vraća na /), a pri hladnom otvaranju zamena sa / i skok na prodavnicu.
 //     Dugme „nazad" u pregledaču radi isto.
@@ -142,6 +146,23 @@ function ProductDialog({ product }: { product: Product }) {
     else navigate('/', { replace: true })
   }
 
+  // visina lepljive trake (ispod 64rem): toast (Toast.tsx, chrome.css) stoji iznad nje, ne preko dugmeta
+  const buyRef = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    const el = buyRef.current
+    const root = document.documentElement
+    if (!el || typeof ResizeObserver === 'undefined') return
+    const ro = new ResizeObserver(() => {
+      if (getComputedStyle(el).position === 'sticky') root.style.setProperty('--pm-buy-h', `${el.offsetHeight}px`)
+      else root.style.removeProperty('--pm-buy-h')
+    })
+    ro.observe(el)
+    return () => {
+      ro.disconnect()
+      root.style.removeProperty('--pm-buy-h')
+    }
+  }, [])
+
   // toast iz korpe (iznad panela, aria-live) javlja dodavanje
   const add = () => {
     if (product.kind === 'gear') addToCart(slug, null, null)
@@ -190,7 +211,8 @@ function ProductDialog({ product }: { product: Product }) {
         </button>
       </div>
 
-      <div className="grid gap-s5 pb-s7 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:items-start lg:gap-s7 lg:px-s7 lg:pt-s3">
+      {/* 64–80rem: uža slika i razmak, da izbor mlevenja stane u 2 reda i dugme bude u ekranu i na 1024×768 */}
+      <div className="grid gap-s5 lg:grid-cols-[minmax(0,4fr)_minmax(0,6fr)] lg:items-start lg:gap-s6 lg:px-s7 lg:pt-s3 lg:pb-s7 xl:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] xl:gap-s7">
         <div className="pm-media">
           <ProductVisual product={product} sizes="(min-width: 64rem) 28rem, 90vw" alt={imageAlt} />
           <span className="shop-demo" aria-hidden="true">
@@ -198,56 +220,48 @@ function ProductDialog({ product }: { product: Product }) {
           </span>
         </div>
 
-        <div className="px-gutter lg:px-0">
-          {tags.length > 0 && (
-            <ul role="list" className="m-0 mb-s3 flex list-none flex-wrap gap-1.5 p-0">
-              {tags.map((t) => (
-                <li key={t.en} className="shop-tag">
-                  {tx(t)}
-                </li>
-              ))}
-            </ul>
-          )}
-          <h2 id={titleId} className="type-display m-0 text-h2 leading-none">
-            {name}
-          </h2>
-          <p className="sr-only">{tx(shop.card.demoSr)}</p>
-          <p className="m-0 mt-s3 max-w-[36rem]">{tx(product.description)}</p>
-
-          {rows.length > 0 && (
-            <dl className="pm-dl mt-s5 border-t border-line pt-s4">
-              {rows.map(([label, value]) => (
-                <div key={label.en} className="contents">
-                  <dt>{tx(label)}</dt>
-                  <dd>{value}</dd>
-                </div>
-              ))}
-            </dl>
-          )}
-
-          <div className="mt-s5 grid gap-s4 border-t border-line pt-s5">
-            {isCoffee && product.sizes.length > 1 && (
-              <fieldset className="m-0 border-0 p-0">
-                <legend className="mb-s2 p-0 type-label text-muted">{tx(T.size)}</legend>
-                <div className="shop-seg max-w-[20rem]">
-                  {product.sizes.map((s) => (
-                    <label key={s.grams} className="shop-seg__opt">
-                      <input
-                        type="radio"
-                        name={`${uid}-size`}
-                        value={s.grams}
-                        checked={s.grams === size?.grams}
-                        onChange={() => setGrams(s.grams)}
-                        className="sr-only"
-                      />
-                      {formatGrams(s.grams, lang)}
-                    </label>
-                  ))}
-                </div>
-              </fieldset>
+        {/* kolona teksta: na telefonu flex sa order (vidi gore i .pm-buy u shop.css) */}
+        <div className="pm-body px-gutter lg:px-0">
+          <div>
+            {tags.length > 0 && (
+              <ul role="list" className="m-0 mb-s3 flex list-none flex-wrap gap-1.5 p-0">
+                {tags.map((t) => (
+                  <li key={t.en} className="shop-tag">
+                    {tx(t)}
+                  </li>
+                ))}
+              </ul>
             )}
+            <h2 id={titleId} className="type-display m-0 text-h2 leading-none">
+              {name}
+            </h2>
+            <p className="sr-only">{tx(shop.card.demoSr)}</p>
+            <p className="m-0 mt-s3 max-w-[36rem]">{tx(product.description)}</p>
+          </div>
 
-            {isCoffee && (
+          {isCoffee && (
+            <div className="pm-opts mt-s5 grid gap-s4 border-t border-line pt-s5">
+              {product.sizes.length > 1 && (
+                <fieldset className="m-0 border-0 p-0">
+                  <legend className="mb-s2 p-0 type-label text-muted">{tx(T.size)}</legend>
+                  <div className="shop-seg max-w-[20rem]">
+                    {product.sizes.map((s) => (
+                      <label key={s.grams} className="shop-seg__opt">
+                        <input
+                          type="radio"
+                          name={`${uid}-size`}
+                          value={s.grams}
+                          checked={s.grams === size?.grams}
+                          onChange={() => setGrams(s.grams)}
+                          className="sr-only"
+                        />
+                        {formatGrams(s.grams, lang)}
+                      </label>
+                    ))}
+                  </div>
+                </fieldset>
+              )}
+
               <fieldset className="m-0 border-0 p-0" aria-describedby={`${uid}-grind-help`}>
                 <legend className="mb-s2 p-0 type-label text-muted">{tx(T.grind)}</legend>
                 <div className="pm-grind">
@@ -269,22 +283,36 @@ function ProductDialog({ product }: { product: Product }) {
                   {tx(shop.grindHelp)}
                 </p>
               </fieldset>
-            )}
+            </div>
+          )}
 
+          {/* cena i dugme; ispod 64rem lepljiva traka na dnu dijaloga */}
+          <div ref={buyRef} className="pm-buy">
             <Price
               cents={cents}
               grams={size?.grams}
               showGrams={!!size}
-              className="text-muted"
-              amountClassName="text-[1.75rem] font-extrabold text-text"
+              className="min-w-0 text-muted"
+              amountClassName="text-[1.5rem] font-extrabold text-text lg:text-[1.75rem]"
             />
-
-            <Button onClick={add} aria-describedby={titleId} className="w-full justify-center sm:w-fit">
-              {tx(T.addToCart)}
+            <Button onClick={add} aria-describedby={titleId} className="flex-none justify-center whitespace-nowrap max-lg:px-6! lg:w-fit">
+              <span className="sm:hidden">{tx(T.addToCartShort)}</span>
+              <span className="max-sm:hidden">{tx(T.addToCart)}</span>
             </Button>
-
-            <p className="m-0 text-micro text-muted">{tf(site.demo)}</p>
           </div>
+
+          <p className="pm-note m-0 mt-s4 text-micro text-muted">{tf(site.demo)}</p>
+
+          {rows.length > 0 && (
+            <dl className="pm-dl mt-s5 border-t border-line pt-s4">
+              {rows.map(([label, value]) => (
+                <div key={label.en} className="contents">
+                  <dt>{tx(label)}</dt>
+                  <dd>{value}</dd>
+                </div>
+              ))}
+            </dl>
+          )}
         </div>
       </div>
     </Overlay>

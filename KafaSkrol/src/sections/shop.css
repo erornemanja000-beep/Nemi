@@ -23,6 +23,15 @@
   .shop-strip::-webkit-scrollbar {
     display: none;
   }
+  /* od 64rem: čipovi se lome u novi red unutar svoje grupe (grupe su u redu sa flex-wrap, Shop.tsx) */
+  @media (min-width: 64rem) {
+    .shop-strip {
+      flex-wrap: wrap;
+      margin-inline: 0;
+      padding-inline: 0;
+      overflow: visible;
+    }
+  }
   .shop-chip {
     flex: none;
     display: inline-flex;
@@ -97,6 +106,27 @@
   .shop-grid > li {
     display: flex;
   }
+  /* grupe u istoj mreži (telefon 2 kolone, od 64rem 3): grupa zauzima onoliko kolona koliko ima kartica
+     (--span-sm najviše 2, --span najviše 3, postavlja Shop.tsx), pa grupe od po jedne kartice (Sets,
+     Equipment) staju u isti red; naslov, pa kartice do dna reda, da su kartice susednih grupa iste visine */
+  .shop-groups {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-6) var(--space-3);
+  }
+  .shop-group {
+    display: grid;
+    grid-template-columns: subgrid;
+    grid-template-rows: auto 1fr;
+    grid-column: span var(--span-sm, 2);
+  }
+  .shop-group > * {
+    grid-column: 1 / -1;
+  }
+  /* traka opreme na telefonu (.shop-grid--strip) je flex, pa subgrid na nju ne utiče */
+  .shop-group > .shop-grid {
+    grid-template-columns: subgrid;
+  }
   /* oprema na telefonu: traka sa prstom (mapa-skrola) */
   @media not all and (min-width: 64rem) {
     .shop-grid--strip {
@@ -122,25 +152,12 @@
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: var(--space-5);
     }
-    /* grupe u istoj mreži od 3 kolone: Sets i Equipment staju u jedan red dok ih je ukupno ≤ 3
-       (--span = broj kartica grupe, najviše 3, postavlja Shop.tsx) */
     .shop-groups {
-      display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: var(--space-7) var(--space-5);
     }
     .shop-group {
-      display: grid;
-      grid-template-columns: subgrid;
       grid-column: span var(--span, 3);
-      /* naslov, pa kartice do dna reda: kartice susednih grupa su iste visine */
-      grid-template-rows: auto 1fr;
-    }
-    .shop-group > * {
-      grid-column: 1 / -1;
-    }
-    .shop-group > .shop-grid {
-      grid-template-columns: subgrid;
     }
   }
 
@@ -232,7 +249,7 @@
     padding: 3px 8px;
     border: 1.5px solid var(--color-line-strong);
     border-radius: var(--radius-pill);
-    font: 700 0.6875rem / 1.2 var(--font-label);
+    font: 700 var(--fs-micro) / 1.2 var(--font-label);
     letter-spacing: 0.1em;
     text-transform: uppercase;
   }
@@ -303,7 +320,8 @@
   }
 
   /* ---------- Dostava: dekor SHOP-BG-2 (pozadina slike je već krem, ivice se gube u sekciji) ----------
-     Visina je rezervisana pre učitavanja: telefon 2:1, desktop visina kolone teksta (slika je apsolutna). */
+     Visina je rezervisana pre učitavanja: telefon 2:1, desktop visina kolone teksta (slika je apsolutna).
+     Na desktopu je odmaknuta od razdelnika iznad (lg:my-s6 u Shop.tsx; Z15: zrna ga ne dodiruju). */
   .shop-ship-media {
     position: relative;
     aspect-ratio: 2 / 1;
@@ -325,7 +343,7 @@
     }
   }
 
-  /* ---------- Modal proizvoda (/p/:slug): panel u Overlay-u iz CartDrawer.tsx ----------
+  /* ---------- Modal proizvoda (/p/:slug): panel u Overlay-u (components/Overlay.tsx) ----------
      Overlay daje pozadinu, ulaz (chrome.css) i nivo (iznad headera i chata, ispod toast-a). Varijanta
      „sheet" je ceo ekran; od 64rem je panel u sredini. Selektor je jači od chrome.css (sheet: inset 0). */
   .chrome-overlay[data-variant="sheet"] .chrome-panel.pm-panel {
@@ -341,7 +359,8 @@
     align-items: center;
     justify-content: space-between;
     gap: var(--space-3);
-    padding: var(--space-2) var(--space-3) var(--space-2) var(--space-2);
+    /* dugme za zatvaranje je 16 px od gornje i desne ivice dijaloga (na telefonu i ekrana) */
+    padding: var(--space-4) var(--space-4) var(--space-3) var(--space-2);
     background: var(--color-bg);
     border-bottom: 1px solid var(--color-line);
   }
@@ -371,6 +390,50 @@
     margin: 0;
   }
 
+  /* Kolona teksta: opis, izbor, cena i dugme (.pm-buy), demo napomena, tabela. */
+  .pm-body {
+    display: flex;
+    flex-direction: column;
+  }
+  .pm-buy {
+    display: grid;
+    justify-items: start;
+    gap: var(--space-4);
+    margin-top: var(--space-5);
+    padding-top: var(--space-5);
+    border-top: 1px solid var(--color-line);
+  }
+  .pm-opts + .pm-buy {
+    margin-top: var(--space-4);
+    padding-top: 0;
+    border-top: 0;
+  }
+  /* Telefon i tablet: cena i dugme su lepljiva traka na dnu dijaloga (preko cele širine), a tabela i
+     napomena idu iznad nje. Traka je poslednja u koloni, pa ostaje dole dok se skroluje ceo dijalog. */
+  @media not all and (min-width: 64rem) {
+    .pm-body .pm-dl {
+      order: 1;
+    }
+    .pm-body .pm-note {
+      order: 2;
+    }
+    .pm-body .pm-buy,
+    .pm-body .pm-opts + .pm-buy {
+      order: 3;
+      position: sticky;
+      bottom: 0;
+      z-index: 3;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-3);
+      margin: var(--space-6) calc(var(--gutter) * -1) 0;
+      padding: var(--space-3) var(--gutter) calc(var(--space-3) + env(safe-area-inset-bottom));
+      border-top: 1px solid var(--color-line);
+      background: var(--color-bg);
+    }
+  }
+
   @media (min-width: 64rem) {
     .chrome-overlay[data-variant="sheet"] .chrome-panel.pm-panel {
       inset: var(--space-7) 0 auto;
@@ -386,7 +449,7 @@
     }
     .pm__bar {
       border-bottom: 0;
-      padding: var(--space-3) var(--space-3) 0 var(--space-4);
+      padding: var(--space-4) var(--space-4) 0;
     }
     .pm-media {
       position: sticky;

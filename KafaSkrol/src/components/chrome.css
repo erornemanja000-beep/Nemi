@@ -43,7 +43,7 @@
     color: var(--pp-ink-deep);
   }
 
-  /* ---------- Paneli (Overlay u CartDrawer.tsx) ---------- */
+  /* ---------- Paneli (Overlay.tsx) ---------- */
   /* Iznad headera i chata. */
   .chrome-overlay {
     position: fixed;
@@ -133,6 +133,19 @@
   }
 
   /* ---------- Toast ---------- */
+  /* Telefon: iznad chat balona (3,25rem) ili iznad lepljive trake modala proizvoda (--pm-buy-h, sa
+     safe-area), šta je više. Od 64rem dole na sredini (balon je desno, modal nema traku). */
+  .chrome-toast-region {
+    bottom: max(
+      calc(var(--space-4) + 3.25rem + var(--space-3) + env(safe-area-inset-bottom)),
+      calc(var(--pm-buy-h, 0px) + var(--space-3))
+    );
+  }
+  @media (min-width: 64rem) {
+    .chrome-toast-region {
+      bottom: var(--space-6);
+    }
+  }
   .chrome-toast {
     animation: chrome-toast-in var(--dur-base) var(--ease-out) backwards;
     transition: opacity var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);

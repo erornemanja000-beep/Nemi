@@ -1,6 +1,8 @@
 // Kratka poruka dole na sredini (posle „Add to cart" i demo dugmadi), u regionu aria-live="polite".
 // Region je uvek u DOM-u, a poruka se menja: čitač je pročita, i istu poruku dva puta zaredom (novi id).
-// Posle 4 s bledi i nestaje. Na telefonu stoji iznad chat balona, da ga ne pokrije.
+// Posle 4 s bledi i nestaje. Na telefonu stoji iznad chat balona, da ga ne pokrije, a u modalu proizvoda
+// iznad lepljive trake sa dugmetom (--pm-buy-h, ProductModal.tsx). Kad se korpa otvori, poruka nestaje
+// (openCart u cart.ts): korpa sama pokazuje stavku, a toast bi na telefonu pokrio njeno dno.
 import { useEffect, useState } from 'react'
 import { shop } from '../content/shop'
 import type { L } from '../content/types'
@@ -41,7 +43,7 @@ export function Toast() {
     <div
       role="status"
       aria-live="polite"
-      className="pointer-events-none fixed inset-x-0 bottom-[calc(var(--space-4)+3.25rem+var(--space-3)+env(safe-area-inset-bottom))] z-[calc(var(--z-chat)+20)] flex justify-center px-gutter lg:bottom-s6"
+      className="chrome-toast-region pointer-events-none fixed inset-x-0 z-[calc(var(--z-chat)+20)] flex justify-center px-gutter"
     >
       {toast && message && <ToastItem key={toast.id} text={tx(message)} />}
     </div>

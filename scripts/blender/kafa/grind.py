@@ -30,6 +30,8 @@ Pokretanje iz korena repoa:
 
 Izlaz: <out>/kadar_GGGG.png (RGBA, 1200 x 1500 na --res 1200), <out>/anchors.json (sidra u S), po želji
 poster.png (= G1). Telefon: neparni kadrovi, umanjeni (bez novog rendera).
+Vreme (23.10.2026, 1200 px, 64 uzorka): ~250-270 CPU-s po kadru (~65 s na 4 slobodna jezgra); prva fizika
+~7,5 min (1708 zrna, posle iz keša cache/zrna_*.npz).
 """
 import argparse
 import json
@@ -209,7 +211,7 @@ def card_color(scene, hex_color):
     return tuple(c)
 
 
-def transmission_card(scene, hex_color, center, radius=4.0):
+def transmission_card(scene, hex_color, center, radius=4.0, glossy_bounces=0):
     """Velika sfera u boji sekcije, vidljiva SAMO zracima prelamanja: kroz staklo i tečnost vidi se
     pozadina sajta, a staklo ostaje neprovidno u alfa kanalu (kafa u bokalu ne postaje providna)."""
     bm = bmesh.new()
@@ -226,9 +228,11 @@ def transmission_card(scene, hex_color, center, radius=4.0):
     em = N.new('ShaderNodeEmission')
     em.inputs['Color'].default_value = (*card_color(scene, hex_color), 1.0)
     # svetli samo zraku koji je kroz staklo/tečnost stigao pravo do karte; difuzni i sjajni odskoci sa
-    # predmeta iza stakla je ne vide (inače karta osvetli zrna u levku i daje im mlečnu koprenu)
+    # predmeta iza stakla je ne vide (inače zrna u levku u svom odsjaju „vide“ krem kartu i dobiju mlečnu
+    # koprenu). glossy_bounces=1 (POUR): dozvoljen jedan sjajni odskok, pa unutrašnji odsjaji u staklu
+    # (usna i rebra V60) ostaju svetli; iza stakla tamo nema zrna
     lp = N.new('ShaderNodeLightPath')
-    only = N.mul(N.math('LESS_THAN', lp.outputs['Diffuse Depth'], 0.5), N.math('LESS_THAN', lp.outputs['Glossy Depth'], 0.5))
+    only = N.mul(N.math('LESS_THAN', lp.outputs['Diffuse Depth'], 0.5), N.math('LESS_THAN', lp.outputs['Glossy Depth'], glossy_bounces + 0.5))
     N.put(only, em.inputs['Strength'])
     nt.links.new(em.outputs[0], nt.nodes['Material Output'].inputs['Surface'])
     if hasattr(m, 'emission_sampling'):
@@ -469,7 +473,7 @@ def mat_bean():
     P = tc.outputs['Object']
     oi = N.new('ShaderNodeObjectInfo')
     rnd = oi.outputs['Random']
-    base = N.mix(N.ramp(rnd, 0.0, 1.0), (0.020, 0.0095, 0.0048), (0.046, 0.023, 0.0115))
+    base = N.mix(N.ramp(rnd, 0.0, 1.0), (0.027, 0.0118, 0.0056), (0.058, 0.0275, 0.0130))
     mott = N.noise(P, 700.0, detail=3, rough=0.55)
     base = N.mix(N.ramp(mott, 0.35, 0.70), N.tint(base, (0.80, 0.78, 0.76)), N.tint(base, (1.18, 1.15, 1.10)))
     chaff = N.new('ShaderNodeAttribute', attribute_type='GEOMETRY', attribute_name='chaff').outputs['Fac']

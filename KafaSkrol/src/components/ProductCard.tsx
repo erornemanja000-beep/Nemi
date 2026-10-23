@@ -1,6 +1,6 @@
 // Kartica proizvoda u prodavnici (Z9, skica „7 · Prodavnica", tekstovi.md „Natpisi na kartici proizvoda").
 //   Svuda: slika, čip „Demo", oznake (prženje, za šta, tag), ime (link na /p/<slug>), poreklo · obrada,
-//          cena sa Grundpreisom u istom redu i „incl. VAT, plus shipping", „Add to cart".
+//          cena sa Grundpreisom u istom redu i „incl. VAT, plus shipping", „Add to cart" (ispod 40rem „Add").
 //   Desktop (lg, 64rem) još: note, „Roasted on" (+ „Best before" kad postoji pravilo), 250 g / 1 kg i mlevenje.
 //   Telefon: kraća kartica (mapa-skrola): bez nota, datuma i izbora; u korpu ide 250 g, cela zrna.
 // ProductVisual (kesa ili oprema) koristi i modal proizvoda. Dok render ne postoji (ready: false),
@@ -209,12 +209,10 @@ export function ProductCard({ product, roast }: Props) {
           </label>
         )}
 
-        <Button
-          aria-describedby={titleId}
-          onClick={add}
-          className="mt-auto w-full justify-center px-3! text-center leading-[1.15]! lg:px-7!"
-        >
-          {tx(shop.labels.addToCart)}
+        {/* ispod 40rem kratak natpis (dve kartice u redu), u jednom redu */}
+        <Button aria-describedby={titleId} onClick={add} className="mt-auto w-full justify-center px-3! text-center whitespace-nowrap lg:px-7!">
+          <span className="sm:hidden">{tx(shop.labels.addToCartShort)}</span>
+          <span className="max-sm:hidden">{tx(shop.labels.addToCart)}</span>
         </Button>
       </div>
     </article>

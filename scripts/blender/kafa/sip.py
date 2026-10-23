@@ -56,8 +56,9 @@ SIP_BG = '#6E3A27'      # --pp-espresso, pozadina (zid)
 SIP_FLOOR = '#7C4532'   # --color-floor, sto ispod šolje
 
 # svetlo (azimut od +X, -90 = ka kameri, + = ka nazad; visina iznad horizonta, u stepenima)
-KEY_AZ, KEY_EL, KEY_DIST = -140.0, 20.0, 1.30     # key prozor levo-gore-napred; donja ivica ~0°, pa se
-                                                   # prozor ogleda u skoro vertikalnom zidu šolje
+KEY_AZ, KEY_EL, KEY_DIST = -140.0, 20.0, 1.30     # key prozor levo-gore-napred, nisko (1-39°): odsjaj
+                                                   # prozora pada na zaobljen obod; strme stranice šolje pod
+                                                   # kamerom od 22° ogledaju sto, ne prozor
 KEY_SIZE = (0.60, 0.90)
 STRIP_AZ, STRIP_DIST = (158.0, 22.0), 0.40         # uske trake pozadi levo i desno (ispred zida)
 FLAG_AZ, FLAG_DIST = -30.0, 0.42                   # crna zastava desno napred
@@ -358,14 +359,14 @@ def area_light(name, loc, aim, size, power, kelvin, shape='RECTANGLE', spread=18
     return ob
 
 
-def flag(name, loc, aim, size):
+def flag(name, loc, aim, size, diffuse=True):
     """Crna zastava (molton): upija svetlo, u glazuri daje tamnu površinu = kontrast odsjaja."""
     bpy.ops.mesh.primitive_plane_add(size=1.0, location=loc)
     ob = bpy.context.active_object
     ob.name = name
     ob.scale = (size[0], size[1], 1.0)
     ob.rotation_euler = (Vector(aim) - Vector(loc)).to_track_quat('Z', 'Y').to_euler()
-    ray_visibility(ob, camera=False, shadow=False)   # tamni odsjaj i manje odbijenog svetla, bez senke na zidu
+    ray_visibility(ob, camera=False, shadow=False, diffuse=diffuse)   # tamni odsjaj (+ manje odbijenog svetla)
     m, _, b, _ = new_material(name)
     b.inputs['Base Color'].default_value = (0.004, 0.004, 0.004, 1)
     b.inputs['Roughness'].default_value = 1.0
@@ -374,14 +375,16 @@ def flag(name, loc, aim, size):
     return ob
 
 
-def photo_studio_lights(target, subjects, wall=None, key=110.0, strip=4.0, sun=5.0, bg=6.0, sun_spot=SUN_SPOT,
+def photo_studio_lights(target, subjects, wall=None, key=70.0, strip=10.0, sun=5.0, bg=6.0, sun_spot=SUN_SPOT,
                         flags=True):
     """Foto-studio (predlog za common.py): jedan key prozor levo-gore-napred iza prozorskog okvira,
     dve uske trake pozadi, crna zastava desno; uz zid i toplo sunce kroz isti okvir koje pada samo na zid.
 
     Fill skoro ne postoji (samo tamni HDRI), pa je odnos key:fill oko 5-8:1 i svetlo pada sleva udesno.
     Zid ne dobija key (light linking = „cutter" u studiju), nego svoje meko svetlo sleva + sunce kroz okvir.
-    Trake (sa saćem) svetle samo predmet (subjects), da ne preplave sto."""
+    Trake (sa saćem) svetle samo predmet (subjects), da ne preplave sto.
+    Bez zida (providna pozadina) nema ni okvira: njegove prečke bi delimično zaklonile key svuda po stolu,
+    pa bi shadow catcher dao sivu koprenu preko celog kadra."""
     only_subj = bpy.data.collections.new('OnlySubjects')
     for ob in subjects:
         only_subj.objects.link(ob)
@@ -392,36 +395,37 @@ def photo_studio_lights(target, subjects, wall=None, key=110.0, strip=4.0, sun=5
     t = Vector((a.y, -a.x, 0.0))                      # horizontala u ravni prozora (t x a = +Z)
     win = key_pos - 0.06 * a                          # ravan okvira 6 cm ispred key svetla
 
-    # okvir: zid oko otvora + 3x4 okna sa prečkama 6 cm; baca senku i vidi se u odsjaju, kameri nevidljiv
-    W, H, bar, margin = KEY_SIZE[0] + 0.04, KEY_SIZE[1] + 0.04, 0.06, 0.55
-    cols, rows = 3, 4
-    rects = [(-W / 2 - margin, -H / 2 - margin, -W / 2, H / 2 + margin),       # levo
-             (W / 2, -H / 2 - margin, W / 2 + margin, H / 2 + margin),         # desno
-             (-W / 2, H / 2, W / 2, H / 2 + margin),                           # gore
-             (-W / 2, -H / 2 - margin, W / 2, -H / 2)]                         # dole
-    for i in range(1, cols):
-        u = -W / 2 + W * i / cols
-        rects.append((u - bar / 2, -H / 2, u + bar / 2, H / 2))
-    for j in range(1, rows):
-        v = -H / 2 + H * j / rows
-        rects.append((-W / 2, v - bar / 2, W / 2, v + bar / 2))
-    bm = bmesh.new()
-    for u0, v0, u1, v1 in rects:
-        bm.faces.new([bm.verts.new((u, 0.0, v)) for u, v in ((u0, v0), (u1, v0), (u1, v1), (u0, v1))])
-    me = bpy.data.meshes.new('WindowFrame')
-    bm.to_mesh(me)
-    bm.free()
-    frame = link(bpy.data.objects.new('WindowFrame', me))
-    frame.matrix_world = Matrix(((t.x, a.x, 0.0, win.x), (t.y, a.y, 0.0, win.y),
-                                 (0.0, 0.0, 1.0, win.z), (0.0, 0.0, 0.0, 1.0))) @ \
-        Matrix.Rotation(math.radians(FRAME_TILT), 4, 'Y')   # nagnut okvir: kose trake senke kao u videu
-    ray_visibility(frame, camera=False, diffuse=False, transmission=False, scatter=False)
-    fm, _, fb, _ = new_material('WindowFrame')
-    fb.inputs['Base Color'].default_value = (0.02, 0.018, 0.016, 1)
-    fb.inputs['Roughness'].default_value = 0.9
-    C.assign(frame, fm)
+    if wall is not None:
+        # okvir: zid oko otvora + 3x4 okna sa prečkama 6 cm; baca senku i vidi se u odsjaju, kameri nevidljiv
+        W, H, bar, margin = KEY_SIZE[0] + 0.04, KEY_SIZE[1] + 0.04, 0.06, 0.55
+        cols, rows = 3, 4
+        rects = [(-W / 2 - margin, -H / 2 - margin, -W / 2, H / 2 + margin),       # levo
+                 (W / 2, -H / 2 - margin, W / 2 + margin, H / 2 + margin),         # desno
+                 (-W / 2, H / 2, W / 2, H / 2 + margin),                           # gore
+                 (-W / 2, -H / 2 - margin, W / 2, -H / 2)]                         # dole
+        for i in range(1, cols):
+            u = -W / 2 + W * i / cols
+            rects.append((u - bar / 2, -H / 2, u + bar / 2, H / 2))
+        for j in range(1, rows):
+            v = -H / 2 + H * j / rows
+            rects.append((-W / 2, v - bar / 2, W / 2, v + bar / 2))
+        bm = bmesh.new()
+        for u0, v0, u1, v1 in rects:
+            bm.faces.new([bm.verts.new((u, 0.0, v)) for u, v in ((u0, v0), (u1, v0), (u1, v1), (u0, v1))])
+        me = bpy.data.meshes.new('WindowFrame')
+        bm.to_mesh(me)
+        bm.free()
+        frame = link(bpy.data.objects.new('WindowFrame', me))
+        frame.matrix_world = Matrix(((t.x, a.x, 0.0, win.x), (t.y, a.y, 0.0, win.y),
+                                     (0.0, 0.0, 1.0, win.z), (0.0, 0.0, 0.0, 1.0))) @ \
+            Matrix.Rotation(math.radians(FRAME_TILT), 4, 'Y')   # nagnut okvir: kose trake senke kao u videu
+        ray_visibility(frame, camera=False, diffuse=False, transmission=False, scatter=False)
+        fm, _, fb, _ = new_material('WindowFrame')
+        fb.inputs['Base Color'].default_value = (0.02, 0.018, 0.016, 1)
+        fb.inputs['Roughness'].default_value = 0.9
+        C.assign(frame, fm)
 
-    # key: vertikalan prozor (kao pravi), 4300 K toplo popodne
+    # key: vertikalan prozor (kao pravi), 5800 K; toplinu daju sunce na zidu (4200 K) i boje scene
     kd = bpy.data.lights.new('Key', 'AREA')
     kd.shape, kd.size, kd.size_y = 'RECTANGLE', KEY_SIZE[0], KEY_SIZE[1]
     kd.energy = key
@@ -440,7 +444,7 @@ def photo_studio_lights(target, subjects, wall=None, key=110.0, strip=4.0, sun=5
         lights.append(so)
     if flags:
         fpos = tgt + FLAG_DIST * direction(FLAG_AZ, 12.0)
-        flag('FlagRight', fpos, tgt, (0.45, 0.70))
+        flag('FlagRight', fpos, tgt, (0.45, 0.70), diffuse=wall is not None)
 
     if wall is not None:
         only_wall = bpy.data.collections.new('OnlyWall')
@@ -525,21 +529,20 @@ def mat_stoneware(body, seed=7):
     d = N.sub(z0, z)
     zr = N.add(N.sub(z, z0), GLAZE_Z)          # visina u odnosu na lokalnu liniju glazure (kapi kreću sa nje)
 
-    # kapi: široki jezici (glazura se slegla) i uže kapi sa zadebljanim vrhom, nejednaki razmaci;
-    # neke stoje u paru (0,06-0,12 rad), pa se preko smooth-min spajaju u jednu široku kap
-    drips, angles = [], []
-    while len(drips) < 16:
-        if angles and rnd.random() < 0.3:
-            a = angles[-1] + rnd.choice((-1, 1)) * rnd.uniform(0.06, 0.12)
-        else:
-            a = rnd.uniform(0, 2 * math.pi)
-            if any(abs(math.atan2(math.sin(a - b), math.cos(a - b))) < 0.18 for b in angles):
-                continue
-        angles.append(a)
-        if len(drips) < 1:
-            drips.append((a, rnd.uniform(0.0025, 0.0060), rnd.uniform(0.0050, 0.0090), 1.0))
-        else:
-            drips.append((a, rnd.uniform(0.0040, 0.0200), rnd.uniform(0.0030, 0.0062), rnd.uniform(0.95, 1.12)))
+    # kapi: oko kruga (14 mesta, pomak ±6°, ~15% praznina), pa nejednaki razmaci; uz trećinu stoji
+    # druga kap na 4-7°, pa se preko smooth-min spajaju u širu kap; jedan širok jezik gde se glazura slegla
+    drips = []
+    for i in range(14):
+        a0 = 2 * math.pi * i / 14 + rnd.uniform(-0.10, 0.10)
+        if rnd.random() < 0.15:
+            continue
+        if not drips:
+            drips.append((a0, rnd.uniform(0.0025, 0.0060), rnd.uniform(0.0050, 0.0090), 1.0))
+            continue
+        drips.append((a0, rnd.uniform(0.0040, 0.0200), rnd.uniform(0.0030, 0.0062), rnd.uniform(0.95, 1.12)))
+        if rnd.random() < 0.35:
+            drips.append((a0 + rnd.choice((-1, 1)) * rnd.uniform(0.07, 0.12), rnd.uniform(0.0030, 0.0120),
+                          rnd.uniform(0.0028, 0.0050), rnd.uniform(0.95, 1.10)))
     beads = None
     for a, length, wid, bead_k in drips:
         top = GLAZE_Z + 0.004
@@ -599,7 +602,7 @@ def mat_stoneware(body, seed=7):
     # --- glazura: ovsena krem-siva sa zelenkastim tonom; oblaci, gvožđe, reljef gline kroz tanku glazuru
     gv = N.noise(P, 55.0, detail=5, rough=0.62)
     # ovsena: sivo-zelena (topao odsjaj stola i zida je posle pomera ka krem tonu kao u referenci)
-    glaze = N.mix(N.ramp(gv, 0.36, 0.64), (0.090, 0.100, 0.090), (0.300, 0.350, 0.335))
+    glaze = N.mix(N.ramp(gv, 0.36, 0.64), (0.092, 0.108, 0.096), (0.305, 0.395, 0.360))
     cloud = N.ramp(N.noise(P, 30.0, detail=4, distortion=0.5), 0.48, 0.72)
     glaze = N.mix(N.mul(cloud, 0.55), glaze, (0.15, 0.105, 0.068))              # smeđi oblaci
     top_tone = N.ramp(z, GLAZE_Z + 0.010, RIM_Z - 0.002)                      # ka obodu glazura je tanja

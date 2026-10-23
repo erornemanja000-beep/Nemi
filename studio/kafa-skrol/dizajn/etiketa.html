@@ -22,18 +22,18 @@
    paper   = boja papira kese (i materijal boka, leđa i vara u Blenderu)
    field   = talas kafe (glavna površina etikete)
    meniscus/glint = tamna linija i svetli odsjaji na ivici talasa (kao Wave na sajtu)
-   on-paper / on-field = boja teksta (samo boje iz tokena)                                         */
+   on-field = boja svega teksta (samo boje iz tokena); na papiru nema teksta, samo ventil i zvezdica                                         */
 .label[data-v="origin"]{
   --paper:#EEE5D5; --field:#AD4731; --meniscus:#86321F; --glint:var(--pp-crema);
-  --on-paper:var(--pp-ink); --on-field:var(--pp-cream-light); --star:#AD4731;
+  --on-field:var(--pp-cream-light); --star:#AD4731;
 }
 .label[data-v="flavor"]{
   --paper:#E6D6BF; --field:#3A9A96; --meniscus:#1E5C86; --glint:#8FCBC6;
-  --on-paper:var(--pp-ink); --on-field:var(--pp-ink-deep); --star:#1E5C86;
+  --on-field:var(--pp-ink-deep); --star:#1E5C86;
 }
 .label[data-v="roast"]{
   --paper:#EDB8A0; --field:#D8826A; --meniscus:#B25A45; --glint:#F6ECE4;
-  --on-paper:var(--pp-ink); --on-field:var(--pp-ink-deep); --star:#B25A45;
+  --on-field:var(--pp-ink-deep); --star:#9A4734;
 }
 
 html,body{margin:0;padding:0;background:transparent}
@@ -69,7 +69,7 @@ body{width:2048px;height:3072px;overflow:hidden}
   font-size:236px;line-height:1;letter-spacing:-0.01em;white-space:nowrap;color:var(--on-field);
 }
 .demo{
-  position:absolute;right:var(--safe-x);top:2752px;margin:0;box-sizing:border-box;
+  position:absolute;right:var(--safe-x);top:2708px;margin:0;box-sizing:border-box;
   display:inline-flex;align-items:center;justify-content:center;
   height:136px;padding:0 54px 0 calc(54px + 0.16em);
   border:7px solid var(--on-field);border-radius:999px;

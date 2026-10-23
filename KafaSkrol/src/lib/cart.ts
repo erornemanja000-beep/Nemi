@@ -1,13 +1,15 @@
-// Korpa (plan, Interfejs 8). STUB iz Z1 sa konačnim imenima i potpisima; doradu radi Z8.
-// Sve sume su u centima. Dostava u Austriji: € 4,50 ispod € 45, od € 45 (uključivo) besplatna.
-// Čuva se u localStorage pod storageKeys.cart. addToCart sam prikazuje toast (Toast.tsx).
+// Korpa (plan, Interfejs 8). Sve sume su u centima. Dostava (Austrija) je iz sadržaja,
+// shop.shipping: feeCents ispod freeFromCents, od freeFromCents (uključivo) besplatna.
+// Čuva se u localStorage pod storageKeys.cart; druga kartica pregledača dobija izmene preko `storage`.
+// addToCart sam prikazuje toast (Toast.tsx). Stanje „otvorena" se ne čuva.
 import { useSyncExternalStore } from 'react'
 import { storageKeys } from '../config/site'
 import { products } from '../content/products'
-import type { GrindId } from '../content/types'
+import { shop } from '../content/shop'
+import type { GrindId, L } from '../content/types'
 
-export const SHIPPING_CENTS = 450
-export const FREE_SHIPPING_FROM_CENTS = 4500
+/** Najveća količina jedne stavke (demo, zaštita od greške u kucanju). */
+export const MAX_QTY = 99
 
 export type CartLine = {
   slug: string
@@ -32,6 +34,8 @@ export type CartSummary = {
 
 const lineKey = (l: Pick<CartLine, 'slug' | 'grams' | 'grind'>) => `${l.slug}|${l.grams ?? ''}|${l.grind ?? ''}`
 
+const GRINDS = new Set<string>(shop.grinds.map((g) => g.id))
+
 /** Cena jednog komada: veličina kafe/seta ili cena opreme. null = proizvod ili veličina ne postoji. */
 export function unitPrice(slug: string, grams: number | null): number | null {
   const p = products.find((x) => x.slug === slug)
@@ -40,22 +44,24 @@ export function unitPrice(slug: string, grams: number | null): number | null {
   return p.sizes.find((s) => s.grams === grams)?.priceCents ?? null
 }
 
+/** Stavke iz localStorage; sve što ne odgovara današnjem sadržaju (stari slug, cena, mlevenje) ispada. */
 function load(): CartLine[] {
   try {
     const raw = JSON.parse(localStorage.getItem(storageKeys.cart) ?? '[]') as unknown
     if (!Array.isArray(raw)) return []
-    return raw.filter(
-      (l): l is CartLine =>
-        typeof l?.slug === 'string' && Number.isInteger(l?.qty) && l.qty > 0 && unitPrice(l.slug, l.grams ?? null) !== null,
-    )
+    const lines: CartLine[] = []
+    for (const l of raw as Partial<CartLine>[]) {
+      if (typeof l?.slug !== 'string' || !Number.isInteger(l.qty) || (l.qty ?? 0) < 1) continue
+      const grams = typeof l.grams === 'number' ? l.grams : null
+      if (unitPrice(l.slug, grams) === null) continue
+      const grind = typeof l.grind === 'string' && GRINDS.has(l.grind) ? l.grind : null
+      lines.push({ slug: l.slug, grams, grind, qty: Math.min(l.qty as number, MAX_QTY) })
+    }
+    return lines
   } catch {
     return []
   }
 }
-
-let state: CartState = { lines: typeof window === 'undefined' ? [] : load(), open: false }
-let summary = summarize(state)
-const listeners = new Set<() => void>()
 
 function summarize(s: CartState): CartSummary {
   const lines = s.lines.map((l) => {
@@ -63,24 +69,29 @@ function summarize(s: CartState): CartSummary {
     return { ...l, key: lineKey(l), unitCents, lineCents: unitCents * l.qty }
   })
   const subtotalCents = lines.reduce((sum, l) => sum + l.lineCents, 0)
-  const free = subtotalCents === 0 || subtotalCents >= FREE_SHIPPING_FROM_CENTS
-  const shippingCents = free ? 0 : SHIPPING_CENTS
+  const { feeCents, freeFromCents } = shop.shipping
+  const free = subtotalCents === 0 || subtotalCents >= freeFromCents
+  const shippingCents = free ? 0 : feeCents
   return {
     lines,
     count: lines.reduce((n, l) => n + l.qty, 0),
     subtotalCents,
     shippingCents,
-    toFreeShippingCents: free ? 0 : FREE_SHIPPING_FROM_CENTS - subtotalCents,
+    toFreeShippingCents: free ? 0 : freeFromCents - subtotalCents,
     totalCents: subtotalCents + shippingCents,
     open: s.open,
   }
 }
 
-function commit(next: CartState) {
+let state: CartState = { lines: typeof window === 'undefined' ? [] : load(), open: false }
+let summary = summarize(state)
+const listeners = new Set<() => void>()
+
+function commit(next: CartState, persist = true) {
   const linesChanged = next.lines !== state.lines
   state = next
   summary = summarize(state)
-  if (linesChanged) {
+  if (linesChanged && persist) {
     try {
       localStorage.setItem(storageKeys.cart, JSON.stringify(state.lines))
     } catch {
@@ -90,27 +101,38 @@ function commit(next: CartState) {
   listeners.forEach((l) => l())
 }
 
+// izmena korpe u drugoj kartici
+if (typeof window !== 'undefined') {
+  window.addEventListener('storage', (e) => {
+    if (e.key === storageKeys.cart || e.key === null) commit({ ...state, lines: load() }, false)
+  })
+}
+
 export function addToCart(slug: string, grams: number | null, grind: GrindId | null, qty = 1) {
-  if (unitPrice(slug, grams) === null) return
+  if (unitPrice(slug, grams) === null || qty < 1) return
   const key = lineKey({ slug, grams, grind })
   const found = state.lines.find((l) => lineKey(l) === key)
   const lines = found
-    ? state.lines.map((l) => (l === found ? { ...l, qty: l.qty + qty } : l))
-    : [...state.lines, { slug, grams, grind, qty }]
+    ? state.lines.map((l) => (l === found ? { ...l, qty: Math.min(l.qty + qty, MAX_QTY) } : l))
+    : [...state.lines, { slug, grams, grind, qty: Math.min(qty, MAX_QTY) }]
   commit({ ...state, lines })
   showToast('added')
 }
 
+/** Nova količina stavke (ključ iz useCart().lines[].key); 0 ili manje uklanja stavku. */
 export function setQty(key: string, qty: number) {
-  const lines = qty <= 0
-    ? state.lines.filter((l) => lineKey(l) !== key)
-    : state.lines.map((l) => (lineKey(l) === key ? { ...l, qty } : l))
+  const lines =
+    qty <= 0
+      ? state.lines.filter((l) => lineKey(l) !== key)
+      : state.lines.map((l) => (lineKey(l) === key ? { ...l, qty: Math.min(Math.round(qty), MAX_QTY) } : l))
   commit({ ...state, lines })
 }
 
 export const removeLine = (key: string) => setQty(key, 0)
 export const openCart = () => commit({ ...state, open: true })
-export const closeCart = () => commit({ ...state, open: false })
+export const closeCart = () => {
+  if (state.open) commit({ ...state, open: false })
+}
 
 function subscribe(listener: () => void) {
   listeners.add(listener)
@@ -119,14 +141,17 @@ function subscribe(listener: () => void) {
 
 export const useCart = () => useSyncExternalStore(subscribe, () => summary, () => summary)
 
-// --- toast (Toast.tsx ga prikazuje sa aria-live="polite") ---
+// --- toast (Toast.tsx ga prikazuje u regionu aria-live="polite") ---
+/** 'added' = shop.cart.toast. Ostale poruke (npr. demo pretplata, Z10) šalju svoj dvojezični tekst. */
 export type ToastKind = 'added'
-let toast: { kind: ToastKind; id: number } | null = null
+export type ToastMessage = ToastKind | L
+let toast: { message: ToastMessage; id: number } | null = null
 let toastId = 0
 const toastListeners = new Set<() => void>()
 
-export function showToast(kind: ToastKind) {
-  toast = { kind, id: ++toastId }
+/** Prikazuje poruku oko 4 s. Ista poruka dva puta zaredom se ponovo čita (novi id). */
+export function showToast(message: ToastMessage) {
+  toast = { message, id: ++toastId }
   toastListeners.forEach((l) => l())
 }
 

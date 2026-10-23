@@ -1,0 +1,193 @@
+/* Delovi oko stranice (Z8): header, paneli (meni, pretraga, korpa), toast i chat.
+   Raspored i boje su Tailwind klase u komponentama; ovde je samo ono što klase ne mogu lepo da opišu:
+   stanja headera, ulaz i izlaz panela, značka korpe i pojavljivanje chata.
+   Animira se samo transform i opacity. Trajanja su tokeni, pa u mirnoj verziji padaju na 1 ms
+   (tokens.css), a src/index.css tada skraćuje i sve animacije. */
+
+/* Redosled slojeva kao u Tailwind-u (isto kao src/story/chapters.css): bez ove izjave bi sloj
+   components, ako se ovaj fajl učita pre src/index.css, bio slabiji od preflight-a. */
+@layer properties, theme, base, components, utilities;
+
+@layer components {
+  /* ---------- Header ---------- */
+  /* Providan iznad zakačene scene na desktopu (mockup), pun (boja poglavlja) svuda gde sadržaj
+     prolazi ispod njega. Tanka linija ispod posle 20 px skrola. */
+  .chrome-header {
+    background-color: transparent;
+    border-bottom: 1px solid transparent;
+  }
+  .chrome-header[data-solid="true"] {
+    background-color: var(--color-bg);
+  }
+  .chrome-header[data-scrolled="true"] {
+    border-bottom-color: var(--color-line);
+  }
+
+  /* Značka korpe (mockup .badge): tamna na kremu, svetla na terakoti i braonu. */
+  .chrome-badge {
+    position: absolute;
+    top: 4px;
+    right: 2px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    border-radius: var(--radius-pill);
+    background: var(--pp-ink-deep);
+    color: var(--pp-cream-light);
+    font: 700 11px/18px var(--font-label);
+    text-align: center;
+  }
+  [data-chapter="pour"] .chrome-badge,
+  [data-chapter="sip"] .chrome-badge {
+    background: var(--pp-cream-light);
+    color: var(--pp-ink-deep);
+  }
+
+  /* ---------- Paneli (Overlay u CartDrawer.tsx) ---------- */
+  /* Iznad headera i chata. */
+  .chrome-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: calc(var(--z-chat) + 10);
+  }
+  .chrome-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgb(27 21 13 / 0.45); /* --pp-ink-deep */
+    animation: chrome-fade-in var(--dur-base) var(--ease-out) both;
+  }
+  .chrome-panel {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    background: var(--color-surface);
+    color: var(--color-text);
+    box-shadow: var(--shadow-float);
+    overscroll-behavior: contain;
+    animation: var(--dur-base) var(--ease-out) both;
+  }
+  /* panel sam dobija fokus samo kad u njemu nema ničeg fokusabilnog */
+  .chrome-panel:focus {
+    outline: none;
+  }
+
+  /* korpa: desno, cela visina */
+  .chrome-overlay[data-variant="drawer"] .chrome-panel {
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: min(100%, 26rem);
+    animation-name: chrome-in-right;
+  }
+  /* meni na telefonu: ceo ekran */
+  .chrome-overlay[data-variant="sheet"] .chrome-panel {
+    inset: 0;
+    box-shadow: none;
+    animation-name: chrome-in-down;
+  }
+  /* pretraga: traka odozgo, najviše do 85 % visine */
+  .chrome-overlay[data-variant="top"] .chrome-panel {
+    top: 0;
+    left: 0;
+    right: 0;
+    max-height: min(85dvh, 44rem);
+    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+    animation-name: chrome-in-down;
+  }
+
+  /* izlaz: isti pokret unazad, pa Overlay skida panel posle --dur-base */
+  .chrome-overlay[data-state="closed"] .chrome-backdrop {
+    animation-name: chrome-fade-out;
+  }
+  .chrome-overlay[data-state="closed"][data-variant="drawer"] .chrome-panel {
+    animation-name: chrome-out-right;
+  }
+  .chrome-overlay[data-state="closed"][data-variant="sheet"] .chrome-panel,
+  .chrome-overlay[data-state="closed"][data-variant="top"] .chrome-panel {
+    animation-name: chrome-out-up;
+  }
+
+  /* traka do besplatne dostave (korpa): skaliranje, ne širina */
+  .chrome-progress {
+    height: 4px;
+    overflow: hidden;
+    border-radius: var(--radius-pill);
+    background: var(--color-line);
+  }
+  .chrome-progress > span {
+    display: block;
+    height: 100%;
+    background: var(--color-accent);
+    transform-origin: left center;
+    transition: transform var(--dur-base) var(--ease-out);
+  }
+
+  /* ---------- Toast ---------- */
+  .chrome-toast {
+    animation: chrome-toast-in var(--dur-base) var(--ease-out) both;
+    transition: opacity var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
+  }
+  .chrome-toast[data-leaving="true"] {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  /* ---------- Chat ---------- */
+  /* Pojavljuje se posle 3 s (u mirnoj verziji odmah). Dok je sakriven, nije ni fokusabilan. */
+  .chrome-chat {
+    transition:
+      opacity var(--dur-slow) var(--ease-out),
+      transform var(--dur-slow) var(--ease-out),
+      visibility 0s;
+  }
+  .chrome-chat[data-shown="false"] {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(8px);
+  }
+  .chrome-chat-panel {
+    transform-origin: bottom right;
+    animation: chrome-pop-in var(--dur-base) var(--ease-out) both;
+  }
+  /* oblačić „Questions? Ask us." pored balona, na hover i fokus tastaturom */
+  .chrome-chat-tip {
+    opacity: 0;
+    transform: translateX(6px);
+    transition: opacity var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
+  }
+  .chrome-chat-btn:focus-visible + .chrome-chat-tip {
+    opacity: 1;
+    transform: none;
+  }
+  @media (hover: hover) {
+    .chrome-chat-btn:hover + .chrome-chat-tip {
+      opacity: 1;
+      transform: none;
+    }
+  }
+}
+
+@keyframes chrome-fade-in {
+  from { opacity: 0; }
+}
+@keyframes chrome-fade-out {
+  to { opacity: 0; }
+}
+@keyframes chrome-in-right {
+  from { transform: translateX(100%); }
+}
+@keyframes chrome-out-right {
+  to { transform: translateX(100%); }
+}
+@keyframes chrome-in-down {
+  from { opacity: 0; transform: translateY(-16px); }
+}
+@keyframes chrome-out-up {
+  to { opacity: 0; transform: translateY(-16px); }
+}
+@keyframes chrome-toast-in {
+  from { opacity: 0; transform: translateY(8px); }
+}
+@keyframes chrome-pop-in {
+  from { opacity: 0; transform: translateY(8px) scale(0.96); }
+}

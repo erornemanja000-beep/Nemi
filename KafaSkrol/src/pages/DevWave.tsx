@@ -4,6 +4,7 @@
 // u omotačima kojima se menja opacity, kao u priči (klasa steam-host).
 //
 // Parametri: ?p=0.3 (stalan progress, bez skrola) · ?steam=0 (para bez fajlova: ready = false) · ?panel=0
+//            ?wave=0 (bez talasa, osnova za merenje vremena kadra)
 // U konzoli: __devWave.scrollTo(p), __devWave.stats(), __devWave.inspect()
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { media } from '../content/media'
@@ -30,6 +31,8 @@ const params = new URLSearchParams(window.location.search)
 const FIXED_P = params.has('p') ? Math.min(1, Math.max(0, Number(params.get('p')) || 0)) : null
 const NO_STEAM = params.get('steam') === '0'
 const SHOW_PANEL = params.get('panel') !== '0'
+/** ?wave=0: bez talasa (osnova za poređenje vremena kadra) */
+const NO_WAVE = params.get('wave') === '0'
 
 const clamp01 = (v: number) => Math.min(1, Math.max(0, v))
 const smooth = (a: number, b: number, v: number) => {
@@ -251,7 +254,7 @@ function LiveView({ phone }: { phone: boolean }) {
             </div>
           </section>
 
-          <Wave ref={wave} pourClip={pourClip} sipLens={sipLens} variant={phone ? 'phone' : 'desktop'} />
+          {!NO_WAVE && <Wave ref={wave} pourClip={pourClip} sipLens={sipLens} variant={phone ? 'phone' : 'desktop'} />}
         </div>
       </div>
       <section className="flex h-[60svh] items-center justify-center bg-pp-cream text-pp-ink">

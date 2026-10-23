@@ -14,16 +14,20 @@
 @layer components {
   .wave,
   .wave-static {
-    --wave-amber-light: #d99a52;
-    --wave-amber: #b5682e;
-    --wave-coffee: #49291b;
+    /* telo tečnosti je sloj sa mix-blend-mode: multiply: SIP ostaje živ i čitljiv, samo potamni i
+       dobije ćilibarni ton (normalno mešanje bi ga zamaglilo). Odozgo svetla ćilibarna, dole tamna kafa. */
+    --wave-amber-light: #f2c88f;
+    --wave-amber: #d99552;
+    --wave-coffee: #7a4526;
+    --wave-fill-top: 0.9;
+    --wave-fill-mid: 0.92;
+    --wave-fill-bottom: 0.88;
+    /* ivice i odsjaji (normalno mešanje) */
     --wave-meniscus: #24130b;
     --wave-shine: #fff4e0;
+    --wave-sheen: #ffe6bf; /* blag sjaj površine pri vrhu trake */
+    --wave-sheen-alpha: 0.2;
     --wave-glow: #f0b266;
-    /* providnost ispune odozgo nadole (storyboard: ~0,88 na tamnom kraju) */
-    --wave-fill-top: 0.5;
-    --wave-fill-mid: 0.66;
-    --wave-fill-bottom: 0.88;
     /* sočivo: živ SIP sloj iza trake (Wave čita ove tri vrednosti pri merenju, ne u petlji) */
     --wave-lens-scale: 1.04;
     --wave-lens-sepia: 0.22;
@@ -34,14 +38,17 @@
   }
 
   /* ---------- Živi talas: sloj preko POUR i SIP scene ---------- */
+  /* Wave crta dva sloja jedan na drugom, oba sa istim className (Story sme da da z-index):
+     .wave--tint je telo tečnosti sa mix-blend-mode: multiply NA SAMOM korenu, pa se meša sa POUR i SIP
+     slojem ispod i kad je stacking context; .wave--lines su ivice i odsjaji, normalno mešanje. */
   .wave {
     position: absolute;
     inset: 0;
     pointer-events: none;
     overflow: hidden;
-    contain: strict;
     visibility: hidden; /* Wave ga pali samo za 0 < p < 1 */
   }
+  .wave--tint { mix-blend-mode: multiply; }
   .wave__svg {
     position: absolute;
     inset: 0;
@@ -49,6 +56,8 @@
     height: 100%;
     overflow: visible;
   }
+  .wave__stop--sheen { stop-color: var(--wave-sheen); stop-opacity: var(--wave-sheen-alpha); }
+  .wave__stop--sheen-end { stop-color: var(--wave-sheen); stop-opacity: 0; }
   .wave__stop--top { stop-color: var(--wave-amber-light); stop-opacity: var(--wave-fill-top); }
   .wave__stop--mid { stop-color: var(--wave-amber); stop-opacity: var(--wave-fill-mid); }
   .wave__stop--bottom { stop-color: var(--wave-coffee); stop-opacity: var(--wave-fill-bottom); }
@@ -65,7 +74,7 @@
   .wave__shine-soft { stroke: var(--wave-shine); stroke-width: 6; stroke-opacity: 0.12; }
   /* donja ivica: tanka tamna linija i topao sjaj iznad nje (svetlo koje prolazi kroz tečnost) */
   .wave__under { stroke: var(--wave-meniscus); stroke-width: 1; stroke-opacity: 0.55; }
-  .wave__glow { stroke: var(--wave-glow); stroke-width: 14; stroke-opacity: 0.16; }
+  .wave__glow { stroke: var(--wave-glow); stroke-width: 16; stroke-opacity: 0.2; }
   .wave__glint { fill: var(--wave-shine); }
 
   /* ---------- Statična ivica (reduced motion): rez sa dekorativnom trakom boje talasa ---------- */
@@ -78,6 +87,8 @@
   }
   .wave-static svg { display: block; width: 100%; height: 100%; }
   .wave-static__pour { fill: var(--wave-pour); }
+  .wave-static__sip { fill: var(--wave-sip); }
+  .wave-static__tint { mix-blend-mode: multiply; }
   .wave-static .wave__meniscus,
   .wave-static .wave__shine,
   .wave-static .wave__under { vector-effect: non-scaling-stroke; }

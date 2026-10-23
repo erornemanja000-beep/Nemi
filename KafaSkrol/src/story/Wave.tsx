@@ -138,7 +138,7 @@ function edgeWaves(p: number) {
   const top: EdgeWave = {
     ph1: 0.9 + TAU * 0.55 * p,
     ph2: 2.3 - TAU * 1.3 * p,
-    tilt: 0.05 * Math.sin(Math.PI * p),
+    tilt: 0.08 * Math.sin(Math.PI * p),
     amp: env,
   }
   const bottom: EdgeWave = {
@@ -172,9 +172,11 @@ const f1 = (v: number) => (Math.round(v * 10) / 10).toString()
 
 // ---------- Motor talasa (van React-a, bez čitanja layout-a u set) ----------
 type Els = {
+  /** meri se ovaj koren (oba korena imaju isti položaj i veličinu) */
   root: HTMLDivElement
-  svg: SVGSVGElement
-  fill: SVGPathElement
+  roots: HTMLDivElement[]
+  svgs: SVGSVGElement[]
+  fills: SVGPathElement[]
   lines: SVGGElement
   topPaths: SVGPathElement[]
   bottomPaths: SVGPathElement[]
@@ -242,7 +244,7 @@ function createEngine(els: Els, variant: WaveVariant, pourRef: WaveProps['pourCl
     geo.lensScale = num(cs, '--wave-lens-scale', 1.04)
     geo.lensSepia = num(cs, '--wave-lens-sepia', 0.22)
     geo.lensSaturate = num(cs, '--wave-lens-saturate', 1.25)
-    if (geo.W > 0 && geo.H > 0) els.svg.setAttribute('viewBox', `0 0 ${f1(geo.W)} ${f1(geo.H)}`)
+    if (geo.W > 0 && geo.H > 0) for (const svg of els.svgs) svg.setAttribute('viewBox', `0 0 ${f1(geo.W)} ${f1(geo.H)}`)
     measured = geo.W > 0 && geo.H > 0
     dirty = false
   }
@@ -261,7 +263,7 @@ function createEngine(els: Els, variant: WaveVariant, pourRef: WaveProps['pourCl
   function setMode(next: WaveState['phase']) {
     if (next === mode) return
     const on = next === 'flood' || next === 'band'
-    els.root.style.visibility = on ? 'visible' : 'hidden'
+    for (const r of els.roots) r.style.visibility = on ? 'visible' : 'hidden'
     const lens = lensRef.current
     if (!on) {
       if (lens) {
@@ -344,7 +346,8 @@ function createEngine(els: Els, variant: WaveVariant, pourRef: WaveProps['pourCl
       dBottom += `${cmd}${f1(xs[i])} ${f1(bottom[i])}`
     }
     for (let i = n - 1; i >= 0; i--) dBack += `L${f1(xs[i])} ${f1(bottom[i])}`
-    els.fill.setAttribute('d', `${dTop}${dBack}Z`)
+    const dFill = `${dTop}${dBack}Z`
+    for (const el of els.fills) el.setAttribute('d', dFill)
     for (const el of els.topPaths) el.setAttribute('d', dTop)
     for (const el of els.bottomPaths) el.setAttribute('d', dBottom)
 
@@ -421,7 +424,7 @@ function createEngine(els: Els, variant: WaveVariant, pourRef: WaveProps['pourCl
     },
     dispose() {
       resetTargets()
-      els.root.style.visibility = ''
+      for (const r of els.roots) r.style.visibility = ''
     },
   }
 }
@@ -433,7 +436,7 @@ const EMPTY: WaveState = { p: 0, startY: 0, width: 0, height: 0, waveTop: 0, pha
 
 export function Wave({ pourClip, sipLens, variant, className = '', ref }: WaveProps) {
   const rootRef = useRef<HTMLDivElement>(null)
-  const svgRef = useRef<SVGSVGElement>(null)
+  const tintRef = useRef<HTMLDivElement>(null)
   const engine = useRef<Engine | null>(null)
   const pending = useRef<Parameters<WaveHandle['set']> | null>(null)
   const [id] = useState(() => `wave-${++uid}`)
@@ -454,14 +457,15 @@ export function Wave({ pourClip, sipLens, variant, className = '', ref }: WavePr
 
   useEffect(() => {
     const root = rootRef.current
-    const svg = svgRef.current
-    if (!root || !svg) return
-    const q = <T extends Element>(sel: string) => [...svg.querySelectorAll<T>(sel)]
+    const tint = tintRef.current
+    if (!root || !tint) return
+    const q = <T extends Element>(sel: string) => [...tint.querySelectorAll<T>(sel), ...root.querySelectorAll<T>(sel)]
     const e = createEngine(
       {
         root,
-        svg,
-        fill: q<SVGPathElement>('[data-w="fill"]')[0],
+        roots: [tint, root],
+        svgs: q<SVGSVGElement>('[data-w="svg"]'),
+        fills: q<SVGPathElement>('[data-w="fill"]'),
         lines: q<SVGGElement>('[data-w="lines"]')[0],
         topPaths: q<SVGPathElement>('[data-w="top"]'),
         bottomPaths: q<SVGPathElement>('[data-w="bottom"]'),
@@ -488,30 +492,45 @@ export function Wave({ pourClip, sipLens, variant, className = '', ref }: WavePr
   }, [variant, pourClip, sipLens])
 
   return (
-    <div ref={rootRef} className={`wave ${className}`} data-variant={variant} aria-hidden="true">
-      <svg ref={svgRef} className="wave__svg" preserveAspectRatio="none" focusable="false">
-        <defs>
-          <linearGradient id={`${id}-fill`} x1="0" y1="0" x2="0" y2="1">
-            <stop className="wave__stop--top" offset="0" />
-            <stop className="wave__stop--mid" offset="0.45" />
-            <stop className="wave__stop--bottom" offset="1" />
-          </linearGradient>
-        </defs>
-        <path data-w="fill" fill={`url(#${id}-fill)`} />
-        <g data-w="lines" opacity="0">
-          <path data-w="bottom" className="wave__line wave__glow" transform="translate(0 -7)" />
-          <path data-w="bottom" className="wave__line wave__under" />
-          <path data-w="top" className="wave__line wave__shine-soft" transform="translate(0 3)" />
-          <path data-w="top" className="wave__line wave__shine" transform="translate(0 3)" />
-          <path data-w="top" className="wave__line wave__meniscus" />
-        </g>
-        <g>
-          {GLINTS.slice(0, glintCount).map((g, i) => (
-            <ellipse key={i} data-w="glint" className="wave__glint" rx={g.rx} ry="1.3" opacity="0" />
-          ))}
-        </g>
-      </svg>
-    </div>
+    <>
+      {/* telo tečnosti: multiply na korenu, da SIP ostane živ i čitljiv */}
+      <div ref={tintRef} className={`wave wave--tint ${className}`} data-variant={variant} aria-hidden="true">
+        <svg className="wave__svg" data-w="svg" preserveAspectRatio="none" focusable="false">
+          <defs>
+            <linearGradient id={`${id}-fill`} x1="0" y1="0" x2="0" y2="1">
+              <stop className="wave__stop--top" offset="0" />
+              <stop className="wave__stop--mid" offset="0.45" />
+              <stop className="wave__stop--bottom" offset="1" />
+            </linearGradient>
+          </defs>
+          <path data-w="fill" fill={`url(#${id}-fill)`} />
+        </svg>
+      </div>
+      {/* ivice, sjaj površine i odsjaji */}
+      <div ref={rootRef} className={`wave wave--lines ${className}`} data-variant={variant} aria-hidden="true">
+        <svg className="wave__svg" data-w="svg" preserveAspectRatio="none" focusable="false">
+          <defs>
+            <linearGradient id={`${id}-sheen`} x1="0" y1="0" x2="0" y2="1">
+              <stop className="wave__stop--sheen" offset="0" />
+              <stop className="wave__stop--sheen-end" offset="0.35" />
+            </linearGradient>
+          </defs>
+          <path data-w="fill" fill={`url(#${id}-sheen)`} />
+          <g data-w="lines" opacity="0">
+            <path data-w="bottom" className="wave__line wave__glow" transform="translate(0 -7)" />
+            <path data-w="bottom" className="wave__line wave__under" />
+            <path data-w="top" className="wave__line wave__shine-soft" transform="translate(0 3)" />
+            <path data-w="top" className="wave__line wave__shine" transform="translate(0 3)" />
+            <path data-w="top" className="wave__line wave__meniscus" />
+          </g>
+          <g>
+            {GLINTS.slice(0, glintCount).map((g, i) => (
+              <ellipse key={i} data-w="glint" className="wave__glint" rx={g.rx} ry="1.3" opacity="0" />
+            ))}
+          </g>
+        </svg>
+      </div>
+    </>
   )
 }
 
@@ -548,8 +567,9 @@ export function WaveEdgeStatic({ className = '' }: { className?: string }) {
             <stop className="wave__stop--bottom" offset="1" />
           </linearGradient>
         </defs>
+        <rect className="wave-static__sip" width={STATIC_W} height={STATIC_H} />
         <path className="wave-static__pour" d={STATIC_POUR} />
-        <path d={STATIC_BAND} fill={`url(#${id}-fill)`} />
+        <path className="wave-static__tint" d={STATIC_BAND} fill={`url(#${id}-fill)`} />
         <path className="wave__line wave__under" d={STATIC_BOTTOM} />
         <path className="wave__line wave__shine" d={STATIC_TOP} transform="translate(0 3)" />
         <path className="wave__line wave__meniscus" d={STATIC_TOP} />

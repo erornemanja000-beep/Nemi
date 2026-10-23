@@ -81,8 +81,8 @@
   }
 
   /* ---------- Svetlo i sto (SceneBackdrop) ----------
-     Key svetlo dolazi gore levo (storyboard 1). Gradijent bledi pre kolone teksta, pa kontrast
-     teksta ostaje kao u dizajn.md. Sto: --table-y postavlja Story iz pult_y / sto_y (seq.json);
+     Key svetlo dolazi gore levo (storyboard 1). Na obojenim poglavljima gradijent nestaje pre kolone
+     teksta (na 1440: x 207, y 32 %), pa kontrast svetlog teksta ostaje kao u dizajn.md. Sto: --table-y postavlja Story iz pult_y / sto_y (seq.json);
      bez nje važi mockup (POUR pult pri dnu, SIP pod 58–70 % kao .chapter--sip). */
   .scene-backdrop {
     position: absolute;
@@ -102,8 +102,9 @@
         rgb(244 238 228 / 0.1) var(--ty),
         var(--color-surface) calc(var(--ty) + 2px)
       ),
-      /* svetlo iz prozora (#AF7051 u videu, dizajn.md 2) */
-      radial-gradient(ellipse 70% 55% at 0% 0%, rgb(175 112 81 / 0.55), transparent 70%);
+      /* svetlo iz prozora (#AF7051 u videu, dizajn.md 2); najviše 0,18, da logo u headeru
+         (krem, 11 px podnaslov) ostane ≥ 4,5:1 i u samom uglu */
+      radial-gradient(ellipse 60% 45% at 0% 0%, rgb(175 112 81 / 0.18), transparent 70%);
   }
   .scene-backdrop--sip {
     --ty: var(--table-y, 64%);
@@ -114,7 +115,7 @@
         var(--color-floor) calc(var(--ty) + 3.5rem),
         var(--color-floor-deep) 100%
       ),
-      radial-gradient(ellipse 70% 55% at 0% 0%, rgb(255 246 232 / 0.1), transparent 70%);
+      radial-gradient(ellipse 60% 45% at 0% 0%, rgb(255 246 232 / 0.1), transparent 70%);
   }
 
   /* ---------- Strelice i tačkice poglavlja (samo desktop) ---------- */
@@ -355,8 +356,10 @@
   }
 
   /* ---------- Zrno filma (src/components/Grain.tsx) ----------
-     Statičan SVG šum (feTurbulence, sivi) kao data-URI, popločan na 180 px. Telefon: obično
-     mešanje (merenje u izveštaju Z7), desktop: overlay. */
+     Statičan SVG šum (feTurbulence, sivi) kao data-URI, popločan na 180 px, obično mešanje.
+     Merenje (Z7, Playwright Chromium, skrol /dev/chapters): overlay je na 1440 dodavao ~7 ms po kadru
+     (17,5 → 25 ms), na 390 uz 4× usporen CPU p95 18–22 → 27–31 ms; obično mešanje ≈ bez zrna.
+     Overlay se vraća jednim redom u desktop bloku ispod (mix-blend-mode: overlay; opacity: .05). */
   .film-grain {
     position: fixed;
     inset: 0;
@@ -468,10 +471,7 @@
 
     .glass-card { width: 16.25rem; }
 
-    .film-grain {
-      mix-blend-mode: overlay;
-      opacity: 0.05;
-    }
+    .film-grain { opacity: 0.04; }
   }
 }
 

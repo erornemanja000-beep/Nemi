@@ -750,3 +750,12 @@ Posle toga ide završna provera (odeljak „Provera"). Direktor popravlja nalaze
 13. **iOS:** ako Playwright WebKit nije instaliran, `svh`, sticky, `screen` i memoriju platna mora da proveri korisnik na pravom iPhone-u.
 14. **Referentni kadrovi** reela (`f_001`, `f_090`, `f_213`) postoje samo lokalno i možda više nisu dostupni. Ako ih nema, recenzent poredi sa mockupom i `analiza-videa.md`.
 15. **Ime brenda je na etiketama kesa** (Z4). Promena imena posle rendera znači ponovni render kesa (oko 20 min).
+
+## Odluke direktora posle plana (23.10.2026)
+
+1. **Lenis ostaje**, samo na desktopu sa mišem, sa zastavicom `features.smoothScroll` (gasi se jednim redom).
+2. **Telefon prati odobreni `mockup-390.png` i `mapa-skrola.md`.** Poglavlja idu jedno ispod drugog, bez pina i bez šava. Svako poglavlje ima kraću sekvencu (`m`) koja se odvija dok je u ekranu. Šav GRIND → POUR postoji samo na desktopu. Z12 to implementira po ovoj odluci.
+3. **Kad se izvori razlikuju**, važi pravilo plana: tekst iz `tekstovi.md`, tempo i kadrovi iz `storyboard.md`.
+4. **Para:** `mediji` je napravio `steam/steam-cup-a.{webm,mp4}` i `steam-cup-b.{webm,mp4}` (+ `-seq/` WebP rezerva) umesto `steam-d/m.mp4`. `media.ts` koristi ove fajlove: `webm` je prvi `<source>`, `mp4` drugi; A za POUR, B za SIP.
+5. **Fotografije** su u `photos/`: `shop-1`, `shop-bg-1`, `shop-bg-2`, `onama-1`, `onama-2`, `guide-1`, `guide-2`, `kontakt-1` (izvor KONTAKT-2, natpis „Symbolbild"). KONTAKT-1 je odbačen (natpis lokala, ljudi). Tačne veličine su u `studio/kafa-skrol/izvori.md`.
+6. **Netlify:** poseban sajt sa base `KafaSkrol` napraviće korisnik kad sajt bude spreman. Do tada se ništa ne objavljuje.

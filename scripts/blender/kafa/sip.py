@@ -23,9 +23,9 @@ import common as C  # noqa: E402
 import bpy  # noqa: E402
 
 # ---------------------------------------------------------------- mere šolje (m)
-RIM_Z = 0.0935          # vrh oboda
-GLAZE_Z = 0.052         # srednja linija do koje glazura pokriva telo
-COFFEE_Z = 0.0850       # nivo kafe (8,5 mm ispod oboda, vidi se pod uglom od 10°)
+RIM_Z = 0.0980          # vrh oboda
+GLAZE_Z = 0.0560        # srednja linija do koje glazura pokriva telo
+COFFEE_Z = 0.0895       # nivo kafe (8,5 mm ispod oboda, vidi se pod uglom od 10°)
 HANDLE_ANGLE = -8.0     # krajnji ugao drške (° oko Z; 0 = drška desno, + = ka nazad)
 
 
@@ -167,20 +167,20 @@ def ease_out_back(t, s=0.9):
 # ---------------------------------------------------------------- modeli
 def mug_profile():
     """Profil šolje (r, z): donja strana -> stopa -> spoljni zid -> obod -> unutrašnji zid -> dno."""
-    under = [(0.0005, 0.0032), (0.0120, 0.0032), (0.0250, 0.0030), (0.0270, 0.0022)]
-    outer = catmull([(0.0280, 0.0010), (0.0296, 0.0), (0.0322, 0.0006), (0.0350, 0.0030), (0.0405, 0.0085),
-                     (0.0452, 0.0165), (0.0481, 0.0270), (0.0490, 0.0380), (0.0482, 0.0510), (0.0468, 0.0660),
-                     (0.0455, 0.0800), (0.0448, 0.0908)], steps=7)
+    under = [(0.0005, 0.0030), (0.0120, 0.0030), (0.0250, 0.0030), (0.0272, 0.0020)]
+    outer = catmull([(0.0282, 0.0010), (0.0296, 0.0), (0.0311, 0.0010), (0.0317, 0.0042), (0.0334, 0.0060),
+                     (0.0378, 0.0095), (0.0425, 0.0160), (0.0462, 0.0250), (0.0482, 0.0360), (0.0487, 0.0470),
+                     (0.0482, 0.0600), (0.0476, 0.0750), (0.0472, 0.0870), (0.0470, 0.0955)], steps=7)
     # tragovi točka (okretanje na grnčarskom kolu) u donjem delu, vidljivi i na silueti
     rippled = []
     for r, z in outer:
-        env = smoothstep(0.007, 0.016, z) * (1 - smoothstep(0.044, 0.058, z))
+        env = smoothstep(0.010, 0.018, z) * (1 - smoothstep(0.046, 0.060, z))
         rippled.append((r + 0.00011 * env * math.sin(2 * math.pi * z / 0.0066 + 0.7), z))
-    cx, cz, rr = 0.0423, 0.0908, 0.0025       # zaobljen obod
+    cx, cz, rr = 0.0445, 0.0955, 0.0025       # zaobljen obod
     rim = [(cx + rr * math.cos(a), cz + rr * math.sin(a)) for a in [math.pi * i / 12 for i in range(1, 12)]]
-    inner = catmull([(0.0398, 0.0908), (0.0404, 0.0800), (0.0417, 0.0650), (0.0430, 0.0500), (0.0435, 0.0380),
-                     (0.0427, 0.0280), (0.0397, 0.0190), (0.0340, 0.0122), (0.0255, 0.0090), (0.0150, 0.0082),
-                     (0.0005, 0.0081)], steps=6)
+    inner = catmull([(0.0420, 0.0955), (0.0421, 0.0870), (0.0424, 0.0750), (0.0430, 0.0600), (0.0434, 0.0470),
+                     (0.0430, 0.0360), (0.0412, 0.0260), (0.0380, 0.0180), (0.0325, 0.0125), (0.0250, 0.0095),
+                     (0.0150, 0.0086), (0.0005, 0.0085)], steps=6)
     return under + rippled + rim + inner
 
 
@@ -203,9 +203,9 @@ def build_body(rig):
 
 def build_handle(rig):
     """Debela drška: kriva sa okruglim presekom, deblja gore, proširena na spojevima."""
-    pts = [(0.0410, 0.0815, 1.50), (0.0510, 0.0850, 1.15), (0.0635, 0.0852, 1.04), (0.0738, 0.0792, 1.0),
-           (0.0790, 0.0668, 0.98), (0.0780, 0.0535, 0.95), (0.0716, 0.0428, 0.93), (0.0615, 0.0360, 0.96),
-           (0.0515, 0.0333, 1.12), (0.0430, 0.0330, 1.45)]
+    pts = [(0.0435, 0.0862, 1.50), (0.0540, 0.0898, 1.15), (0.0665, 0.0900, 1.04), (0.0765, 0.0840, 1.0),
+           (0.0815, 0.0710, 0.98), (0.0805, 0.0570, 0.95), (0.0740, 0.0460, 0.93), (0.0640, 0.0390, 0.96),
+           (0.0540, 0.0365, 1.12), (0.0455, 0.0365, 1.45)]
     cu = bpy.data.curves.new('Handle', 'CURVE')
     cu.dimensions = '3D'
     cu.resolution_u = 16
@@ -228,7 +228,7 @@ def build_handle(rig):
 
 def build_coffee(rig):
     zc = COFFEE_Z
-    prof = [(0.04110, zc + 0.0012), (0.0399, zc + 0.0003), (0.0380, zc), (0.0200, zc), (0.0003, zc)]
+    prof = [(0.0430, zc + 0.0012), (0.0418, zc + 0.0003), (0.0400, zc), (0.0200, zc), (0.0003, zc)]
     ob = C.lathe('Coffee', prof, segments=128)
     ob.parent = rig
     return ob
@@ -259,20 +259,20 @@ def mat_stoneware(body, seed=7):
     # --- ivica glazure: talasasta linija + kapi (rastojanje u metrima, < 0 = glazura)
     w1 = N.noise(N.vmath('ADD', N.vmath('SCALE', u, scale=1.3), (3.1, 7.7, 1.9)), 1.0, detail=3, rough=0.55)
     w2 = N.noise(N.vmath('ADD', N.vmath('SCALE', u, scale=4.0), (8.2, 1.3, 4.4)), 1.0, detail=1)
-    z0 = N.add(N.math('MULTIPLY_ADD', N.sub(w1, 0.5), 0.0150, GLAZE_Z), N.mul(N.sub(w2, 0.5), 0.0050))
+    z0 = N.add(N.math('MULTIPLY_ADD', N.sub(w1, 0.5), 0.0260, GLAZE_Z), N.mul(N.sub(w2, 0.5), 0.0080))
     d = N.sub(z0, z)
 
     # kapi: široki jezici (glazura se slegla) i uže kapi sa zadebljanim vrhom, raspoređeni nepravilno
     drips, angles = [], []
-    while len(drips) < 11:
+    while len(drips) < 9:
         a = rnd.uniform(0, 2 * math.pi)
         if any(abs(math.atan2(math.sin(a - b), math.cos(a - b))) < 0.34 for b in angles):
             continue
         angles.append(a)
-        if len(drips) < 4:
-            drips.append((a, rnd.uniform(0.0030, 0.0075), rnd.uniform(0.0065, 0.0120), 1.0))
+        if len(drips) < 3:
+            drips.append((a, rnd.uniform(0.0030, 0.0070), rnd.uniform(0.0065, 0.0120), 1.0))
         else:
-            drips.append((a, rnd.uniform(0.0070, 0.0210), rnd.uniform(0.0030, 0.0052), rnd.uniform(1.05, 1.22)))
+            drips.append((a, rnd.uniform(0.0050, 0.0160), rnd.uniform(0.0030, 0.0052), rnd.uniform(1.05, 1.22)))
     for a, length, wid, bead_k in drips:
         top = GLAZE_Z + 0.004
         bot = GLAZE_Z - length
@@ -282,10 +282,10 @@ def mat_stoneware(body, seed=7):
         taper = N.math('MULTIPLY_ADD', N.sub(zc, bot), 0.55 * wid / (top - bot), 0.72 * wid)
         neck = N.sub(N.vmath('LENGTH', N.xyz(h, N.sub(z, zc), 0.0)), taper)
         bead = N.sub(N.vmath('LENGTH', N.xyz(h, N.sub(z, bot + wid * 0.30), 0.0)), wid * bead_k * 0.9)
-        d = N.math('SMOOTH_MIN', d, N.math('MINIMUM', neck, bead), 0.0045)
+        d = N.math('SMOOTH_MIN', d, N.math('MINIMUM', neck, bead), 0.0060)
     d = N.math('MULTIPLY_ADD', N.sub(N.noise(P, 240.0, detail=2), 0.5), 0.0018, d)   # neravna ivica
     d = N.math('MULTIPLY_ADD', N.sub(N.noise(P, 800.0, detail=1), 0.5), 0.0007, d)
-    d = N.math('MAXIMUM', d, N.sub(r, 0.0505))                 # drška ostaje gola osim spoja
+    d = N.math('MAXIMUM', d, N.sub(r, 0.0525))                 # drška ostaje gola osim spoja
     inner = N.new('ShaderNodeAttribute', attribute_type='GEOMETRY', attribute_name='inner').outputs['Fac']
     d = N.sub(d, N.mul(inner, 0.02))                            # unutrašnjost je sva glazirana
     nd = N.math('MULTIPLY', d, -1.0)                            # dubina u glazuri od ivice
@@ -307,12 +307,12 @@ def mat_stoneware(body, seed=7):
 
     # --- glazura: krem-siva sa toplim tonom; oblaci, tačke gvožđa, reljef gline kroz tanku glazuru
     gv = N.noise(P, 55.0, detail=5, rough=0.62)
-    glaze = N.mix(N.ramp(gv, 0.30, 0.72), (0.175, 0.145, 0.105), (0.400, 0.350, 0.265))
+    glaze = N.mix(N.ramp(gv, 0.30, 0.72), (0.165, 0.128, 0.085), (0.395, 0.328, 0.240))
     cloud = N.ramp(N.noise(P, 30.0, detail=4, distortion=0.5), 0.48, 0.72)
     glaze = N.mix(N.mul(cloud, 0.65), glaze, (0.20, 0.120, 0.070))              # smeđi oblaci
     top_tone = N.ramp(z, GLAZE_Z + 0.010, RIM_Z - 0.002)                      # ka obodu glazura je tanja
     glaze = N.mix(N.mul(top_tone, 0.5), glaze, (0.21, 0.140, 0.088))
-    glaze = N.mix(N.mul(peb_top, 0.40), glaze, (0.15, 0.095, 0.058))          # zrnca gline probijaju
+    glaze = N.mix(N.mul(peb_top, 0.60), glaze, (0.14, 0.088, 0.052))          # zrnca gline probijaju
     spot_d, _ = N.voronoi(P, 210.0)
     spots = N.mul(N.ramp(spot_d, 0.26, 0.10), N.ramp(N.noise(P, 45.0, detail=2), 0.40, 0.58))
     glaze = N.mix(N.mul(spots, 0.9), glaze, (0.085, 0.040, 0.020))            # tačke gvožđa
@@ -326,8 +326,8 @@ def mat_stoneware(body, seed=7):
     N.put(N.mixf(mask, N.math('MULTIPLY_ADD', grain, 0.10, 0.80), N.math('MULTIPLY_ADD', gv, 0.18, 0.20)),
           bsdf.inputs['Roughness'])
     N.put(N.mixf(mask, 0.18, 0.5), bsdf.inputs['Specular IOR Level'])
-    N.put(N.mixf(mask, 0.0, 0.35), bsdf.inputs['Coat Weight'])
-    bsdf.inputs['Coat Roughness'].default_value = 0.10
+    N.put(N.mixf(mask, 0.15, 0.35), bsdf.inputs['Coat Weight'])          # glina ima blag satenski sjaj
+    N.put(N.mixf(mask, 0.38, 0.10), bsdf.inputs['Coat Roughness'])
 
     # --- reljef (u metrima): zrnca gline (i kroz glazuru), tragovi kola, zadebljana ivica glazure
     ring = N.math('SINE', N.math('MULTIPLY_ADD', z, 2 * math.pi / 0.0066,
@@ -336,7 +336,7 @@ def mat_stoneware(body, seed=7):
     clay_h = N.add(peb_h, N.mul(ring, 0.00003))
     lip = N.mul(N.ramp(nd, 0.0, 0.0010), N.ramp(nd, 0.0010, 0.0032, 1.0, 0.55))
     pin, _ = N.voronoi(P, 1800.0)
-    glaze_h = N.add(N.add(N.mul(lip, 0.00075), N.mul(peb_h, 0.35)), N.mul(N.ramp(pin, 0.12, 0.0), -0.000025))
+    glaze_h = N.add(N.add(N.mul(lip, 0.00075), N.mul(peb_h, 0.60)), N.mul(N.ramp(pin, 0.12, 0.0), -0.000025))
     height = N.mixf(mask, clay_h, glaze_h)
     bump = N.new('ShaderNodeBump')
     bump.inputs['Strength'].default_value = 1.0
@@ -443,7 +443,7 @@ def build(args):
         steam.visible_shadow = False
 
     # kamera: spreda, 10° odozgo, lens 85; okvir ~26 cm, šolja malo ispod sredine (para ima mesta)
-    elev, dist, target = math.radians(10.0), 0.55, (0.0, 0.0, 0.074)
+    elev, dist, target = math.radians(10.0), 0.56, (0.0, 0.0, 0.077)
     C.camera((0.0, -dist * math.cos(elev), target[2] + dist * math.sin(elev)), target, lens=85)
 
     # animacija: kadar po kadar (ključ na svakom kadru, pa vrsta interpolacije ne igra ulogu)

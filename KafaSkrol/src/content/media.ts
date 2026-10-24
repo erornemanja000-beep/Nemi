@@ -87,14 +87,15 @@ const photos: Record<string, PhotoEntry> = {
  *   origin (terakota): Guji, Nyeri · flavor (tirkiz): Huila Pink Bourbon, Tarrazú Honey, Probierset ·
  *   roast (breskva): On Repeat, Pause. SIP kartice: Origin = Guji, Flavor = Huila, Roast = On Repeat.
  * Alt je iz Z3 (1c) i opisuje boju; na SIP kartici i kartici prodavnice ide alt="", u modalu shop.modal.imageAlt.
- * Boje u alt-u su pisane po bags.py pre etikete Z4 (origin i roast sad imaju talas): proveriti kad render stigne.
+ * Alt opisuje pravi render (bags.py sa etiketom brenda, 24.10.2026).
  */
 function bag(id: 'origin' | 'flavor' | 'roast', alt: ProductImage['alt']): ProductImage {
   return {
-    srcs: [400, 600, 900].map((width) => ({ width, src: `/media/bags/kesa-${id}-${width}.webp` })),
-    ratio: 1200 / 1500,
+    // render 900 x 1125, isečen na kesu i senku (750 x 900); senka meko bledi do desne ivice
+    srcs: [400, 600, 750].map((width) => ({ width, src: `/media/bags/kesa-${id}-${width}.webp` })),
+    ratio: 750 / 900,
     alt,
-    ready: false,
+    ready: true,
   }
 }
 
@@ -177,16 +178,16 @@ export const media: MediaManifest = {
   photos,
   bags: {
     origin: bag('origin', {
-      en: 'Stand-up coffee bag, 250\u00a0g, cream with a coral-red label.',
-      de: 'Stehende Kaffeepackung, 250\u00a0g, cremefarben mit korallenrotem Etikett.',
+      en: 'Stand-up coffee bag, 250\u00a0g, cream with a coral-red wave label.',
+      de: 'Stehende Kaffeepackung, 250\u00a0g, cremefarben mit korallenroter Wellen-Etikette.',
     }),
     flavor: bag('flavor', {
-      en: 'Stand-up coffee bag, 250\u00a0g, beige with a turquoise wave and a blue stripe.',
-      de: 'Stehende Kaffeepackung, 250\u00a0g, beige mit türkisfarbener Welle und blauem Streifen.',
+      en: 'Stand-up coffee bag, 250\u00a0g, beige with a turquoise wave label.',
+      de: 'Stehende Kaffeepackung, 250\u00a0g, beige mit türkisfarbener Wellen-Etikette.',
     }),
     roast: bag('roast', {
-      en: 'Stand-up coffee bag, 250\u00a0g, peach-pink with salmon spots and a light arc.',
-      de: 'Stehende Kaffeepackung, 250\u00a0g, pfirsichrosa mit lachsfarbenen Flecken und hellem Bogen.',
+      en: 'Stand-up coffee bag, 250\u00a0g, peach with a salmon wave label.',
+      de: 'Stehende Kaffeepackung, 250\u00a0g, pfirsichfarben mit lachsfarbener Wellen-Etikette.',
     }),
   },
   gear: {

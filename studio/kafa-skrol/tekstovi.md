@@ -622,9 +622,9 @@ Boje su iz `bags.py` i privremene su. Posle Z4 (etiketa) treba ih uskladiti, jer
 
 | Fajl | Alt (EN) | Alt (DE) |
 |---|---|---|
-| `kesa-origin` | Stand-up coffee bag, 250 g, cream with a coral-red label. | Stehende Kaffeepackung, 250 g, cremefarben mit korallenrotem Etikett. |
-| `kesa-flavor` | Stand-up coffee bag, 250 g, beige with a turquoise wave and a blue stripe. | Stehende Kaffeepackung, 250 g, beige mit türkisfarbener Welle und blauem Streifen. |
-| `kesa-roast` | Stand-up coffee bag, 250 g, peach-pink with salmon spots and a light arc. | Stehende Kaffeepackung, 250 g, pfirsichrosa mit lachsfarbenen Flecken und hellem Bogen. |
+| `kesa-origin` | Stand-up coffee bag, 250 g, cream with a coral-red wave label. | Stehende Kaffeepackung, 250 g, cremefarben mit korallenroter Wellen-Etikette. |
+| `kesa-flavor` | Stand-up coffee bag, 250 g, beige with a turquoise wave label. | Stehende Kaffeepackung, 250 g, beige mit türkisfarbener Wellen-Etikette. |
+| `kesa-roast` | Stand-up coffee bag, 250 g, peach with a salmon wave label. | Stehende Kaffeepackung, 250 g, pfirsichfarben mit lachsfarbener Wellen-Etikette. |
 
 **Kako se koristi:**
 - **SIP kartica i kartica u prodavnici:** `alt=""`, isto kao `aria-hidden` u `mockup.html`. Ime kafe već stoji u naslovu kartice, a pošto 6 kafa deli 3 kese, alt sa bojom bi samo ponavljao isto.

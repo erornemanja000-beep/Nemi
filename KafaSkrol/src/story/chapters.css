@@ -301,8 +301,12 @@
     overflow: hidden;
   }
   .glass-card__pack img {
-    width: auto;
+    position: absolute;
+    inset: 0;
+    box-sizing: border-box;
+    width: 100%;
     height: 100%;
+    padding: 6% 0 4%;
     object-fit: contain;
   }
   /* CSS kesa iz mockupa, dok render kese nije spreman */

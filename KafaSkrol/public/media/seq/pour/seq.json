@@ -1,7 +1,7 @@
 {
   "id": "pour",
-  "version": "placeholder-1",
-  "placeholder": true,
+  "version": "render-1",
+  "placeholder": false,
   "clock": "G",
   "g_od": 65,
   "g_do": 192,
@@ -21,8 +21,8 @@
       "px": 1200,
       "w": 864,
       "h": 1200,
-      "count": 128,
-      "every": 1
+      "count": 64,
+      "every": 2
     },
     "m": {
       "px": 800,
@@ -57,33 +57,43 @@
     "osa_x": 0.5,
     "ivica_v60": {
       "x": 0.5,
-      "y": 0.47,
-      "rx": 0.128,
-      "ry": 0.03
+      "y": 0.466,
+      "rx": 0.136,
+      "ry": 0.0346
     },
-    "pult_y": 0.95,
+    "pult_y": 0.8851,
+    "baza_y": 0.9784,
     "kafa_y": {
       "from": 177,
       "values": [
-        0.8484,
-        0.8469,
-        0.8455,
-        0.844,
-        0.8425,
-        0.8411,
-        0.8396,
-        0.8381,
-        0.8367,
-        0.8352,
-        0.8337,
-        0.8322,
-        0.8308,
-        0.8293,
-        0.8278,
-        0.8264
+        0.9199,
+        0.9193,
+        0.9185,
+        0.9174,
+        0.916,
+        0.9146,
+        0.913,
+        0.9114,
+        0.9097,
+        0.9081,
+        0.9067,
+        0.9053,
+        0.9042,
+        0.9033,
+        0.9028,
+        0.9026
       ]
     }
   },
   "units": "S (stranica kvadrata kadra), od gornjeg levog ugla punog kadra; steps i kafa_y u kadrovima sata",
-  "generator": "KafaSkrol/scripts/placeholder_seq.py"
+  "generator": "KafaSkrol/scripts/pack_seq.py",
+  "pack": {
+    "q": {
+      "d": 82,
+      "m": 72
+    },
+    "alpha_quality": 85,
+    "alpha_floor": 4,
+    "fade_right": null
+  }
 }

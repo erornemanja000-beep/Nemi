@@ -124,7 +124,7 @@ function seq(id: ChapterId, poster: SeqMedia['poster'], geometry: SeqMedia['geom
 // seq.json postoji za sve tri (Z2 privremeni kadrovi, 23.10.2026)
 const SEQ_READY: Record<ChapterId, boolean> = { grind: true, pour: true, sip: true }
 // isto kao `placeholder` u seq.json; pravi render (Z21) ima false, pa red o privremenim kadrovima u Credits nestaje
-const SEQ_PLACEHOLDER: Record<ChapterId, boolean> = { grind: false, pour: true, sip: false }
+const SEQ_PLACEHOLDER: Record<ChapterId, boolean> = { grind: false, pour: false, sip: false }
 
 /**
  * Pun kadar i isečak u jedinicama S (Z5), isto kao `full` i `crop` u seq.json. Pravi render koji ih

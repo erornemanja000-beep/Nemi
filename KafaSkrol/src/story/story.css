@@ -177,12 +177,16 @@
       --text-r: calc(var(--chapter-inset) + var(--text-measure) + 1.5rem);
       /* mlin (±0,25 S) ne prelazi kolonu teksta, kuvalo (do +0,46 S) staje do desne ivice */
       --s: min(100cqh, (100cqw - 1rem - var(--text-r)) / 0.71);
-      /* osa kao u mockup-u (mlin na 46,5–77 %, ~61,5 %), pomerena udesno kad je ekran uzak */
-      --axis: clamp(var(--text-r) + 0.25 * var(--s), 61.5cqw, 100cqw - 1rem - 0.46 * var(--s));
+      /* osa: desna ivica isečka POUR (+0,48 S) je tačno desna ivica ekrana, pa kuvalo seče ivica ekrana
+         kao u referentnom videu, a ne ravna linija usred ekrana (pravi render, 24.10.2026). Mlin ne prelazi kolonu teksta. */
+      --axis: max(var(--text-r) + 0.25 * var(--s), 100cqw - 0.48 * var(--s));
     }
     .layer-grind { --frame-top: calc(100% - var(--s)); }
     .layer-pour { --frame-top: 0px; }
     .layer-sip { --frame-top: calc((100% - var(--s)) / 2); }
+    /* SIP nema kuvalo, pa zadržava staru osu (~61,5 %); inače bi špil kartica na 1024–1280 prekrio šolju.
+       Od 80rem je preuzima raspored kartica oko šolje (niže, 56cqw). */
+    .story .layer-sip { --axis: clamp(var(--text-r) + 0.25 * var(--s), 61.5cqw, 100cqw - 1rem - 0.46 * var(--s)); }
 
     .layer-pour__clip,
     .layer-sip__lens {
@@ -244,7 +248,7 @@
     @layer components {
       .story {
         --s: min(100vh, (100vw - 1rem - var(--text-r)) / 0.71);
-        --axis: clamp(var(--text-r) + 0.25 * var(--s), 61.5vw, 100vw - 1rem - 0.46 * var(--s));
+        --axis: max(var(--text-r) + 0.25 * var(--s), 100vw - 0.48 * var(--s));
       }
       .layer-grind .story-fade { --solid: calc(var(--header-h) * 0.85); height: calc(var(--header-h) * 0.85 + 3rem); }
     }

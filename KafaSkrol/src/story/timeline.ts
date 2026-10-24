@@ -188,4 +188,4 @@ export const PHONE_LOAD_AT = { grind: 1 + 0.3 * 95, pourPin: 97, pour60: 65 + 0.
 export const RETAIN = 16
 
 /** Sidra pre seq.json (seq.json ih zamenjuje): pult, sto i nivo kafe u bokalu na G177. */
-export const FALLBACK_ANCHORS = { pult_y: 0.95, sto_y: 0.78, kafa_y: 0.848 } as const
+export const FALLBACK_ANCHORS = { pult_y: 0.8851, sto_y: 0.78, kafa_y: 0.92 } as const // pult_y i kafa_y iz pravog POUR rendera (seq.json)

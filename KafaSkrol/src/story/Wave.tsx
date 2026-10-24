@@ -21,7 +21,7 @@
 // - 0,3–0,7: traka je sočivo (Z15/Z20: jedan veliki talas, donja ivica u suprotnoj fazi; ~35 % visine u
 //   sredini, 8–10 % na krajevima) i prolazi sredinom; kroz nju se vidi živ SIP (scale 1,08; ton daje
 //   providna ćilibarna ispuna, bez CSS filtera na SIP-u, vidi niže). Oblik je u waveMath.ts.
-// Varijante: desktop 36 segmenata ivice i 5 odsjaja, telefon 24 i 3. Nijedna nema displacement ni
+// Varijante: desktop 36 segmenata ivice, telefon 24; oba sa jednim izduženim odsjajem (Z25). Nijedna nema displacement ni
 // backdrop-filter (izmereno: ni desktop nema rezerve u 16,7 ms za to).
 // - 0,7–1: traka izlazi gore, ostaje SIP. Na p = 1 POUR je isečen iznad ekrana (ostaje tako).
 import { useEffect, useImperativeHandle, useRef, useState, type Ref, type RefObject } from 'react'
@@ -69,14 +69,10 @@ type WaveProps = {
 // ---------- Geometrija: waveMath.ts (oblik, faze, osnovne linije) ----------
 const frac = (v: number) => v - Math.floor(v)
 
-// odsjaji koji klize duž gornje ivice: početak (u širinama), brzina (širina po celom talasu), dužina (px)
-const GLINTS = [
-  { u: 0.08, v: 0.55, rx: 22 },
-  { u: 0.36, v: -0.42, rx: 14 },
-  { u: 0.57, v: 0.7, rx: 28 },
-  { u: 0.74, v: -0.6, rx: 17 },
-  { u: 0.93, v: 0.46, rx: 11 },
-]
+// odsjaj koji klizi duž gornje ivice: početak (u širinama), brzina (širina po celom talasu), polu-dužina (px).
+// Z25 (f_137): jedan izdužen beli odsjaj (~72 px) na vrhu sočiva, umesto pet sitnih; klizi preko sredine.
+const GLINTS = [{ u: 0.38, v: 0.25, rx: 36 }]
+const GLINT_PEAK = 0.9
 
 const f1 = (v: number) => (Math.round(v * 10) / 10).toString()
 
@@ -285,7 +281,7 @@ function createEngine(els: Els, variant: WaveVariant, pourRef: WaveProps['pourCl
       const deg = (Math.atan(slope) * 180) / Math.PI
       const el = els.glints[i]
       el.setAttribute('transform', `translate(${f1(x)} ${f1(y)}) rotate(${f1(deg)})`)
-      el.setAttribute('opacity', (lineAlpha * 0.85 * Math.pow(Math.sin(Math.PI * t), 0.6)).toFixed(2))
+      el.setAttribute('opacity', (lineAlpha * GLINT_PEAK * Math.pow(Math.sin(Math.PI * t), 0.6)).toFixed(2))
     })
 
     // ---- SIP sočivo: scale oko sredine trake. Ton daje ispuna trake: filter na sočivu je izmeren kao
@@ -354,7 +350,7 @@ export function Wave({ pourClip, sipLens, variant, className = '', ref }: WavePr
   const engine = useRef<Engine | null>(null)
   const pending = useRef<Parameters<WaveHandle['set']> | null>(null)
   const [id] = useState(() => `wave-${++uid}`)
-  const glintCount = variant === 'phone' ? 3 : 5
+  const glintCount = GLINTS.length
 
   useImperativeHandle(
     ref,
@@ -433,7 +429,7 @@ export function Wave({ pourClip, sipLens, variant, className = '', ref }: WavePr
           </g>
           <g>
             {GLINTS.slice(0, glintCount).map((g, i) => (
-              <ellipse key={i} data-w="glint" className="wave__glint" rx={g.rx} ry="1.3" opacity="0" />
+              <ellipse key={i} data-w="glint" className="wave__glint" rx={g.rx} ry="2.2" opacity="0" />
             ))}
           </g>
         </svg>

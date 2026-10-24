@@ -78,9 +78,17 @@
     opacity: 0;
   }
 
-  /* POUR: pozadina je u .layer-pour__clip, da isečen deo (talas) otkrije SIP ispod (Z6) */
-  .story .layer-pour { background: none; }
-  .layer-pour__clip { background: var(--color-bg); }
+  /* POUR: pozadina je u .layer-pour__clip, da isečen deo (talas) otkrije SIP ispod (Z6). Spoljni sloj ne
+     prima pokazivač: on je preko SIP-a i tokom i posle talasa, pa bi hvatao klikove namenjene SIP-u
+     (Z25). Klik prima samo .layer-pour__clip, a njegov clip-path seče i površinu za klik. */
+  .story .layer-pour {
+    background: none;
+    pointer-events: none;
+  }
+  .layer-pour__clip {
+    background: var(--color-bg);
+    pointer-events: auto;
+  }
 
   /* ---------- Tekst ulazi: fade + 24 px (dizajn.md 6, tokeni) ---------- */
   .story--live [data-anim="text"] {
@@ -133,6 +141,11 @@
     padding: calc(var(--header-h) + var(--space-5)) var(--gutter) 0;
   }
   .story--flow .layer-sip > .sip-cards { padding-inline: var(--gutter); }
+  /* sto (SceneBackdrop u sočivu) se nastavlja ispod sočiva, iza trake kartica, do dna sloja (sloj seče
+     overflow), da ne ostane tamna traka iza kartica (Z25). Natpis i tačkice trake su na stolu tamni. */
+  .story--flow .scene-backdrop--sip { bottom: -100svh; }
+  .story--flow .layer-sip .sip-cards__swipe,
+  .story--flow .layer-sip .sip-cards__dots .ch-dot { color: var(--pp-ink); }
 
   /* živ telefon: SIP zalazi --wave-ov ispod POUR-a (visina toka se ne menja: −margin, +padding) */
   .story--flow.story--live .layer-sip { margin-top: calc(-1 * var(--wave-ov)); }
@@ -193,17 +206,21 @@
       position: absolute;
       inset: 0;
     }
+    /* SIP tekst ne sme da padne na svetli sto (krem na stolu 2,33:1): kolona teksta je iznad ivice stola
+       (--ty iz SceneBackdrop: --table-y − 0,1 S, minus prelaz 1rem i razmak 1,5rem). Na 1440 × 900 je to
+       ispod teksta, pa se ništa ne pomera; pomera se samo kad bi tekst inače pao na sto. */
+    .story .layer-sip .ch-text {
+      top: var(--header-h);
+      bottom: max(2%, 100% - (var(--table-y, 68%) - 0.1 * var(--s)) + 2.5rem);
+    }
 
     /* šav: POUR kadar počinje tačno na granici, pa se ne bledi.
-       GRIND: kad kadar počinje na vrhu ekrana (S = 100 vh), zrna padaju iza providnog menija. Zato je ispod
-       menija podloga boje sloja (pun ton do ~0,85 visine headera), pa prelaz u providno (Z15: meni ostaje
-       čitljiv i na pravim, tamnim zrnima). Kad je S < 100 vh (vrh kadra je ispod menija), vrh kadra samo
-       bledi na 0,12 S, kao do sada. --solid je pun ton u px od vrha kadra. */
+       GRIND: na vrhu stranice zrna padaju odozgo iza providnog menija (Z25; čim se skroluje, header je pun,
+       Header.tsx), pa vrh kadra ne bledi. Kad je S < 100 vh (vrh kadra je ispod vrha ekrana, 1024), vrh
+       kadra bledi na 0,12 S, da se zrna ne seku ravnom linijom. */
     .layer-pour .story-fade { display: none; }
     .layer-grind .story-fade {
-      --ft: calc(100cqh - var(--s));
-      --solid: max(0px, var(--header-h) * 0.85 - var(--ft));
-      height: max(var(--solid) + 3rem, min(0.12 * var(--s), max(0px, var(--ft) * 1000)));
+      height: min(0.12 * var(--s), max(0px, (100cqh - var(--s)) * 1000));
     }
 
     /* ---------- Zakačena scena ---------- */
@@ -218,7 +235,11 @@
       inset: 0 0 auto;
       z-index: 2;
       will-change: transform;
+      /* traka (200 vh) je posle talasa delom još preko ekrana: ne prima pokazivač, nego samo GRIND sloj i
+         isečen POUR (.layer-pour__clip) */
+      pointer-events: none;
     }
+    .story__track > .layer-grind { pointer-events: auto; }
     .story--pinned .layer-sip {
       position: absolute;
       inset: 0;
@@ -250,7 +271,7 @@
         --s: min(100vh, (100vw - 1rem - var(--text-r)) / 0.71);
         --axis: max(var(--text-r) + 0.25 * var(--s), 100vw - 0.48 * var(--s));
       }
-      .layer-grind .story-fade { --solid: calc(var(--header-h) * 0.85); height: calc(var(--header-h) * 0.85 + 3rem); }
+      .layer-grind .story-fade { height: 0; }
     }
   }
 }

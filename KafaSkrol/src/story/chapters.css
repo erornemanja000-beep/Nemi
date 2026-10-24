@@ -95,24 +95,26 @@
   .scene-backdrop--pour {
     --ty: var(--table-y, calc(100% - 1.75rem));
     background:
-      /* pult: tanka svetla ivica, pa površina terakote */
+      /* pult (Z25, kao u referenci f_081): svetla ploča ispod bokala, uzak prelaz (±0,5rem) */
       linear-gradient(
         180deg,
-        transparent var(--ty),
-        rgb(244 238 228 / 0.1) var(--ty),
-        var(--color-surface) calc(var(--ty) + 2px)
+        transparent calc(var(--ty) - 0.5rem),
+        var(--color-counter, var(--color-surface)) calc(var(--ty) + 0.5rem),
+        var(--color-counter-deep, var(--color-surface)) 100%
       ),
       /* svetlo iz prozora (#AF7051 u videu, dizajn.md 2); najviše 0,18, da logo u headeru
          (krem, 11 px podnaslov) ostane ≥ 4,5:1 i u samom uglu */
       radial-gradient(ellipse 60% 45% at 0% 0%, rgb(175 112 81 / 0.18), transparent 70%);
   }
   .scene-backdrop--sip {
-    --ty: var(--table-y, 64%);
+    /* Z25: ivica stola je iza donjeg dela šolje (sto_y − 0,1 S; dno šolje u pravom kadru je na ~0,73 S),
+       pa šolja i senka stoje na stolu umesto da lebde. Prelaz je uzak (±1rem), sto jasno svetliji od zida. */
+    --ty: calc(var(--table-y, 68%) - 0.1 * var(--s, 0px));
     background:
       linear-gradient(
         180deg,
-        transparent calc(var(--ty) - 3.5rem),
-        var(--color-floor) calc(var(--ty) + 3.5rem),
+        transparent calc(var(--ty) - 1rem),
+        var(--color-floor) calc(var(--ty) + 1rem),
         var(--color-floor-deep) 100%
       ),
       radial-gradient(ellipse 60% 45% at 0% 0%, rgb(255 246 232 / 0.1), transparent 70%);
@@ -295,18 +297,21 @@
     position: relative;
     height: 8.25rem;
     border-radius: var(--radius-md);
-    background: linear-gradient(160deg, #d9d2c8, #c5bdb2);
+    /* pravi render kese ima providnu pozadinu (Z25): bez sive podloge, kesa stoji na staklu */
+    background: transparent;
     display: grid;
     place-items: center;
+  }
+  /* siva podloga samo za CSS kesu (pre rendera) */
+  .glass-card__pack:has(.glass-card__bag) {
     overflow: hidden;
+    background: linear-gradient(160deg, #d9d2c8, #c5bdb2);
   }
   .glass-card__pack img {
     position: absolute;
     inset: 0;
-    box-sizing: border-box;
     width: 100%;
     height: 100%;
-    padding: 6% 0 4%;
     object-fit: contain;
   }
   /* CSS kesa iz mockupa, dok render kese nije spreman */
@@ -429,6 +434,9 @@
     .ch-stage .sparkle { left: 48.5%; top: 24%; }
 
     .scene-backdrop--pour { --ty: var(--table-y, 95%); }
+    /* tačkice poglavlja stoje dole, na svetlom pultu i stolu (Z25): tamne (≥ 4,8:1), ne krem */
+    .ch-layer[data-chapter="pour"] .ch-dot,
+    .ch-layer[data-chapter="sip"] .ch-dot { color: var(--pp-ink); }
 
     /* kartice: stoje oko drške šolje, kao špil (predlog, proverava recenzent).
        Kartica 0 (Origin) je kao u mockup-u: 68,5 % / 31 %. Kartice 1 i 2 su iza nje, svaka
@@ -487,35 +495,63 @@
 }
 
 /* ======= Široki desktop (od 80rem × 53,75rem): kartice OKO šolje (Z15, pregled/z15/proto-sip-1440-en.png) =======
-   Kartica 0 (Origin) je puna, desno preko drške; 1 (Flavor) gore i 2 (Roast) dole levo su kompaktne
-   (bez reda sa poreklom i notama i bez datuma prženja; cena, Grundpreis i „inkl. MwSt." ostaju).
+   Sve tri su kompaktne (glass-card--compact važi samo ovde): bez reda sa poreklom i notama i bez datuma
+   prženja; cena, Grundpreis i „inkl. MwSt." ostaju. Mere i slojevi su po Z25 (ispod).
    Šolja je zato malo levlje nego mlin (--axis u sloju SIP; story.css). Ispod ovog upita ostaje špil. */
 @media (min-width: 80rem) and (min-height: 53.75rem) {
   @layer components {
+    /* Z25 (referenca f_185–f_209): kartice ne pokrivaju dršku ni paru. Origin je desno od drške,
+       Flavor gore iza šolje (ispod platna SIP: kadar ima alfu, pa šolja zaklanja donji deo kartice),
+       Roast dole levo ispred šolje. Sve tri su kompaktne. */
+    .ch-layer .sip-cards { z-index: auto; }
     .ch-layer .sip-card-slot[data-sip-card="0"] {
       --card-tilt: -6deg;
-      left: min(68.5%, 100% - var(--gutter) - 3.75rem - 16.25rem - 6px);
-      top: clamp(var(--header-h) + 1rem, 31%, 100% - 27rem);
+      left: min(73%, 100% - var(--gutter) - 12.5rem - 1rem);
+      top: clamp(var(--header-h) + 1rem, 30%, 100% - 24rem);
       z-index: 4;
     }
     .ch-layer .sip-card-slot[data-sip-card="1"] {
       --card-tilt: 5deg;
-      left: 44%;
-      top: max(var(--header-h) + 0.75rem, 12%);
-      z-index: 3;
+      --slot-top: max(var(--header-h) + 0.5rem, 9cqh);
+      left: 47%;
+      top: var(--slot-top);
+      /* ispod platna SIP (--z-object), iznad pozadinske reči */
+      z-index: 1;
     }
+    /* Deo kartice ispod oboda šolje (obod je na ~0,29 S od vrha kadra; vrh kadra SIP je (100 % − S) / 2) je
+       ionako zaklonjen, pa je odsečen i za klik: platno ne hvata pokazivač (pointer-events: none), pa bi klik
+       na šolju inače otvorio skrivenu karticu ili dodao kafu u korpu. Fokus tastaturom (focus-within) vodi
+       karticu ispred šolje, celu. Za vreme leta (data-flying) nema odsecanja. */
+    .ch-layer .sip-card-slot[data-sip-card="1"]:not([data-flying]):not(:focus-within) {
+      clip-path: inset(-3rem -3rem max(0px, 100% - ((100cqh - var(--s)) / 2 + 0.31 * var(--s) - var(--slot-top))) -3rem);
+    }
+    .ch-layer .sip-card-slot[data-sip-card="1"]:hover:not(:focus-within) { z-index: 1; }
     .ch-layer .sip-card-slot[data-sip-card="2"] {
       --card-tilt: -3deg;
-      left: 33.5%;
-      top: min(61%, 100% - 20rem);
+      left: 36%;
+      top: min(58%, 100% - 23rem);
       z-index: 4;
     }
     .ch-layer .sip-card-slot:hover,
     .ch-layer .sip-card-slot:focus-within { z-index: 5; }
     .ch-layer .glass-card--compact { width: 12.5rem; }
-    .ch-layer .glass-card--compact .glass-card__pack { height: 5.5rem; }
+    /* kesa zauzima ~55 % kartice, kao u referenci */
+    .ch-layer .glass-card--compact .glass-card__pack { height: 8rem; }
     .ch-layer .glass-card--compact .glass-card__meta,
     .ch-layer .glass-card--compact .glass-card__roast { display: none; }
+    /* bez strelice ↗ (DE: „GESCHMACK" + „DEMO" bi udarilo u nju); cela kartica ostaje link, a fokus
+       dobija okvir oko cele kartice */
+    .ch-layer .glass-card--compact .glass-card__link {
+      width: 0;
+      overflow: visible;
+    }
+    .ch-layer .glass-card--compact .glass-card__link svg { display: none; }
+    .ch-layer .glass-card--compact .glass-card__link:focus-visible { outline: none; }
+    .ch-layer .glass-card--compact .glass-card__link:focus-visible::after {
+      outline: 2px solid var(--color-focus);
+      outline-offset: 3px;
+    }
+    .ch-layer .glass-card--compact .glass-card__head { margin-right: 0; min-height: var(--tap); }
 
     .ch-stage .sparkle { left: 62%; top: 17%; }
   }

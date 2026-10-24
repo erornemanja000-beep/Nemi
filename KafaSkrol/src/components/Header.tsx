@@ -6,8 +6,8 @@
 // Širine (izmereno, EN je duži): logo ~225 px, meni ~500 px, desni deo ~330 px. Zato je meni tačno na
 // sredini ekrana (mockup) tek od 90rem; ispod toga stoji na sredini između logoa i ikonica. Ispod 80rem
 // (1024–1279 px) meni je zbijeniji, a pilula „Shop now" se ne prikazuje (isto sidro kao „Coffee").
-// Providan je na vrhu stranice i iznad zakačene priče na desktopu (kao mockup). Svuda gde sadržaj prolazi
-// ispod njega (telefon, mirna verzija, sekcije ispod priče, druge stranice) ima pozadinu poglavlja.
+// Providan je samo na vrhu stranice (scrollY ≤ 20 px). Posle toga, i tokom priče, ima pozadinu poglavlja
+// (prelaz --dur-base) i liniju, jer sadržaj priče prolazi ispod njega (Z25).
 // Tanka linija ispod posle 20 px skrola. Dva skip linka: sadržaj (#main) i prodavnica (#find-your-cup).
 import { useCallback, useEffect, useState, type MouseEvent } from 'react'
 import { Link, useLocation } from 'react-router-dom'
@@ -17,7 +17,6 @@ import { useLang } from '../i18n/LangContext'
 import { openCart, useCart } from '../lib/cart'
 import { useActiveChapter } from '../lib/chapterStore'
 import { scrollToTarget } from '../lib/motion'
-import { useIsPhone, useReducedMotion } from '../lib/useMedia'
 import { Button } from './Button'
 import { Icon } from './Icon'
 import { LangSwitch } from './LangSwitch'
@@ -52,8 +51,6 @@ export function Header() {
   const { tx, tf } = useLang()
   const active = useActiveChapter()
   const { count } = useCart()
-  const isPhone = useIsPhone()
-  const reduced = useReducedMotion()
   const scrolled = useScrolled()
   const { pathname } = useLocation()
   const [menuOpen, setMenuOpen] = useState(false)
@@ -66,8 +63,9 @@ export function Header() {
   // (/dev/*, samo u dev-u), da se POUR i SIP mogu porediti sa mockupom
   const overHome = onHome || pathname.startsWith('/p/') || (import.meta.env.DEV && pathname.startsWith('/dev/'))
   const chapter = overHome ? active : 'page'
-  // providan na vrhu stranice i iznad zakačene priče na desktopu; inače pozadina poglavlja
-  const solid = scrolled && !(overHome && chapter !== 'page' && !isPhone && !reduced)
+  // providan samo na samom vrhu stranice (zrna padaju odozgo iza menija); čim se skroluje, i tokom
+  // priče, ima pozadinu poglavlja i liniju, da tekst, mlin, talas i kartice ne idu preko menija (Z25)
+  const solid = scrolled
   // na pravnim stranicama sidra vode nazad na početnu
   const href = (h: string) => (onHome ? h : `/${h}`)
 

@@ -6,6 +6,9 @@
    - gradijent je obrnut: gore tamna kafa (0,72), sredina ćilibar (0,6), dole svetli ćilibar (0,5),
      jer svetlo prolazi kroz tečnost i pada na dno sočiva;
    - odsjaji su jači (sjaj dna 28 px / 0,45, gornji odsjaj 3 px / 0,8), meniskus mekši (0,6).
+   Z25 (sastanak, f_137–f_145): sjajna, skoro neprovidna ćilibarna tečnost, ne vektorska traka sa konturama:
+   tamna kafa #2E1206 gore 0,88, svetli ćilibar #D98A3A dole 0,75, široki sjaj dna (56 px / 0,6) i
+   površine (40 px / 0,18), donja kontura 0, meniskus 0,2 i jedan izdužen beli odsjaj (~72 px, 0,9).
    Statična ivica (reduced motion) zadržava boje i oblik iz Z6 (blok .wave-static niže).
    Brojeve pokreta (amplitude, talasne dužine, putanju trake) drži Wave.tsx, jer ih računa JS.
 
@@ -18,13 +21,13 @@
        čitljiv (svetla boja bi ga zamaglila). Odozgo svetla ćilibarna, dole tamna kafa (~0,88 najviše).
        Normalno mešanje, ne multiply: multiply traži dodatni prolaz preko cele scene (izmereno: +8–9 ms
        po kadru na 1440 u Playwright-u bez GPU-a). */
-    --wave-amber-light: #c9732a;
+    --wave-amber-light: #d98a3a;
     --wave-amber: #8e3f15;
-    --wave-coffee: #4a1c0b;
+    --wave-coffee: #2e1206;
     /* obrnut gradijent (Z15): gore tamna kafa, dole svetli ćilibar */
-    --wave-fill-top: 0.72;
-    --wave-fill-mid: 0.6;
-    --wave-fill-bottom: 0.5;
+    --wave-fill-top: 0.88;
+    --wave-fill-mid: 0.78;
+    --wave-fill-bottom: 0.75;
     /* ivice i odsjaji (normalno mešanje) */
     --wave-meniscus: #24130b;
     --wave-shine: #fff4e0;
@@ -68,15 +71,16 @@
   }
   /* gornja ivica: tamni meniskus 1,5 px, ispod njega svetao odsjaj 2 px pomeren 3 px.
      Blur 2 px je lažan (široka bleda linija ispod uske), jer pravi blur filter košta u svakom kadru. */
-  .wave__meniscus { stroke: var(--wave-meniscus); stroke-width: 1.5; stroke-opacity: 0.6; }
+  .wave__meniscus { stroke: var(--wave-meniscus); stroke-width: 1.5; stroke-opacity: 0.2; }
   .wave__shine { stroke: var(--wave-shine); stroke-width: 3; stroke-opacity: 0.8; }
   .wave__shine-soft { stroke: var(--wave-shine); stroke-width: 12; stroke-opacity: 0.22; }
   /* sjaj površine: široka bleda linija odmah ispod ivice (kao potez, ne ispuna: manja površina za crtanje) */
-  .wave__sheen { stroke: var(--wave-sheen); stroke-width: 26; stroke-opacity: 0.07; }
+  .wave__sheen { stroke: var(--wave-sheen); stroke-width: 40; stroke-opacity: 0.18; }
   /* donja ivica: tanka tamna linija i topao sjaj iznad nje (svetlo koje prolazi kroz tečnost) */
-  .wave__under { stroke: var(--wave-meniscus); stroke-width: 1; stroke-opacity: 0.55; }
-  .wave__glow { stroke: var(--wave-glow); stroke-width: 28; stroke-opacity: 0.45; }
-  .wave__glint { fill: var(--wave-shine); }
+  .wave__under { stroke: var(--wave-meniscus); stroke-width: 1; stroke-opacity: 0; }
+  .wave__glow { stroke: var(--wave-glow); stroke-width: 56; stroke-opacity: 0.6; }
+  /* jedan izdužen beli odsjaj na vrhu sočiva (Z25, f_137) */
+  .wave__glint { fill: #fff; }
 
   /* ---------- Statična ivica (reduced motion): rez sa dekorativnom trakom boje talasa ---------- */
   .wave-static {
@@ -102,6 +106,7 @@
   .wave-static .wave__stop--top { stop-color: var(--wave-amber-light); }
   .wave-static .wave__stop--bottom { stop-color: var(--wave-coffee); }
   .wave-static .wave__meniscus { stroke-opacity: 0.92; }
+  .wave-static .wave__under { stroke-opacity: 0.55; }
   .wave-static .wave__shine { stroke-width: 2; stroke-opacity: 0.5; }
   .wave-static .wave__meniscus,
   .wave-static .wave__shine,

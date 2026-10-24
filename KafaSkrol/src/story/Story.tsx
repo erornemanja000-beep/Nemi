@@ -183,11 +183,13 @@ function PourLayer({ phone, live, clip }: LayerProps & { clip?: RefObject<HTMLDi
 }
 
 function SipLayer({ phone, live, lens }: LayerProps & { lens?: RefObject<HTMLDivElement | null> }) {
+  // desktop: tekst je van sočiva, da ga talas ne uveća i ne pomeri (Z25); telefon: u koloni sočiva
   return (
     <section id="sip" data-chapter="sip" aria-labelledby="t-sip" className="ch-layer layer-sip">
+      {!phone && <ChapterText chapter={byId.sip} />}
       <div ref={lens} className="layer-sip__lens">
         <SceneBackdrop chapter="sip" />
-        <ChapterText chapter={byId.sip} />
+        {phone && <ChapterText chapter={byId.sip} />}
         <div className="ch-stage">
           <BackWord chapter="sip" />
           <Canvas id="sip" phone={phone} live={live} />
@@ -461,6 +463,13 @@ function LiveStory({ phone }: { phone: boolean }) {
       setActiveChapter(c)
     }
     const kafa = (g: number) => (seqs.current.pour ? kafaYAt(seqs.current.pour.manifest, g) : null) ?? T.FALLBACK_ANCHORS.kafa_y
+    // desktop: koliko POUR ide gore tokom talasa (px), da dno V60 ostane iznad najviše tačke talasa
+    const lift = (p: number, startY: number) => {
+      if (p <= 0) return 0
+      const { dripper, gap, maxVh } = T.DESK_POUR_LIFT
+      const crest = waveTopMin(p, startY / m.vh, m.W, m.vh)
+      return Math.min((maxVh / 100) * m.vh, Math.max(0, m.pourFrameTop + dripper * m.S + gap * m.vh - crest))
+    }
     // desktop: sloj koji se ne vidi (SIP ispod POUR-a pre talasa, POUR isečen posle talasa, GRIND iznad
     // ekrana posle šava) ima opacity 0, pa ga pregledač ne slaže u svakom kadru. Ostaje u DOM-u, čitaču
     // ekrana i redosledu tastature (fokus vodi na poglavlje, onFocus).
@@ -486,18 +495,17 @@ function LiveStory({ phone }: { phone: boolean }) {
       clockA.set(g)
       clockS.set(s)
 
-      // traka GRIND + POUR (šav), pa POUR ide gore sporije od talasa
-      const drift = (T.DESK_POUR_DRIFT.vh / 100) * vh * T.smooth(T.DESK_POUR_DRIFT.from, 1, p)
+      // talas kreće sa linije kafe u bokalu (kafa_y za trenutni G), merene dok POUR još miruje
+      const stageTop = -Math.max(0, ((y - T.DESK.end) / 100) * vh)
+      const startY = stageTop + m.pourFrameTop + kafa(g) * m.S
+      // traka GRIND + POUR (šav), pa POUR ide gore zajedno sa talasom (dripper ostaje iznad tečnosti)
+      const drift = lift(p, startY)
       const shift = Math.round((seam * vh + drift) * 100) / 100
       if (shift !== lastShift && trackEl) {
         trackEl.style.transform = `translate3d(0, ${-shift}px, 0)`
         lastShift = shift
       }
-
-      // talas kreće sa linije kafe u bokalu (kafa_y za trenutni G)
-      const stageTop = -Math.max(0, ((y - T.DESK.end) / 100) * vh)
       const pourTop = stageTop + vh - shift
-      const startY = pourTop + m.pourFrameTop + kafa(g) * m.S
       setWave(p, startY, { pourTop })
 
       // tekst, reči, kartice
@@ -667,7 +675,7 @@ function LiveStory({ phone }: { phone: boolean }) {
       const id = e.target.closest<HTMLElement>('[data-chapter]')?.dataset.chapter as ChapterId | undefined
       if (!id) return
       const y = now.y
-      const front: ChapterId = y < 250 ? 'grind' : y < 590 ? 'pour' : 'sip'
+      const front: ChapterId = y < (T.DESK.seam[0] + T.DESK.seam[1]) / 2 ? 'grind' : y < (T.DESK.wave[0] + T.DESK.wave[1]) / 2 ? 'pour' : 'sip'
       let to: number | null = null
       if (e.target.closest('.sip-card-slot')) {
         if (y < cardsDone || y > T.DESK.end) to = cardsDone
@@ -692,9 +700,12 @@ function LiveStory({ phone }: { phone: boolean }) {
         mode: phone ? 'flow' : 'pinned',
         points() {
           if (!phone) {
+            const D = T.DESK
+            const mid = (a: readonly [number, number]) => (a[0] + a[1]) / 2
             const marks: [string, number][] = [
-              ['grind-start', 0], ['grind-mid', 100], ['seam-start', 200], ['seam-mid', 250], ['pour-start', 300],
-              ['pour-mid', 420], ['wave-start', 540], ['wave-mid', 590], ['sip-start', 640], ['sip-mid', 715], ['sip-end', 790],
+              ['grind-start', D.grindPin[0]], ['grind-mid', mid(D.grindPin)], ['seam-start', D.seam[0]], ['seam-mid', mid(D.seam)],
+              ['pour-start', D.pourPin[0]], ['pour-mid', mid(D.pourPin)], ['wave-start', D.wave[0]], ['wave-mid', mid(D.wave)],
+              ['sip-start', D.sipPin[0]], ['sip-mid', mid(D.sipPin)], ['sip-end', D.sipPin[1]],
             ]
             return marks.map(([name, v]) => ({ name, y: Math.round(vhPx(v)) }))
           }
@@ -726,9 +737,9 @@ function LiveStory({ phone }: { phone: boolean }) {
                 const startY = m.pourCanvasTop - scroll + kafa(177 + p * 15) * m.S
                 if (m.pourBottom - scroll <= line || (p > 0 && waveTopMin(p, startY / H, m.W, H) <= line)) return scroll
               } else {
-                const shift = m.vh + (T.DESK_POUR_DRIFT.vh / 100) * m.vh * T.smooth(T.DESK_POUR_DRIFT.from, 1, p)
-                const startY = m.vh - shift + m.pourFrameTop + kafa(177 + p * 15) * m.S
-                if (p > 0 && waveTopMin(p, startY / m.vh, m.W, m.vh) <= line) return vhPx(T.DESK.wave[0] + p * 100)
+                const startY = m.pourFrameTop + kafa(177 + p * 15) * m.S
+                const len = T.DESK.wave[1] - T.DESK.wave[0]
+                if (p > 0 && waveTopMin(p, startY / m.vh, m.W, m.vh) <= line) return vhPx(T.DESK.wave[0] + p * len)
               }
             }
             return NaN

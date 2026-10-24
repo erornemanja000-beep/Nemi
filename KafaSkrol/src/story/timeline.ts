@@ -46,52 +46,55 @@ export function yAtFrame(knots: readonly Knot[], g: number): number {
 // Desktop (vh od vrha priče). Tabela iz plana, Interfejs 2.
 // =====================================================================================
 export const DESK = {
-  /** GRIND zakačen, G1–G64 */
-  grindPin: [0, 200],
+  /** GRIND zakačen, G1–G64. Z25: 200 → 110 vh (u referenci je GRIND ~10–14 % priče; dva ekrana bez
+   *  pokreta su bila previše), a sve ostale granice su pomerene za −90 vh. */
+  grindPin: [0, 110],
   /** šav: GRIND ide gore, POUR ulazi odozdo, oba platna crtaju G65–G96 */
-  seam: [200, 300],
+  seam: [110, 210],
   /** POUR zakačen, G97–G176 */
-  pourPin: [300, 540],
+  pourPin: [210, 450],
   /** talas: POUR G177–G192 + SIP S1–S16 */
-  wave: [540, 640],
+  wave: [450, 550],
   /** SIP zakačen, S17–S64 */
-  sipPin: [640, 790],
+  sipPin: [550, 700],
   /** posle ovoga scena odlazi gore, a prodavnica ulazi (kontejner je END + 100 vh) */
-  end: 790,
+  end: 700,
 } as const
 
 /** sat G (GRIND i POUR dele vreme) */
 export const DESK_G: readonly Knot[] = [
-  [0, 1],
-  [200, 65],
-  [300, 97],
-  [540, 177],
-  [640, 192],
+  [DESK.grindPin[0], 1],
+  [DESK.seam[0], 65],
+  [DESK.pourPin[0], 97],
+  [DESK.wave[0], 177],
+  [DESK.wave[1], 192],
 ]
 /** sat S (SIP) */
 export const DESK_S: readonly Knot[] = [
-  [540, 1],
-  [640, 17],
-  [790, 64],
+  [DESK.wave[0], 1],
+  [DESK.sipPin[0], 17],
+  [DESK.sipPin[1], 64],
 ]
 
 /** opseg svakog poglavlja (za reč u pozadini i učitavanje): od ulaska do izlaska */
 export const DESK_RANGE: Record<ChapterId, readonly [number, number]> = {
-  grind: [0, 300],
-  pour: [200, 640],
-  sip: [540, 790],
+  grind: [DESK.grindPin[0], DESK.seam[1]],
+  pour: [DESK.seam[0], DESK.wave[1]],
+  sip: [DESK.wave[0], DESK.sipPin[1]],
 }
 
 /** početak poglavlja za strelice i tačkice: GRIND, POUR pin, SIP pin */
-export const DESK_NAV: Record<ChapterId, number> = { grind: 0, pour: 300, sip: 640 }
+export const DESK_NAV: Record<ChapterId, number> = { grind: 0, pour: DESK.pourPin[0], sip: DESK.sipPin[0] }
 
 /**
- * POUR se tokom talasa „otkači" i ide gore sporije od talasa (storyboard 5, 70–100 %):
- * do DRIFT vh, od p = from do p = 1.
+ * Tokom talasa POUR ide gore zajedno sa tečnošću, tako da dno V60 (`dripper`, u S od vrha kadra) stoji
+ * `gap` (udeo ekrana) iznad najviše tačke gornje ivice talasa, najviše `maxVh`. Tako dripper „pluta" na
+ * talasu kao u referenci (f_133–f_145), a kuvalo ne sipa u prazno. Z25: umesto stalnih 22 vh od p 0,55,
+ * pomak prati talas (na 1440 × 900 oko 24 vh na p 0,3 i 45 vh na p 0,5).
  */
-export const DESK_POUR_DRIFT = { vh: 22, from: 0.55 } as const
+export const DESK_POUR_LIFT = { dripper: 0.67, gap: 0.02, maxVh: 85 } as const
 
-/** kartice SIP uleću na 45–80 % SIP opsega (540–790 vh), redom 1 → 2 → 0 (Z15) */
+/** kartice SIP uleću na 45–80 % SIP opsega (od početka talasa do kraja SIP pina), redom 1 → 2 → 0 (Z15) */
 export const CARD_RANGE = [0.45, 0.8] as const
 
 // =====================================================================================
@@ -138,8 +141,8 @@ export const WORD_SHIFT = 0.1
 export const TEXT_IN = {
   /** POUR: kad je šav pređen bar do pola; nazad ispod 30 % */
   pour: { on: 0.5, off: 0.3 },
-  /** SIP: kad je talas na 45 %; nazad ispod 25 % */
-  sip: { on: 0.45, off: 0.25 },
+  /** SIP: kad traka talasa prođe preko teksta (Z25), da tekst ne bude presečen; nazad ispod 60 % */
+  sip: { on: 0.8, off: 0.6 },
 } as const
 
 /**
@@ -179,8 +182,11 @@ export const LOAD_PLAN: readonly LoadStep[] = [
   { stage: 2, id: 'sip', req: { step: 6 }, priority: 15 },
   { stage: 3, id: 'sip', req: {}, priority: 10 },
 ]
-/** desktop: y (vh) na kome počinje deo 1, 2 i 3 (GRIND 0–300 vh, POUR 200–640 vh) */
-export const DESK_LOAD_AT = [0, 90, 300, 464] as const
+/**
+ * desktop: y (vh) na kome počinje deo 1, 2 i 3. Prelaz (POUR G65–G96) mora biti ceo pre šava (110 vh),
+ * pa deo 1 kreće na ~20 % GRIND-a; deo 2 na ulazu u POUR pin; deo 3 na 60 % POUR opsega (110–550 vh).
+ */
+export const DESK_LOAD_AT = [0, 40, DESK.pourPin[0], 374] as const
 /** telefon: kadar sata GRIND (deo 1) i sata POUR (delovi 2 i 3) */
 export const PHONE_LOAD_AT = { grind: 1 + 0.3 * 95, pourPin: 97, pour60: 65 + 0.6 * 127 } as const
 

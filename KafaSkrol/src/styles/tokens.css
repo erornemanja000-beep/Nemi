@@ -181,6 +181,9 @@
   --color-placeholder: #B3A69B;
   --color-placeholder-line: rgba(244, 238, 228, 0.45);
   --color-control-bg:  rgba(244, 238, 228, 0.22);
+  /* svetao pult ispod bokala (Z25, uzorak iz f_081: #D6CDC3); tamni tekst 10,5:1 / 9,1:1, krem ne prolazi */
+  --color-counter:      #DCD3C9;
+  --color-counter-deep: #CFC5BA;
 }
 
 [data-chapter="sip"] {
@@ -191,8 +194,11 @@
   --color-accent-text: var(--pp-crema);         /* 7,44:1 */
   --color-line:        rgba(244, 238, 228, 0.20);
   --color-word:        var(--pp-word-sip);
-  --color-floor:       #7C4532;                 /* sto ispod šolje, LT tekst 6,61:1 */
-  --color-floor-deep:  #74402D;
+  /* sto ispod šolje (Z25, uzorak iz kadrova reference f_185–f_209: zid #703C29, sto #BD8E6D–#C09672):
+     jasno svetliji od zida. Krem tekst na stolu NE prolazi (2,33:1), tamni #2B2316 prolazi
+     (5,76:1 / 4,87:1 na dubljem tonu), pa tekst ne stoji preko stola (story.css, chapters.css). */
+  --color-floor:       #C19572;
+  --color-floor-deep:  #B5875F;
   --color-focus:       var(--pp-cream-light);
   --color-btn-ring:    rgba(244, 238, 228, 0.65); /* ≥ 3,15:1 prema svakoj podlozi */
   --color-pill-bg:     var(--pp-cream-light);

@@ -5,7 +5,7 @@
 // pa telefonski čvorovi ovde važe samo za harness (proveravaju zajednički sat na nivou m).
 // Za Playwright: window.__devSeq.scrollToG(g) i window.__devSeq.state().
 // Reduced motion i Save-Data: dva statična bloka sa posterima, bez zahteva za kadrove.
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, type CSSProperties } from 'react'
 import { chapters } from '../content/chapters'
 import { media } from '../content/media'
 import { useLang } from '../i18n/LangContext'
@@ -191,7 +191,8 @@ export default function DevSeq() {
   return (
     <main id="main" className="[--axis:50%] [--s:min(100vw,62svh)] desk:[--axis:58%] desk:[--s:100svh]">
       <h1 className="sr-only">DevSeq</h1>
-      <div ref={track} className="h-[610svh] desk:h-[740svh]">
+      {/* desktop: dužina iz timeline.ts (poslednji čvor sata G + 100 vh scene); telefon: čvorovi harness-a */}
+      <div ref={track} className="h-[610svh] desk:h-(--track-h)" style={{ '--track-h': `${DESK_G[DESK_G.length - 1][0] + 100}svh` } as CSSProperties}>
         <div className="sticky top-0 h-svh overflow-hidden">
           <div ref={stage} className="will-change-transform">
             <section id="dev-grind" data-chapter="grind" className="relative h-svh overflow-hidden bg-bg">

@@ -1,0 +1,69 @@
+{
+  "id": "grind",
+  "version": "render-1",
+  "placeholder": false,
+  "clock": "G",
+  "g_od": 1,
+  "g_do": 96,
+  "fps": 30,
+  "full": {
+    "W": 1,
+    "H": 1.25
+  },
+  "crop": {
+    "x0": 0.22,
+    "y0": 0,
+    "w": 0.56,
+    "h": 1.25
+  },
+  "sets": {
+    "d": {
+      "px": 1200,
+      "w": 672,
+      "h": 1500,
+      "count": 96,
+      "every": 1
+    },
+    "m": {
+      "px": 800,
+      "w": 448,
+      "h": 1000,
+      "count": 48,
+      "every": 2
+    }
+  },
+  "poster": {
+    "d": "d/0001.webp",
+    "m": "m/0001.webp"
+  },
+  "steps": [
+    {
+      "name": "pin",
+      "from": 1,
+      "to": 64
+    },
+    {
+      "name": "prelaz",
+      "from": 65,
+      "to": 96
+    }
+  ],
+  "anchors": {
+    "osa_x": 0.5,
+    "otvor": {
+      "x": 0.5,
+      "y": 0.8389
+    }
+  },
+  "units": "S (stranica kvadrata kadra), od gornjeg levog ugla punog kadra; steps i kafa_y u kadrovima sata",
+  "generator": "KafaSkrol/scripts/pack_seq.py",
+  "pack": {
+    "q": {
+      "d": 82,
+      "m": 72
+    },
+    "alpha_quality": 85,
+    "alpha_floor": 4,
+    "fade_right": null
+  }
+}

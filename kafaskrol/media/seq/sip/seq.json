@@ -1,0 +1,69 @@
+{
+  "id": "sip",
+  "version": "render-1",
+  "placeholder": false,
+  "clock": "S",
+  "g_od": 1,
+  "g_do": 64,
+  "fps": 30,
+  "full": {
+    "W": 1,
+    "H": 1
+  },
+  "crop": {
+    "x0": 0.2,
+    "y0": 0,
+    "w": 0.8,
+    "h": 0.86
+  },
+  "sets": {
+    "d": {
+      "px": 1200,
+      "w": 960,
+      "h": 1032,
+      "count": 64,
+      "every": 1
+    },
+    "m": {
+      "px": 800,
+      "w": 640,
+      "h": 688,
+      "count": 32,
+      "every": 2
+    }
+  },
+  "poster": {
+    "d": "d/0064.webp",
+    "m": "poster-m.webp"
+  },
+  "steps": [
+    {
+      "name": "talas",
+      "from": 1,
+      "to": 16
+    },
+    {
+      "name": "pin",
+      "from": 17,
+      "to": 64
+    }
+  ],
+  "anchors": {
+    "osa_x": 0.5,
+    "sto_y": 0.78
+  },
+  "units": "S (stranica kvadrata kadra), od gornjeg levog ugla punog kadra; steps i kafa_y u kadrovima sata",
+  "generator": "KafaSkrol/scripts/pack_seq.py",
+  "pack": {
+    "q": {
+      "d": 82,
+      "m": 72
+    },
+    "alpha_quality": 85,
+    "alpha_floor": 4,
+    "fade_right": [
+      0.8,
+      1.0
+    ]
+  }
+}

@@ -5,7 +5,8 @@
 
 Ulaz (grillbox/izvor/):
   wolt/*.jpg            originalne fotke sa Wolt-a (svetlo siva pozadina) i logo
-  bez-pozadine/*.png    iste fotke bez pozadine (Artlist, Pixelcut Background Removal)
+  bez-pozadine/*.png    iste fotke bez pozadine (Artlist, Pixelcut Background Removal);
+                        kaesekrainer-bacon i chilly su spojene sa AI izmenom (spoj.py, ai/*.png)
 Izlaz (grillbox/src/assets/img/):
   menu/<jelo>-1000.webp, -560.webp   tanjir na providnoj pozadini, kvadrat
   emblem.webp                        logo isečen u krug (providni uglovi)
@@ -46,7 +47,7 @@ def place(canvas, im, width, center):
 
 def menu():
     (OUT / 'menu').mkdir(parents=True, exist_ok=True)
-    for name in ['cevape', 'pljeskavica', 'kaesekrainer', 'classic', 'bacon', 'double']:
+    for name in ['cevape', 'pljeskavica', 'kaesekrainer', 'kaesekrainer-bacon', 'classic', 'chilly', 'bacon', 'double']:
         p = plate(name)
         side = round(p.width / .86)   # tanjir zauzima 86 % širine kvadrata
         sq = Image.new('RGBA', (side, side), (0, 0, 0, 0))

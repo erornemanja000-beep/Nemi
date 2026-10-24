@@ -34,8 +34,15 @@ i menja burger po burger na skrol). Dizajn, fontovi, boje, animacije i kod su is
 | `build_pages.py` | kopira `src/` u `<gh-pages>/grillbox/` i dodaje noindex |
 
 Slike se prave ponovo sa `python3 scripts/grillbox/slike.py`.
-Na Wolt-u su neke fotke iste: Ćevapi 5 i 10, obe Pljeskavice (i obična pokazuje fotku sa sirom), oba hot doga,
-Classic i Chilly Smash. Sajt zato koristi 6 fotki za 10 jela; nove fotke od klijenta bi to rešile.
+Na Wolt-u su neke fotke iste (bajt po bajt): Ćevapi 5 i 10, obe Pljeskavice, oba hot doga, Classic i Chilly Smash.
+Foodora blokira automatsko čitanje (403), swipein nema fotke, pa drugih pravih fotki nema.
+- **Käsekrainer Bacon** i **Chilly Smash**: AI izmena njihove prave fotke (Artlist, Flux 2.0 Flash: dodata slanina,
+  odnosno jalapeño), pa `scripts/grillbox/spoj.py` sa AI slike uzima samo promenjeni deo, a sve ostalo je original:
+  `spoj.py izvor/wolt/kaesekrainer.jpg izvor/ai/kaesekrainer-bacon.png izvor/bez-pozadine/kaesekrainer.png 400,120,1260,470 izvor/bez-pozadine/kaesekrainer-bacon.png`
+  `spoj.py izvor/wolt/classic.jpg izvor/ai/chilly.png izvor/bez-pozadine/classic.png 240,260,860,560 izvor/bez-pozadine/chilly.png`
+- **Pljeskavica bez sira**: dva AI pokušaja nisu uspela (model je skidao lepinju ili vraćao sir), ručna zamena sira
+  izgleda loše. Obična Pljeskavica zato i dalje pokazuje fotku sa sirom. Uraditi posle 9. 11. (Nano Banana Pro) ili tražiti fotku od klijenta.
+- **Ćevapi 5 i 10** namerno dele fotku (isto jelo, samo broj komada).
 `og:image` je apsolutni link na GitHub Pages; pri pravoj objavi promeniti na pravi domen.
 
 ## Objava (GitHub Pages)

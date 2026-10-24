@@ -116,7 +116,10 @@ export function SeqCanvas({ seq, clock, poster, geometry, onFirstFrame, active =
 
     const draw = () => {
       if (!visible || !cssW) return
-      const g = clock.frameFor(seq)
+      // Šav (preklop G65–G96) traži kadar dekodiran u obe sekvence. Dok platno nije nacrtalo ništa, uzima i
+      // svoj najbliži dekodiran kadar, da se umesto njega ne vidi poster (npr. POUR G150 na G65; tester Z25).
+      let g = clock.frameFor(seq)
+      if (g === null && drawn === null) g = seq.nearestReady(Math.round(clock.current))
       if (g === null || (g === drawn && !fresh)) return
       const bmp = seq.bitmap(g)
       if (!bmp) return
@@ -170,13 +173,14 @@ export function SeqCanvas({ seq, clock, poster, geometry, onFirstFrame, active =
     }
     watchDpr()
 
-    // u ekranu: crta se (-1px: kutija koja samo dodiruje ivicu ekrana se ne računa)
+    // u ekranu ili do 10 % visine ekrana od njega: crta se, da prvi kadar bude nacrtan pre nego što platno
+    // uđe u ekran (inače se 1–2 kadra vidi poster; tester Z25)
     const inView = new IntersectionObserver(
       (entries) => {
         visible = entries[entries.length - 1].isIntersecting
         sync()
       },
-      { rootMargin: '-1px 0px' },
+      { rootMargin: '10% 0px' },
     )
     // daleko od ekrana: dekodirani kadrovi se zatvaraju (Blob-ovi ostaju)
     const nearView = new IntersectionObserver(

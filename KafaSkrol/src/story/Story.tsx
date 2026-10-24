@@ -19,7 +19,7 @@ import { media } from '../content/media'
 import type { ActiveChapter, Chapter, ChapterId } from '../content/types'
 import { useLang } from '../i18n/LangContext'
 import { registerChapterNavigator, setActiveChapter } from '../lib/chapterStore'
-import { ScrollTrigger, scrollToTarget } from '../lib/motion'
+import { getLenis, gsap, ScrollTrigger, scrollToTarget } from '../lib/motion'
 import { createClock, kafaYAt, SEQ_DEBUG, useSequence, type Clock, type SeqGeometry, type Sequence } from '../lib/sequence'
 import { useIsPhone, useReducedMotion } from '../lib/useMedia'
 import { BackWord } from './BackWord'
@@ -257,6 +257,7 @@ type Metrics = {
   pourCanvasTop: number
   pourClipTop: number
   lensTop: number
+  sipCanvasTop: number
   sipBottom: number
   textTop: Record<ChapterId, number>
   stripTop: number
@@ -371,6 +372,7 @@ function LiveStory({ phone }: { phone: boolean }) {
       pourCanvasTop: 0,
       pourClipTop: 0,
       lensTop: 0,
+      sipCanvasTop: 0,
       sipBottom: 0,
       textTop: { grind: 0, pour: 0, sip: 0 },
       stripTop: 0,
@@ -394,6 +396,7 @@ function LiveStory({ phone }: { phone: boolean }) {
         m.pourCanvasTop = m.pourTop + m.pourFrameTop
         m.pourClipTop = top(pourClip.current)
         m.lensTop = top(sipLens.current)
+        m.sipCanvasTop = top(boxes.sip)
         m.sipBottom = top(layers.sip) + (layers.sip?.offsetHeight ?? 0)
         for (const id of IDS) m.textTop[id] = top(texts[id])
         m.stripTop = top(strip)
@@ -463,6 +466,10 @@ function LiveStory({ phone }: { phone: boolean }) {
       setActiveChapter(c)
     }
     const kafa = (g: number) => (seqs.current.pour ? kafaYAt(seqs.current.pour.manifest, g) : null) ?? T.FALLBACK_ANCHORS.kafa_y
+    // Kadrovi se dekodiraju pre nego što platno uđe u ekran (tester Z25: inače 3–6 kadrova stoji poster,
+    // npr. POUR G150 umesto G65 na početku šava). Poziva se samo dok platno sigurno nije u ekranu, jer tada
+    // retain() zove i sat, oko svog (ublaženog) kadra.
+    const prewarm = (id: ChapterId, g: number) => seqs.current[id]?.retain(Math.round(g), T.RETAIN)
     // desktop: koliko POUR ide gore tokom talasa (px), da dno V60 ostane iznad najviše tačke talasa
     const lift = (p: number, startY: number) => {
       if (p <= 0) return 0
@@ -494,6 +501,8 @@ function LiveStory({ phone }: { phone: boolean }) {
       now = { y, g, gPour: g, s, p }
       clockA.set(g)
       clockS.set(s)
+      if (y >= T.DESK.seam[0] - T.PREWARM_VH && y < T.DESK.seam[0]) prewarm('pour', 65)
+      if (y >= T.DESK.wave[0] - T.PREWARM_VH && y < T.DESK.wave[0]) prewarm('sip', 1)
 
       // talas kreće sa linije kafe u bokalu (kafa_y za trenutni G), merene dok POUR još miruje
       const stageTop = -Math.max(0, ((y - T.DESK.end) / 100) * vh)
@@ -566,7 +575,8 @@ function LiveStory({ phone }: { phone: boolean }) {
 
       const stage = (y >= T.DESK_LOAD_AT[3] ? 3 : y >= T.DESK_LOAD_AT[2] ? 2 : y >= T.DESK_LOAD_AT[1] ? 1 : 0) as T.LoadStage
       commit({
-        active: { grind: y < T.DESK.seam[1], pour: p < 1, sip: y >= T.DESK.wave[0] },
+        // SIP se pali malo pre talasa (još je pokriven POUR-om), da prvi kadar stigne pre nego što se vidi
+        active: { grind: y < T.DESK.seam[1], pour: p < 1, sip: y >= T.DESK.wave[0] - 10 },
         steam: { pour: oPour > 0, sip: oSip > 0 },
         stage,
       })
@@ -587,6 +597,11 @@ function LiveStory({ phone }: { phone: boolean }) {
       clockA.set(gGrind)
       clockB.set(gPour)
       clockS.set(s)
+      // telefon: jedan ekran pre ulaska platna
+      const pourIn0 = m.pourCanvasTop - scroll
+      if (pourIn0 > H && pourIn0 < 2 * H) prewarm('pour', gPour)
+      const sipIn0 = m.sipCanvasTop - scroll
+      if (sipIn0 > H && sipIn0 < 2 * H) prewarm('sip', s)
 
       // talas: fiksan sloj preko ekrana, POUR i sočivo SIP klize ispod
       const pourTop = m.pourClipTop - scroll
@@ -632,13 +647,29 @@ function LiveStory({ phone }: { phone: boolean }) {
     const apply = (scroll = window.scrollY) => (phone ? applyPhone(scroll) : applyDesk(scroll))
 
     // ---- jedan ScrollTrigger za ceo kontejner (bez pin-a): vodi apply dok je priča u ekranu ----
+    // Upisi u DOM ne idu u događaj `scroll`: posle njih Lenis (actualScroll) i ScrollTrigger čitaju raspored, pa
+    // bi pregledač svaki kadar radio prinudni layout (tester Z25, trag). Zato apply ide u gsap.ticker (rAF istog
+    // kadra: scroll se šalje pre rAF-a). Kad Lenis sam glatko skroluje, već smo u ticku, pa apply ide odmah.
+    let pending: number | null = null
+    const flush = () => {
+      if (pending === null) return
+      const y = pending
+      pending = null
+      apply(y)
+    }
+    gsap.ticker.add(flush)
     measure()
     apply()
     const st = ScrollTrigger.create({
       trigger: el,
       start: 'top bottom',
       end: 'bottom top',
-      onUpdate: (self) => apply(self.scroll()),
+      onUpdate: (self) => {
+        if (getLenis()?.isScrolling === 'smooth') {
+          pending = null
+          apply(self.scroll())
+        } else pending = self.scroll()
+      },
       onRefresh: (self) => {
         measure()
         lastWaveP = -1
@@ -772,6 +803,7 @@ function LiveStory({ phone }: { phone: boolean }) {
 
     return () => {
       st.kill()
+      gsap.ticker.remove(flush)
       ro.disconnect()
       window.clearTimeout(roTimer)
       cancelAnimationFrame(hashFrame)

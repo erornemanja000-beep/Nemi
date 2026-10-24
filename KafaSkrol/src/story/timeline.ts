@@ -190,6 +190,9 @@ export const DESK_LOAD_AT = [0, 40, DESK.pourPin[0], 374] as const
 /** telefon: kadar sata GRIND (deo 1) i sata POUR (delovi 2 i 3) */
 export const PHONE_LOAD_AT = { grind: 1 + 0.3 * 95, pourPin: 97, pour60: 65 + 0.6 * 127 } as const
 
+/** desktop: koliko vh pre šava (POUR) i pre talasa (SIP) se kadrovi platna dekodiraju unapred */
+export const PREWARM_VH = 80
+
 /** dekodirano najviše ±16 kadrova oko trenutnog (odluka direktora: ~4 MB po d kadru) */
 export const RETAIN = 16
 

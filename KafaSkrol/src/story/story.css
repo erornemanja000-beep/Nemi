@@ -78,6 +78,11 @@
     opacity: 0;
   }
 
+  /* telefon: desna ivica isečka POUR-a (crop x0 + w = 0,98 S, tj. osa + 0,48 S) je tačno na desnoj ivici
+     ekrana, da se kuvalo ne vidi odsečeno ravnom linijom (tester Z25: na 390 je bila na x 382). Telefon
+     nema šav, pa osa POUR-a sme da se razlikuje od GRIND-a. Važi i za poster u reduced motion. */
+  .story--flow .layer-pour { --axis: max(50%, 100% - 0.48 * var(--s)); }
+
   /* POUR: pozadina je u .layer-pour__clip, da isečen deo (talas) otkrije SIP ispod (Z6). Spoljni sloj ne
      prima pokazivač: on je preko SIP-a i tokom i posle talasa, pa bi hvatao klikove namenjene SIP-u
      (Z25). Klik prima samo .layer-pour__clip, a njegov clip-path seče i površinu za klik. */

@@ -24,6 +24,20 @@ export const features = {
   grain: true,
 }
 
+// Base (vite.config.ts, KAFA_BASE): „/" na Netlify-ju, „/Nemi/kafaskrol/" za GitHub Pages (npm run build:gh).
+// U Node-u (vite.config.ts, scripts/*.ts) import.meta.env ne postoji, pa je base „/" i putanje ostaju iste.
+const BASE = (import.meta as { env?: { BASE_URL?: string } }).env?.BASE_URL ?? '/'
+
+/** Putanja do fajla iz public/ pod base-om: asset('/media/x.webp') → „/Nemi/kafaskrol/media/x.webp". */
+export const asset = (p: string) => BASE + p.replace(/^\//, '')
+
+/** Ruta za običan <a href> (rezerva bez JS-a, puno učitavanje): pageHref('/#about') → „/Nemi/kafaskrol/#about".
+ *  <Link> i navigate() ne traže ovo, jer base dodaje ruter (basename). */
+export const pageHref = asset
+
+/** basename za BrowserRouter: base bez završne „/" („/" kad je base „/"). */
+export const routerBasename = BASE.replace(/\/$/, '') || '/'
+
 /** Ključevi za localStorage. Kolačića nema. */
 export const storageKeys = {
   lang: 'kafa-lang',

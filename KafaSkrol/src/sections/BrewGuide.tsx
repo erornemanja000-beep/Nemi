@@ -11,6 +11,7 @@ import type { MouseEvent } from 'react'
 import { Link } from 'react-router-dom'
 import { Button } from '../components/Button'
 import { Photo } from '../components/Photo'
+import { pageHref } from '../config/site'
 import { chapters } from '../content/chapters'
 import { media } from '../content/media'
 import { productBySlug } from '../content/products'
@@ -146,7 +147,7 @@ export function BrewGuide() {
             <strong>{tx(guide.tip.label)}:</strong> {tx(guide.tip.text)}
           </p>
           <p className="m-0 md:text-small">{tx(guide.recommendation)}</p>
-          <Button href={guide.cta.href} onClick={shopFilter}>
+          <Button href={pageHref(guide.cta.href)} onClick={shopFilter}>
             {tx(guide.cta.label)}
           </Button>
         </div>

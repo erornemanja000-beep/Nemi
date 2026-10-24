@@ -3,6 +3,7 @@
 // dobija čip legal.missing („not in demo"); [FEHLT] se na stranici ne prikazuje doslovno.
 // Tipovi LegalEntry i LegalPageContent su u types.ts.
 import type { L, LegalEntry, LegalPageContent } from './types.ts'
+import { asset } from '../config/site.ts'
 import { shop } from './shop.ts'
 
 /** Zajedničko za svih šest stranica (Z3 tačka 3). */
@@ -229,9 +230,9 @@ export const credits = {
     /** „License text: Archivo · Fraunces · Figtree" (linkovi su `files`) */
     linksLabel: { en: 'License text:', de: 'Lizenztext:' } satisfies L,
     files: [
-      { name: 'Archivo', href: '/licenses/OFL-Archivo.txt' },
-      { name: 'Fraunces', href: '/licenses/OFL-Fraunces.txt' },
-      { name: 'Figtree', href: '/licenses/OFL-Figtree.txt' },
+      { name: 'Archivo', href: asset('/licenses/OFL-Archivo.txt') },
+      { name: 'Fraunces', href: asset('/licenses/OFL-Fraunces.txt') },
+      { name: 'Figtree', href: asset('/licenses/OFL-Figtree.txt') },
     ],
   },
   renders: {

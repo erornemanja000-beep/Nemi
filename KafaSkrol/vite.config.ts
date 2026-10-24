@@ -27,6 +27,14 @@ const DESKTOP_QUERY = '(min-width: 64rem) and (min-height: 600px)'
 const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
 
 /**
+ * Base sajta: „/" (Netlify, podrazumevano) ili KAFA_BASE, npr. „/Nemi/kafaskrol/" za GitHub Pages (npm run build:gh).
+ * Mora da počinje i da se završava sa „/". U aplikaciji je to import.meta.env.BASE_URL (asset() i basename
+ * rutera u src/config/site.ts); ovde, u Node-u, putanje iz media.ts ostaju bez base-a („/media/…").
+ */
+const base = process.env.KAFA_BASE ?? '/'
+if (!/^\/(.+\/)?$/.test(base)) throw new Error(`KAFA_BASE mora da počinje i da se završava sa „/" (sada: ${base})`)
+
+/**
  * Upisuje u index.html ime brenda i SEO (EN) iz src/config/site.ts i src/content/site.ts, i pravi
  * <noscript> (skriven H1, tri poglavlja na EN, GRIND poster, red site.noscript). index.html zato nema brend.
  */
@@ -44,13 +52,17 @@ function siteHtml(): Plugin {
 
   const poster = media.seq.grind.poster
   const grindAlt = chapters.items[0].alt.en
-  const noscript = [
+  // Vite dodaje base putanjama u atributima index.html (predučitavanje, favicon). Ovaj korak ide posle
+  // toga (order: 'post'), pa <noscript> dobija base ovde: tako je isti i u dev-u i u build-u (dev bi ga
+  // inače dodao i u <noscript>, a build ne)
+  let withBase = (src: string) => src
+  const noscript = () => [
     '<noscript>',
     '      <div class="noscript">',
     `        <h1 class="sr-only">${esc(fill(site.h1.en))}</h1>`,
     '        <picture>',
-    `          <source media="${DESKTOP_QUERY}" srcset="${poster.d.src}" width="${poster.d.width}" height="${poster.d.height}" />`,
-    `          <img src="${poster.m.src}" width="${poster.m.width}" height="${poster.m.height}" alt="${esc(grindAlt)}" />`,
+    `          <source media="${DESKTOP_QUERY}" srcset="${withBase(poster.d.src)}" width="${poster.d.width}" height="${poster.d.height}" />`,
+    `          <img src="${withBase(poster.m.src)}" width="${poster.m.width}" height="${poster.m.height}" alt="${esc(grindAlt)}" />`,
     '        </picture>',
     ...chapters.items.map((c) => `        <h2>${esc(c.title.en)}</h2>\n        <p>${esc(fill(c.text.en))}</p>`),
     `        <p class="noscript__demo">${esc(fill(site.noscript.en))}</p>`,
@@ -60,17 +72,20 @@ function siteHtml(): Plugin {
 
   return {
     name: 'kafa-site-html',
+    configResolved(config) {
+      withBase = (src) => config.base + src.replace(/^\//, '')
+    },
     transformIndexHtml: {
-      order: 'pre',
+      order: 'post',
       handler(html) {
         for (const mark of ['<!--site-head-->', '<!--site-noscript-->']) {
           if (!html.includes(mark)) throw new Error(`index.html: nema oznake ${mark}`)
         }
-        // predučitavanje u index.html mora da ima iste putanje postera kao media.ts (LCP)
-        for (const src of [poster.d.src, poster.m.src]) {
+        // predučitavanje u index.html mora da ima iste putanje postera kao media.ts (LCP); Vite im je već dodao base
+        for (const src of [poster.d.src, poster.m.src].map(withBase)) {
           if (!html.includes(`href="${src}"`)) throw new Error(`index.html: predučitavanje ne odgovara media.ts (${src})`)
         }
-        return html.replace('<!--site-head-->', head).replace('<!--site-noscript-->', noscript)
+        return html.replace('<!--site-head-->', head).replace('<!--site-noscript-->', noscript())
       },
     },
   }
@@ -79,15 +94,18 @@ function siteHtml(): Plugin {
 /**
  * Kao netlify.toml: mediji i licence (i u preview-u bundle) koji ne postoje vraćaju 404, a ne index.html sa 200.
  * Bez ovoga Vite-ov SPA fallback daje HTML umesto slike ili seq.json, pa se greška ne vidi.
+ * Ovaj middleware ide pre Vite-ovog, pa adresa još ima base (/Nemi/kafaskrol/media/…): base se skida ovde.
  */
 function missingFiles404(): Plugin {
-  const guard = (dir: string, prefixes: string[]) => (req: IncomingMessage, res: ServerResponse, next: () => void) => {
+  const guard = (dir: string, siteBase: string, prefixes: string[]) => (req: IncomingMessage, res: ServerResponse, next: () => void) => {
     let pathname: string
     try {
       pathname = decodeURIComponent((req.url ?? '').split('?')[0])
     } catch {
       return next()
     }
+    if (!pathname.startsWith(siteBase)) return next()
+    pathname = `/${pathname.slice(siteBase.length)}`
     if (!prefixes.some((p) => pathname.startsWith(p))) return next()
     const file = resolve(dir, `.${pathname}`)
     if (file.startsWith(dir + sep) && existsSync(file)) return next()
@@ -98,16 +116,17 @@ function missingFiles404(): Plugin {
   return {
     name: 'kafa-missing-files-404',
     configureServer(server) {
-      server.middlewares.use(guard(resolve(server.config.publicDir), ['/media/', '/licenses/']))
+      server.middlewares.use(guard(resolve(server.config.publicDir), server.config.base, ['/media/', '/licenses/']))
     },
     configurePreviewServer(server) {
-      server.middlewares.use(guard(resolve(server.config.root, server.config.build.outDir), ['/media/', '/assets/', '/licenses/']))
+      const { root, base, build } = server.config
+      server.middlewares.use(guard(resolve(root, build.outDir), base, ['/media/', '/assets/', '/licenses/']))
     },
   }
 }
 
 export default defineConfig({
-  base: '/',
+  base,
   plugins: [siteHtml(), missingFiles404(), react(), tailwindcss()],
   build: {
     rolldownOptions: {

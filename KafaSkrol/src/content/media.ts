@@ -2,6 +2,7 @@
 // Novi renderi: zameni folder u public/media i prebaci `ready` ovde (README, „Renderi").
 // Fotografije i para: fajlovi, autori i licence iz studio/kafa-skrol/izvori.md (mediji, 23.10.2026).
 // Alt tekstovi su iz tekstovi.md (dopune Z3, 1a–1d). Natpisi za stranicu Credits su u legal.ts (credits).
+import { asset } from '../config/site.ts'
 import type { ChapterId, MediaManifest, PhotoEntry, ProductImage, SeqMedia, SteamMedia } from './types.ts'
 
 const UNSPLASH = { license: 'Unsplash License', licenseUrl: 'https://unsplash.com/license' }
@@ -17,7 +18,7 @@ function photo(
   credit: PhotoEntry['credit'],
   caption?: PhotoEntry['caption'],
 ): PhotoEntry {
-  const base = `/media/photos/${id}`
+  const base = asset(`/media/photos/${id}`)
   return {
     id,
     sm: { src: `${base}-sm.webp`, width: sm[0], height: sm[1] },
@@ -92,7 +93,7 @@ const photos: Record<string, PhotoEntry> = {
 function bag(id: 'origin' | 'flavor' | 'roast', alt: ProductImage['alt']): ProductImage {
   return {
     // render 900 x 1125, isečen na kesu i senku (750 x 900); senka meko bledi do desne ivice
-    srcs: [400, 600, 750].map((width) => ({ width, src: `/media/bags/kesa-${id}-${width}.webp` })),
+    srcs: [400, 600, 750].map((width) => ({ width, src: asset(`/media/bags/kesa-${id}-${width}.webp`) })),
     ratio: 750 / 900,
     alt,
     ready: true,
@@ -107,8 +108,8 @@ function bag(id: 'origin' | 'flavor' | 'roast', alt: ProductImage['alt']): Produ
 function gear(id: 'grinder' | 'dripper' | 'kettle', alt: ProductImage['alt']): ProductImage {
   return {
     srcs: [
-      { width: 480, src: `/media/photos/gear-${id}-sm.webp` },
-      { width: 900, src: `/media/photos/gear-${id}-lg.webp` },
+      { width: 480, src: asset(`/media/photos/gear-${id}-sm.webp`) },
+      { width: 900, src: asset(`/media/photos/gear-${id}-lg.webp`) },
     ],
     ratio: 1200 / 1500,
     alt,
@@ -118,7 +119,7 @@ function gear(id: 'grinder' | 'dripper' | 'kettle', alt: ProductImage['alt']): P
 
 /** Sekvenca kadrova; `ready` tek kad postoji seq.json (Z2, kasnije pravi renderi). */
 function seq(id: ChapterId, poster: SeqMedia['poster'], geometry: SeqMedia['geometry']): SeqMedia {
-  const base = `/media/seq/${id}`
+  const base = asset(`/media/seq/${id}`)
   return { id, base, manifest: `${base}/seq.json`, poster, geometry, ready: SEQ_READY[id], placeholder: SEQ_PLACEHOLDER[id] }
 }
 
@@ -139,15 +140,15 @@ const geo = (W: number, H: number, x0: number, y0: number, w: number, h: number)
 /** Para: odluka direktora 4. webm je prvi izvor, mp4 drugi; A ide u POUR, B u SIP. */
 function steam(name: 'steam-cup-a' | 'steam-cup-b', width: number, height: number): SteamMedia {
   const sources = [
-    { src: `/media/steam/${name}.webm`, type: 'video/webm' },
-    { src: `/media/steam/${name}.mp4`, type: 'video/mp4' },
+    { src: asset(`/media/steam/${name}.webm`), type: 'video/webm' },
+    { src: asset(`/media/steam/${name}.mp4`), type: 'video/mp4' },
   ]
   return {
     // jedna rezolucija za oba nivoa; drugi fajl za telefon se dodaje ovde, bez izmene koda
     sources: { d: sources, m: sources },
     width,
     height,
-    frames: { base: `/media/steam/${name}-seq`, count: 30, width, height },
+    frames: { base: asset(`/media/steam/${name}-seq`), count: 30, width, height },
     ready: true,
   }
 }
@@ -156,19 +157,19 @@ export const media: MediaManifest = {
   seq: {
     // poster GRIND = G1, predučitava ga index.html (iste putanje!)
     grind: seq('grind', {
-      d: { src: '/media/seq/grind/d/0001.webp', width: 672, height: 1500 },
-      m: { src: '/media/seq/grind/m/0001.webp', width: 448, height: 1000 },
+      d: { src: asset('/media/seq/grind/d/0001.webp'), width: 672, height: 1500 },
+      m: { src: asset('/media/seq/grind/m/0001.webp'), width: 448, height: 1000 },
     }, geo(1, 1.25, 0.22, 0, 0.56, 1.25)),
     // poster POUR = G150, isečak 0,72 × 1 S
     pour: seq('pour', {
-      d: { src: '/media/seq/pour/poster-d.webp', width: 864, height: 1200 },
-      m: { src: '/media/seq/pour/poster-m.webp', width: 576, height: 800 },
+      d: { src: asset('/media/seq/pour/poster-d.webp'), width: 864, height: 1200 },
+      m: { src: asset('/media/seq/pour/poster-m.webp'), width: 576, height: 800 },
     }, geo(1, 1, 0.26, 0, 0.72, 1)),
     // SIP je pravi render (Z21, scripts/pack_seq.py): poster = S64, isečak 0,80 × 0,86 S (senka ide udesno do
     // ivice kadra, pa isečak ide do 1,0 S, a senka bledi 0,80 → 1,0 S; privremeni kadrovi su imali 0,64)
     sip: seq('sip', {
-      d: { src: '/media/seq/sip/d/0064.webp', width: 960, height: 1032 },
-      m: { src: '/media/seq/sip/poster-m.webp', width: 640, height: 688 },
+      d: { src: asset('/media/seq/sip/d/0064.webp'), width: 960, height: 1032 },
+      m: { src: asset('/media/seq/sip/poster-m.webp'), width: 640, height: 688 },
     }, geo(1, 1, 0.2, 0, 0.8, 0.86)),
   },
   steam: {

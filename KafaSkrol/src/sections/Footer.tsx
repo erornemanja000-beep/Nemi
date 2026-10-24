@@ -14,7 +14,7 @@ import { useId, useState, type ChangeEvent, type FormEvent } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { Button } from '../components/Button'
 import { LangSwitch } from '../components/LangSwitch'
-import { brand } from '../config/site'
+import { brand, pageHref } from '../config/site'
 import { credits } from '../content/legal'
 import { sections } from '../content/sections'
 import { site } from '../content/site'
@@ -122,8 +122,8 @@ function Newsletter() {
 export function Footer() {
   const { tx, tf } = useLang()
   const onHome = useLocation().pathname === '/'
-  // na pravnim stranicama sidra vode nazad na početnu (kao Header)
-  const href = (h: string) => (h.startsWith('#') && !onHome ? `/${h}` : h)
+  // na pravnim stranicama sidra vode nazad na početnu (kao Header, pod base-om)
+  const href = (h: string) => (h.startsWith('#') && !onHome ? pageHref(`/${h}`) : h)
 
   return (
     <footer
@@ -136,7 +136,7 @@ export function Footer() {
 
         <div className="mt-s7 grid grid-cols-2 gap-x-s5 gap-y-s7 lg:grid-cols-[1.4fr_1fr_1fr_1.2fr]">
           <div className="col-span-2 flex flex-col items-start lg:col-span-1">
-            <a href={onHome ? '#top' : '/'} aria-label={tf(site.logoLabel)} className="inline-flex min-h-tap flex-col justify-center leading-none no-underline">
+            <a href={onHome ? '#top' : pageHref('/')} aria-label={tf(site.logoLabel)} className="inline-flex min-h-tap flex-col justify-center leading-none no-underline">
               <span className="whitespace-nowrap font-text text-logo font-semibold tracking-[.01em]">{brand.name}</span>
               <span className="mt-[.45em] font-label text-logo-sub font-bold tracking-(--tracking-logo-sub) uppercase">{tx(brand.sub)}</span>
             </a>

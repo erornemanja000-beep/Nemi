@@ -11,7 +11,7 @@
 // Tanka linija ispod posle 20 px skrola. Dva skip linka: sadržaj (#main) i prodavnica (#find-your-cup).
 import { useCallback, useEffect, useState, type MouseEvent } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { brand } from '../config/site'
+import { brand, pageHref } from '../config/site'
 import { site } from '../content/site'
 import { useLang } from '../i18n/LangContext'
 import { openCart, useCart } from '../lib/cart'
@@ -66,8 +66,8 @@ export function Header() {
   // providan samo na samom vrhu stranice (zrna padaju odozgo iza menija); čim se skroluje, i tokom
   // priče, ima pozadinu poglavlja i liniju, da tekst, mlin, talas i kartice ne idu preko menija (Z25)
   const solid = scrolled
-  // na pravnim stranicama sidra vode nazad na početnu
-  const href = (h: string) => (onHome ? h : `/${h}`)
+  // na pravnim stranicama sidra vode nazad na početnu (pod base-om, npr. /Nemi/kafaskrol/#about)
+  const href = (h: string) => (onHome ? h : pageHref(`/${h}`))
 
   // logo na početnoj vodi na vrh (Link na istu rutu ne bi ništa uradio)
   const onLogo = (e: MouseEvent) => {

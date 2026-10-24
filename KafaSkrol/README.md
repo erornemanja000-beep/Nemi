@@ -21,6 +21,7 @@ npm run dev          # http://localhost:5173 (dev rute: /dev/seq, /dev/wave, /de
 
 ```bash
 npm run build        # tsc -b && vite build → dist/
+npm run build:gh     # GitHub Pages: base /Nemi/kafaskrol/ (KAFA_BASE) → dist-gh/, sa 404.html i .nojekyll (scripts/after-gh.mjs)
 npm run lint         # oxlint
 npm run check        # formati (scripts/check-data.ts) i sadržaj: cene, L polja, linkovi, mediji, seq.json (scripts/check-content.ts)
 npx vite preview     # http://localhost:4173, sa istim zaglavljima (CSP, X-Robots-Tag, COOP) kao Netlify
@@ -48,6 +49,10 @@ Poseban Netlify sajt iz istog repoa (pravi ga korisnik kad sajt bude spreman):
   `Referrer-Policy`, `Permissions-Policy`, `Cross-Origin-Opener-Policy: same-origin`. Ista zaglavlja stoje
   u `vite.config.ts` (`preview.headers`): menjaju se oba mesta zajedno. HSTS šalje Netlify sam na HTTPS
   domenu (proverava se posle objave).
+
+GitHub Pages (`npm run build:gh`): sadržaj `dist-gh/` ide u folder `kafaskrol/` grane `gh-pages`. Pages ne šalje
+zaglavlja (CSP, X-Robots-Tag), ostaje samo `<meta name="robots">`. Direktan link (`/Nemi/kafaskrol/p/guji`) radi samo
+ako je `404.html` u korenu grane (Pages ne čita `404.html` iz podfoldera); bez njega radi početna i sve veze unutar sajta.
 
 ## Mapa foldera
 

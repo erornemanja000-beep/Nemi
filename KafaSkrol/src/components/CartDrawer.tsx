@@ -3,6 +3,7 @@
 // Ljuska panela je Overlay (./Overlay.tsx).
 import { useRef } from 'react'
 import { useLocation } from 'react-router-dom'
+import { pageHref } from '../config/site'
 import { media } from '../content/media'
 import { productBySlug } from '../content/products'
 import { shop } from '../content/shop'
@@ -66,7 +67,7 @@ export function CartDrawer() {
       {cart.lines.length === 0 ? (
         <div className="flex flex-1 flex-col items-start gap-s5 overflow-y-auto px-s5 py-s6">
           <p className="m-0">{tx(shop.cart.empty)}</p>
-          <Button href={onHome ? site.shopNow.href : `/${site.shopNow.href}`} onClick={leave}>
+          <Button href={onHome ? site.shopNow.href : pageHref(`/${site.shopNow.href}`)} onClick={leave}>
             {tx(site.shopNow.label)}
           </Button>
         </div>

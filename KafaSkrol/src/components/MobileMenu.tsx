@@ -3,7 +3,7 @@
 // Na desktopu (lg, 64rem) ga nema: ako se prozor proširi dok je otvoren, zatvara se.
 import { useEffect, useRef } from 'react'
 import { useLocation } from 'react-router-dom'
-import { brand } from '../config/site'
+import { brand, pageHref } from '../config/site'
 import { site } from '../content/site'
 import { useLang } from '../i18n/LangContext'
 import { lockScroll } from '../lib/motion'
@@ -21,8 +21,8 @@ const DESKTOP_HEADER_QUERY = '(min-width: 64rem)'
 export function MobileMenu({ open, onClose }: Props) {
   const { tx } = useLang()
   const onHome = useLocation().pathname === '/'
-  // na pravnim stranicama sidra vode nazad na početnu
-  const href = (h: string) => (onHome ? h : `/${h}`)
+  // na pravnim stranicama sidra vode nazad na početnu (pod base-om, kao Header)
+  const href = (h: string) => (onHome ? h : pageHref(`/${h}`))
   const restore = useRef(true)
 
   /** Zatvaranje bez vraćanja fokusa na dugme menija (link vodi dalje, fokus nastavlja odatle). */

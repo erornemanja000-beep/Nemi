@@ -1,7 +1,8 @@
 // Rute (plan, Interfejs 8) i globalni delovi: Header, ChatBubble, CartDrawer, Toast, Grain.
 // BrowserRouter (ne HashRouter), da sidra u meniju rade kao obični linkovi; Netlify i vite preview
-// vraćaju index.html za svaku rutu. Footer je zajednički za početnu, pravne stranice i Credits
-// (raspored WithFooter); dev harness-i ga nemaju.
+// vraćaju index.html za svaku rutu (GitHub Pages: 404.html, README). basename je base iz vite.config.ts
+// (KAFA_BASE), pa rute i <Link> ostaju „/p/guji" i pod /Nemi/kafaskrol/. Footer je zajednički za
+// početnu, pravne stranice i Credits (raspored WithFooter); dev harness-i ga nemaju.
 import { lazy, Suspense, useEffect } from 'react'
 import { BrowserRouter, Navigate, Outlet, Route, Routes } from 'react-router-dom'
 import { CartDrawer } from './components/CartDrawer'
@@ -9,6 +10,7 @@ import { ChatBubble } from './components/ChatBubble'
 import { Grain } from './components/Grain'
 import { Header } from './components/Header'
 import { Toast } from './components/Toast'
+import { routerBasename } from './config/site'
 import { legalPages } from './content/legal'
 import { LangProvider } from './i18n/LangContext'
 import { refreshAfterFonts, startSmoothScroll, stopSmoothScroll } from './lib/motion'
@@ -47,7 +49,7 @@ export default function App() {
 
   return (
     <LangProvider>
-      <BrowserRouter>
+      <BrowserRouter basename={routerBasename}>
         <Header />
         <Routes>
           <Route element={<WithFooter />}>

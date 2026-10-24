@@ -200,3 +200,30 @@ Ocene rendera:
 - rebra drippera;
 - širi mlaz mlevene kafe;
 - slika za Gooseneck Kettle u prodavnici.
+
+## Završni test (tester, 24.10.2026, HEAD dc22b02)
+
+Prošlo:
+- build, lint i check;
+- `shots.mjs`;
+- svi kadrovi su pravi renderi, bez praznih platana;
+- šav ≤ 0,1 px;
+- mreža: 0 × 404, 0 spoljnih zahteva, 0 CSP kršenja i 0 grešaka;
+- brend: nigde ne piše POUR / PLAY;
+- reduced motion;
+- sekcije: filteri, modal, korpa, footer i Credits;
+- LCP 1,1–1,3 s (Fast 4G, 4× CPU).
+
+Preuzeto do kraja priče: 13,3 MB na 1440 i 5,6 MB na 390.
+
+Nije prošlo (prosleđeno u Z25):
+- header se sudara sa sadržajem priče na desktopu;
+- kuvalo je na 390 odsečeno 8 px pre ivice;
+- vreme kadra talasa je 61 ms (4× CPU), a SIP 29 ms;
+- prvi JS je 189,6 KB gzip, a budžet je 180 (poznato).
+
+Sitnice:
+- poster se vidi 3–6 kadrova pri ulasku POUR/SIP platna;
+- SIP S56–S64 su isti kadrovi;
+- toast na 1024 DE pokriva 3 px dugmeta u modalu;
+- footer ima „Placeholder:" za zakonsku garanciju (namerno, demo).

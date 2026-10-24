@@ -10,9 +10,14 @@ import pathlib
 import shutil
 import sys
 
+if len(sys.argv) != 2:
+    sys.exit('upotreba: python3 grillbox/build_pages.py <folder-grane-gh-pages>')
 root = pathlib.Path(__file__).resolve().parent
 out = pathlib.Path(sys.argv[1]).resolve()
 site = out / 'grillbox'
+# zaštita: pogrešan argument (npr. koren repoa) ne sme da obriše izvorni grillbox/
+if site == root or root in site.parents or site in root.parents:
+    sys.exit(f'{out} nije folder grane gh-pages')
 if site.exists():
     shutil.rmtree(site)
 shutil.copytree(root / 'src', site)

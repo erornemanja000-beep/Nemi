@@ -54,7 +54,8 @@ GitHub objavi za 1–2 minuta. Koren grane (`index.html`) i dalje vodi na Smash 
 - **Halal**: na logou piše „BE HALAL!“; potvrditi da važi i za Bacon (Käsekrainer Bacon, Bacon Smash) i Käsekrainer.
 - **Ćevapi**: na sajtu „im Fladenbrot mit Zwiebeln“ (vidi se na fotki, na Wolt-u to ne piše). Na Wolt-u piše „Cevape“, na logou „Cevapi“; sajt koristi „Ćevapi“.
 - **Alergeni**: nema ih na Wolt-u; od klijenta tražiti listu (A–R) da se vrate kao kod Smash King-a.
-- **Impressum**: firma, email, UID, broj u Firmenbuch-u.
+- **Impressum**: firma, email, UID, broj u Firmenbuch-u i sud (ako je firma upisana).
+- **Datenschutz → Hosting** sada opisuje GitHub Pages (nacrt). Pri pravoj objavi upisati stvarni hosting i osnov prenosa u SAD.
 - **Fotke**: Wolt fotke na sivoj pozadini, isečene. Za finalnu verziju po želji tamne AI fotke kao kod Smash King-a
   (oko 160 kredita po slici na Artlist-u, krediti se obnavljaju 9. 11.) ili prave fotke.
 - **Animacije** su i dalje burger iz Smash King AI klipova (brioche, bez susama). Grillbox burger ima zemičku sa susamom;

@@ -48,3 +48,23 @@ vremena, redosled i vrste pokreta.
 - Spojiti AI klipove (ruža, latica) sa gradnjom u CapCut-u
 - Po želji: uspravna 9:16 verzija za Instagram
 - Napraviti sam sajt (video kao početna animacija, pa sekcije o ukusima, lokalu, kontaktu)
+
+---
+
+# KafaSkrol: skrol-sajt za kafu (KORN / KANNE, koncept)
+
+Stanje 24.10.2026. Sajt po referentnom AI videu (Enkis Web Studio). Priča GRIND → POUR → talas → SIP, pa prodavnica, pretplata, O nama, Brew guide, kontakt, footer i pravne stranice (EN/DE). Radni materijal je u `studio/kafa-skrol/`, a nalazi i stanje su u `studio/kafa-skrol/talas-4.md`.
+
+**Gotovo:**
+- pravi Blender renderi: mlin (96 kadrova), prelivanje (128), šolja (64) i tri kese sa etiketom KORN / KANNE;
+- pakovanje: `KafaSkrol/scripts/pack_seq.py`;
+- rezervne kopije rendera: `studio/kafa-skrol/renderi/`;
+- završni test je prošao (mreža, CSP, brend, reduced motion, sekcije), a recenzent je dao 7/10 pre popravki Z25.
+
+**Ostaje:**
+- Netlify: sajt `kornkanne-entwurf` je napravljen, ali repo još nije povezan (base `KafaSkrol`, grana `claude/brave-planck-wsuftl`);
+- novi render kuvala (izgleda kao folija), gušći mlaz zrna u GRIND-u, rebra drippera, slika za Gooseneck Kettle;
+- na ekranima nižim od 860 px kartice u SIP-u ostaju u špilu;
+- prvi JS je 189,6 KB, a budžet je 180.
+
+**Za sledeći 3D projekat:** pune sekvence renderovati na korisnikovom računaru sa grafičkom karticom (sesija na njegovom računaru), jer ovde 4 CPU jezgra traže 8 h.

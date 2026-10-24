@@ -68,3 +68,5 @@ Stanje 24.10.2026. Sajt po referentnom AI videu (Enkis Web Studio). Priča GRIND
 - prvi JS je 189,6 KB, a budžet je 180.
 
 **Za sledeći 3D projekat:** pune sekvence renderovati na korisnikovom računaru sa grafičkom karticom (sesija na njegovom računaru), jer ovde 4 CPU jezgra traže 8 h.
+
+**Objavljeno 24.10.2026:** https://erornemanja000-beep.github.io/Nemi/kafaskrol/ (GitHub Pages, folder `kafaskrol/` na grani `gh-pages`). Build se pravi sa `cd KafaSkrol && npm run build:gh`, a `dist-gh/` se kopira u `gh-pages/kafaskrol/`. Netlify je odbio objavu jer su krediti naloga potrošeni. Direktan link na podstranicu (npr. `/p/guji`) posle osvežavanja ne radi, jer `404.html` nije u korenu grane `gh-pages`; početna i svi linkovi unutar sajta rade.

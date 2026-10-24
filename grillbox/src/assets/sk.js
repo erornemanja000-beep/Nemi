@@ -352,7 +352,7 @@
       const [d, k] = nextOpen(day);
       const when = d === 1 ? (de ? 'morgen' : 'tomorrow') : DAY[lang][k];
       const head = today ? (de ? 'Geschlossen' : 'Closed') : (de ? 'Heute Ruhetag' : 'Closed today');
-      txt = de ? `${head} · ${when} ab ${fmt(HOURS[k][0])}` : `${head} · opens ${when} ${fmt(HOURS[k][0])}`;
+      txt = de ? `${head} · ${when} ab ${fmt(HOURS[k][0])}` : `${head} · opens ${when} at ${fmt(HOURS[k][0])}`;
     }
     el.classList.toggle('open', open);
     $('span', el).textContent = txt;

@@ -34,7 +34,9 @@ i menja burger po burger na skrol). Dizajn, fontovi, boje, animacije i kod su is
 | `build_pages.py` | kopira `src/` u `<gh-pages>/grillbox/` i dodaje noindex |
 
 Slike se prave ponovo sa `python3 scripts/grillbox/slike.py`.
-Na Wolt-u su neke fotke iste: oba hot doga imaju jednu fotku, Classic i Chilly Smash takođe, pa sajt koristi 6 fotki za 10 jela.
+Na Wolt-u su neke fotke iste: Ćevapi 5 i 10, obe Pljeskavice (i obična pokazuje fotku sa sirom), oba hot doga,
+Classic i Chilly Smash. Sajt zato koristi 6 fotki za 10 jela; nove fotke od klijenta bi to rešile.
+`og:image` je apsolutni link na GitHub Pages; pri pravoj objavi promeniti na pravi domen.
 
 ## Objava (GitHub Pages)
 **Link za klijenta: https://erornemanja000-beep.github.io/Nemi/grillbox/**

@@ -47,7 +47,7 @@ em { font-style: italic; }
 .mega, .big, .smash-word span, .b-name, .cat h3, .deal h3, .pillars h3, .insta-handle, .order h2 {
   font-family: var(--f-disp); font-weight: 400; text-transform: uppercase; letter-spacing: .005em;
 }
-.mega { margin: 0 0 26px; font-size: clamp(96px, 17.5vw, 270px); line-height: .8; }
+.mega { margin: 0 0 26px; font-size: clamp(96px, 17.5vw, 270px); line-height: .86; }
 .mega-line { display: block; }
 .mega-emblem { display: inline-block; width: .42em; height: auto; vertical-align: top; margin: .04em 0 0 .08em; transform: rotate(10deg); filter: drop-shadow(0 6px 24px rgba(255, 189, 58, .35)); }
 .big { margin: 0 0 22px; font-size: clamp(54px, 8.4vw, 138px); line-height: .88; }
@@ -202,7 +202,7 @@ em { font-style: italic; }
   width: 100%; display: grid; grid-template-columns: 1fr auto; grid-template-areas: 'name price' 'ing tag'; align-items: baseline; column-gap: 18px;
   padding: 18px 0 16px; background: none; border: 0; cursor: pointer; text-align: left;
 }
-.b-name { grid-area: name; font-size: clamp(32px, 3.4vw, 54px); line-height: .95; color: rgba(247, 236, 220, .34); transition: color .4s, transform .5s var(--ease); transform-origin: left; }
+.b-name { grid-area: name; font-size: clamp(28px, 3.4vw, 54px); line-height: .95; color: rgba(247, 236, 220, .34); transition: color .4s, transform .5s var(--ease); transform-origin: left; }
 .b-price { grid-area: price; justify-self: end; font: 400 clamp(22px, 1.9vw, 30px)/1 var(--f-disp); color: var(--dim); white-space: nowrap; transition: color .4s; }
 .al { font-style: normal; font-size: 10.5px; font-weight: 800; letter-spacing: .14em; color: var(--dim); white-space: nowrap; }
 .b-tag { grid-area: tag; justify-self: end; font-size: 11px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: var(--dim); transition: color .4s; }
@@ -379,6 +379,8 @@ em { font-style: italic; }
 
 /* ================= Tablet / telefon ================= */
 @media (max-width: 1100px) {
+  /* uža desktop lista: ime jela ostaje u jednom redu */
+  .b-name { font-size: clamp(26px, 3vw, 54px); }
   .cats { grid-template-columns: 1fr 1fr; }
   .al-legend { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .visit-grid { grid-template-columns: 1fr 1fr; }
@@ -442,7 +444,7 @@ em { font-style: italic; }
     opacity: 0; transform: translateY(36px) scale(.96); transition: opacity .45s, transform .6s var(--ease); pointer-events: none; }
   .b-item.is-active { opacity: 1; transform: none; pointer-events: auto; }
   .b-item.is-past { transform: translateY(-36px) scale(.96); }
-  .b-view .b-img { display: block; position: static; order: -1; flex: 1 1 0; min-height: 0; width: 100%; height: auto; object-fit: cover; opacity: 1; transform: none; -webkit-mask-image: none; mask-image: none; background: radial-gradient(70% 60% at 50% 55%, #2a170a 0%, #0b0806 75%); }
+  .b-view .b-img { display: block; position: static; order: -1; flex: 1 1 0; min-height: 0; width: 100%; height: auto; object-fit: contain; opacity: 1; transform: none; -webkit-mask-image: none; mask-image: none; background: radial-gradient(70% 60% at 50% 55%, #2a170a 0%, #0b0806 75%); }
   .b-progress { position: static; justify-content: center; }
   .b-hint { display: none; }
   .b-btn { flex: none; padding: 16px 20px 20px; cursor: default; grid-template-areas: 'tag tag' 'name price' 'ing ing'; }

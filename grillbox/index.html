@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Grillbox – Ćevapi, Smash Burger &amp; Hot Dogs · Wien Simmering</title>
+<meta name="description" content="Grillbox in 1110 Wien: Ćevapi und Pljeskavica nach original bosnischer Rezeptur, Smash Burger und Hot Dogs. Halal. Fresh. Hot. Grilled!">
+<meta name="theme-color" content="#060403">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Grillbox – Fresh. Hot. Grilled!">
+<meta property="og:description" content="Ćevapi, Smash Burger und Hot Dogs aus Simmering.">
+<meta property="og:image" content="https://erornemanja000-beep.github.io/Nemi/grillbox/assets/img/og.jpg">
+<link rel="icon" type="image/png" href="assets/img/favicon.png">
+<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+<link rel="preload" href="assets/fonts/anton-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/seq/smash/d/0001.webp" as="image" media="(min-width: 821px)">
+<link rel="preload" href="assets/seq/smash/m/0001.webp" as="image" media="(max-width: 820px)">
+<link rel="stylesheet" href="assets/fonts.css">
+<link rel="stylesheet" href="assets/sk.css">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FastFoodRestaurant","name":"Grillbox","slogan":"Fresh. Hot. Grilled!","servesCuisine":["Balkan","Ćevapi","Smash Burger","Hot Dog"],
+ "address":{"@type":"PostalAddress","streetAddress":"Simmeringer Hauptstraße 68-74","postalCode":"1110","addressLocality":"Wien","addressCountry":"AT"},
+ "geo":{"@type":"GeoCoordinates","latitude":48.17659,"longitude":16.41364},
+ "telephone":"+4366567145295","openingHours":"Tu-Su 11:00-22:00",
+ "sameAs":["https://wolt.com/de/aut/vienna/restaurant/grillbox-simmering","https://www.lieferando.at/speisekarte/grillbox-smash-burger-hot-dogs-cevape"]}
+</script>
+</head>
+<body>
+<a class="skip" href="#karte" data-en="Skip to the menu">Zur Speisekarte springen</a>
+
+<div class="loader" id="loader" aria-hidden="true">
+  <img class="loader-emblem" src="assets/img/emblem.webp" alt="" width="180" height="180">
+  <div class="loader-bar"><i id="loaderBar"></i></div>
+  <p class="loader-txt" data-en="Firing up the grill…">Der Grill wird angeheizt …</p>
+</div>
+
+<header class="nav" id="nav">
+  <a class="brand" href="#top" aria-label="Grillbox – nach oben">
+    <img class="brand-emblem" src="assets/img/emblem.webp" alt="" width="44" height="44">
+    <span class="brand-word">Grillbox</span>
+  </a>
+  <nav class="nav-links" id="navLinks" aria-label="Hauptmenü">
+    <a href="#smash" data-en="The smash">Der Smash</a>
+    <a href="#king" data-en="The burger">Der Burger</a>
+    <a href="#karte" data-en="Menu">Karte</a>
+    <a href="#besuch" data-en="Visit">Besuch</a>
+  </nav>
+  <div class="nav-actions">
+    <button class="lang" id="lang" type="button" aria-label="Sprache wechseln / switch language">EN</button>
+    <button class="btn btn-gold btn-sm" type="button" data-order data-en="Order">Bestellen</button>
+    <button class="burger-btn" id="menuBtn" type="button" aria-label="Menü öffnen" aria-expanded="false" aria-controls="navLinks">
+      <i></i><i></i><i></i>
+    </button>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- 1 · SMASH: Hand presst die Fleischkugel auf die Platte (Bildfolge am Scroll) -->
+  <section class="story story-smash" id="smash" data-seq="smash" data-count="121" data-fit="cover" style="--len:340">
+    <div class="stage">
+      <canvas class="seq-canvas" aria-hidden="true"></canvas>
+      <div class="shade shade-hero" aria-hidden="true"></div>
+
+      <div class="hero-copy layer" data-from="0" data-to=".19">
+        <p class="eyebrow"><span class="dot"></span> Simmering · 1110 Wien</p>
+        <h1 class="mega"><span class="mega-line">Grill</span><span class="mega-line">box<img class="mega-emblem" src="assets/img/emblem.webp" alt="" width="110" height="110"></span></h1>
+        <p class="lead" data-en="Ćevapi made to an original Bosnian recipe, smash burgers and hot dogs – fresh off the grill, straight from Simmering.">Ćevapi nach original bosnischer Rezeptur, Smash Burger und Hot Dogs – frisch vom Grill, direkt aus Simmering.</p>
+        <div class="cta-row">
+          <button class="btn btn-gold" type="button" data-order data-en="Order now">Jetzt bestellen</button>
+          <a class="btn btn-ghost" href="#karte" data-en="See the menu">Zur Karte</a>
+        </div>
+        <ul class="badges">
+          <li class="badge-halal">Halal</li>
+          <li data-en="Bosnian recipe">Bosnische Rezeptur</li>
+          <li>Fresh. Hot. Grilled!</li>
+        </ul>
+      </div>
+
+      <div class="smash-word layer" data-from=".2" data-to=".5" aria-hidden="true"><span id="smashWord">Smash!</span></div>
+
+      <div class="hero-copy hero-copy-2 layer" data-from=".56" data-to="1">
+        <p class="eyebrow" data-en="The technique">Die Technik</p>
+        <h2 class="big" data-en="Crust <em>outside.</em><br>Juicy inside.">Außen <em>Kruste.</em><br>Innen saftig.</h2>
+        <p class="lead" data-en="For our smash burgers we press the meat flat onto the hot griddle. The juices caramelise on the surface – that’s the Maillard reaction, and it’s what you taste in every bite.">Für unsere Smash Burger pressen wir das Fleisch flach auf die heiße Platte. Der Saft karamellisiert an der Oberfläche – das ist die Maillard-Reaktion, und die schmeckst du in jedem Bissen.</p>
+      </div>
+
+      <div class="scroll-cue layer" data-from="0" data-to=".08" aria-hidden="true"><span data-en="Scroll">Scrollen</span><i></i></div>
+    </div>
+  </section>
+
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker-track">
+      <span>Ćevapi</span><b>✦</b><span>Pljeskavica</span><b>✦</b><span>Hot Dogs</span><b>✦</b><span>Smash Burger</span><b>✦</b><span>Halal</span><b>✦</b><span data-en="Bosnian recipe">Bosnische Rezeptur</span><b>✦</b><span>Simmering</span><b>✦</b>
+      <span>Ćevapi</span><b>✦</b><span>Pljeskavica</span><b>✦</b><span>Hot Dogs</span><b>✦</b><span>Smash Burger</span><b>✦</b><span>Halal</span><b>✦</b><span data-en="Bosnian recipe">Bosnische Rezeptur</span><b>✦</b><span>Simmering</span><b>✦</b>
+    </div>
+  </div>
+
+  <!-- 2 · BURGER: Zutaten schweben und stapeln sich zum Burger (nur die ersten 121 Bilder, ohne Krone) -->
+  <section class="story story-king" id="king" data-seq="king" data-count="121" data-fit="contain" data-keys="0,0 .192,.114 .697,1 1,1" style="--len:400">
+    <div class="stage">
+      <div class="king-box">
+        <canvas class="seq-canvas" aria-hidden="true"></canvas>
+        <div class="callouts layer" data-from="0" data-to=".204" aria-hidden="true">
+          <span class="co" style="--y:.17;--x:.71"><b>Bun</b><em data-en="soft">fluffig</em></span>
+          <span class="co" style="--y:.265;--x:.67"><b>Grillbox</b><em data-en="sauce">Soße</em></span>
+          <span class="co" style="--y:.335;--x:.68"><b data-en="Pickles">Gurken</b><em data-en="crunchy">knackig</em></span>
+          <span class="co" style="--y:.41;--x:.69"><b data-en="Onions">Zwiebeln</b><em data-en="caramelised">karamellisiert</em></span>
+          <span class="co" style="--y:.49;--x:.73"><b>Cheddar</b><em>Hochland</em></span>
+          <span class="co" style="--y:.585;--x:.76"><b>2× Patty</b><em>Double Smash</em></span>
+        </div>
+      </div>
+
+      <div class="chap layer" data-from="0" data-to=".24">
+        <p class="eyebrow" data-en="Anatomy of a smash burger">Anatomie eines Smash Burgers</p>
+        <h2 class="big" data-en="Every layer <em>counts.</em>">Jede Schicht <em>zählt.</em></h2>
+        <p class="lead" data-en="Grillbox sauce, Hochland cheddar, caramelised and finely chopped onions and pickles – that’s how every one of our smash burgers comes. The Double gets two patties.">Grillbox Soße, Hochland-Cheddar, karamellisierte und klein gehackte Zwiebeln und Gurken – so kommt jeder unserer Smash Burger. Beim Double sind es zwei Patties.</p>
+        <ul class="chips chips-mobile">
+          <li>Bun</li><li data-en="Grillbox sauce">Grillbox Soße</li><li data-en="Pickles">Gurken</li><li data-en="Onions">Zwiebeln</li><li>Cheddar</li><li>2× Patty</li>
+        </ul>
+      </div>
+
+      <div class="chap layer" data-from=".276" data-to=".672">
+        <p class="eyebrow" data-en="Fresh off the grill">Frisch vom Grill</p>
+        <h2 class="big" data-en="Smashed. <em>Stacked.</em>">Gesmasht. <em>Gestapelt.</em></h2>
+        <p class="lead" data-en="Two thin patties mean twice the crust. And every burger comes with fries.">Zwei dünne Patties heißt doppelte Kruste. Und jeder Burger kommt mit Pommes frites.</p>
+      </div>
+
+      <div class="chap chap-king layer" data-from=".72" data-to="1">
+        <p class="eyebrow">Simmeringer Hauptstraße 68–74</p>
+        <h2 class="big">Fresh. Hot. <em>Grilled!</em></h2>
+        <p class="lead" data-en="Grab your burger in Simmering or have it delivered.">Hol dir deinen Burger in Simmering oder lass ihn dir liefern.</p>
+        <div class="cta-row">
+          <button class="btn btn-gold" type="button" data-order data-en="Order now">Jetzt bestellen</button>
+          <a class="btn btn-ghost" href="#karte" data-en="Full menu">Ganze Karte</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 · KARTE -->
+  <section class="section karte" id="karte">
+    <header class="sec-head reveal">
+      <p class="eyebrow" data-en="The menu">Die Karte</p>
+      <h2 class="big" data-en="Fresh off <em>the grill.</em>">Frisch vom <em>Grill.</em></h2>
+      <p class="lead" data-en="Ćevapi and pljeskavica made to an original Bosnian recipe, hot dogs and smash burgers. Every hot dog and every burger comes with fries.">Ćevapi und Pljeskavica nach original bosnischer Rezeptur, Hot Dogs und Smash Burger. Alle Hot Dogs und Burger kommen mit Pommes frites.</p>
+    </header>
+
+    <!-- staza za skrol: blok sa jelima stoji, a skrol menja jelo po jelo -->
+    <div class="b-track" id="bTrack">
+    <div class="burgers" id="burgers">
+      <div class="b-view">
+      <ol class="b-list">
+        <li class="b-item is-active">
+          <button class="b-btn" type="button">
+            <span class="b-name" data-en="Ćevapi&nbsp;· 5&nbsp;pcs">Ćevapi&nbsp;· 5&nbsp;Stk.</span>
+            <span class="b-price" data-en="€ 14.90">€ 14,90</span>
+            <span class="b-tag" data-en="Bosnian original">Bosnisches Original</span>
+            <span class="b-ing"><span data-en="Made to an original Bosnian recipe, in flatbread with onions">Nach original bosnischer Rezeptur, im Fladenbrot mit Zwiebeln</span></span>
+          </button>
+          <img class="b-img" src="assets/img/menu/cevape-1000.webp" srcset="assets/img/menu/cevape-560.webp 560w, assets/img/menu/cevape-1000.webp 1000w" sizes="(max-width: 820px) 76vw, 44vw" alt="Ćevapi im Fladenbrot mit Zwiebeln" width="1000" height="1000" loading="lazy">
+        </li>
+        <li class="b-item">
+          <button class="b-btn" type="button">
+            <span class="b-name" data-en="Ćevapi&nbsp;· 10&nbsp;pcs">Ćevapi&nbsp;· 10&nbsp;Stk.</span>
+            <span class="b-price" data-en="€ 19.90">€ 19,90</span>
+            <span class="b-tag b-tag-gold" data-en="Popular">Beliebt</span>
+            <span class="b-ing"><span data-en="The big portion, made to an original Bosnian recipe">Die große Portion, nach original bosnischer Rezeptur</span></span>
+          </button>
+          <img class="b-img" src="assets/img/menu/cevape-1000.webp" srcset="assets/img/menu/cevape-560.webp 560w, assets/img/menu/cevape-1000.webp 1000w" sizes="(max-width: 820px) 76vw, 44vw" alt="Ćevapi, zehn Stück" width="1000" height="1000" loading="lazy">
+        </li>
+        <li class="b-item">
+          <button class="b-btn" type="button">
+            <span class="b-name">Pljeskavica</span>
+            <span class="b-price" data-en="€ 14.90">€ 14,90</span>
+            <span class="b-tag b-tag-gold" data-en="Popular">Beliebt</span>
+            <span class="b-ing"><span data-en="Finely chopped onions, made to an original Bosnian recipe">Klein gehackte Zwiebeln, original nach bosnischer Rezeptur</span></span>
+          </button>
+          <img class="b-img" src="assets/img/menu/pljeskavica-1000.webp" srcset="assets/img/menu/pljeskavica-560.webp 560w, assets/img/menu/pljeskavica-1000.webp 1000w" sizes="(max-width: 820px) 76vw, 44vw" alt="Pljeskavica im Fladenbrot mit Zwiebeln" width="1000" height="1000" loading="lazy">
+        </li>
+        <li class="b-item">
+          <button class="b-btn" type="button">
+            <span class="b-name" data-en="Pljeskavica cheese">Pljeskavica Käse</span>
+            <span class="b-price" data-en="€ 16.90">€ 16,90</span>
+            <span class="b-tag" data-en="With cheese">Mit Käse</span>
+            <span class="b-ing"><span data-en="Our pljeskavica with melted cheese">Unsere Pljeskavica mit geschmolzenem Käse</span></span>
+          </button>
+          <img class="b-img" src="assets/img/menu/pljeskavica-1000.webp" srcset="assets/img/menu/pljeskavica-560.webp 560w, assets/img/menu/pljeskavica-1000.webp 1000w" sizes="(max-width: 820px) 76vw, 44vw" alt="Pljeskavica mit Käse" width="1000" height="1000" loading="lazy">
+        </li>
+        <li class="b-item">
+          <button class="b-btn" type="button">
+            <span class="b-name">Käsekrainer</span>
+            <span class="b-price" data-en="€ 11.90">€ 11,90</span>
+            <span class="b-tag b-tag-gold" data-en="Hot dog · popular">Hot Dog · Beliebt</span>
+            <span class="b-ing"><span data-en="Ketchup, mayonnaise, mustard and one topping of your choice, with fries">Ketchup, Mayonnaise, Senf und eine Zutat deiner Wahl, mit Pommes</span></span>
+          </button>
+          <img class="b-img" src="assets/img/menu/kaesekrainer-1000.webp" srcset="assets/img/menu/kaesekrainer-560.webp 560w, assets/img/menu/kaesekrainer-1000.webp 1000w" sizes="(max-width: 820px) 76vw, 44vw" alt="Käsekrainer Hot Dog mit Pommes" width="1000" height="1000" loading="lazy">
+        </li>
+        <li class="b-item">
+          <button class="b-btn" type="button">
+            <span class="b-name">Käsekrainer Bacon</span>
+            <span class="b-price" data-en="€ 13.90">€ 13,90</span>
+            <span class="b-tag">Hot Dog</span>
+            <span class="b-ing"><span data-en="Käsekrainer with bacon, with fries">Käsekrainer mit Bacon, mit Pommes</span></span>
+          </button>
+          <img class="b-img" src="assets/img/menu/kaesekrainer-1000.webp" srcset="assets/img/menu/kaesekrainer-560.webp 560w, assets/img/menu/kaesekrainer-1000.webp 1000w" sizes="(max-width: 820px) 76vw, 44vw" alt="Käsekrainer Hot Dog mit Bacon und Pommes" width="1000" height="1000" loading="lazy">
+        </li>
+        <li class="b-item">
+          <button class="b-btn" type="button">
+            <span class="b-name">Classic Smash</span>
+            <span class="b-price" data-en="€ 18.90">€ 18,90</span>
+            <span class="b-tag" data-en="The classic">Der Klassiker</span>
+            <span class="b-ing"><span data-en="Grillbox sauce, Hochland cheddar, caramelised onions, pickles, with fries">Grillbox Soße, Hochland-Cheddar, karamellisierte Zwiebeln, Gurken, mit Pommes</span></span>
+          </button>
+          <img class="b-img" src="assets/img/menu/classic-1000.webp" srcset="assets/img/menu/classic-560.webp 560w, assets/img/menu/classic-1000.webp 1000w" sizes="(max-width: 820px) 76vw, 44vw" alt="Classic Smash Burger mit Pommes" width="1000" height="1000" loading="lazy">
+        </li>
+        <li class="b-item">
+          <button class="b-btn" type="button">
+            <span class="b-name">Bacon Smash</span>
+            <span class="b-price" data-en="€ 19.90">€ 19,90</span>
+            <span class="b-tag" data-en="Smoky">Rauchig</span>
+            <span class="b-ing"><span data-en="Barbecue sauce and bacon, plus Grillbox sauce, cheddar, onions, pickles, with fries">Barbecuesoße und Bacon, dazu Grillbox Soße, Cheddar, Zwiebeln, Gurken, mit Pommes</span></span>
+          </button>
+          <img class="b-img" src="assets/img/menu/bacon-1000.webp" srcset="assets/img/menu/bacon-560.webp 560w, assets/img/menu/bacon-1000.webp 1000w" sizes="(max-width: 820px) 76vw, 44vw" alt="Bacon Smash Burger mit Pommes" width="1000" height="1000" loading="lazy">
+        </li>
+        <li class="b-item">
+          <button class="b-btn" type="button">
+            <span class="b-name">Chilly Smash</span>
+            <span class="b-price" data-en="€ 19.90">€ 19,90</span>
+            <span class="b-tag b-tag-hot" data-en="Hot">Scharf</span>
+            <span class="b-ing"><span data-en="Chilly sauce and jalapeños, plus Grillbox sauce, cheddar, onions, pickles, with fries">Chilly Soße und Jalapeños, dazu Grillbox Soße, Cheddar, Zwiebeln, Gurken, mit Pommes</span></span>
+          </button>
+          <img class="b-img" src="assets/img/menu/classic-1000.webp" srcset="assets/img/menu/classic-560.webp 560w, assets/img/menu/classic-1000.webp 1000w" sizes="(max-width: 820px) 76vw, 44vw" alt="Chilly Smash Burger mit Pommes" width="1000" height="1000" loading="lazy">
+        </li>
+        <li class="b-item">
+          <button class="b-btn" type="button">
+            <span class="b-name">Double Smash</span>
+            <span class="b-price" data-en="€ 21.90">€ 21,90</span>
+            <span class="b-tag b-tag-gold" data-en="Popular">Beliebt</span>
+            <span class="b-ing"><span data-en="Double patty and jalapeños, plus Grillbox sauce, cheddar, onions, pickles, with fries">Doppeltes Patty und Jalapeños, dazu Grillbox Soße, Cheddar, Zwiebeln, Gurken, mit Pommes</span></span>
+          </button>
+          <img class="b-img" src="assets/img/menu/double-1000.webp" srcset="assets/img/menu/double-560.webp 560w, assets/img/menu/double-1000.webp 1000w" sizes="(max-width: 820px) 76vw, 44vw" alt="Double Smash Burger mit Pommes" width="1000" height="1000" loading="lazy">
+        </li>
+      </ol>
+      </div>
+      <div class="b-stage" aria-hidden="true"><div class="b-glow"></div><div class="b-ring"></div></div>
+      <div class="b-progress" aria-hidden="true">
+        <span class="b-count"><b id="bNum">01</b> / <span id="bTotal">10</span></span>
+        <i class="b-bar"><i id="bBar"></i></i>
+        <span class="b-hint" data-en="Scroll for the next dish">Scroll für das nächste Gericht</span>
+      </div>
+    </div>
+    </div>
+
+    <div class="deals reveal">
+      <article class="deal">
+        <p class="deal-kicker" data-en="Something cold">Kalt dazu</p>
+        <h3 data-en="Grab a <em>drink.</em>">Was zum <em>Trinken.</em></h3>
+        <ul class="deal-list">
+          <li><span>Cola Turka <small>0,33 l</small></span><b data-en="€ 3.90">€ 3,90</b></li>
+          <li><span>Almdudler <small>0,33 l</small></span><b data-en="€ 3.90">€ 3,90</b></li>
+          <li><span>Cockta <small>0,33 l</small></span><b data-en="€ 3.90">€ 3,90</b></li>
+          <li><span data-en="Rauch iced tea peach <small>0.33 l</small>">Rauch Eistee Pfirsich <small>0,33 l</small></span><b data-en="€ 3.90">€ 3,90</b></li>
+          <li><span data-en="Rauch iced tea lemon <small>0.33 l</small>">Rauch Eistee Zitrone <small>0,33 l</small></span><b data-en="€ 3.90">€ 3,90</b></li>
+          <li><span>Red Bull <small>0,25 l</small></span><b data-en="€ 4.50">€ 4,50</b></li>
+        </ul>
+      </article>
+      <article class="deal deal-hot">
+        <p class="deal-kicker" data-en="Extras for everything">Extras zu allem</p>
+        <h3 data-en="Go <em>Balkan.</em>">Mach’s <em>balkanisch.</em></h3>
+        <p data-en="With your ćevapi, pljeskavica, burger or hot dog.">Zu Ćevapi, Pljeskavica, Burger oder Hot Dog.</p>
+        <ul class="deal-list">
+          <li><span>Kajmak</span><b data-en="+ € 3.50">+ € 3,50</b></li>
+          <li><span>Ajvar</span><b data-en="+ € 3.50">+ € 3,50</b></li>
+          <li><span data-en="Chilly sauce">Chilly Soße</span><b data-en="+ € 3.50">+ € 3,50</b></li>
+        </ul>
+      </article>
+    </div>
+
+    <div class="allergens reveal">
+      <p class="karte-note" data-en="All prices in euros incl. VAT. Ask us in the shop for allergen information.">Alle Preise in Euro inkl. MwSt. Infos zu Allergenen bekommst du bei uns im Lokal.</p>
+    </div>
+  </section>
+
+  <!-- 4 · VERSPRECHEN -->
+  <section class="section promise" id="qualitaet">
+    <div class="promise-grid">
+      <figure class="promise-photo reveal">
+        <img src="assets/img/cevapi-tamno.webp" alt="Ćevapi im Fladenbrot mit gehackten Zwiebeln" width="800" height="1000" loading="lazy">
+        <figcaption data-en="Ćevapi made to an original Bosnian recipe.">Ćevapi nach original bosnischer Rezeptur.</figcaption>
+      </figure>
+      <div class="promise-copy">
+        <header class="reveal">
+          <p class="eyebrow" data-en="The promise">Das Versprechen</p>
+          <h2 class="big" data-en="No <em>compromises.</em>">Keine <em>Kompromisse.</em></h2>
+        </header>
+        <ol class="pillars">
+          <li class="reveal"><span class="p-no">01</span><h3 data-en="Bosnian recipe">Bosnische Rezeptur</h3><p data-en="Ćevapi and pljeskavica, made the original way.">Ćevapi und Pljeskavica nach Originalrezept.</p></li>
+          <li class="reveal"><span class="p-no">02</span><h3>Smash Burger</h3><p data-en="With Grillbox sauce, Hochland cheddar and caramelised onions.">Mit Grillbox Soße, Hochland-Cheddar und karamellisierten Zwiebeln.</p></li>
+          <li class="reveal"><span class="p-no">03</span><h3 data-en="Always with fries">Immer mit Pommes</h3><p data-en="With every burger and every hot dog.">Zu jedem Burger und jedem Hot Dog.</p></li>
+          <li class="reveal"><span class="p-no">04</span><h3>Halal</h3><p data-en="Our meat is halal.">Unser Fleisch ist halal.</p></li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 · BESUCH -->
+  <section class="section visit" id="besuch">
+    <header class="sec-head reveal">
+      <p class="eyebrow" data-en="Visit">Besuch</p>
+      <h2 class="big" data-en="Come to the <em>Grillbox.</em>">Komm zur <em>Grillbox.</em></h2>
+    </header>
+    <div class="visit-grid">
+      <div class="visit-card reveal">
+        <p class="open-state" id="openState"><i></i><span></span></p>
+        <address>
+          <b>Simmeringer Hauptstraße 68–74</b><br>1110 Wien · Simmering
+        </address>
+        <dl class="hours" id="hours">
+          <div><dt data-en="Mon">Mo</dt><dd data-en="Closed">Ruhetag</dd></div>
+          <div><dt data-en="Tue – Sun">Di – So</dt><dd>11:00 – 22:00</dd></div>
+        </dl>
+        <div class="cta-row">
+          <a class="btn btn-gold" href="https://www.google.com/maps/dir/?api=1&amp;destination=Simmeringer+Hauptstra%C3%9Fe+68,+1110+Wien" target="_blank" rel="noopener" data-en="Directions ↗">Route ↗</a>
+          <a class="btn btn-ghost" href="tel:+4366567145295">0665 671 452 95</a>
+        </div>
+        <div class="deliver">
+          <p class="eyebrow" data-en="Delivered to your door">Geliefert</p>
+          <div class="deliver-row">
+            <a href="https://wolt.com/de/aut/vienna/restaurant/grillbox-simmering" target="_blank" rel="noopener">Wolt ↗</a>
+            <a href="https://www.lieferando.at/speisekarte/grillbox-smash-burger-hot-dogs-cevape" target="_blank" rel="noopener">Lieferando ↗</a>
+          </div>
+        </div>
+      </div>
+      <div class="map reveal" id="map">
+        <div class="map-cover">
+          <img src="assets/img/grill-tisch.webp" alt="Käsekrainer, Double Smash Burger und Ćevapi von Grillbox" width="1360" height="765" loading="lazy">
+          <button class="btn btn-ghost map-load" type="button" id="mapLoad" data-en="Load map (OpenStreetMap)">Karte laden (OpenStreetMap)</button>
+        </div>
+      </div>
+      <figure class="visit-photo reveal">
+        <img src="assets/img/hotdog-tamno.webp" alt="Käsekrainer Hot Dog mit Pommes" width="765" height="1020" loading="lazy">
+      </figure>
+    </div>
+  </section>
+
+  <!-- 6 · LIEFERN -->
+  <section class="section insta reveal">
+    <a class="insta-link" href="https://wolt.com/de/aut/vienna/restaurant/grillbox-simmering" target="_blank" rel="noopener">
+      <span class="eyebrow" data-en="Rather have it delivered?">Lieber liefern lassen?</span>
+      <span class="insta-handle" data-en="Grillbox on Wolt">Grillbox auf Wolt</span>
+      <span class="insta-arrow" aria-hidden="true">↗</span>
+    </a>
+    <div class="socials">
+      <a href="https://www.lieferando.at/speisekarte/grillbox-smash-burger-hot-dogs-cevape" target="_blank" rel="noopener"><span>Lieferando</span><b data-en="Order now">Jetzt bestellen</b><i aria-hidden="true">↗</i></a>
+      <a href="https://www.google.com/maps/search/?api=1&amp;query=Grillbox+Simmeringer+Hauptstra%C3%9Fe+68+1110+Wien" target="_blank" rel="noopener"><span>Google</span><b data-en="Rate us">Bewerte uns</b><i aria-hidden="true">↗</i></a>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="fire" aria-hidden="true"><canvas id="fire"></canvas></div>
+  <div class="foot-top">
+    <p class="foot-word">Grillbox</p>
+    <p class="foot-about" data-en="Grillbox brings ćevapi made to an original Bosnian recipe, smash burgers and hot dogs to Simmering. Fresh. Hot. Grilled!">Grillbox bringt Ćevapi nach original bosnischer Rezeptur, Smash Burger und Hot Dogs nach Simmering. Fresh. Hot. Grilled!</p>
+  </div>
+  <div class="foot-cols">
+    <div><h4 data-en="Visit">Besuch</h4><p>Simmeringer Hauptstraße 68–74<br>1110 Wien</p></div>
+    <div><h4 data-en="Opening hours">Öffnungszeiten</h4><p><span data-en="Mon closed">Mo Ruhetag</span><br><span data-en="Tue – Sun">Di – So</span> 11:00 – 22:00</p></div>
+    <div><h4 data-en="Contact">Kontakt</h4><p><a href="tel:+4366567145295">0665 671 452 95</a></p></div>
+    <div><h4 data-en="More">Mehr</h4><p><a href="https://wolt.com/de/aut/vienna/restaurant/grillbox-simmering" target="_blank" rel="noopener">Wolt ↗</a><br><a href="https://www.lieferando.at/speisekarte/grillbox-smash-burger-hot-dogs-cevape" target="_blank" rel="noopener">Lieferando ↗</a><br><a href="impressum.html" data-en="Imprint &amp; privacy">Impressum &amp; Datenschutz</a></p></div>
+  </div>
+  <p class="foot-legal">© 2026 Grillbox <span class="draft" data-en="Draft · nemistudio">Entwurf · nemistudio</span></p>
+</footer>
+
+<div class="mobile-bar" id="mobileBar">
+  <a href="tel:+4366567145295" aria-label="Anrufen"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z"/></svg></a>
+  <button class="btn btn-gold" type="button" data-order data-en="Order now">Jetzt bestellen</button>
+  <a href="https://www.google.com/maps/dir/?api=1&amp;destination=Simmeringer+Hauptstra%C3%9Fe+68,+1110+Wien" target="_blank" rel="noopener" aria-label="Route"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg></a>
+</div>
+
+<dialog class="order" id="order" aria-labelledby="orderTitle">
+  <form method="dialog" class="order-inner">
+    <button class="order-x" value="close" aria-label="Schließen">×</button>
+    <img class="order-emblem" src="assets/img/emblem.webp" alt="" width="72" height="72">
+    <h2 id="orderTitle" data-en="How do you <em>want it?</em>">Wie hättest du’s <em>gern?</em></h2>
+    <p class="eyebrow" data-en="Delivery">Liefern lassen</p>
+    <div class="order-grid order-grid-2">
+      <a class="order-opt" href="https://wolt.com/de/aut/vienna/restaurant/grillbox-simmering" target="_blank" rel="noopener"><b>Wolt</b><span>↗</span></a>
+      <a class="order-opt" href="https://www.lieferando.at/speisekarte/grillbox-smash-burger-hot-dogs-cevape" target="_blank" rel="noopener"><b>Lieferando</b><span>↗</span></a>
+    </div>
+    <p class="eyebrow" data-en="Pick up &amp; eat in">Abholen &amp; vor Ort</p>
+    <div class="order-grid order-grid-2">
+      <a class="order-opt" href="tel:+4366567145295"><b data-en="Call">Anrufen</b><span>0665 671 452 95</span></a>
+      <a class="order-opt" href="https://www.google.com/maps/dir/?api=1&amp;destination=Simmeringer+Hauptstra%C3%9Fe+68,+1110+Wien" target="_blank" rel="noopener"><b>Route</b><span>Simmering</span></a>
+    </div>
+  </form>
+</dialog>
+
+<canvas class="fx" id="fx" aria-hidden="true"></canvas>
+<div class="grain" aria-hidden="true"></div>
+
+<script src="assets/sk.js" defer></script>
+</body>
+</html>

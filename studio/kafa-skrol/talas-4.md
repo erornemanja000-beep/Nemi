@@ -168,3 +168,35 @@ Snimci su u `pregled/z15/`:
   - tester proverava: toast iznad lepljive trake modala na telefonu, nestanak toast-a pri otvaranju korpe, dugme modala na 1024×768;
   - na 390 DE se dugme „Probierset in den Warenkorb" (`Subscription.tsx`) lomi u 2 reda;
   - `tekstopisac` treba da potvrdi `credits.standIn` u `legal.ts` („Zubereitung, Schritt 3 (bis das Rendering da ist)").
+
+## Završni pregled (recenzent, 24.10.2026, HEAD dc22b02)
+
+Ukupna ocena je 7/10, a priča je na oko 60 % reference. Ocene po trenucima:
+- GRIND 3,5;
+- prelaz 3;
+- POUR 3;
+- talas 2;
+- SIP 2,5.
+
+Ocene rendera:
+- šolja 5/5;
+- mlin 4;
+- bokal 4;
+- kese 4;
+- dripper 3;
+- kuvalo 2, jer izgleda kao zgužvana folija; to traži nov render.
+
+**Z25 (animator), popravke u kodu:**
+- header pun posle vrha stranice;
+- talas kao neprovidna ćilibarna tečnost;
+- SIP tekst ulazi posle talasa, a dripper ostaje iznad talasa;
+- kartice raspoređene oko šolje, sa većim kesama;
+- svetao sto/pult kao u referenci;
+- kraći GRIND pin.
+
+**Posle sastanka (nov render):**
+- kuvalo: manje bump-a, anizotropni brušeni čelik;
+- gust mlaz zrna u GRIND-u, 40–60 zrna;
+- rebra drippera;
+- širi mlaz mlevene kafe;
+- slika za Gooseneck Kettle u prodavnici.

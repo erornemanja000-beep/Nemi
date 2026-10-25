@@ -363,7 +363,9 @@ playwright-cli kill-all
 
 ## Installation (Nemi)
 
-Do not install anything. The CLI comes from the pinned `playwright@1.64.1` in `tools/playwright-cli/`.
+Do not install anything new. The CLI comes from the pinned `playwright@1.64.1` in `tools/playwright-cli/`.
+In a fresh checkout `node_modules/` is missing: restore the reviewed version from the lockfile with
+`cd tools/playwright-cli && npm ci --ignore-scripts` (never `npm install`, never another version).
 Run every command from that folder, so `.playwright/cli.config.json` (local Chromium, allowed origins) is used:
 
 ```bash

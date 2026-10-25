@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>WACH. Reklama</title>
+<style>
+  :root { --night: #0e1430; --orange: #ff7a1a; --pink: #ff3d7f; --lime: #c6f432; --coffee: #2b1b14; --cream: #fff4e6; --ink: #1a1210; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1080px; height: 1920px; overflow: hidden; background: var(--night); }
+  body { font-family: "Inter Display", "Inter", sans-serif; color: var(--cream); }
+  #stage { position: absolute; inset: 0; overflow: hidden; perspective: 1400px; }
+  .abs { position: absolute; }
+  .layer { position: absolute; inset: 0; }
+  #stars { background-image:
+      radial-gradient(2px 2px at 120px 300px, #fff8, transparent), radial-gradient(2px 2px at 820px 220px, #fff9, transparent),
+      radial-gradient(3px 3px at 400px 520px, #fff6, transparent), radial-gradient(2px 2px at 950px 700px, #fff7, transparent),
+      radial-gradient(2px 2px at 220px 1200px, #fff5, transparent), radial-gradient(3px 3px at 700px 1500px, #fff6, transparent),
+      radial-gradient(2px 2px at 300px 1700px, #fff5, transparent), radial-gradient(2px 2px at 980px 1300px, #fff6, transparent); }
+  #moonGlow { background: radial-gradient(60% 35% at 50% 40%, rgba(90,110,255,.28), transparent 70%); }
+  .wipe { position: absolute; inset: 0; }
+  #warm { background: radial-gradient(70% 45% at 50% 48%, rgba(255,140,60,.45), transparent 70%); opacity: 0; }
+
+  /* sat */
+  #clock { left: 50%; top: 820px; transform-style: preserve-3d; }
+  #clockBody { position: absolute; width: 860px; height: 380px; left: -430px; top: -190px; border-radius: 70px;
+    background: linear-gradient(180deg, #1c2550, #121937); border: 4px solid #2c3870;
+    box-shadow: 0 40px 90px rgba(0,0,0,.5), inset 0 0 60px rgba(80,110,255,.2); }
+  #digits { position: absolute; left: -400px; top: -150px; width: 800px; height: 300px; display: flex; align-items: center; justify-content: center;
+    font-family: "JetBrains Mono", monospace; font-weight: 800; font-size: 230px; color: #ff4d5e; letter-spacing: -6px;
+    text-shadow: 0 0 30px rgba(255,77,94,.8), 0 0 80px rgba(255,77,94,.4); }
+  .dg { display: inline-block; width: 140px; text-align: center; transform-origin: 50% 50%; }
+  #colon { width: 70px; }
+  #bell1, #bell2 { position: absolute; width: 120px; height: 120px; top: -260px; border-radius: 60px 60px 20px 20px; background: #2c3870; }
+  #bell1 { left: -380px; } #bell2 { left: 260px; }
+  .brr { position: absolute; font-weight: 900; font-size: 92px; color: var(--cream); white-space: nowrap; }
+  #snooze { left: 50%; top: 1180px; width: 520px; height: 140px; margin-left: -260px; border-radius: 70px; background: #ffd34d; color: var(--ink);
+    font-weight: 900; font-size: 64px; letter-spacing: .12em; display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 14px 0 #c99a12, 0 30px 60px rgba(0,0,0,.4); }
+
+  /* naslovi */
+  .title { position: absolute; left: 0; right: 0; text-align: center; font-weight: 900; letter-spacing: -.03em; white-space: nowrap; transform-style: preserve-3d; }
+  .ch { display: inline-block; transform-origin: 50% 100%; }
+  .shadow { text-shadow: 0 6px 0 rgba(0,0,0,.25), 0 18px 40px rgba(0,0,0,.35); }
+
+  /* pospano lice */
+  #face { left: 50%; top: 860px; width: 420px; height: 420px; margin: -210px 0 0 -210px; border-radius: 50%;
+    background: radial-gradient(circle at 38% 32%, #ffe59a, #ffc94d 55%, #e9a521); box-shadow: 0 30px 80px rgba(0,0,0,.45); }
+  .eye { position: absolute; top: 170px; width: 100px; height: 18px; border-radius: 9px; background: #5a3a12; }
+  #eyeL { left: 90px; } #eyeR { right: 90px; }
+  #mouth { position: absolute; left: 50%; top: 270px; width: 70px; height: 50px; margin-left: -35px; border-radius: 50%; background: #5a3a12; }
+  .z { position: absolute; font-weight: 900; color: #cfd8ff; }
+
+  /* limenka: pravi 3D valjak od 28 traka */
+  #can { left: 50%; top: 980px; transform-style: preserve-3d; }
+  #canBody { position: absolute; transform-style: preserve-3d; }
+  .strip { position: absolute; top: -300px; height: 600px; backface-visibility: hidden;
+    background-image: url("data:image/svg+xml;utf8,LABEL"); background-size: 1005px 600px; }
+  .cap { position: absolute; width: 330px; height: 330px; left: -165px; top: -165px; border-radius: 50%;
+    background: radial-gradient(circle at 50% 50%, #d8d8de 0 38%, #9a9aa6 40%, #c9c9d2 46%, #8a8a96 100%); }
+  #canShadow { left: 50%; top: 1300px; width: 360px; height: 60px; margin-left: -180px; border-radius: 50%; background: radial-gradient(rgba(0,0,0,.55), transparent 70%); }
+  .drop { position: absolute; left: 0; top: 0; width: 34px; height: 46px; margin: -23px 0 0 -17px; border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    background: radial-gradient(circle at 35% 30%, #a0643a, #4a2612 70%); }
+  .ring { position: absolute; left: 50%; border-radius: 50%; border: 10px solid var(--cream); }
+
+  /* led: prave 3D kocke */
+  .cube { position: absolute; left: 0; top: 0; transform-style: preserve-3d; }
+  .cf { position: absolute; width: 130px; height: 130px; left: -65px; top: -65px; border-radius: 18px;
+    background: linear-gradient(135deg, rgba(235,248,255,.85), rgba(170,215,240,.45)); border: 2px solid rgba(255,255,255,.8);
+    box-shadow: inset 0 0 30px rgba(255,255,255,.6); }
+
+  #logo { font-size: 250px; top: 170px; }
+  #sub1 { font-size: 78px; top: 470px; font-weight: 700; letter-spacing: .02em; }
+  #sub2 { font-size: 54px; top: 1480px; font-weight: 600; color: #ffd9b8; }
+  #cta { left: 50%; top: 1580px; width: 620px; height: 130px; margin-left: -310px; border-radius: 65px; background: var(--cream); color: var(--coffee);
+    font-weight: 900; font-size: 58px; display: flex; align-items: center; justify-content: center; box-shadow: 0 20px 60px rgba(255,122,26,.5); }
+  #handle { left: 0; right: 0; top: 1735px; text-align: center; font-weight: 700; font-size: 40px; color: #ffd9b8; }
+  #flash { inset: 0; background: #fff; opacity: 0; }
+  #grain { inset: 0; opacity: .06; mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); }
+  #vig { inset: 0; background: radial-gradient(80% 60% at 50% 50%, transparent 55%, rgba(0,0,0,.45) 100%); }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="bgNight" class="layer" style="background: var(--night)"></div>
+  <div id="stars" class="layer"></div>
+  <div id="moonGlow" class="layer"></div>
+  <div id="wipes" class="layer"></div>
+  <div id="warm" class="layer"></div>
+
+  <div id="clock" class="abs">
+    <div id="bell1"></div><div id="bell2"></div>
+    <div id="clockBody"></div>
+    <div id="digits"><span class="dg" id="d0">0</span><span class="dg" id="d1">6</span><span class="dg" id="colon">:</span><span class="dg" id="d2">5</span><span class="dg" id="d3">9</span></div>
+  </div>
+  <div id="brrBox" class="layer"></div>
+  <div id="snooze" class="abs">SNOOZE</div>
+
+  <div id="face" class="abs"><div class="eye" id="eyeL"></div><div class="eye" id="eyeR"></div><div id="mouth"></div></div>
+  <div id="zBox" class="layer"></div>
+
+  <div id="ringBox" class="layer"></div>
+  <div id="canShadow" class="abs"></div>
+  <div id="iceBox" class="layer" style="transform-style: preserve-3d"></div>
+  <div id="can" class="abs"><div id="canBody"></div></div>
+  <div id="dropBox" class="layer"></div>
+
+  <div id="titles" class="layer"></div>
+  <div id="cta" class="abs">Jetzt probieren →</div>
+  <div id="handle" class="abs">@wach.coldbrew</div>
+  <div id="flash" class="abs"></div>
+  <div id="grain" class="abs"></div>
+  <div id="vig" class="abs"></div>
+</div>
+
+<script>
+// Ceo video je funkcija vremena: render(t) postavlja svaki element za sekundu t (0..12).
+const $ = (s) => document.querySelector(s);
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const lerp = (a, b, k) => a + (b - a) * k;
+const prog = (t, a, b) => clamp((t - a) / (b - a));
+const eOut = (k) => 1 - Math.pow(1 - k, 3);
+const eIn = (k) => k * k * k;
+const eInOut = (k) => k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
+const back = (k, s = 2.2) => 1 + (s + 1) * Math.pow(k - 1, 3) + s * Math.pow(k - 1, 2);
+const bounce = (x) => { const n = 7.5625, d = 2.75;
+  if (x < 1 / d) return n * x * x; if (x < 2 / d) return n * (x -= 1.5 / d) * x + .75;
+  if (x < 2.5 / d) return n * (x -= 2.25 / d) * x + .9375; return n * (x -= 2.625 / d) * x + .984375; };
+const set = (el, css) => Object.assign(el.style, css);
+let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+
+// etiketa limenke (SVG): narandžasta sa natpisom WACH. koji se vidi dok se valjak okreće
+const LABEL = `<svg xmlns='http://www.w3.org/2000/svg' width='1005' height='600'>
+<defs><linearGradient id='g' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='#ff8f3a'/><stop offset='1' stop-color='#e95f0c'/></linearGradient></defs>
+<rect width='1005' height='600' fill='url(#g)'/>
+<rect y='0' width='1005' height='26' fill='#c9c9d2'/><rect y='574' width='1005' height='26' fill='#b9b9c4'/>
+<rect y='430' width='1005' height='70' fill='#2b1b14'/>
+<text x='250' y='330' font-family='Inter Display' font-weight='900' font-size='170' fill='#fff4e6' text-anchor='middle'>WACH.</text>
+<text x='250' y='478' font-family='Inter Display' font-weight='700' font-size='40' fill='#ffd9b8' text-anchor='middle' letter-spacing='6'>COLD BREW</text>
+<text x='750' y='230' font-family='Inter Display' font-weight='900' font-size='70' fill='#2b1b14' text-anchor='middle'>0% Zucker</text>
+<text x='750' y='320' font-family='Inter Display' font-weight='700' font-size='46' fill='#fff4e6' text-anchor='middle'>Voller Kick</text>
+<circle cx='750' cy='120' r='34' fill='#fff4e6'/>
+</svg>`;
+const canBody = $("#canBody");
+const N = 28, RAD = 160, W = 2 * Math.PI * RAD / N + 1.2;
+for (let i = 0; i < N; i++) {
+  const s = document.createElement("div");
+  s.className = "strip";
+  s.style.width = W + "px";
+  s.style.left = -W / 2 + "px";
+  s.style.backgroundImage = `url("data:image/svg+xml;utf8,${encodeURIComponent(LABEL)}")`;
+  s.style.backgroundPosition = `${-i * (1005 / N)}px 0`;
+  s.style.transform = `rotateY(${i * 360 / N}deg) translateZ(${RAD - 1}px)`;
+  // senčenje: strane valjka tamnije
+  canBody.appendChild(s);
+}
+const capTop = document.createElement("div"); capTop.className = "cap"; capTop.style.transform = `translateY(-300px) rotateX(90deg)`;
+canBody.appendChild(capTop);
+
+// reči: slova u spanovima
+function makeTitle(id, text, top, size, color, extra = "") {
+  const el = document.createElement("div");
+  el.className = "title shadow"; el.id = id;
+  el.style.top = top + "px"; el.style.fontSize = size + "px"; el.style.color = color;
+  if (extra) el.style.cssText += extra;
+  for (const ch of text) {
+    const s = document.createElement("span"); s.className = "ch";
+    s.textContent = ch === " " ? " " : ch;
+    if (ch === ".") s.style.color = "var(--pink)";
+    el.appendChild(s);
+  }
+  $("#titles").appendChild(el);
+  return el;
+}
+const T = {
+  montag: makeTitle("montag", "Montag.", 330, 170, "var(--cream)"),
+  noch: makeTitle("noch", "Noch 5 Minuten…", 1270, 104, "#cfd8ff"),
+  w1: makeTitle("w1", "Augen auf.", 300, 160, "var(--cream)"),
+  w2: makeTitle("w2", "Kopf an.", 300, 170, "var(--cream)"),
+  w3: makeTitle("w3", "Los geht's.", 300, 160, "var(--ink)"),
+  logo: makeTitle("logo", "WACH.", 170, 250, "var(--cream)"),
+  sub1: makeTitle("sub1", "Cold Brew", 450, 84, "#ffd9b8", "font-weight:700;letter-spacing:.04em"),
+  sub2: makeTitle("sub2", "Null Zucker. Voller Kick.", 1440, 60, "#ffd9b8", "font-weight:700;letter-spacing:0"),
+};
+T.w3.querySelectorAll(".ch").forEach((s) => { if (s.textContent === ".") s.style.color = "var(--pink)"; });
+
+// BRRR slova oko sata
+const BRR = [];
+[[110, 560, -18], [760, 560, 14], [80, 1110, 12], [800, 1100, -10]].forEach(([x, y, r], i) => {
+  const b = document.createElement("div"); b.className = "brr"; b.textContent = i % 2 ? "BRRR!" : "RING!";
+  b.style.left = x + "px"; b.style.top = y + "px"; $("#brrBox").appendChild(b); BRR.push({ b, r, d: i * 0.12 });
+});
+// Zzz
+const ZZ = [];
+for (let i = 0; i < 3; i++) { const z = document.createElement("div"); z.className = "z"; z.textContent = "Z"; $("#zBox").appendChild(z); ZZ.push(z); }
+// kapi kafe (tri praska)
+const DROPS = [];
+[5.0, 6.0, 7.0].forEach((t0) => {
+  for (let i = 0; i < 16; i++) {
+    const d = document.createElement("div"); d.className = "drop"; $("#dropBox").appendChild(d);
+    const a = rnd() * Math.PI * 2, v = 700 + rnd() * 900;
+    DROPS.push({ d, t0, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 500, s: .6 + rnd() * .9, r: rnd() * 360 });
+  }
+});
+// talasi i obojeni krugovi
+const WIPES = [[4.5, "#ff7a1a", 1290], [5.0, "#ff3d7f", 980], [6.0, "#c6f432", 980], [7.0, "#ff7a1a", 980], [8.0, "#2b1b14", 980]].map(([t0, c, y]) => {
+  const w = document.createElement("div"); w.className = "wipe"; w.style.background = c; $("#wipes").appendChild(w); return { w, t0, y };
+});
+const RINGS = [4.5, 5.0, 6.0, 7.0, 10.5].map((t0) => { const r = document.createElement("div"); r.className = "ring"; $("#ringBox").appendChild(r); return { r, t0 }; });
+// kocke leda
+const ICE = [];
+[[-330, 8.0, 1.0], [320, 8.15, 0.9], [-200, 8.35, 0.75], [230, 8.5, 0.8], [-40, 8.7, 0.6], [380, 8.9, 0.65], [-400, 9.05, 0.7]].forEach(([x, t0, sc], i) => {
+  const c = document.createElement("div"); c.className = "cube";
+  [["", 0, 0], ["rotateY(90deg)", 0, 0], ["rotateY(180deg)", 0, 0], ["rotateY(-90deg)", 0, 0], ["rotateX(90deg)", 0, 0], ["rotateX(-90deg)", 0, 0]].forEach(([r]) => {
+    const f = document.createElement("div"); f.className = "cf"; f.style.transform = `${r} translateZ(65px)`; c.appendChild(f);
+  });
+  $("#iceBox").appendChild(c);
+  ICE.push({ c, x, t0, sc, spin: (i % 2 ? 1 : -1) * (180 + i * 40), floor: 1290 + (i % 3) * 40 });
+});
+
+function title(el, t0, t1, mode) {
+  // mode: drop (pada i odskače), flip (3D okret na ulazu i izlazu), sag (posle ulaza slova klonu)
+  const chs = el.querySelectorAll(".ch");
+  el.style.display = (t >= t0 && t < t1 + 0.4) ? "block" : "none";
+  chs.forEach((s, i) => {
+    const k = prog(t, t0 + i * 0.04, t0 + i * 0.04 + 0.55);
+    let y = 0, rx = 0, rz = 0, sc = 1, op = k > 0 ? 1 : 0;
+    if (mode === "flip") { rx = lerp(-100, 0, back(prog(t, t0 + i * 0.03, t0 + i * 0.03 + 0.4), 2.6)); y = (1 - eOut(clamp(k * 1.6))) * 60; op = clamp(k * 5); }
+    else { y = lerp(-700, 0, k <= 0 ? 0 : bounce(k)); rx = lerp(-80, 0, eOut(k)); }
+    if (mode === "sag") {
+      const sk = prog(t, 3.0 + i * 0.07, 3.0 + i * 0.07 + 0.7);
+      rz = (i % 2 ? 1 : -1) * 22 * eIn(sk); y += 420 * eIn(sk); op *= 1 - prog(t, 3.5 + i * 0.07, 3.9 + i * 0.07);
+    }
+    const ok = prog(t, t1 + i * 0.02, t1 + i * 0.02 + 0.25);
+    if (ok > 0) { rx += 90 * eIn(ok); sc *= 1 - 0.3 * ok; op *= 1 - ok; }
+    set(s, { transform: `translateY(${y}px) rotateX(${rx}deg) rotateZ(${rz}deg) scale(${sc})`, opacity: op });
+  });
+}
+
+let t = 0;
+function render(time) {
+  t = time;
+  // ---- noć
+  const nightOut = t >= 4.5;
+  set($("#stars"), { opacity: nightOut ? 0 : 1, transform: `translateY(${t * -8}px)` });
+  set($("#moonGlow"), { opacity: nightOut ? 0 : 1 });
+
+  // ---- sat (0–2.3 s)
+  const clockIn = back(prog(t, 0.0, 0.6), 1.8);
+  const ring = t >= 1.0 && t < 2.0;
+  const shake = ring ? Math.sin(t * 95) * 18 * (1 - prog(t, 1.7, 2.0)) : 0;
+  const snoozeK = prog(t, 2.0, 2.35);
+  const breathe = 1 + Math.sin(t * 4) * 0.012;
+  set($("#clock"), { display: t < 2.45 ? "block" : "none",
+    transform: `translate(${shake}px, ${lerp(500, 0, clockIn) + Math.abs(shake) * .3}px) rotateZ(${shake * .25}deg) scale(${breathe * (1 - eIn(snoozeK))}) rotateX(${8 * Math.sin(t * 1.3)}deg)` });
+  const flip = prog(t, 0.95, 1.2);
+  const f2 = flip < 0.5 ? "5" : "0", f3 = flip < 0.5 ? "9" : "0", f1 = flip < 0.5 ? "6" : "7";
+  $("#d1").textContent = f1; $("#d2").textContent = f2; $("#d3").textContent = f3;
+  ["#d1", "#d2", "#d3"].forEach((id) => set($(id), { transform: `rotateX(${flip > 0 && flip < 1 ? (flip < .5 ? flip * 180 : (flip - 1) * 180) : 0}deg)` }));
+  set($("#digits"), { opacity: (ring && Math.floor(t * 8) % 2) ? 0.55 : 1 });
+  BRR.forEach(({ b, r, d }) => {
+    const k = prog(t, 1.0 + d, 1.3 + d);
+    const out = prog(t, 1.9, 2.1);
+    set(b, { display: t > 1.0 && t < 2.15 ? "block" : "none", opacity: 1 - out,
+      transform: `scale(${(k <= 0 ? 0 : back(k, 3)) * (1 + .08 * Math.sin(t * 40 + d * 10))}) rotate(${r + Math.sin(t * 50 + d) * 6}deg)` });
+  });
+  const sz = prog(t, 1.75, 2.0);
+  const press = Math.sin(Math.PI * prog(t, 2.0, 2.2));
+  set($("#snooze"), { display: t > 1.75 && t < 2.6 ? "flex" : "none", opacity: 1 - prog(t, 2.3, 2.5),
+    transform: `translateY(${lerp(300, 0, back(sz, 2)) + press * 14}px) scale(${1 + press * .08}, ${1 - press * .18})`, boxShadow: `0 ${14 - press * 12}px 0 #c99a12, 0 30px 60px rgba(0,0,0,.4)` });
+
+  // ---- pospano lice i „Noch 5 Minuten…" (2.3–4.0)
+  const fk = prog(t, 2.3, 2.75);
+  const fOut = prog(t, 3.9, 4.25);
+  set($("#face"), { display: t > 2.3 && t < 4.3 ? "block" : "none",
+    transform: `scale(${(fk <= 0 ? 0 : back(fk, 2.4)) * (1 - eIn(fOut))}) rotate(${Math.sin(t * 2) * 6}deg) translateY(${Math.sin(t * 3) * 8}px)` });
+  set($("#mouth"), { transform: `scale(${1 + Math.sin(t * 3.2) * .25})` });
+  ZZ.forEach((z, i) => {
+    const k = ((t - 2.6 - i * 0.4) % 1.2 + 1.2) % 1.2 / 1.2;
+    const on = t > 2.6 + i * 0.4 && t < 4.1;
+    set(z, { display: on ? "block" : "none", left: `${640 + i * 60 + Math.sin(k * 6) * 20}px`, top: `${620 - k * 260}px`, fontSize: `${60 + i * 20 + k * 30}px`, opacity: Math.sin(Math.PI * k) });
+  });
+  title(T.montag, 0.25, 2.2, "drop");
+  title(T.noch, 2.45, 99, "sag");
+
+  // ---- limenka pada (4.0–4.5), udar u 4.5, odskoci
+  let cy, sx = 1, sy = 1;
+  const landY = 980;
+  if (t < 4.5) { const k = prog(t, 4.0, 4.5); cy = lerp(-700, landY, k * k); sy = 1 + .15 * k; sx = 1 / sy; }
+  else if (t < 4.9) { const k = prog(t, 4.5, 4.9); cy = landY - 220 * 4 * k * (1 - k); }
+  else if (t < 5.15) { const k = prog(t, 4.9, 5.15); cy = landY - 70 * 4 * k * (1 - k); }
+  else { cy = landY - 20 - Math.sin((t - 5.15) * 3) * 18; }
+  for (const ti of [4.5, 4.9, 5.15]) { const d = Math.abs(t - ti); if (d < 0.07) { const q = 1 - d / 0.07; sy = 1 - .3 * q * (ti === 4.5 ? 1 : .5); sx = 1 + .25 * q * (ti === 4.5 ? 1 : .5); } }
+  const spin = t < 4.5 ? -20 : (t - 4.5) * 160 + 40 * Math.sin(t * 2);
+  const canScale = t < 8 ? 1 : lerp(1, 1.12, eInOut(prog(t, 8.0, 9.0)));
+  set($("#can"), { display: t > 4.0 ? "block" : "none", transform: `translateY(${cy - 980}px) scale(${sx * canScale}, ${sy * canScale}) rotateX(-12deg) rotateZ(${t < 4.5 ? 8 : Math.sin(t * 2.2) * 5}deg)` });
+  set(canBody, { transform: `rotateY(${spin}deg)` });
+  const hgt = clamp((landY - cy) / 900);
+  set($("#canShadow"), { display: t > 4.0 ? "block" : "none", opacity: 1 - hgt * .8, transform: `scale(${1 - hgt * .6})` });
+
+  // ---- obojeni krugovi, talasi
+  WIPES.forEach(({ w, t0, y }) => {
+    const k = eOut(prog(t, t0, t0 + 0.45));
+    set(w, { clipPath: `circle(${k * 2300}px at 540px ${y}px)`, display: t >= t0 ? "block" : "none" });
+  });
+  RINGS.forEach(({ r, t0 }) => {
+    const k = prog(t, t0, t0 + 0.6);
+    const s = 40 + eOut(k) * 1500;
+    set(r, { display: k > 0 && k < 1 ? "block" : "none", width: s + "px", height: s + "px", marginLeft: -s / 2 + "px", top: (t0 === 4.5 ? 1290 : 980) - s / 2 + "px", opacity: 1 - k, borderWidth: lerp(24, 2, k) + "px" });
+  });
+  DROPS.forEach(({ d, t0, vx, vy, s, r }) => {
+    const ct = t - t0;
+    if (ct <= 0 || ct > 1.1) { d.style.display = "none"; return; }
+    const drag = (1 - Math.exp(-3 * ct)) / 3;
+    set(d, { display: "block", opacity: 1 - prog(ct, .7, 1.1), transform: `translate(${540 + vx * drag}px, ${980 + vy * drag + 1400 * ct * ct}px) rotate(${r + ct * 300}deg) scale(${s})` });
+  });
+
+  // ---- reči na takt (5–8 s)
+  title(T.w1, 5.0, 5.85, "flip");
+  title(T.w2, 6.0, 6.85, "flip");
+  title(T.w3, 7.0, 7.85, "flip");
+
+  // ---- led i logo (8–10.5 s)
+  set($("#warm"), { opacity: prog(t, 8.0, 8.6) });
+  ICE.forEach(({ c, x, t0, sc, spin: sp, floor }) => {
+    const ct = t - t0;
+    if (ct < 0) { c.style.display = "none"; return; }
+    const k = prog(t, t0, t0 + 0.9);
+    const y = lerp(-300, floor, bounce(k));
+    set(c, { display: "block", transform: `translate3d(${540 + x}px, ${y}px, ${-100 + (x % 3) * 30}px) rotateX(${sp * ct * .6 + 20}deg) rotateY(${sp * ct}deg) scale(${sc})` });
+  });
+  title(T.logo, 8.1, 99, "drop");
+  title(T.sub1, 8.6, 99, "flip");
+  title(T.sub2, 9.2, 99, "flip");
+
+  // ---- CTA (10.5–12)
+  const ck = prog(t, 10.5, 10.95);
+  set($("#cta"), { display: t > 10.5 ? "flex" : "none", transform: `scale(${ck <= 0 ? 0 : back(ck, 3)}) rotate(${(1 - ck) * -8}deg)` });
+  const hk = prog(t, 10.75, 11.1);
+  set($("#handle"), { opacity: eOut(hk), transform: `translateY(${(1 - eOut(hk)) * 30}px)` });
+  set($("#flash"), { opacity: Math.max(0, 1 - Math.abs(t - 4.5) / 0.1) * .7 + Math.max(0, 1 - Math.abs(t - 10.5) / 0.12) * .35 });
+
+  // ---- tres ekrana na udarima
+  let sh = 0;
+  for (const [ti, a] of [[4.5, 26], [5.0, 8], [6.0, 8], [7.0, 8], [8.1, 10], [10.5, 10]]) { const d = t - ti; if (d >= 0 && d < .3) sh += a * Math.exp(-d * 16) * Math.sin(d * 85); }
+  set($("#stage"), { transform: `translate(${sh * .5}px, ${sh}px)` });
+}
+window.render = render;
+const q = new URLSearchParams(location.search);
+if (q.has("t")) render(parseFloat(q.get("t")));
+else { const t0 = performance.now(); const loop = () => { render(((performance.now() - t0) / 1000) % 12); requestAnimationFrame(loop); }; loop(); }
+</script>
+</body>
+</html>

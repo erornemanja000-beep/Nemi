@@ -59,3 +59,15 @@ python3 scripts/nemi_promo/zvuk.py <zvuk.wav>
 ffmpeg -framerate 30 -pattern_type glob -i '<folder_kadrova>/f*.jpg' -i <zvuk.wav> -c:v libx264 -crf 17 -pix_fmt yuv420p -c:a aac -shortest video/nemi_studio_promo_10s.mp4
 ```
 Tekstovi i URL su u `scripts/nemi_promo/promo.html` (`URL_TEXT`). Pregled uživo: otvori `promo.html` u browseru.
+
+## Nemi Studio promo u Blenderu (PAUZIRANO, nastavlja se kasnije)
+Priča (19 s, 16:9): koralna tačka-ideja odskače u mraku („Alles beginnt mit einer Idee."), svaki odskok gradi
+voxel bečku ulicu (zgrade, kafić CAFÉ, Riesenrad, tramvaj; „Wir geben ihr Form."), telefon u vazduhu
+(„Websites. Videos. 3D."), sumrak i ljudi („Damit Wien dich sieht."), tačka postaje tačka u logu NEMI.
+Scena je cela u kodu: `scripts/nemi_promo/blender/scena.py` (Blender 4.5 LTS, EEVEE).
+```
+xvfb-run -a blender -b --factory-startup -Y --offline-mode -P scripts/nemi_promo/blender/scena.py -- stills <folder> 2.4 9.8 17.6
+xvfb-run -a blender -b --factory-startup -Y --offline-mode -P scripts/nemi_promo/blender/scena.py -- final <folder> 6 1 475 1600x900
+```
+Render u oblaku traje ~9 s po kadru (oko 70 min za ceo film). Ostalo: zvuk (sintetizovan ili Artlist numera)
+i spajanje kadrova u MP4.

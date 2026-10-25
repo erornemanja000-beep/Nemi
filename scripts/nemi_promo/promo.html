@@ -1,0 +1,402 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Nemi Studio Promo</title>
+<style>
+  :root {
+    --bg: #07070c;
+    --ink: #f5f3ff;
+    --mute: #a6a3c2;
+    --violet: #7c5cff;
+    --coral: #ff5c7a;
+    --amber: #ffc24b;
+    --cyan: #3de0ff;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; background: var(--bg); }
+  body { font-family: "Inter Display", "Inter", sans-serif; color: var(--ink); }
+  #stage { position: absolute; inset: 0; overflow: hidden; perspective: 1600px; perspective-origin: 50% 45%; background: var(--bg); }
+  .abs { position: absolute; }
+  .center { left: 50%; top: 50%; }
+
+  /* pozadina */
+  #glow { inset: -20%; background:
+      radial-gradient(40% 35% at 30% 40%, rgba(124,92,255,.55), transparent 70%),
+      radial-gradient(35% 30% at 72% 60%, rgba(255,92,122,.45), transparent 70%),
+      radial-gradient(30% 30% at 55% 20%, rgba(61,224,255,.25), transparent 70%);
+    filter: blur(40px); opacity: 0; }
+  #floorWrap { left: 0; right: 0; bottom: -80px; height: 900px; perspective: 900px; perspective-origin: 50% 0%; opacity: 0; }
+  #floor { position: absolute; left: -100%; right: -100%; top: 0; height: 2400px; transform-origin: 50% 0;
+    background-image:
+      linear-gradient(rgba(124,92,255,.55) 2px, transparent 2px),
+      linear-gradient(90deg, rgba(124,92,255,.55) 2px, transparent 2px);
+    background-size: 120px 120px;
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 25%, #000 60%, transparent 100%);
+    mask-image: linear-gradient(to bottom, transparent 0%, #000 25%, #000 60%, transparent 100%); }
+  #grain { inset: 0; opacity: .07; mix-blend-mode: overlay; pointer-events: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); }
+  #vignette { inset: 0; pointer-events: none; background: radial-gradient(75% 75% at 50% 50%, transparent 55%, rgba(0,0,0,.75) 100%); }
+
+  /* lopta */
+  #ball { width: 96px; height: 96px; margin: -48px 0 0 -48px; border-radius: 50%;
+    background: radial-gradient(circle at 32% 30%, #fff 0 8%, var(--amber) 20%, var(--coral) 55%, var(--violet) 100%);
+    box-shadow: 0 0 60px rgba(255,92,122,.7); }
+  #ballShadow { width: 140px; height: 26px; margin: -13px 0 0 -70px; border-radius: 50%; background: radial-gradient(rgba(0,0,0,.8), transparent 70%); }
+  #reveal { inset: 0; background: linear-gradient(135deg, #1a1033 0%, #0d0b1c 50%, #1b0d18 100%); }
+
+  /* kocka */
+  #cubeWrap { position: absolute; left: 50%; top: 50%; width: 0; height: 0; transform-style: preserve-3d; }
+  #cube { position: absolute; transform-style: preserve-3d; }
+  .face { position: absolute; width: 1600px; height: 560px; left: -800px; top: -280px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    backface-visibility: hidden; -webkit-backface-visibility: hidden; transform-style: preserve-3d; }
+  .big { font-weight: 900; letter-spacing: -.04em; line-height: .9; white-space: nowrap; }
+  .grad { background: linear-gradient(100deg, var(--cyan), var(--violet) 35%, var(--coral) 70%, var(--amber));
+    -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .sub { font-weight: 500; font-size: 54px; color: var(--mute); letter-spacing: -.01em; margin-top: 26px; }
+  .sub b { color: var(--ink); font-weight: 700; }
+
+  #logo { display: flex; gap: 6px; }
+  .L { display: inline-block; font-size: 300px; font-weight: 900; letter-spacing: -.04em; line-height: .85;
+    color: var(--ink); transform-origin: 50% 100%;
+    text-shadow: 0 1px 0 #c9c2ff, 0 2px 0 #b3a8ff, 0 3px 0 #9d8dff, 0 4px 0 #8874ff, 0 5px 0 #7c5cff,
+      0 6px 0 #6a49f0, 0 7px 0 #5a39dd, 0 8px 0 #4b2cc7, 0 9px 0 #3d21ae, 0 10px 0 #301890,
+      0 24px 40px rgba(124,92,255,.55); }
+  .L.dot { color: var(--coral); text-shadow: 0 1px 0 #ff8aa0,0 2px 0 #f7738b,0 3px 0 #ec5f78,0 4px 0 #dd4d67,0 5px 0 #cc3e58,0 6px 0 #b8324b,0 7px 0 #a2283f,0 8px 0 #8b1f34,0 9px 0 #73172a,0 10px 0 #5c1020, 0 24px 40px rgba(255,92,122,.5); }
+  #studioWord { font-size: 64px; font-weight: 600; letter-spacing: .6em; margin-top: 40px; color: var(--ink); padding-left: .6em; }
+  #tagline { font-size: 30px; font-weight: 500; color: var(--mute); margin-top: 22px; letter-spacing: .28em; text-transform: uppercase; }
+
+  .word { display: inline-block; }
+  .wl { display: inline-block; transform-origin: 50% 100%; }
+
+  /* uređaji */
+  #devices { position: absolute; left: 50%; top: 50%; width: 0; height: 0; transform-style: preserve-3d; }
+  #browser { position: absolute; width: 1060px; height: 660px; left: -700px; top: -300px; border-radius: 22px; overflow: hidden;
+    background: #11101c; border: 1px solid rgba(255,255,255,.12);
+    box-shadow: 0 60px 120px rgba(0,0,0,.6), 0 0 0 1px rgba(124,92,255,.2), 0 0 80px rgba(124,92,255,.25); }
+  .bar { height: 48px; background: #1a1828; display: flex; align-items: center; gap: 10px; padding: 0 20px; }
+  .bar i { width: 14px; height: 14px; border-radius: 50%; background: #3a3752; display: block; }
+  .bar i:nth-child(1) { background: #ff5f57; } .bar i:nth-child(2) { background: #febc2e; } .bar i:nth-child(3) { background: #28c840; }
+  .url { margin-left: 24px; height: 28px; flex: 0 0 420px; border-radius: 8px; background: #252338; color: var(--mute); font-size: 16px; display: flex; align-items: center; padding-left: 14px; font-family: "JetBrains Mono", monospace; }
+  .site { position: absolute; inset: 48px 0 0 0; padding: 34px 40px; }
+  .hero { position: absolute; left: 40px; right: 40px; top: 34px; height: 300px; border-radius: 16px; overflow: hidden;
+    background: linear-gradient(120deg, #2a1a5e, #5a2a6e 50%, #8a2f4c); }
+  .hero .h1 { position: absolute; left: 40px; top: 70px; width: 420px; height: 46px; border-radius: 10px; background: rgba(255,255,255,.92); }
+  .hero .h2 { position: absolute; left: 40px; top: 132px; width: 300px; height: 46px; border-radius: 10px; background: rgba(255,255,255,.92); }
+  .hero .p { position: absolute; left: 40px; top: 200px; width: 360px; height: 14px; border-radius: 7px; background: rgba(255,255,255,.45); }
+  .hero .btn { position: absolute; left: 40px; top: 236px; width: 170px; height: 40px; border-radius: 20px; background: var(--amber); }
+  .hero .orb { position: absolute; right: 70px; top: 50px; width: 200px; height: 200px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #fff 0 6%, var(--amber) 20%, var(--coral) 55%, var(--violet)); box-shadow: 0 0 60px rgba(255,92,122,.6); }
+  .card { position: absolute; top: 360px; width: 310px; height: 210px; border-radius: 14px; background: #1d1b2d; border: 1px solid rgba(255,255,255,.08); overflow: hidden; }
+  .card .img { height: 120px; }
+  .card .t { margin: 18px 18px 0; height: 14px; width: 70%; border-radius: 7px; background: rgba(255,255,255,.7); }
+  .card .t2 { margin: 12px 18px 0; height: 10px; width: 50%; border-radius: 5px; background: rgba(255,255,255,.3); }
+  #phone { position: absolute; width: 300px; height: 620px; left: 300px; top: -250px; border-radius: 44px; overflow: hidden;
+    background: #0e0d18; border: 10px solid #24223a;
+    box-shadow: 0 50px 100px rgba(0,0,0,.6), 0 0 80px rgba(255,92,122,.25); }
+  #phone .notch { position: absolute; left: 50%; top: 10px; width: 90px; height: 24px; margin-left: -45px; border-radius: 12px; background: #000; z-index: 2; }
+  #phone .vid { position: absolute; inset: 0; background: linear-gradient(160deg, #3d1f7a, #8a2f5c 60%, #ff9a4b); }
+  #phone .play { position: absolute; left: 50%; top: 42%; width: 96px; height: 96px; margin: -48px 0 0 -48px; border-radius: 50%; background: rgba(255,255,255,.18); border: 2px solid rgba(255,255,255,.6); }
+  #phone .play:after { content: ""; position: absolute; left: 38px; top: 28px; border-left: 30px solid #fff; border-top: 20px solid transparent; border-bottom: 20px solid transparent; }
+  #phone .cap1 { position: absolute; left: 24px; bottom: 90px; width: 180px; height: 16px; border-radius: 8px; background: rgba(255,255,255,.9); }
+  #phone .cap2 { position: absolute; left: 24px; bottom: 62px; width: 120px; height: 12px; border-radius: 6px; background: rgba(255,255,255,.5); }
+  #phone .prog { position: absolute; left: 24px; right: 24px; bottom: 30px; height: 4px; border-radius: 2px; background: rgba(255,255,255,.25); }
+  #phone .prog span { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 2px; background: var(--amber); }
+  #devTitle { left: 50%; top: 110px; transform: translateX(-50%); font-size: 76px; font-weight: 800; letter-spacing: -.03em; white-space: nowrap; }
+
+  /* završna kartica */
+  #end { inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; transform-style: preserve-3d; }
+  #endLogo { font-size: 230px; font-weight: 900; letter-spacing: -.045em; line-height: .9; position: relative; white-space: nowrap; }
+  #endLogo .shine { position: absolute; inset: 0; background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,.95) 50%, transparent 60%);
+    -webkit-background-clip: text; background-clip: text; color: transparent; background-size: 300% 100%; }
+  #endStudio { font-size: 56px; font-weight: 600; letter-spacing: .62em; padding-left: .62em; margin-top: 18px; }
+  #endUrl { margin-top: 64px; font-size: 64px; font-weight: 700; letter-spacing: -.01em; display: flex; }
+  #endUrl .wl { color: var(--ink); }
+  #endUrl .tld { color: var(--amber); }
+  #endCta { margin-top: 40px; padding: 20px 46px; border-radius: 999px; font-size: 34px; font-weight: 600; color: #0b0a14;
+    background: linear-gradient(100deg, var(--amber), var(--coral)); box-shadow: 0 16px 50px rgba(255,92,122,.45); }
+  #ring { width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: 50%; border: 6px solid var(--amber); opacity: 0; }
+  #flash { inset: 0; background: #fff; opacity: 0; pointer-events: none; }
+  #confetti { inset: 0; pointer-events: none; }
+  .cf { position: absolute; left: 0; top: 0; border-radius: 3px; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="reveal" class="abs"></div>
+  <div id="glow" class="abs"></div>
+  <div id="floorWrap" class="abs"><div id="floor"></div></div>
+
+  <div id="ballShadow" class="abs center"></div>
+  <div id="ball" class="abs center"></div>
+
+  <div id="cubeWrap">
+    <div id="cube">
+      <div class="face" id="f0">
+        <div id="logo"><span class="L">N</span><span class="L">E</span><span class="L">M</span><span class="L">I</span><span class="L dot">.</span></div>
+        <div id="studioWord">STUDIO</div>
+        <div id="tagline">Web · Video · Motion — Wien</div>
+      </div>
+      <div class="face" id="f1"><div class="big grad wbounce" style="font-size:210px">Websites,</div><div class="sub">die <b>verkaufen.</b></div></div>
+      <div class="face" id="f2"><div class="big grad wbounce" style="font-size:210px">Videos,</div><div class="sub">die <b>hängen bleiben.</b></div></div>
+      <div class="face" id="f3"><div class="big grad wbounce" style="font-size:210px">3D &amp; Motion,</div><div class="sub">die <b>begeistern.</b></div></div>
+    </div>
+  </div>
+
+  <div id="devTitle" class="abs">Für Lokale in <span class="grad">Wien.</span></div>
+  <div id="devices">
+    <div id="browser">
+      <div class="bar"><i></i><i></i><i></i><div class="url">nemistudio.at</div></div>
+      <div class="site">
+        <div class="hero"><div class="h1"></div><div class="h2"></div><div class="p"></div><div class="btn"></div><div class="orb"></div></div>
+        <div class="card" style="left:40px"><div class="img" style="background:linear-gradient(120deg,#ff9a4b,#ff5c7a)"></div><div class="t"></div><div class="t2"></div></div>
+        <div class="card" style="left:375px"><div class="img" style="background:linear-gradient(120deg,#7c5cff,#3de0ff)"></div><div class="t"></div><div class="t2"></div></div>
+        <div class="card" style="left:710px"><div class="img" style="background:linear-gradient(120deg,#3de0ff,#28c88a)"></div><div class="t"></div><div class="t2"></div></div>
+      </div>
+    </div>
+    <div id="phone"><div class="vid"></div><div class="notch"></div><div class="play"></div><div class="cap1"></div><div class="cap2"></div><div class="prog"><span></span></div></div>
+  </div>
+
+  <div id="end">
+    <div id="endLogo"><span class="grad">NEMI</span><span style="color:var(--coral)">.</span><span class="shine">NEMI.</span></div>
+    <div id="endStudio">STUDIO</div>
+    <div id="endUrl"></div>
+    <div id="endCta">Website &amp; Video aus Wien</div>
+  </div>
+
+  <div id="ring" class="abs center"></div>
+  <div id="confetti" class="abs"></div>
+  <div id="flash" class="abs"></div>
+  <div id="grain" class="abs"></div>
+  <div id="vignette" class="abs"></div>
+</div>
+
+<script>
+// Ceo video je funkcija vremena: render(t) postavlja svaki element za sekundu t (0..10).
+const URL_TEXT = "nemistudio.at";
+const $ = (s) => document.querySelector(s);
+const $$ = (s) => Array.from(document.querySelectorAll(s));
+
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const lerp = (a, b, k) => a + (b - a) * k;
+const prog = (t, a, b) => clamp((t - a) / (b - a));
+const easeOutCubic = (k) => 1 - Math.pow(1 - k, 3);
+const easeInCubic = (k) => k * k * k;
+const easeInOutCubic = (k) => k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
+const easeOutExpo = (k) => k >= 1 ? 1 : 1 - Math.pow(2, -10 * k);
+const easeInExpo = (k) => k <= 0 ? 0 : Math.pow(2, 10 * k - 10);
+const easeInOutBack = (k, c = 2.6) => k < .5
+  ? (Math.pow(2 * k, 2) * ((c + 1) * 2 * k - c)) / 2
+  : (Math.pow(2 * k - 2, 2) * ((c + 1) * (k * 2 - 2) + c) + 2) / 2;
+const easeOutBack = (k, s = 1.9) => 1 + (s + 1) * Math.pow(k - 1, 3) + s * Math.pow(k - 1, 2);
+// opruga: od 0 do 1 sa prebačajem i par odskoka
+const spring = (k, f = 4.2, d = 5.5) => k <= 0 ? 0 : 1 - Math.exp(-d * k) * Math.cos(f * Math.PI * k);
+const easeOutBounce = (x) => {
+  const n1 = 7.5625, d1 = 2.75;
+  if (x < 1 / d1) return n1 * x * x;
+  if (x < 2 / d1) return n1 * (x -= 1.5 / d1) * x + .75;
+  if (x < 2.5 / d1) return n1 * (x -= 2.25 / d1) * x + .9375;
+  return n1 * (x -= 2.625 / d1) * x + .984375;
+};
+
+// slova za URL i reči na licima kocke
+const endUrl = $("#endUrl");
+URL_TEXT.split("").forEach((ch, i) => {
+  const s = document.createElement("span");
+  s.className = "wl" + (i >= URL_TEXT.lastIndexOf(".") ? " tld" : "");
+  s.textContent = ch;
+  endUrl.appendChild(s);
+});
+$$(".wbounce").forEach((el) => {
+  const txt = el.textContent; el.textContent = "";
+  txt.split("").forEach((ch) => {
+    const s = document.createElement("span");
+    s.className = "wl grad"; s.textContent = ch === " " ? " " : ch;
+    el.appendChild(s);
+  });
+  el.classList.remove("grad");
+});
+
+// konfete (deterministički)
+const cfBox = $("#confetti");
+let seed = 11;
+const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+const COLORS = ["#ffc24b", "#ff5c7a", "#7c5cff", "#3de0ff", "#f5f3ff"];
+const CONF = [];
+for (let i = 0; i < 90; i++) {
+  const el = document.createElement("div");
+  el.className = "cf";
+  const w = 8 + rnd() * 14, h = rnd() < .4 ? w : 6 + rnd() * 8;
+  el.style.width = w + "px"; el.style.height = h + "px";
+  el.style.background = COLORS[i % COLORS.length];
+  if (rnd() < .35) el.style.borderRadius = "50%";
+  cfBox.appendChild(el);
+  const a = rnd() * Math.PI * 2, v = 700 + rnd() * 1300;
+  CONF.push({ el, vx: Math.cos(a) * v, vy: Math.sin(a) * v * .75 - 300, rot: rnd() * 720 - 360, spin: rnd() * 1440 - 720, rx: rnd() * 360 });
+}
+
+const W = 1920, H = 1080, FLOOR_Y = 700;
+
+function set(el, css) { Object.assign(el.style, css); }
+
+function render(t) {
+  // ---------------------------------------------------- pozadina
+  const revealK = easeInOutCubic(prog(t, 1.05, 1.55));
+  // otkrivanje iz lopte: krug koji raste
+  set($("#reveal"), { clipPath: `circle(${revealK * 2300}px at ${W / 2}px ${FLOOR_Y - 48}px)` });
+  set($("#glow"), { opacity: (prog(t, 1.2, 2.0) * (1 - 0.35 * prog(t, 8.0, 8.3))).toFixed(3),
+    transform: `translate(${Math.sin(t * .9) * 60}px, ${Math.cos(t * .7) * 40}px) scale(${1 + 0.06 * Math.sin(t * 1.3)})` });
+  set($("#floorWrap"), { opacity: (prog(t, 1.4, 2.2) * (1 - prog(t, 7.6, 8.0)) * 0.8).toFixed(3) });
+  set($("#floor"), { transform: `rotateX(78deg) translateY(${-(t * 260) % 120}px)` });
+
+  // ---------------------------------------------------- 0–1.3 s: lopta skače
+  const ball = $("#ball"), sh = $("#ballShadow");
+  let by, sx = 1, sy = 1;
+  const ground = FLOOR_Y - 48 - H / 2;  // y centra lopte kad dodiruje pod (relativno na centar)
+  const hops = [[0.0, 0.42, 760, true], [0.42, 0.74, 300], [0.74, 0.95, 120], [0.95, 1.06, 36]];
+  by = ground;
+  for (const [a, b, hgt, first] of hops) {
+    if (t >= a && t < b) {
+      const k = (t - a) / (b - a);
+      by = first ? ground - hgt * (1 - k * k) : ground - hgt * 4 * k * (1 - k);
+      const v = first ? k : Math.abs(2 * k - 1);
+      sy = 1 + 0.25 * v * v; sx = 1 / sy;
+    }
+  }
+  // spljoštavanje u trenutku udara
+  for (const ti of [0.42, 0.74, 0.95]) {
+    const d = Math.abs(t - ti);
+    if (d < 0.045) { const q = 1 - d / 0.045; sy = 1 - 0.38 * q; sx = 1 + 0.42 * q; }
+  }
+  const ballGrow = easeInExpo(prog(t, 1.06, 1.3));
+  const ballVis = t < 1.32;
+  set(ball, { display: ballVis ? "block" : "none",
+    transform: `translate(0, ${by + (1 - sy) * 48}px) scale(${sx * (1 + ballGrow * 30)}, ${sy * (1 + ballGrow * 30)})`,
+    opacity: (1 - prog(t, 1.2, 1.32)).toFixed(3) });
+  const hgt = clamp((ground - by) / 760);
+  set(sh, { display: ballVis ? "block" : "none", transform: `translate(0, ${FLOOR_Y - H / 2 + 6}px) scale(${1 - hgt * .7})`, opacity: ((1 - hgt * .8) * (1 - prog(t, 1.05, 1.15))).toFixed(3) });
+
+  // ---------------------------------------------------- 1.3–6.6 s: kocka (logo → Websites → Videos → 3D)
+  const cubeWrap = $("#cubeWrap"), cube = $("#cube");
+  const D = 280; // pola visine lica
+  const turns = [3.05, 4.15, 5.25];
+  let ang = 0, push = 0;
+  turns.forEach((s) => {
+    const k = prog(t, s, s + 0.62);
+    ang += easeInOutBack(k) * 90;
+    push += Math.sin(Math.PI * k) * 700;
+  });
+  // ulaz kocke i izlazak u dubinu
+  const cubeIn = prog(t, 1.25, 1.6);
+  const cubeOut = easeInExpo(prog(t, 6.15, 6.75));
+  const cubeVis = t >= 1.25 && t < 6.75;
+  const yaw = lerp(-14, 10, easeInOutCubic(prog(t, 1.3, 3.0))) * (1 - prog(t, 3.0, 3.6)) + Math.sin(t * 1.4) * 4;
+  set(cubeWrap, { display: cubeVis ? "block" : "none",
+    transform: `translate3d(0, ${-30}px, ${-D - push - cubeOut * 4000}px) rotateY(${yaw + cubeOut * 140}deg) rotateZ(${cubeOut * -25}deg)`,
+    opacity: (1 - prog(t, 6.55, 6.75)).toFixed(3) });
+  set(cube, { transform: `rotateX(${ang}deg)` });
+  // lica koja nisu okrenuta ka kameri se gase (i njihova deca sa 3D transformacijom)
+  ["#f0", "#f1", "#f2", "#f3"].forEach((id, i) => {
+    const rel = Math.abs(ang - i * 90);
+    set($(id), { transform: `rotateX(${-i * 90}deg) translateZ(${D}px)`, opacity: clamp(1 - (rel - 55) / 30).toFixed(3) });
+  });
+
+  // slova NEMI. padaju sa oprugom i 3D okretom
+  $$(".L").forEach((el, i) => {
+    const s = 1.3 + i * 0.1;
+    const k = prog(t, s, s + 0.7);
+    const y = lerp(-900, 0, k <= 0 ? 0 : easeOutBounce(k));
+    const rx = lerp(-110, 0, easeOutCubic(k));
+    const sq = (k > 0.32 && k < 0.42) ? 1 - 0.18 * Math.sin(Math.PI * (k - .32) / .1) : 1;
+    set(el, { transform: `translateY(${y}px) rotateX(${rx}deg) scale(${2 - sq}, ${sq})`, opacity: k > 0 ? 1 : 0 });
+  });
+  const stK = prog(t, 2.05, 2.7);
+  set($("#studioWord"), { opacity: easeOutCubic(stK), letterSpacing: `${lerp(1.6, .6, easeOutExpo(stK))}em`, transform: `translateY(${(1 - easeOutCubic(stK)) * 40}px)` });
+  const tgK = prog(t, 2.35, 2.9);
+  set($("#tagline"), { opacity: easeOutCubic(tgK), transform: `translateY(${(1 - easeOutCubic(tgK)) * 30}px)` });
+
+  // reči na licima: slova skaču kad lice dođe napred
+  [["#f1", 3.35], ["#f2", 4.45], ["#f3", 5.55]].forEach(([id, s]) => {
+    $$(`${id} .wl`).forEach((el, i) => {
+      const k = prog(t, s + i * 0.025, s + i * 0.025 + 0.55);
+      const y = lerp(-120, 0, spring(k, 3.2, 6));
+      set(el, { transform: `translateY(${k <= 0 ? -120 : y}px) scale(${lerp(.4, 1, easeOutBack(k, 2.4))})`, opacity: clamp(k * 4) });
+    });
+    const sk = prog(t, s + 0.2, s + 0.6);
+    set($(`${id} .sub`), { opacity: easeOutCubic(sk), transform: `translateY(${(1 - easeOutCubic(sk)) * 26}px)` });
+  });
+
+  // ---------------------------------------------------- 6.3–8.2 s: uređaji
+  const dIn = prog(t, 6.3, 7.1), dOut = easeInExpo(prog(t, 7.85, 8.25));
+  const devVis = t >= 6.3 && t < 8.25;
+  const dk = easeOutExpo(dIn);
+  set($("#devices"), { display: devVis ? "block" : "none",
+    transform: `translate3d(${lerp(0, 0, dk)}px, 40px, ${lerp(-2600, 0, dk) + dOut * 1500}px) rotateY(${lerp(-60, -16, dk) + (t - 7) * 6}deg) rotateX(${lerp(25, 8, dk)}deg)` });
+  set($("#phone"), { transform: `translateZ(${lerp(0, 160, easeOutBack(prog(t, 6.55, 7.2)))}px) rotateY(${lerp(200, -10, easeOutBack(prog(t, 6.5, 7.25), 1.3))}deg)` });
+  // sajt se slaže
+  const pop = (sel, s, d = 0.4) => {
+    const k = prog(t, s, s + d);
+    set($(sel), { transform: `scale(${k <= 0 ? 0 : easeOutBack(k, 2.2)})`, opacity: k > 0 ? 1 : 0 });
+  };
+  pop(".hero", 6.6, 0.45);
+  pop(".hero .h1", 6.8); pop(".hero .h2", 6.88); pop(".hero .p", 6.96); pop(".hero .btn", 7.04); pop(".hero .orb", 6.9, 0.55);
+  $$(".card").forEach((el, i) => {
+    const k = prog(t, 7.0 + i * 0.09, 7.45 + i * 0.09);
+    set(el, { transform: `translateY(${(1 - (k <= 0 ? 0 : easeOutBounce(k))) * 260}px)`, opacity: k > 0 ? 1 : 0 });
+  });
+  set($(".hero .orb"), { transform: `scale(${prog(t, 6.9, 7.45) <= 0 ? 0 : easeOutBack(prog(t, 6.9, 7.45), 2.2)}) translateY(${Math.sin(t * 5) * 10}px)` });
+  set($("#phone .prog span"), { width: `${prog(t, 6.9, 8.2) * 100}%` });
+  const tk = prog(t, 6.45, 6.95);
+  set($("#devTitle"), { display: devVis ? "block" : "none", opacity: easeOutCubic(tk) * (1 - prog(t, 7.85, 8.05)),
+    transform: `translateX(-50%) translateY(${(1 - easeOutBack(tk, 2)) * -60}px) scale(${lerp(.8, 1, easeOutBack(tk, 2))})` });
+
+  // ---------------------------------------------------- 8.2–10 s: završna kartica
+  set($("#flash"), { opacity: (Math.max(0, 1 - Math.abs(t - 8.22) / 0.14) * 0.85 + Math.max(0, 1 - Math.abs(t - 1.3) / 0.08) * 0.25).toFixed(3) });
+  const endVis = t >= 8.2;
+  const ek = prog(t, 8.2, 8.75);
+  set($("#end"), { display: endVis ? "flex" : "none", transform: `translateZ(${lerp(900, 0, easeOutExpo(ek))}px) rotateX(${lerp(-30, 0, easeOutCubic(ek))}deg)`, opacity: clamp(ek * 5) });
+  set($("#endLogo"), { transform: `scale(${lerp(.6, 1, spring(prog(t, 8.2, 8.9), 2.6, 5))})` });
+  set($("#endLogo .shine"), { backgroundPosition: `${lerp(120, -20, easeInOutCubic(prog(t, 8.8, 9.5)))}% 0` });
+  const esk = prog(t, 8.4, 8.95);
+  set($("#endStudio"), { opacity: easeOutCubic(esk), letterSpacing: `${lerp(1.4, .62, easeOutExpo(esk))}em` });
+  $$("#endUrl .wl").forEach((el, i) => {
+    const k = prog(t, 8.6 + i * 0.035, 9.05 + i * 0.035);
+    set(el, { transform: `translateY(${(1 - (k <= 0 ? 0 : easeOutBounce(k))) * -90}px)`, opacity: k > 0 ? 1 : 0 });
+  });
+  const ck = prog(t, 9.1, 9.55);
+  set($("#endCta"), { opacity: clamp(ck * 3), transform: `scale(${ck <= 0 ? 0.3 : easeOutBack(ck, 2.6)})` });
+
+  // prsten i konfete pri udaru završne kartice
+  const rk = prog(t, 8.22, 8.9);
+  const rs = 20 + easeOutExpo(rk) * 2400;
+  set($("#ring"), { opacity: rk > 0 ? (1 - rk).toFixed(3) : 0, width: `${rs}px`, height: `${rs}px`, margin: `${-rs / 2}px 0 0 ${-rs / 2}px`, borderWidth: `${lerp(18, 2, rk)}px` });
+  const ct = t - 8.22;
+  CONF.forEach((c) => {
+    if (ct <= 0 || ct > 1.8) { c.el.style.display = "none"; return; }
+    const drag = (1 - Math.exp(-2.2 * ct)) / 2.2;
+    const x = W / 2 + c.vx * drag, y = H / 2 + c.vy * drag + 420 * ct * ct;
+    set(c.el, { display: "block", opacity: (1 - prog(ct, 1.2, 1.8)).toFixed(3),
+      transform: `translate(${x}px, ${y}px) rotate(${c.rot + c.spin * ct}deg) rotateX(${c.rx + 600 * ct}deg)` });
+  });
+
+  // lagani "kamera tres" pri udarima
+  let shake = 0;
+  for (const [ti, amp] of [[0.42, 10], [1.3, 8], [8.22, 18]]) {
+    const d = t - ti; if (d >= 0 && d < 0.25) shake += amp * Math.exp(-d * 18) * Math.sin(d * 90);
+  }
+  set($("#stage"), { transform: `translate(${shake * .6}px, ${shake}px)` });
+}
+
+window.render = render;
+const q = new URLSearchParams(location.search);
+if (q.has("t")) render(parseFloat(q.get("t")));
+else {
+  // pregled u browseru: pušta se u petlji
+  const t0 = performance.now();
+  const loop = () => { render(((performance.now() - t0) / 1000) % 10); requestAnimationFrame(loop); };
+  loop();
+}
+</script>
+</body>
+</html>

@@ -48,3 +48,14 @@ vremena, redosled i vrste pokreta.
 - Spojiti AI klipove (ruža, latica) sa gradnjom u CapCut-u
 - Po želji: uspravna 9:16 verzija za Instagram
 - Napraviti sam sajt (video kao početna animacija, pa sekcije o ukusima, lokalu, kontaktu)
+
+## Nemi Studio promo (10 s)
+`video/nemi_studio_promo_10s.mp4`, 1920×1080, 30 fps, sa zvukom. Sve je kodom: lopta skače i otvara scenu,
+slova NEMI. padaju sa oprugom, 3D kocka okreće „Websites / Videos / 3D & Motion", uređaji (browser i telefon)
+uleću u 3D, pa završna kartica sa URL-om i konfetama.
+```
+node scripts/nemi_promo/render.js <folder_kadrova> 30 4
+python3 scripts/nemi_promo/zvuk.py <zvuk.wav>
+ffmpeg -framerate 30 -pattern_type glob -i '<folder_kadrova>/f*.jpg' -i <zvuk.wav> -c:v libx264 -crf 17 -pix_fmt yuv420p -c:a aac -shortest video/nemi_studio_promo_10s.mp4
+```
+Tekstovi i URL su u `scripts/nemi_promo/promo.html` (`URL_TEXT`). Pregled uživo: otvori `promo.html` u browseru.

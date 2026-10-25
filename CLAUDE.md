@@ -11,6 +11,7 @@ Beleške o napretku su u `NAPREDAK.md`.
 | `freiraum/` | Freiraum Wien, statički sajt + Netlify funkcije (`booking.js`, `team.js`) | `cd freiraum && python3 build.py` |
 | `freiraum-premium/` | premium verzija Freiraum-a sa skrol animacijama (`src/shared` je link na `freiraum/src/assets`) | `python3 freiraum-premium/build_offline.py <izlaz>` |
 | `RealEstates/` | Vista Estates, Vite + React + TS + Tailwind + GSAP + Three.js | `cd RealEstates && npm run build && npm run lint` |
+| `motion/` | video iz koda u Remotion-u (probni klip sa tehnikama iz reel-a); pravila u `motion/README.md` | `cd motion && npx --no-install remotion render Probni out/probni.mp4` |
 | `video/`, `frames/`, `assets/` | gotovi videi, kadrovi za AI klipove, promptovi | skripte u `scripts/` |
 
 Tekstovi na sajtovima klijenata su podrazumevano na nemačkom. Sve mora da radi na 390 px, na 1440 px i sa `prefers-reduced-motion`.
@@ -72,6 +73,17 @@ Za izmenu postojećeg sajta preskaču se faze koje ne trebaju (npr. samo 5 i 6).
 6. **Od referenci se uzima princip, ne kopija.** Tekst, logo, fotografije i brend tuđih sajtova se ne kopiraju.
 7. **Bez ličnih podataka.** Ne skupljaju se podaci o privatnim osobama. Javni podaci o firmama koriste se samo u zbiru.
 8. **Mera:** do desetak pretraga po zadatku, osim kad je istraživanje sam zadatak. Ono što važi šire od jednog projekta ide u `studio/znanje/`.
+
+## Skill-ovi (`.claude/skills/`, pregledao `bezbednost` 25. 10. 2026)
+
+| Skill | Za šta | Ko ga koristi |
+|---|---|---|
+| `web-design-guidelines` | pregled UI koda po Vercel pravilima (pristupačnost, UX, brzina), pravila su lokalna | `tester`, `recenzent` |
+| `playwright-cli` | browser iz komandne linije: otvaranje, klik, snimci na 390/1440 px; radi iz `tools/playwright-cli/` | `tester`, `recenzent`, `programer` |
+| `design-taste-frontend` | umetnički smer i provera izgleda stranice (Taste Skill); fontovi, slike i skripte samo lokalno | `dizajner`, `programer`, `recenzent` |
+| `screenshot-to-code` | naš mockup (PNG) u kod postojećeg projekta | `programer` |
+
+Format dizajn sistema za agente je u `studio/znanje/design-md/`. Pravila u svakom skill-u (deo „Nemi rules") imaju prednost nad ostatkom skill-a.
 
 ## Pravila
 

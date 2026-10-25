@@ -44,3 +44,18 @@ Od 4 ljudi treba Company License.
 
 HyperFrames je odbijen za sada: telemetrija je podrazumevano uključena, sam se nadograđuje,
 a njegov skill šalje zahteve korisnika na javni kanal. HeyGen konektor: ne.
+
+## Würfelwelt (test sva tri programa, 10 s, 1080 × 1920)
+
+| Program | Fajl | Uloga |
+|---|---|---|
+| MagicaVoxel | `wuerfelwelt/diorama.vox` (pravi ga `voxel_welt.py`) | ostrvo sa kafićem, drvetom i lampom, 3 322 kocke |
+| Blender | `wuerfelwelt/blender_scena.py`, `wuerfelwelt/diorama.blend` | gradnja sloj po sloj, dve kamere, dan → noć, Cycles render |
+| Pixelorama | `wuerfelwelt/lik_sheet.png` (pravi ga `lik.py`) | lik Kocko: 4 kadra hoda i mahanje |
+| Remotion | `src/Wuerfelwelt.tsx`, `src/wuerfel/delovi.tsx` | tekst koji iskače i nestaje, brojač, pikselni mozaik, glitch, 3D kocka, zvuk |
+
+```
+python3 wuerfelwelt/voxel_welt.py && python3 wuerfelwelt/lik.py
+blender -b --factory-startup --python wuerfelwelt/blender_scena.py      # kadrovi u public/wuerfel/render/
+npx --no-install remotion render Wuerfelwelt out/wuerfelwelt.mp4
+```

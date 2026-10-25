@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>KREISEL · Cold Brew aus Wien</title>
+  <meta name="description" content="KREISEL: kalt gebrühter Kaffee aus Wien, mit einem Faden Karamell. Konzeptseite von Nemi Studio." />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="nav">
+    <a class="logo" href="#" aria-label="KREISEL Startseite"><span class="logo-kreis" aria-hidden="true"></span>KREISEL</a>
+    <nav aria-label="Hauptnavigation">
+      <a href="#" class="aktiv">Sorten</a>
+      <a href="#">Rösterei</a>
+      <a href="#">Café</a>
+      <a href="#">Kontakt</a>
+    </nav>
+    <div class="nav-rechts">
+      <a class="pille" href="#">Shop</a>
+      <button class="tasche" type="button" aria-label="Warenkorb"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 8h12l-1 12H7L6 8Z" /><path d="M9 8a3 3 0 0 1 6 0" /></svg></button>
+    </div>
+  </header>
+
+  <main class="buehne-huelle">
+    <div class="buehne">
+      <div class="seiten" id="seiten">
+        <!-- 1 · Hero -->
+        <section class="seite seite-1" aria-labelledby="h1">
+          <div class="hero-text">
+            <p class="eyebrow">Nr. 01 — Cold Brew aus Wien</p>
+            <h1 id="h1">Kalt gebrüht,<br />warm <em>gemeint.</em></h1>
+            <p class="lead">Achtzehn Stunden kalt extrahiert.<br />Dazu ein Faden Karamell.</p>
+            <a class="knopf" href="#">Jetzt probieren <span aria-hidden="true">→</span></a>
+          </div>
+          <p class="scroll-hinweis"><span></span>Scroll</p>
+        </section>
+
+        <!-- 2 · Die Mischung -->
+        <section class="seite seite-2" aria-labelledby="h2">
+          <p class="eyebrow mitte">Nr. 02 — Die Mischung</p>
+          <h2 id="h2" class="riesig">Endlos<em>schleife.</em></h2>
+          <p class="fuss-links">Drei Zutaten.<br />Eine Bewegung.</p>
+          <ul class="etiketten" aria-label="Zutaten">
+            <li class="et et-1">Espresso</li>
+            <li class="et et-2">Hafermilch</li>
+            <li class="et et-3">Karamell</li>
+          </ul>
+        </section>
+
+        <!-- 3 · Ritual -->
+        <section class="seite seite-3" aria-labelledby="h3">
+          <div class="kopf-3">
+            <p class="eyebrow mitte">Nr. 03 — Dein Ritual</p>
+            <h2 id="h3">Jeden Tag<br />ein <em>Kreisel.</em></h2>
+          </div>
+          <div class="sorten">
+            <p class="eyebrow">Sorten</p>
+            <ol>
+              <li>Original</li>
+              <li>Vanille</li>
+              <li>Salzkaramell</li>
+            </ol>
+            <p class="groessen"><span>0,25 l</span><span>0,4 l</span></p>
+          </div>
+          <div class="karte">
+            <p class="eyebrow">Abo</p>
+            <p class="karte-titel">Jede Woche <em>frisch</em> vor deiner Tür.</p>
+            <a href="#" class="karte-link">Mehr erfahren →</a>
+          </div>
+          <a class="knopf knopf-gold" href="#">Deinen Kreisel finden</a>
+        </section>
+      </div>
+
+      <!-- 3D-Produkt: Bildsequenz aus Blender, folgt dem Scroll -->
+      <canvas id="produkt" class="produkt" width="960" height="600" aria-hidden="true"></canvas>
+
+      <ol class="punkte" aria-hidden="true"><li></li><li></li><li></li></ol>
+    </div>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

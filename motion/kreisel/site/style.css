@@ -1,0 +1,134 @@
+@font-face {
+  font-family: "Instrument Serif";
+  src: url("fonts/instrument-serif.woff2") format("woff2");
+  font-display: swap;
+}
+@font-face {
+  font-family: "Instrument Serif";
+  src: url("fonts/instrument-serif-italic.woff2") format("woff2");
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Figtree";
+  src: url("fonts/figtree-latin-wght-normal.woff2") format("woff2");
+  font-weight: 300 900;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Figtree";
+  src: url("fonts/figtree-latin-ext-wght-normal.woff2") format("woff2");
+  font-weight: 300 900;
+  font-display: swap;
+  unicode-range: U+0100-02AF, U+0304, U+0308, U+0329, U+1E00-1EFF, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+:root {
+  --krem: #f3ece2;
+  --krem-2: #ebe1d3;
+  --sand: #d6b48c;
+  --espresso: #2a1a12;
+  --espresso-2: #5a3d2c;
+  --karamell: #b0581e;
+  --serif: "Instrument Serif", "Times New Roman", serif;
+  --sans: "Figtree", system-ui, sans-serif;
+  --rand: clamp(20px, 6.9vw, 100px);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { background: var(--krem); color: var(--espresso); font-family: var(--sans); }
+body { overflow-x: hidden; }
+a { color: inherit; text-decoration: none; }
+em { font-style: italic; }
+
+/* ---------------------------------------------------------------- navigacija */
+.nav {
+  position: fixed; inset: 0 0 auto 0; z-index: 5;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 26px var(--rand);
+}
+.logo { display: flex; align-items: center; gap: 10px; font-weight: 800; letter-spacing: 0.22em; font-size: 15px; }
+.logo-kreis { width: 18px; height: 18px; border-radius: 50%; border: 2.5px solid var(--karamell); border-right-color: transparent; transform: rotate(-30deg); }
+.nav nav { display: flex; gap: 38px; font-size: 14px; font-weight: 500; }
+.nav nav a { padding-bottom: 4px; border-bottom: 1.5px solid transparent; }
+.nav nav a.aktiv { border-color: currentColor; }
+.nav-rechts { display: flex; align-items: center; gap: 14px; }
+.pille { font-size: 13px; font-weight: 600; padding: 9px 18px; border: 1.5px solid var(--espresso); border-radius: 999px; }
+.tasche { width: 38px; height: 38px; border-radius: 50%; border: 0; background: var(--espresso); display: grid; place-items: center; cursor: pointer; }
+.tasche svg { width: 18px; height: 18px; fill: none; stroke: var(--krem); stroke-width: 1.6; stroke-linejoin: round; }
+
+/* ---------------------------------------------------------------- bina: sticky, sav pokret ide iz app.js */
+.buehne-huelle { height: 520vh; }
+.buehne { position: sticky; top: 0; height: 100vh; overflow: hidden; }
+.seiten { position: absolute; inset: 0; will-change: transform; }
+.seite { position: absolute; left: 0; right: 0; height: 100vh; }
+.seite-1 { top: 0; background: var(--krem); }
+.seite-2 { top: 100vh; background: var(--sand); }
+.seite-3 { top: 200vh; background: var(--krem); }
+.produkt { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; pointer-events: none; }
+
+.eyebrow { font-size: 12px; font-weight: 700; letter-spacing: 0.24em; text-transform: uppercase; color: var(--espresso-2); }
+.eyebrow.mitte { text-align: center; }
+h1, h2 { font-family: var(--serif); font-weight: 400; letter-spacing: -0.01em; }
+h1 em, h2 em { color: var(--karamell); }
+
+/* 1 · hero */
+.hero-text { position: absolute; left: var(--rand); top: 24vh; width: 44vw; }
+.hero-text h1 { font-size: clamp(56px, 7.6vw, 110px); line-height: 0.92; margin: 22px 0 26px; }
+.lead { font-size: 18px; line-height: 1.5; color: var(--espresso-2); max-width: 30ch; }
+.knopf {
+  display: inline-flex; align-items: center; gap: 10px; margin-top: 34px;
+  padding: 15px 26px; border-radius: 999px; background: var(--espresso); color: var(--krem);
+  font-size: 15px; font-weight: 600;
+}
+.scroll-hinweis { position: absolute; left: var(--rand); bottom: 40px; display: flex; align-items: center; gap: 12px; font-size: 12px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; }
+.scroll-hinweis span { width: 40px; height: 1.5px; background: currentColor; }
+
+/* 2 · mešavina */
+.seite-2 .eyebrow { position: absolute; top: 15vh; left: 0; right: 0; }
+.riesig { position: absolute; top: 21vh; left: 0; right: 0; text-align: center; font-size: clamp(80px, 13.2vw, 190px); line-height: 0.95; color: var(--espresso); }
+.riesig em { color: #f8efe2; }
+.fuss-links { position: absolute; left: var(--rand); bottom: 44px; font-family: var(--serif); font-size: 26px; line-height: 1.1; }
+.etiketten { list-style: none; }
+.et {
+  position: absolute; font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 8px 16px; border-radius: 999px; background: rgba(248, 239, 226, 0.92); box-shadow: 0 6px 24px rgba(42, 26, 18, 0.12);
+}
+.et::before { content: ""; display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--karamell); margin-right: 9px; vertical-align: 1px; }
+.et-1 { left: 25vw; top: 47vh; }
+.et-2 { left: 62vw; top: 57vh; }
+.et-3 { left: 41vw; top: 78vh; }
+
+/* 3 · ritual */
+.kopf-3 { position: absolute; top: 12vh; left: 0; right: 0; text-align: center; }
+.kopf-3 h2 { font-size: clamp(56px, 7.2vw, 104px); line-height: 0.92; margin-top: 16px; }
+.sorten { position: absolute; left: var(--rand); top: 52vh; }
+.sorten ol { list-style: none; margin-top: 14px; font-family: var(--serif); font-size: 32px; line-height: 1.25; }
+.sorten ol li:first-child { color: var(--karamell); }
+.groessen { display: flex; gap: 8px; margin-top: 18px; }
+.groessen span { font-size: 12px; font-weight: 600; padding: 6px 12px; border: 1.5px solid var(--espresso); border-radius: 999px; }
+.karte { position: absolute; right: var(--rand); top: 54vh; width: 250px; padding: 22px; border-radius: 20px; background: var(--krem-2); }
+.karte-titel { font-family: var(--serif); font-size: 28px; line-height: 1.05; margin: 10px 0 14px; }
+.karte-titel em { color: var(--karamell); }
+.karte-link { font-size: 14px; font-weight: 600; }
+.knopf-gold { position: absolute; left: 50%; bottom: 5.5vh; transform: translateX(-50%); margin: 0; z-index: 3; background: linear-gradient(180deg, #c97b3d, #9a4a19); box-shadow: 0 10px 30px rgba(154, 74, 25, 0.35); }
+
+/* tačke napretka */
+.punkte { position: absolute; right: var(--rand); top: 50%; transform: translateY(-50%); list-style: none; display: grid; gap: 10px; z-index: 4; }
+.punkte li { width: 6px; height: 6px; border-radius: 50%; background: var(--espresso); opacity: 0.25; transition: opacity 0.3s, height 0.3s; }
+.punkte li.an { opacity: 1; height: 22px; border-radius: 3px; }
+
+/* elementi koji se otkrivaju (app.js postavlja --p od 0 do 1) */
+.otkri { opacity: var(--p, 1); transform: translateY(calc((1 - var(--p, 1)) * 28px)); filter: blur(calc((1 - var(--p, 1)) * 6px)); }
+
+@media (max-width: 760px) {
+  .nav nav { display: none; }
+  .hero-text { width: auto; right: var(--rand); top: 16vh; }
+  .sorten, .karte { display: none; }
+  .et-1 { left: 8vw; } .et-2 { left: auto; right: 8vw; } .et-3 { left: 30vw; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .otkri { opacity: 1 !important; transform: none !important; filter: none !important; }
+}

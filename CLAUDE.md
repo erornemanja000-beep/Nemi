@@ -74,6 +74,17 @@ Za izmenu postojećeg sajta preskaču se faze koje ne trebaju (npr. samo 5 i 6).
 7. **Bez ličnih podataka.** Ne skupljaju se podaci o privatnim osobama. Javni podaci o firmama koriste se samo u zbiru.
 8. **Mera:** do desetak pretraga po zadatku, osim kad je istraživanje sam zadatak. Ono što važi šire od jednog projekta ide u `studio/znanje/`.
 
+## Skill-ovi (`.claude/skills/`, pregledao `bezbednost` 25. 10. 2026)
+
+| Skill | Za šta | Ko ga koristi |
+|---|---|---|
+| `web-design-guidelines` | pregled UI koda po Vercel pravilima (pristupačnost, UX, brzina), pravila su lokalna | `tester`, `recenzent` |
+| `playwright-cli` | browser iz komandne linije: otvaranje, klik, snimci na 390/1440 px; radi iz `tools/playwright-cli/` | `tester`, `recenzent`, `programer` |
+| `design-taste-frontend` | umetnički smer i provera izgleda stranice (Taste Skill); fontovi, slike i skripte samo lokalno | `dizajner`, `programer`, `recenzent` |
+| `screenshot-to-code` | naš mockup (PNG) u kod postojećeg projekta | `programer` |
+
+Format dizajn sistema za agente je u `studio/znanje/design-md/`. Pravila u svakom skill-u (deo „Nemi rules") imaju prednost nad ostatkom skill-a.
+
 ## Pravila
 
 - Novi npm paket, CDN skripta, MCP server, plugin ili skripta sa interneta: prvo `bezbednost`, pa tek onda instalacija.

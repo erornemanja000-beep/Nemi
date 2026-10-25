@@ -1,0 +1,111 @@
+# Stack Setup
+
+Minimal setup for each target. Skip this entirely when working inside an existing project.
+
+## Contents
+- Single-file HTML with Tailwind
+- React + TypeScript + Tailwind v4 (Vite)
+- Next.js App Router
+- Vue 3
+- Plain HTML/CSS
+
+## Single-file HTML with Tailwind
+
+For prototypes and one-off screens. The browser build compiles Tailwind in the page, so it is not for production.
+
+```html
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Page</title>
+  <!-- Nemi: no CDN. For a quick sketch write plain CSS with custom properties instead of the Tailwind browser build. -->
+  <style type="text/tailwindcss">
+    @theme {
+      --color-brand: #3b82f6;
+      --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+    }
+  </style>
+</head>
+<body class="bg-white text-slate-900 font-sans">
+  <!-- markup -->
+</body>
+</html>
+```
+
+## React + TypeScript + Tailwind v4 (Vite)
+
+Nemi: do not scaffold or install. Use the existing project; `RealEstates/` already has Vite + React + Tailwind v4. A new stack is the director's decision and goes through `bezbednost`.
+
+`vite.config.ts`:
+
+```ts
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import tailwindcss from "@tailwindcss/vite";
+
+export default defineConfig({ plugins: [react(), tailwindcss()] });
+```
+
+`src/index.css` (replace its contents):
+
+```css
+@import "tailwindcss";
+
+@theme {
+  --color-brand: #3b82f6;
+  --color-surface: #111a2e;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+}
+```
+
+Run with `npm run dev`.
+
+Component shape:
+
+```tsx
+type PlanCardProps = {
+  name: string;
+  price: string;
+  features: string[];
+  highlighted?: boolean;
+};
+
+export function PlanCard({ name, price, features, highlighted = false }: PlanCardProps) {
+  return (
+    <article className={`rounded-xl bg-surface p-6 ${highlighted ? "ring-2 ring-brand" : ""}`}>
+      <h3 className="text-lg font-semibold">{name}</h3>
+      <p className="mt-2 text-4xl font-bold">{price}</p>
+      <ul className="mt-6 space-y-2">
+        {features.map((f) => <li key={f}>{f}</li>)}
+      </ul>
+    </article>
+  );
+}
+```
+
+## Next.js App Router
+
+Nemi: do not scaffold or install. Use the existing project; `RealEstates/` already has Vite + React + Tailwind v4. A new stack is the director's decision and goes through `bezbednost`.
+
+This scaffolds Tailwind v4 already wired through PostCSS with `@import "tailwindcss";` in `app/globals.css`; add tokens in an `@theme` block there. Put the page in `app/page.tsx`. Keep components as Server Components unless they need state or event handlers, then add `"use client"` at the top of that file only. Use `next/image` for images with explicit `width` and `height`.
+
+## Vue 3
+
+Nemi: do not scaffold or install. Use the existing project; `RealEstates/` already has Vite + React + Tailwind v4. A new stack is the director's decision and goes through `bezbednost`.
+
+Add the same `tailwindcss()` plugin to `vite.config.ts` and `@import "tailwindcss";` to the main CSS file. Use `<script setup lang="ts">` with `defineProps<{ ... }>()`.
+
+## Plain HTML/CSS
+
+Put tokens in custom properties and use grid/flex:
+
+```css
+:root {
+  --color-brand: #3b82f6;
+  --radius: 12px;
+  --space: 8px;
+}
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: calc(var(--space) * 3); }
+```

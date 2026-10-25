@@ -1,0 +1,15 @@
+{
+  "browser": {
+    "browserName": "chromium",
+    "launchOptions": {
+      "executablePath": "/opt/pw-browsers/chromium-1243/chrome-linux64/chrome"
+    }
+  },
+  "network": {
+    "allowedOrigins": [
+      "http://localhost:*",
+      "http://127.0.0.1:*",
+      "https://nemistudio.at"
+    ]
+  }
+}

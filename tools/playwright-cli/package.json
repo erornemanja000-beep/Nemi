@@ -1,0 +1,9 @@
+{
+  "name": "nemi-playwright-cli",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Playwright CLI za agente (pregled sajtova u browser-u). Pravila: .claude/skills/playwright-cli/SKILL.md",
+  "dependencies": {
+    "playwright": "1.64.1"
+  }
+}

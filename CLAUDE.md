@@ -91,3 +91,4 @@ Format dizajn sistema za agente je u `studio/znanje/design-md/`. Pravila u svako
 - Bez `--dangerously-skip-permissions` i bez širokih dozvola (`mcp__*__*`, `Bash(*)`) u `.claude/settings.json`.
 - Ključevi i lozinke samo u Netlify env promenljivama, nikad u kodu ni kao rezervna vrednost.
 - Commit poruke na engleskom, u stilu postojećih (`Projekat: šta se promenilo`).
+- Codex (plugin `codex-plugin-cc`, pravila za njega su u `AGENTS.md`): `/codex:review` i `/codex:adversarial-review` mogu kad zatreba, a `/codex:rescue` i agent `codex-rescue` samo kad korisnik to izričito traži. Posle svakog `rescue` pogledaj `git status` i `git diff`.

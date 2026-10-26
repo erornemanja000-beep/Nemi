@@ -159,7 +159,7 @@ def zid():
     return m
 
 
-def pbr(ime, slug, razmera, res="2k"):
+def pbr(ime, slug, razmera, res="2k", ravna=None, udeo=0.0, normale=1.0):
     """PBR materijal iz Poly Haven tekstura, kutijasta projekcija u metrima (bez UV-a)."""
     m = bpy.data.materials.new(ime)
     nt = m.node_tree
@@ -178,9 +178,18 @@ def pbr(ime, slug, razmera, res="2k"):
         nt.links.new(mp.outputs["Vector"], n.inputs["Vector"])
         return n
 
-    nt.links.new(slika("diff", True).outputs["Color"], p.inputs["Base Color"])
+    boja = slika("diff", True).outputs["Color"]
+    if ravna:
+        mix = nt.nodes.new("ShaderNodeMix")
+        mix.data_type = "RGBA"
+        mix.inputs["Factor"].default_value = udeo
+        mix.inputs["B"].default_value = ravna
+        nt.links.new(boja, mix.inputs["A"])
+        boja = mix.outputs["Result"]
+    nt.links.new(boja, p.inputs["Base Color"])
     nt.links.new(slika("rough", False).outputs["Color"], p.inputs["Roughness"])
     nm = nt.nodes.new("ShaderNodeNormalMap")
+    nm.inputs["Strength"].default_value = normale
     nt.links.new(slika("nor_gl", False).outputs["Color"], nm.inputs["Color"])
     nt.links.new(nm.outputs["Normal"], p.inputs["Normal"])
     return m
@@ -188,7 +197,7 @@ def pbr(ime, slug, razmera, res="2k"):
 
 if PH:
     ORAH = pbr("orah_ph", "wood_table_001", 0.9)
-    ZID = pbr("zid_ph", "grey_plaster", 0.8)
+    ZID = pbr("zid_ph", "grey_plaster", 3.0, ravna=lin((146, 139, 130)), udeo=0.72, normale=0.35)
     _bg = svet.node_tree.nodes["Background"]
     _env = svet.node_tree.nodes.new("ShaderNodeTexEnvironment")
     _env.image = bpy.data.images.load(os.path.join(PH_DIR, "cayley_interior", "cayley_interior_2k.hdr"))
@@ -214,7 +223,7 @@ _nt = EKRAN.node_tree
 _p = _nt.nodes["Principled BSDF"]
 _p.inputs["Base Color"].default_value = (0.0, 0.0, 0.0, 1)
 _p.inputs["Roughness"].default_value = 0.08
-_p.inputs["Emission Strength"].default_value = 1.0
+_p.inputs["Emission Strength"].default_value = 1.6
 _slika = _nt.nodes.new("ShaderNodeTexImage")
 _prva = os.path.join(SAJT, "0001.png")
 if os.path.exists(_prva):
@@ -229,7 +238,7 @@ _nt.links.new(_slika.outputs["Color"], _p.inputs["Emission Color"])
 
 # ---------------------------------------------------------------- sto i zid
 kutija("sto", (2.4, 0.72, 0.035), (0.05, 0.15, -0.0175), ORAH, 0.004)
-kutija("sto_front", (2.4, 0.03, 0.16), (0.05, -0.205, -0.115), ORAH, 0.003)
+kutija("sto_front", (2.4, 0.03, 0.6), (0.05, -0.205, -0.335), ORAH, 0.003)
 kutija("fioka_linija", (2.4, 0.004, 0.004), (0.05, -0.221, -0.075), CRNO)
 kutija("zid", (3.0, 0.02, 2.0), (0.0, 0.52, 0.8), ZID)
 
@@ -308,7 +317,7 @@ kutija("trackpad", (0.13, 0.08, 0.0008), (0, -0.058, DEB + 0.0001), PAD, 0.003, 
 
 # poklopac: otvoren 112° od osnove, šarka na zadnjoj ivici
 SARKA = Vector((0, DUB / 2 - 0.004, DEB))
-NAGIB = math.radians(112 - 90)
+NAGIB = math.radians(105 - 90)
 pivot = bpy.data.objects.new("sarka", None)
 pivot.location = SARKA
 pivot.rotation_euler = (-NAGIB, 0, 0)
@@ -334,7 +343,7 @@ bpy.context.view_layer.update()
 CENTAR_EKRANA = ekran.matrix_world.translation.copy()
 
 # miš desno
-bpy.ops.mesh.primitive_uv_sphere_add(segments=48, ring_count=24, radius=1, location=(0.3, -0.04, 0.012))
+bpy.ops.mesh.primitive_uv_sphere_add(segments=48, ring_count=24, radius=1, location=(0.25, -0.03, 0.012))
 mis = bpy.context.active_object
 mis.name = "mis"
 mis.scale = (0.03, 0.055, 0.014)
@@ -360,9 +369,9 @@ tr.up_axis = "UP_Y"
 
 # ključni položaji kamere: (vreme, azimut°, visina iznad centra ekrana, daljina, pomak cilja x, pomak cilja z)
 KLJUCEVI = [
-    (0.0, -23.0, 0.13, 1.0, 0.055, -0.07),
-    (6.35, -17.0, 0.11, 0.9, 0.045, -0.065),
-    (8.47, -9.0, 0.04, 0.6, 0.03, -0.055),
+    (0.0, -16.0, 0.03, 0.82, -0.012, -0.035),
+    (6.35, -12.0, 0.025, 0.76, -0.008, -0.033),
+    (8.47, -6.0, 0.012, 0.62, 0.008, -0.03),
 ]
 
 

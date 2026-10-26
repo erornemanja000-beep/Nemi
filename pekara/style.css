@@ -37,7 +37,7 @@ a { color: inherit; }
 .skip:focus { top: 12px; }
 
 /* ---------- Navigation: Differenz-Mischung hält sie auf Nacht und Mehl lesbar ---------- */
-.nav { position: fixed; inset: 0 0 auto; z-index: 20; display: flex; align-items: center; gap: 16px; padding: 14px var(--rand); color: #fff; mix-blend-mode: difference; }
+.nav { position: fixed; inset: 0 0 auto; z-index: 20; display: flex; align-items: center; gap: 16px; padding: calc(14px + env(safe-area-inset-top, 0px)) var(--rand) 14px; color: #fff; mix-blend-mode: difference; }
 .nav__brand { font: 500 1.5rem/1 var(--serif); font-variation-settings: "SOFT" 100, "WONK" 1; text-decoration: none; letter-spacing: -.01em; }
 .nav__clock { margin-left: auto; font: 300 .95rem/1 var(--sans); font-variant-numeric: tabular-nums; letter-spacing: .08em; opacity: .8; }
 .nav__cta { padding: 9px 16px; border: 1px solid currentColor; border-radius: 999px; font-size: .9rem; text-decoration: none; }
@@ -139,8 +139,8 @@ a { color: inherit; }
 .fuss strong { font-family: var(--serif); font-weight: 500; }
 
 /* ---------- Einblenden beim Scrollen ---------- */
-.js .schritt, .js .laib { opacity: 0; translate: 0 28px; transition: opacity .8s, translate .8s cubic-bezier(.2, .7, .2, 1); }
-.js .schritt.da, .js .laib.da { opacity: 1; translate: 0 0; }
+.js .schritt, .js .laib { translate: 0 24px; transition: translate .9s cubic-bezier(.2, .7, .2, 1); }
+.js .schritt.da, .js .laib.da { translate: 0 0; }
 
 /* ---------- Telefon ---------- */
 @media (max-width: 800px) {
@@ -167,6 +167,6 @@ a { color: inherit; }
   .hero__stage { position: relative; height: auto; min-height: 100svh; }
   .hero__mehl, .hero__hint { display: none; }
   .hero__steps li { opacity: 1; color: var(--brasno); }
-  .js .schritt, .js .laib { opacity: 1; translate: none; transition: none; }
+  .js .schritt, .js .laib { translate: none; transition: none; }
   .laib img { transition: none; }
 }

@@ -27,6 +27,11 @@ OD = int(arg("--od", 1))
 DO = int(arg("--do", UKUPNO))
 PROCENAT = int(arg("--procenat", 100))
 KADROVI = [int(k) for k in arg("--kadrovi", "").split(",") if k]
+# --polyhaven: pravo HDRI svetlo i fotografisane teksture (CC0, preuzima tools/polyhaven/preuzmi.py)
+PH = "--polyhaven" in ARG
+PH_DIR = os.path.join(OVDE, "..", "assets", "polyhaven")
+if PH:
+    IZLAZ = os.path.join(OVDE, "render", "laptop_ph")
 
 
 def e(x):
@@ -154,8 +159,49 @@ def zid():
     return m
 
 
-ORAH = drvo()
-ZID = zid()
+def pbr(ime, slug, razmera, res="2k"):
+    """PBR materijal iz Poly Haven tekstura, kutijasta projekcija u metrima (bez UV-a)."""
+    m = bpy.data.materials.new(ime)
+    nt = m.node_tree
+    p = nt.nodes["Principled BSDF"]
+    tk = nt.nodes.new("ShaderNodeTexCoord")
+    mp = nt.nodes.new("ShaderNodeMapping")
+    mp.inputs["Scale"].default_value = (razmera, razmera, razmera)
+    nt.links.new(tk.outputs["Object"], mp.inputs["Vector"])
+
+    def slika(mapa, boja):
+        n = nt.nodes.new("ShaderNodeTexImage")
+        n.image = bpy.data.images.load(os.path.join(PH_DIR, slug, f"{slug}_{mapa}_{res}.jpg"))
+        n.image.colorspace_settings.name = "sRGB" if boja else "Non-Color"
+        n.projection = "BOX"
+        n.projection_blend = 0.25
+        nt.links.new(mp.outputs["Vector"], n.inputs["Vector"])
+        return n
+
+    nt.links.new(slika("diff", True).outputs["Color"], p.inputs["Base Color"])
+    nt.links.new(slika("rough", False).outputs["Color"], p.inputs["Roughness"])
+    nm = nt.nodes.new("ShaderNodeNormalMap")
+    nt.links.new(slika("nor_gl", False).outputs["Color"], nm.inputs["Color"])
+    nt.links.new(nm.outputs["Normal"], p.inputs["Normal"])
+    return m
+
+
+if PH:
+    ORAH = pbr("orah_ph", "wood_table_001", 0.9)
+    ZID = pbr("zid_ph", "grey_plaster", 0.8)
+    _bg = svet.node_tree.nodes["Background"]
+    _env = svet.node_tree.nodes.new("ShaderNodeTexEnvironment")
+    _env.image = bpy.data.images.load(os.path.join(PH_DIR, "cayley_interior", "cayley_interior_2k.hdr"))
+    _tk = svet.node_tree.nodes.new("ShaderNodeTexCoord")
+    _mp = svet.node_tree.nodes.new("ShaderNodeMapping")
+    _mp.inputs["Rotation"].default_value = (0, 0, math.radians(110))
+    svet.node_tree.links.new(_tk.outputs["Generated"], _mp.inputs["Vector"])
+    svet.node_tree.links.new(_mp.outputs["Vector"], _env.inputs["Vector"])
+    svet.node_tree.links.new(_env.outputs["Color"], _bg.inputs["Color"])
+    _bg.inputs["Strength"].default_value = 0.9
+else:
+    ORAH = drvo()
+    ZID = zid()
 ALU = principled("aluminijum", lin((62, 62, 66)), 0.32, 1.0)
 CRNO = principled("crno", lin((10, 10, 11)), 0.45)
 TASTER = principled("taster", lin((14, 14, 15)), 0.55)
@@ -234,7 +280,7 @@ _c.up_axis = "UP_Y"
 to.rotation_mode = "XYZ"
 
 meko = bpy.data.lights.new("Meko", "AREA")
-meko.energy = 60
+meko.energy = 25 if PH else 60
 meko.size = 1.5
 meko.color = (1.0, 0.9, 0.78)
 mo = bpy.data.objects.new("Meko", meko)

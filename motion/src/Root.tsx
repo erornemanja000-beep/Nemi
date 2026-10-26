@@ -2,6 +2,7 @@ import {Composition} from 'remotion';
 import {Probni, PROBNI_TRAJANJE} from './Probni';
 import {FPS} from './theme';
 import {Wuerfelwelt, WUERFELWELT_TRAJANJE} from './Wuerfelwelt';
+import {Aurel, AUREL_TRAJANJE} from './Aurel';
 
 export const Root: React.FC = () => (
 	<>
@@ -21,5 +22,6 @@ export const Root: React.FC = () => (
 			width={1080}
 			height={1920}
 		/>
+		<Composition id="Aurel" component={Aurel} durationInFrames={AUREL_TRAJANJE} fps={FPS} width={1080} height={1920} />
 	</>
 );

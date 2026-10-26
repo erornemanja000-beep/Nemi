@@ -11,6 +11,7 @@ Beleške o napretku su u `NAPREDAK.md`.
 | `freiraum/` | Freiraum Wien, statički sajt + Netlify funkcije (`booking.js`, `team.js`) | `cd freiraum && python3 build.py` |
 | `freiraum-premium/` | premium verzija Freiraum-a sa skrol animacijama (`src/shared` je link na `freiraum/src/assets`) | `python3 freiraum-premium/build_offline.py <izlaz>` |
 | `RealEstates/` | Vista Estates, Vite + React + TS + Tailwind + GSAP + Three.js | `cd RealEstates && npm run build && npm run lint` |
+| `pekara/` | Krume, koncept-sajt za bečku pekaru (maketa, ne objavljuje se); brief u `studio/pekara/` | `cd pekara && python3 -m http.server`, pa 390 px, 1440 px i smanjen pokret |
 | `motion/` | video iz koda u Remotion-u (probni klip sa tehnikama iz reel-a); pravila u `motion/README.md` | `cd motion && npx --no-install remotion render Probni out/probni.mp4` |
 | `video/`, `frames/`, `assets/` | gotovi videi, kadrovi za AI klipove, promptovi | skripte u `scripts/` |
 

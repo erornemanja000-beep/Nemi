@@ -13,7 +13,7 @@ Maketa za buduće klijente (pekare u Beču). Pekara je izmišljena: ime, radno v
 ## Sekcije
 1. **04:00** – mrak, sjaj peći, naslov „Bevor Wien aufwacht, backen wir."
 2. **Teig. Zeit. Ofen.** – tri koraka zanata.
-3. **Brot des Tages** – Kaisersemmel, Mohnflesserl, Salzstangerl, Roggenlaib.
+3. **Brot des Tages** – Kaisersemmel, Mohnwecken, Laugenbrezel, Roggenlaib. (Prvo je pisalo Mohnflesserl i Salzstangerl; promenjeno da odgovara fotografijama koje su za sada na sajtu.)
 4. **07:00** – radnja se otvara: radno vreme (primer: Di–Sa 6:30–14:00), „Vorbestellen".
 
 ## Zadatak za Codex

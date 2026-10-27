@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Krume · Bake-Test (kuca-test.glb)</title>
+<!-- Test za Three.js uzivo: zapeceno Cycles svetlo (lightmap) prikazano bez senčenja.
+     Pokretanje iz korena repoa: python3 -m http.server 8012, pa
+     http://localhost:8012/studio/pekara/blender/viewer/
+     Three je lokalni (RealEstates/node_modules, ista verzija kao u package.json), bez CDN-a. -->
+<script type="importmap">
+{
+  "imports": {
+    "three": "../../../../RealEstates/node_modules/three/build/three.module.js",
+    "three/addons/": "../../../../RealEstates/node_modules/three/examples/jsm/"
+  }
+}
+</script>
+<style>
+  html, body { margin: 0; height: 100%; background: #172540; overflow: hidden; }
+  canvas { display: block; width: 100%; height: 100%; touch-action: none; }
+  #info {
+    position: fixed; left: 12px; bottom: calc(10px + env(safe-area-inset-bottom));
+    font: 12px/1.4 ui-monospace, Menlo, monospace; color: #c9c2b8; opacity: .75;
+    pointer-events: none;
+  }
+</style>
+</head>
+<body>
+<div id="info">kuca-test.glb · lädt …</div>
+<script type="module">
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+
+const info = document.getElementById('info');
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.setSize(innerWidth, innerHeight);
+// Tekstura vec nosi AgX tone mapping iz Blendera (save_render), pa ovde nema drugog tone mapping-a.
+renderer.toneMapping = THREE.NoToneMapping;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+document.body.appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color('#172540');   // noćno nebo kao u Cycles kadru
+
+const camera = new THREE.PerspectiveCamera(30, innerWidth / innerHeight, 0.5, 600);
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = !reduced;
+controls.maxPolarAngle = Math.PI * 0.47;          // ne ispod daske
+controls.minDistance = 15;
+controls.maxDistance = 220;
+
+const composer = new EffectComposer(renderer);
+composer.addPass(new RenderPass(scene, camera));
+// Slab bloom samo na izlogu: emisija je > 1, zapečene teksture su najviše 1.
+const bloom = new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 0.4, 0.4, 1.0);
+composer.addPass(bloom);
+composer.addPass(new OutputPass());
+
+let fit = null;
+
+function frame() {
+  // 3/4 odozgo kao kadar makete (Blender pravac (-1, -1.15, 0.8) je ovde (-1, 0.8, 1.15))
+  if (!fit) return;
+  const dir = new THREE.Vector3(-1, 0.8, 1.15).normalize();
+  const vfov = THREE.MathUtils.degToRad(camera.fov) / 2;
+  const hfov = Math.atan(Math.tan(vfov) * camera.aspect);
+  const dist = fit.radius / Math.sin(Math.min(vfov, hfov)) * 0.8;
+  camera.position.copy(fit.center).addScaledVector(dir, dist);
+  controls.target.copy(fit.center);
+  controls.update();
+}
+
+new GLTFLoader().load('../kuca-test.glb', (gltf) => {
+  let tris = 0;
+  gltf.scene.traverse((o) => {
+    if (!o.isMesh) return;
+    const m = o.material;
+    tris += (o.geometry.index ? o.geometry.index.count : o.geometry.attributes.position.count) / 3;
+    if (m.emissive && m.emissive.getHex() !== 0) {
+      // izlog: neosvetljen, jači od 1 da ga bloom uhvati
+      const c = m.emissive.clone().multiplyScalar(m.emissiveIntensity ?? 1);
+      o.material = new THREE.MeshBasicMaterial({ color: c });
+    } else {
+      // zapečeno svetlo: tekstura je već "render", bez senčenja
+      o.material = new THREE.MeshBasicMaterial({ map: m.map });
+    }
+    m.dispose();
+  });
+  scene.add(gltf.scene);
+  const box = new THREE.Box3().setFromObject(gltf.scene);
+  const sphere = box.getBoundingSphere(new THREE.Sphere());
+  fit = { center: sphere.center.clone().add(new THREE.Vector3(0, -sphere.radius * 0.12, 0)), radius: sphere.radius };
+  frame();
+  info.textContent = `kuca-test.glb · ${Math.round(tris).toLocaleString('de-AT')} Dreiecke · DPR ${renderer.getPixelRatio()}`;
+}, undefined, (err) => {
+  info.textContent = 'GLB konnte nicht geladen werden: ' + err.message;
+});
+
+addEventListener('resize', () => {
+  camera.aspect = innerWidth / innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+  composer.setSize(innerWidth, innerHeight);
+  frame();
+});
+
+renderer.setAnimationLoop(() => {
+  controls.update();
+  composer.render();
+});
+</script>
+</body>
+</html>

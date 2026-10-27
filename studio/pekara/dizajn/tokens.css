@@ -1,0 +1,146 @@
+/* ==========================================================================
+   Krume · smer 3 „Ein Fenster brennt" · dizajn tokeni (HTML sloj preko 3D scene)
+   Dizajner, 27. 10. 2026 (v2 posle recenzije). Obrazloženje i kontrast: dizajn.md
+   Fontovi su lokalni. Putanje važe iz studio/pekara/dizajn/; programer ih
+   prepiše na assets/fonts/ u sajtu. Nikad Google Fonts CDN.
+   ========================================================================== */
+
+@font-face {
+  font-family: "Bricolage Grotesque";
+  src: url("../../../pekara/assets/fonts/bricolage-latin-var.woff2") format("woff2");
+  font-weight: 200 800;          /* ose u fajlu: wght + opsz (12–96); wdth NE postoji */
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Instrument Serif";
+  src: url("../../../freiraum-premium/src/assets/fonts/instrument-serif-italic.woff2") format("woff2");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+:root {
+  /* ---- Sirove boje (brief + smer 3) ---------------------------------- */
+  --krume-noc:     #14110f;  /* noć, pozadina stranice i ploča ispod teksta */
+  --krume-kamen:   #2b2a28;  /* kamen fasade (3D) */
+  --krume-krov:    #3b4048;  /* jedina hladna nota (3D), gasi se do zore */
+  --krume-kora:    #7a4a24;  /* kora: akcenat na svetloj površini */
+  --krume-zar:     #e8792b;  /* žar: jedini topli izvor u UI-ju */
+  --krume-testo:   #eadbc4;  /* testo */
+  --krume-brasno:  #f6f1e7;  /* brašno / jutro */
+
+  /* ---- Uloge: tamni sloj (04:00 – 06:30) ------------------------------ */
+  --color-bg:           var(--krume-noc);
+  --color-surface:      #201a15;  /* meni, donja traka na 390, hint-pilule (NE ploče za sadržaj) */
+  --color-surface-2:    #2a221b;  /* hover, pritisnuto */
+  --color-text:         var(--krume-brasno);  /* 16.70:1 na noći, 15.29:1 na ploči */
+  --color-text-muted:   #b8a690;  /* 7.96:1 na noći, 7.29:1 na ploči */
+  --color-accent:       var(--krume-zar);     /* 6.45:1 na noći */
+  --color-on-accent:    var(--krume-noc);     /* tekst na žar dugmetu, 6.45:1 */
+  --color-line:         rgba(246, 241, 231, 0.16);  /* dekor, ne nosi značenje */
+  --color-line-strong:  #857462;  /* ivica polja na tamnoj ploči (3.6:1, ne-tekst ≥ 3:1) */
+  --color-error:        #e86a5a;  /* 5.44:1 na ploči */
+  --color-focus:        var(--krume-zar);
+
+  /* ---- Uloge: svetli sloj „Sackerl" (07:00, forma, papirna kesa) ------- */
+  --day-bg:             var(--krume-brasno);
+  --day-surface:        var(--krume-testo);
+  --day-text:           var(--krume-noc);   /* 16.70:1 */
+  --day-text-muted:     #6e5a45;            /* 5.81:1 na brašnu, 4.80:1 na testu */
+  --day-accent:         var(--krume-kora);  /* 6.59:1 na brašnu */
+  --day-line:           #8a7d6c;            /* ivica polja, 3.57:1 */
+  --day-error:          #a3341f;            /* 6.08:1 */
+
+  /* ---- Tipografija --------------------------------------------------- */
+  --font-sans:  "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Instrument Serif", Georgia, "Times New Roman", serif; /* samo italic, samo naglasak */
+  --font-clock: var(--font-sans);  /* + tabular-nums; uski mono je samo PREDLOG (dizajn.md) */
+
+  /* fluidna skala: 390 px → 1440 px */
+  --fs-display: clamp(2.5rem, 1.6rem + 3.7vw, 5.25rem);   /* 40 → 84, H1 i naslovi poglavlja */
+  --fs-h2:      clamp(2rem, 1.45rem + 2.25vw, 3.5rem);     /* 32 → 56 */
+  --fs-h3:      clamp(1.25rem, 1.1rem + 0.6vw, 1.625rem);  /* 20 → 26, ime hleba */
+  --fs-lead:    clamp(1.0625rem, 1rem + 0.3vw, 1.25rem);   /* 17 → 20 */
+  --fs-display-m: 2.125rem; /* 34, naslov poglavlja na 390 (kratko, preko scene) */
+  --fs-oven:    clamp(1.25rem, 1.1rem + 0.5vw, 1.5rem);    /* 20 → 24, „aus dem Ofen um 6:10", tabular */
+  --fs-kicker:  clamp(1rem, 0.95rem + 0.2vw, 1.125rem);    /* 16 → 18, reč poglavlja („Das Grätzl"), bez verzala */
+  --fs-body:    1rem;        /* 16: NAJMANJA veličina za tekst koji se čita */
+  --fs-tick:    0.75rem;     /* 12, samo oznake lenjira 04·05·06·07 (nisu sadržaj) */
+  --fs-clock:   clamp(1.125rem, 1rem + 0.4vw, 1.375rem);   /* 18 → 22 */
+
+  --lh-tight: 1.02;
+  --lh-head:  1.08;
+  --lh-body:  1.55;
+  --tracking-display: -0.03em;
+
+  --wght-body: 400;
+  --wght-ui:   560;
+  --wght-head: 640;
+  --opsz-display: 96;  /* optička veličina za krupne naslove */
+  --opsz-text:    14;
+
+  /* ---- Razmaci (osnova 4 px) ----------------------------------------- */
+  --space-1: 0.25rem;  /* 4 */
+  --space-2: 0.5rem;   /* 8 */
+  --space-3: 0.75rem;  /* 12 */
+  --space-4: 1rem;     /* 16 */
+  --space-5: 1.5rem;   /* 24 */
+  --space-6: 2rem;     /* 32 */
+  --space-7: 3rem;     /* 48 */
+  --space-8: 4rem;     /* 64 */
+  --space-9: 6rem;     /* 96 */
+  --gutter:  clamp(1.25rem, 0.6rem + 2.7vw, 3.5rem);   /* 20 → 56, ivica ekrana */
+  --measure: 34ch;     /* najveća širina pasusa preko scene */
+  --tap:     44px;     /* najmanja dodirna površina */
+  --tap-lg:  52px;     /* dugme u donjoj traci na 390 */
+
+  /* ---- Oblici -------------------------------------------------------- */
+  --radius-xs:   2px;    /* oznake, tickovi sata */
+  --radius-sm:   6px;    /* polja forme */
+  --radius-md:   10px;   /* kartice hlebova, ploče */
+  --radius-lg:   18px;   /* Sackerl ploča (forma) */
+  --radius-pill: 999px;  /* samo dugmad: oblik zemičke */
+
+  /* ---- Dubina -------------------------------------------------------- */
+  /* Tekst preko scene NEMA senku ni gradijent. Senka: hint-pilule i Sackerl kesa. */
+  --shadow-plate: 0 1px 0 rgba(246, 241, 231, 0.06) inset, 0 18px 40px -18px rgba(0, 0, 0, 0.7);
+  --shadow-bag:   0 30px 60px -30px rgba(0, 0, 0, 0.75), 0 2px 0 rgba(122, 74, 36, 0.25);
+  --glow-window:  0 0 0 1px rgba(232, 121, 43, 0.35), 0 0 24px rgba(232, 121, 43, 0.35); /* aktivna kartica, tačka sata */
+
+  /* ---- Slojevi ------------------------------------------------------- */
+  --z-canvas: 0;
+  --z-text:   10;
+  --z-nav:    50;
+  --z-bar:    60;   /* donja traka Vorbestellen na 390 */
+  --z-skip:   100;
+
+  /* ---- Pokret -------------------------------------------------------- */
+  --ease-out:    cubic-bezier(0.22, 1, 0.36, 1);     /* ulaz teksta, „testo se slegne" */
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);     /* prelaz poglavlja */
+  --ease-in:     cubic-bezier(0.55, 0, 1, 0.45);     /* izlaz teksta (kraće od ulaza) */
+  --ease-camera: "power3.out";                       /* GSAP quickTo za kameru (string za JS) */
+  --dur-1: 120ms;   /* hover, fokus */
+  --dur-2: 240ms;   /* dugme, polje */
+  --dur-3: 480ms;   /* izlaz teksta poglavlja */
+  --dur-4: 720ms;   /* ulaz teksta poglavlja (po redu: eyebrow, naslov, tekst) */
+  --dur-5: 1200ms;  /* talas svetla UI-ja (nav prelazi u dan) */
+  --stagger: 80ms;
+  --rise: 24px;     /* koliko se tekst podiže pri ulazu */
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-1: 0ms; --dur-2: 0ms; --dur-3: 0ms; --dur-4: 0ms; --dur-5: 0ms;
+    --stagger: 0ms;
+    --rise: 0px;
+  }
+}
+
+/* Etikete hlebova i linije do police (Brot des Tages) */
+:root {
+  --leader-line:  var(--krume-testo);          /* 1 px */
+  --leader-halo:  rgba(20, 17, 15, 0.85);      /* 3 px ispod linije, da se čita i preko stakla izloga */
+  --leader-dot:   5px;
+  --hours-rule:   rgba(246, 241, 231, 0.28);   /* linije tabele radnog vremena na nebu */
+}

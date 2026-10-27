@@ -1,0 +1,67 @@
+/* Krume · 'static' mod: prefers-reduced-motion, bez WebGL-a, ili dok JS ne krene.
+   Umesto canvas-a stoje statični WebP kadrovi (16:9 / 9:16) kao <img>, jedan ispod drugog
+   u prirodnom toku stranice. Sav tekst je vidljiv, bez ulaza i izlaza, bez hint-ova. */
+
+[data-mode="static"] #scena,
+html:not(.mode-3d) #scena,
+html:not(.mode-3d) #scena-opis,
+html:not(.mode-3d) .hint,
+html:not(.mode-3d) .scrollhint,
+html:not(.mode-3d) .linije { display: none; }
+
+html:not(.mode-3d) .pogl__in { min-height: 100svh; isolation: isolate; overflow: hidden; }
+html:not(.mode-3d) .kadar { display: block; position: absolute; inset: 0; z-index: -1; }
+html:not(.mode-3d) .kadar img { width: 100%; height: 100%; object-fit: cover; }
+html:not(.mode-3d) .futer { position: relative; }
+
+/* Kadrovi idu ispod nav-a: nav dobija tamnu traku (#201a15) čiji se donji rub gasi,
+   da tekst i etikete ne prolaze kroz linkove i sat */
+html:not(.mode-3d) .nav::before {
+  content: ""; position: absolute; z-index: -1; inset: 0 0 -32px; pointer-events: none;
+  background: linear-gradient(var(--color-surface) calc(100% - 32px), transparent);
+}
+html:not(.mode-3d) .nav--dan::before { content: none; }
+
+/* 05:15: tri koraka jedan ispod drugog (L, D, L) preko kadra peći */
+html:not(.mode-3d) [data-pogl="4"] .pogl__in { padding: 180px var(--gutter) var(--space-9); display: grid; gap: var(--space-9); }
+html:not(.mode-3d) .korak { position: relative; inset: auto; }
+html:not(.mode-3d) .korak .tekst { position: relative; inset: auto; }
+html:not(.mode-3d) .korak--d .tekst { margin-left: auto; }
+
+/* Brot des Tages: sve 4 etikete sa opisom, bez aktivnog stanja */
+html:not(.mode-3d) .etiketa[aria-current="true"] { border-left: 1px solid var(--color-line); padding-left: var(--space-4); }
+html:not(.mode-3d) .etiketa[aria-current="true"] :is(.etiketa__zeit) { color: var(--krume-testo); }
+html:not(.mode-3d) .etiketa[aria-current="true"] .etiketa__preis { color: var(--color-text); }
+html:not(.mode-3d) .etikete { scroll-behavior: auto; }
+
+@media (min-width: 701px) {
+  /* tekst na sredini kadra po visini, dalje od nav-a (04:00 ostaje dole, kao hero) */
+  html:not(.mode-3d) :is([data-pogl="2"], [data-pogl="3"], [data-pogl="6"]) .tekst { top: 50%; bottom: auto; transform: translateY(-50%); }
+  /* kadar 5 ima tamno podnožje pulta (donjih ~17 %): slika je viša od kadra i poravnata gore,
+     pa podnožje ostaje ispod ivice (.pogl__in seče višak) */
+  html:not(.mode-3d) [data-kadar="kadar-5"] img { height: 121%; object-position: 50% 0; }
+
+  /* Kadar 5: svi opisi su vidljivi, pa naslov i etikete idu u tok (ne apsolutno), da kadar
+     raste sa sadržajem i ništa se ne odseče na niskom ekranu */
+  html:not(.mode-3d) [data-pogl="5"] .pogl__in {
+    display: flex; justify-content: space-between; align-items: flex-start; gap: var(--space-7);
+    padding: 140px var(--gutter) var(--space-9);
+  }
+  html:not(.mode-3d) [data-pogl="5"] :is(.tekst, .etikete) { position: relative; inset: auto; }
+  html:not(.mode-3d) [data-pogl="5"] .tekst { margin-top: 110px; }
+  html:not(.mode-3d) .etikete { gap: var(--space-4); flex: none; }
+}
+
+@media (max-width: 700px) {
+  html:not(.mode-3d) .pogl__in {
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding: 96px 0 var(--dno-b);
+  }
+  html:not(.mode-3d) .dno { position: relative; left: auto; right: auto; bottom: auto; padding: 0 var(--space-5); }
+  html:not(.mode-3d) .dno--brot { padding: 0; }
+  html:not(.mode-3d) .korak .dno { padding: 0; }
+  html:not(.mode-3d) [data-pogl="4"] .pogl__in { padding: 96px var(--space-5) var(--dno-b); gap: var(--space-8); justify-content: flex-end; }
+  html:not(.mode-3d) [data-pogl="7"] .pogl__in { padding: 96px 0 0; min-height: 0; }
+  html:not(.mode-3d) .etiketa[aria-current="true"] { border: 1px solid var(--color-line); padding: var(--space-4); }
+  html:not(.mode-3d) .traka { transition: none; }
+}

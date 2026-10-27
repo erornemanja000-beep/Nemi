@@ -1,0 +1,175 @@
+/* Krume · osnova HTML sloja: reset, tipografija, dugmad, navigacija sa satom, meni, donja traka.
+   Vrednosti iz tokens.css i studio/pekara/dizajn/dizajn.md. */
+
+*, *::before, *::after { box-sizing: border-box; }
+/* overflow-x: clip i na html: na telefonu bi svaki višak širine proširio layout viewport, pa bi
+   fiksni nav bio širi od ekrana i „Menü" odsečen uz desnu ivicu (z9-390-095) */
+html { -webkit-text-size-adjust: 100%; background: var(--color-bg); overflow-x: clip; }
+body {
+  margin: 0; background: var(--color-bg); color: var(--color-text); font-family: var(--font-sans);
+  font-size: var(--fs-body); line-height: var(--lh-body); font-weight: var(--wght-body);
+  font-variation-settings: "opsz" var(--opsz-text); -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+a { color: inherit; }
+h1, h2, h3, p, dl, dd, ol, ul { margin: 0; }
+img { display: block; max-width: 100%; }
+button, input, select { font: inherit; }
+[hidden] { display: none !important; }
+main:focus { outline: none; }
+
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.skip {
+  position: fixed; z-index: var(--z-skip); left: var(--space-4); top: var(--space-4); transform: translateY(-200%);
+  padding: var(--space-3) var(--space-4); border-radius: var(--radius-pill); background: var(--color-surface);
+  color: var(--color-text); font-weight: var(--wght-ui); text-decoration: none;
+}
+.skip:focus-visible { transform: none; outline: 2px solid var(--color-focus); outline-offset: 3px; }
+
+/* ---------- 3D canvas: fiksan preko cele strane, ispod HTML sloja ---------- */
+#scena { position: fixed; inset: 0; z-index: var(--z-canvas); display: block; width: 100%; height: 100%; }
+main, .futer { position: relative; z-index: var(--z-text); }
+
+/* ---------- tipografija ---------- */
+.kicker { font-size: var(--fs-kicker); font-weight: var(--wght-ui); color: var(--color-text-muted); margin-bottom: var(--space-3); letter-spacing: -.005em; }
+.display {
+  font-size: var(--fs-display); line-height: var(--lh-tight); letter-spacing: var(--tracking-display);
+  font-weight: var(--wght-head); font-variation-settings: "opsz" var(--opsz-display); text-wrap: balance;
+}
+.h2 {
+  font-size: var(--fs-h2); line-height: var(--lh-head); letter-spacing: -.025em; font-weight: var(--wght-head);
+  font-variation-settings: "opsz" var(--opsz-display); text-wrap: balance;
+}
+.serif { font-family: var(--font-serif); font-style: italic; font-weight: 400; letter-spacing: -.01em; color: var(--krume-testo); }
+.copy { margin-top: var(--space-4); font-size: var(--fs-lead); max-width: var(--measure); text-wrap: pretty; }
+.meta { margin-top: var(--space-3); color: var(--color-text-muted); max-width: 40ch; }
+.actions { display: flex; flex-wrap: wrap; gap: var(--space-4); margin-top: var(--space-6); }
+
+/* ---------- dugmad ---------- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: var(--tap);
+  padding: 0 var(--space-5); border: 0; border-radius: var(--radius-pill); font-weight: 620; font-size: 1rem;
+  text-decoration: none; cursor: pointer; white-space: nowrap;
+  transition: background-color var(--dur-2) var(--ease-out), transform var(--dur-1) var(--ease-out);
+}
+.btn-zar { background: var(--color-accent); color: var(--color-on-accent); }
+.btn-zar:hover { background: #f08a40; }
+.btn-zar:active, .btn-dan:active { transform: translateY(1px); }
+.btn-lg { min-height: var(--tap-lg); padding: 0 var(--space-6); font-size: 1.0625rem; }
+.btn-ghost { background: transparent; color: var(--color-text); box-shadow: inset 0 0 0 1px var(--color-line-strong); }
+.btn-ghost:hover { background: var(--color-surface-2); }
+.btn:disabled { background: #3a3029; color: var(--color-text-muted); cursor: default; }
+:where(a, button, input, select):focus-visible { outline: 2px solid var(--color-focus); outline-offset: 3px; }
+
+/* ---------- navigacija: bez trake, direktno na nebu ---------- */
+.nav {
+  position: fixed; z-index: var(--z-nav); inset: 0 0 auto 0; display: grid; grid-template-columns: 1fr auto 1fr;
+  align-items: center; gap: var(--space-5); padding: var(--space-5) var(--gutter);
+  padding-top: max(var(--space-5), env(safe-area-inset-top));
+  transition: background-color var(--dur-5) var(--ease-in-out), box-shadow var(--dur-5) var(--ease-in-out);
+}
+/* od 07:00 (forma, futer) nav dobija punu traku */
+.nav--dan { background: var(--color-surface); box-shadow: 0 1px 0 var(--color-line); }
+/* nav stoji direktno na sceni: ista blaga senka slova kao tekst poglavlja (chapters.css, 2 px + 18 px),
+   sa jačinom svetlog kadra (0,55), da se oznake lenjira i linkovi čitaju i preko izloga u 06:00 */
+.nav:not(.nav--dan) :is(.marke, .uhr, .lenjir span, .nav__links a, .menu-btn) {
+  text-shadow: 0 1px 2px color-mix(in srgb, var(--color-bg) 80%, transparent), 0 0 18px color-mix(in srgb, var(--color-bg) 55%, transparent);
+}
+/* oznake 04–07 su 12 px: preko scene su svetlije od prigušene boje i uz istu senku dobijaju uzak oreol */
+.nav:not(.nav--dan) .lenjir span {
+  color: color-mix(in srgb, var(--color-text) 60%, var(--color-text-muted));
+  text-shadow: 0 1px 2px color-mix(in srgb, var(--color-bg) 80%, transparent), 0 0 5px color-mix(in srgb, var(--color-bg) 70%, transparent),
+               0 0 18px color-mix(in srgb, var(--color-bg) 55%, transparent);
+}
+.marke {
+  justify-self: start; display: inline-flex; align-items: center; gap: 10px; min-height: var(--tap); text-decoration: none;
+  font-weight: 700; font-size: 1.5rem; letter-spacing: -.02em; font-variation-settings: "opsz" 48;
+}
+.marke i { width: 12px; height: 16px; border-radius: var(--radius-xs); background: var(--color-accent); box-shadow: var(--glow-window); }
+.nav__desno { justify-self: end; display: flex; align-items: center; gap: var(--space-1); }
+.nav__links { display: flex; gap: var(--space-1); list-style: none; padding: 0; }
+.nav__links a {
+  display: inline-flex; align-items: center; min-height: var(--tap); padding: 0 var(--space-3); border-radius: var(--radius-pill);
+  text-decoration: none; font-weight: var(--wght-ui); white-space: nowrap;
+}
+.nav__links a[aria-current] { text-decoration: underline; text-underline-offset: 8px; text-decoration-color: var(--color-accent); text-decoration-thickness: 2px; }
+.nav__cta { margin-left: var(--space-2); }
+.menu-btn { display: none; }
+
+/* ---------- sat 04:00 → 07:00 ---------- */
+.uhr { justify-self: center; display: grid; justify-items: center; gap: 7px; font-family: var(--font-clock); }
+.uhr__zeit { font-size: var(--fs-clock); font-weight: 600; font-variant-numeric: tabular-nums; letter-spacing: .02em; line-height: 1; }
+.lenjir { position: relative; width: 200px; height: 24px; }
+.lenjir::before { content: ""; position: absolute; left: 0; right: 0; top: 3px; height: 1px; background: var(--color-line); }
+.lenjir b {
+  position: absolute; left: 0; top: 2px; height: 3px; width: calc(var(--p) * 100%);
+  background: var(--color-accent); border-radius: 2px;
+}
+.lenjir b::after {
+  content: ""; position: absolute; right: -4px; top: -2.5px; width: 8px; height: 8px; border-radius: 50%;
+  background: var(--color-accent); box-shadow: var(--glow-window);
+}
+.lenjir span {
+  position: absolute; top: 11px; left: 0; font-size: var(--fs-tick); line-height: 1; color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums; transform: translateX(-50%);
+}
+.lenjir span:first-of-type { transform: none; }
+.lenjir span:last-of-type { left: 100%; transform: translateX(-100%); }
+/* futer je večernji kadar: sat koji stoji na 06:30 se tiho gasi */
+.uhr { transition: opacity var(--dur-4) var(--ease-out), visibility 0s linear 0s; }
+.futer-on .uhr { opacity: 0; visibility: hidden; transition: opacity var(--dur-4) var(--ease-out), visibility 0s linear var(--dur-4); }
+
+/* ---------- meni (390) ---------- */
+.meni {
+  position: fixed; z-index: calc(var(--z-nav) - 1); inset: 0; display: flex; flex-direction: column; justify-content: space-between;
+  padding: 104px var(--space-5) calc(var(--space-6) + env(safe-area-inset-bottom)); background: var(--color-surface);
+  overflow-y: auto; overscroll-behavior: contain;
+}
+.meni__links { list-style: none; padding: 0; }
+.meni__links a {
+  display: flex; align-items: center; min-height: 56px; border-bottom: 1px solid var(--color-line);
+  font-size: 1.375rem; font-weight: 620; text-decoration: none;
+}
+.meni-otvoren { overflow: hidden; }
+
+/* ---------- donja traka Vorbestellen (samo 390, posle hero kadra) ---------- */
+.traka { display: none; }
+
+/* ---------- hint-ovi ---------- */
+.hint {
+  display: inline-flex; align-items: center; gap: var(--space-2); min-height: var(--tap); padding: 0 var(--space-4);
+  border: 0; border-radius: var(--radius-pill); background: var(--color-surface); color: var(--color-text);
+  font-size: var(--fs-body); font-weight: var(--wght-ui); box-shadow: var(--shadow-plate); white-space: nowrap;
+}
+button.hint { cursor: pointer; }
+button.hint:hover { background: var(--color-surface-2); }
+.hint .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--color-accent); box-shadow: var(--glow-window); }
+.scrollhint {
+  display: grid; justify-items: center; gap: 8px; color: var(--color-text-muted);
+}
+.scrollhint::after {
+  content: ""; width: 1px; height: 36px;
+  background: linear-gradient(var(--color-text-muted), var(--color-text-muted)) top / 1px 40% no-repeat, var(--color-line);
+}
+
+@media (max-width: 700px) {
+  .nav { grid-template-columns: auto minmax(0, 1fr) auto; gap: var(--space-3); padding: var(--space-3) var(--space-4); padding-top: max(var(--space-3), env(safe-area-inset-top)); }
+  .marke { font-size: 1.25rem; }
+  .nav__desno nav, .nav__cta { display: none; }
+  .menu-btn { display: inline-flex; min-width: var(--tap); padding: 0 var(--space-4); }
+  .uhr { gap: 6px; }
+  .lenjir { width: 124px; }
+
+  .traka {
+    display: flex; position: fixed; z-index: var(--z-bar); left: 0; right: 0; bottom: 0;
+    padding: var(--space-3) var(--space-4) calc(var(--space-3) + env(safe-area-inset-bottom));
+    background: var(--color-surface); box-shadow: 0 -1px 0 var(--color-line);
+    transform: translateY(100%); visibility: hidden;
+    transition: transform var(--dur-3) var(--ease-out), visibility 0s linear var(--dur-3);
+  }
+  .traka .btn { flex: 1; }
+  .traka-on .traka { transform: none; visibility: visible; transition: transform var(--dur-3) var(--ease-out); }
+}
+@media (min-width: 701px) {
+  .meni { display: none !important; }
+}

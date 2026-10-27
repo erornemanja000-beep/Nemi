@@ -3,3 +3,14 @@ __pycache__/
 .taste-skill/
 .env*
 .claude/settings.local.json
+
+# Blender radni fajlovi (prave se ponovo iz .py skripti)
+studio/**/*.blend
+studio/**/*.blend1
+studio/**/*.exr
+studio/**/*.npz
+studio/pekara/blender/bake/
+studio/pekara/blender/kadrovi/
+# test snimci ekrana
+studio/pekara/izrada/
+.DS_Store

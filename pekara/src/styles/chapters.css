@@ -1,0 +1,230 @@
+/* Krume · poglavlja preko scene.
+   Položaj teksta važi u oba moda: u '3d' je .pogl__in fiksan sloj preko canvas-a (sekcija je samo
+   razmak za skrol, visine iz mapa-skrola.md), a u 'static' je .pogl__in kadar od 100svh sa slikom
+   (static.css). Tekst nema ploču ni karticu i stoji na mirnoj strani kadra (dizajn.md, 4); ispod njega
+   je samo blaga lokalna senka za čitljivost (vidi „čitljivost preko kadra"). */
+
+.pogl__in { position: relative; }
+.kadar { display: none; }
+.tekst { position: absolute; z-index: var(--z-text); max-width: min(36rem, 90vw); }
+.dno { display: contents; }
+
+/* ---------- čitljivost preko kadra ----------
+   Dizajn traži mirnu stranu kadra; kad kadar to ne garantuje (06:00 preko svetlog izloga),
+   ispod teksta stoji blaga eliptična senka boje noći (dizajn.md: do 0,55, ploča nije dozvoljena).
+   Elipsa dodiruje ivice svog okvira tek kad je već providna, pa nema ivice ni oblika ploče.
+   Jačina: --scrim (0–1) po poglavlju. Boje samo iz tokena (--color-bg). */
+.pogl { --scrim: .4; }
+[data-pogl="1"], [data-pogl="6"], .futer { --scrim: .3; }
+[data-pogl="5"] { --scrim: .55; } /* izlog: 3D ga stišava, ovo je dovoljno za prigušen opis (#b8a690) */
+.tekst, .etikete, .futer__in > div:first-child {
+  --scrim-boja: color-mix(in srgb, var(--color-bg) calc(var(--scrim) * 100%), transparent);
+  text-shadow: 0 1px 2px color-mix(in srgb, var(--color-bg) 70%, transparent), 0 0 18px var(--scrim-boja);
+}
+.tekst::before, .etikete::before, .futer__in > div:first-child::before {
+  content: ""; position: absolute; z-index: -1; inset: -5rem -7rem; pointer-events: none;
+  background: radial-gradient(ellipse closest-side at 50% 50%,
+    var(--scrim-boja) 0%, var(--scrim-boja) 45%,
+    color-mix(in srgb, var(--scrim-boja) 50%, transparent) 72%, transparent 100%);
+  transition: opacity var(--dur-4) var(--ease-out);
+}
+.futer__in > div:first-child { position: relative; z-index: 0; }
+/* rub senke ide do 4rem van teksta; ne sme da napravi vodoravni skrol */
+.pogl__in, .futer { overflow-x: clip; }
+.sackerl, .sackerl * { text-shadow: none; }
+
+/* ---------- 1 · 04:00 Das Grätzl: levo dole ---------- */
+[data-pogl="1"] .tekst { left: var(--gutter); bottom: var(--space-9); }
+[data-pogl="1"] .display { max-width: 8.5ch; }
+.hint--dreh { position: absolute; z-index: var(--z-text); right: var(--gutter); bottom: calc(var(--space-9) + 6px); }
+.scrollhint { position: absolute; z-index: var(--z-text); left: 50%; bottom: var(--space-6); transform: translateX(-50%); }
+
+/* ---------- 2 · 04:30 Über die Dächer: desno, sredina ---------- */
+[data-pogl="2"] .tekst { right: var(--gutter); top: 50%; transform: translateY(-50%); max-width: 30rem; }
+
+/* ---------- 3 · 05:00 Der Anschnitt: levo gore na nebu (desno je svetli izlog, pa otvorena pekara);
+   „Klopf" na trotoaru levo od vrata, nikad preko stakla, i samo pre kriške ---------- */
+[data-pogl="3"] .tekst { left: var(--gutter); top: 180px; max-width: 30rem; }
+.hint--klopf {
+  position: absolute; z-index: var(--z-text); left: 47%; top: 80%;
+  transition: opacity var(--dur-3) var(--ease-out), visibility 0s linear 0s;
+}
+
+/* ---------- 4 · 05:15 Teig, Zeit, Ofen.: tri koraka (L, D, L) ---------- */
+.korak { position: absolute; inset: 0; }
+.korak--l .tekst { left: var(--gutter); top: 180px; max-width: 32rem; }
+.korak--d .tekst { right: var(--gutter); top: 180px; max-width: 30rem; }
+.stanica strong { font-weight: 620; color: var(--krume-testo); }
+
+/* ---------- 5 · 06:00 Brot des Tages: naslov levo na zidu, etikete desno na nebu ---------- */
+[data-pogl="5"] .tekst { left: var(--gutter); top: 250px; max-width: 15rem; }
+[data-pogl="5"] .copy { font-size: var(--fs-body); color: var(--color-text-muted); }
+
+.etikete {
+  position: absolute; z-index: var(--z-text); right: var(--gutter); top: 212px; width: min(380px, 34vw);
+  list-style: none; padding: 0; display: grid; gap: var(--space-5);
+}
+.etiketa {
+  display: grid; grid-template-columns: 1fr auto; column-gap: var(--space-4); align-items: baseline;
+  padding-left: var(--space-4); border-left: 1px solid var(--color-line);
+}
+.etiketa__zeit {
+  grid-column: 1 / -1; font-size: var(--fs-oven); font-weight: 600; font-variant-numeric: tabular-nums;
+  color: var(--krume-testo); letter-spacing: -.01em; line-height: 1.2; transition: color var(--dur-3) var(--ease-out);
+}
+.etiketa__zeit span { font-size: var(--fs-body); font-weight: 400; color: var(--color-text-muted); letter-spacing: 0; margin-right: 2px; }
+.etiketa h3 { font-size: var(--fs-h3); font-weight: 620; letter-spacing: -.015em; line-height: 1.2; font-variation-settings: "opsz" 32; }
+.etiketa__preis {
+  font-size: var(--fs-h3); font-weight: 560; font-variant-numeric: tabular-nums; white-space: nowrap;
+  transition: color var(--dur-3) var(--ease-out);
+}
+.etiketa__text { grid-column: 1 / -1; margin-top: var(--space-2); color: var(--color-text-muted); max-width: 30ch; }
+.etiketa[aria-current="true"] { border-left: 2px solid var(--color-accent); padding-left: calc(var(--space-4) - 1px); }
+.etiketa[aria-current="true"] :is(.etiketa__zeit, .etiketa__preis) { color: var(--color-accent); }
+.tacke { display: none; }
+
+/* linije od etikete do hleba (tačke šalje 3D, labels.js crta) */
+.linije { position: absolute; inset: 0; z-index: var(--z-text); width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+.linije g { opacity: 0; transition: opacity var(--dur-2) var(--ease-out); }
+.linije g.vidljiv { opacity: 1; }
+.linije path { fill: none; stroke-dasharray: 1; stroke-dashoffset: 1; }
+.linije.crtaj path { stroke-dashoffset: 0; transition: stroke-dashoffset var(--dur-4) var(--ease-out) var(--dur-3); }
+.linije .halo { stroke: var(--leader-halo); stroke-width: 3; }
+.linije .ln { stroke: var(--leader-line); stroke-width: 1; transition: stroke var(--dur-3) var(--ease-out); }
+.linije circle { fill: var(--color-bg); stroke: var(--leader-line); stroke-width: 1.5; transition: fill var(--dur-3), stroke var(--dur-3); }
+.linije g.on .ln { stroke: var(--color-accent); stroke-width: 1.5; }
+.linije g.on circle { fill: var(--color-accent); stroke: var(--color-accent); }
+
+/* ---------- 6 · 06:30 Das Grätzl wacht auf: levo; sav tekst u brašnu (jutarnje nebo) ---------- */
+[data-pogl="6"] .tekst { left: var(--gutter); top: 170px; max-width: 31rem; }
+[data-pogl="6"] .kicker { color: var(--color-text); }
+.zeiten { margin-top: var(--space-6); width: min(26rem, 100%); display: grid; grid-template-columns: 1fr auto; }
+.zeiten dt, .zeiten dd { padding: var(--space-3) 0; border-top: 1px solid var(--hours-rule); }
+.zeiten dd { text-align: right; font-variant-numeric: tabular-nums; font-weight: 600; }
+.zeiten .offen::before {
+  content: ""; display: inline-block; width: 8px; height: 8px; margin-right: 10px; vertical-align: 1px;
+  border-radius: 50%; background: var(--color-accent); box-shadow: var(--glow-window);
+}
+.adresse { width: min(26rem, 100%); padding-top: var(--space-3); border-top: 1px solid var(--hours-rule); }
+
+/* ---------- 7 · Vorbestellen: u toku stranice (nema pina) ---------- */
+[data-pogl="7"] .pogl__in { min-height: 100svh; padding: 150px var(--gutter) var(--space-9); display: flex; justify-content: flex-end; align-items: flex-start; }
+
+/* ---------- futer: večernji kadar, tekst levo na nebu ---------- */
+.futer { min-height: 100svh; display: flex; flex-direction: column; justify-content: flex-end; isolation: isolate; }
+.futer__in { position: relative; z-index: var(--z-text); display: grid; gap: var(--space-7); padding: 0 var(--gutter) var(--space-6); }
+.futer__gruss {
+  font-family: var(--font-serif); font-style: italic; font-weight: 400; font-size: clamp(3rem, 2rem + 4vw, 6.5rem);
+  line-height: .95; letter-spacing: -.02em; color: var(--krume-testo);
+}
+.futer__text { margin-top: var(--space-4); color: var(--color-text-muted); max-width: var(--measure); }
+.futer__links { display: flex; flex-wrap: wrap; gap: 0 var(--space-6); list-style: none; margin-top: var(--space-5); padding: 0; }
+.futer__links a { display: inline-flex; align-items: center; min-height: var(--tap); text-decoration: none; font-weight: var(--wght-ui); }
+.futer__links a:hover { text-decoration: underline; text-decoration-color: var(--color-accent); text-underline-offset: 6px; }
+.futer__legal {
+  display: flex; justify-content: space-between; gap: var(--space-4); padding-top: var(--space-4);
+  border-top: 1px solid var(--color-line); color: var(--color-text-muted);
+}
+.futer__legal strong { color: var(--color-text); font-weight: 620; }
+
+/* ======================================================================
+   '3d' mod: sekcije su razmak za skrol, tekst je fiksan sloj.
+   Ulaz: reč, naslov, tekst redom (--stagger), 720 ms, posle izlaza
+   prethodnog (480 ms). Dva poglavlja nikad nisu vidljiva zajedno.
+   ====================================================================== */
+.mode-3d [data-pogl="1"] { height: 100svh; }
+.mode-3d [data-pogl="2"] { height: 180svh; }
+.mode-3d [data-pogl="3"] { height: 180svh; }
+.mode-3d [data-pogl="4"] { height: 200svh; }
+.mode-3d [data-pogl="5"] { height: 130svh; }
+.mode-3d [data-pogl="6"] { height: 180svh; }
+
+.mode-3d .pogl:not([data-pogl="7"]) > .pogl__in {
+  position: fixed; inset: 0; pointer-events: none; visibility: hidden;
+  transition: visibility 0s linear var(--dur-3);
+}
+.mode-3d .pogl.is-on > .pogl__in { visibility: visible; transition: none; }
+.mode-3d .pogl__in :is(a, button, .etikete) { pointer-events: auto; }
+.mode-3d .futer { background: none; }
+
+.mode-3d .uz {
+  opacity: 0; transform: translateY(var(--rise));
+  transition: opacity var(--dur-3) var(--ease-in), transform var(--dur-3) var(--ease-in);
+}
+.mode-3d .is-off .uz { transform: translateY(-12px); }
+.mode-3d .is-on .uz {
+  opacity: 1; transform: none;
+  transition: opacity var(--dur-4) var(--ease-out) calc(var(--dur-3) + var(--i, 0) * var(--stagger)),
+              transform var(--dur-4) var(--ease-out) calc(var(--dur-3) + var(--i, 0) * var(--stagger));
+}
+/* senka ispod teksta prati tekst: nema je dok tekst nije u kadru */
+.mode-3d .pogl:not(.is-on) :is(.tekst, .etikete)::before,
+.mode-3d .pogl.is-skriven .tekst::before,
+.mode-3d .korak:not(.is-on) .tekst::before { opacity: 0; transition-duration: var(--dur-3); transition-timing-function: var(--ease-in); }
+/* 05:00: tekst se skloni dok se kriška izvlači */
+.mode-3d .pogl.is-skriven .uz { opacity: 0; transition: opacity var(--dur-3) var(--ease-in); }
+/* 05:15: koraci se samo pretapaju, bez pomeranja */
+.mode-3d .korak .uz { transform: none; }
+.mode-3d .korak:not(.is-on) .uz { opacity: 0; transition: opacity var(--dur-3) var(--ease-in); }
+/* opis ima samo aktivni hleb (ostali ostaju čitačima ekrana) */
+.mode-3d .etiketa:not([aria-current="true"]) .etiketa__text {
+  position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; margin: 0;
+}
+.mode-3d .pogl.klopf-off .hint--klopf {
+  opacity: 0; visibility: hidden; transition: opacity var(--dur-3) var(--ease-in), visibility 0s linear var(--dur-3);
+}
+.mode-3d .hint--dreh.je-skriven { opacity: 0; visibility: hidden; transition: opacity var(--dur-3), visibility 0s linear var(--dur-3); }
+
+/* ======================================================================
+   390 px: kadar je ceo ekran, tekst na dnu preko mirnog dela scene.
+   Reč + naslov 34 px; lead tek posle ~25svh skrola (.lead-on).
+   ====================================================================== */
+@media (max-width: 700px) {
+  :root { --dno-b: var(--space-5); }
+  .traka-on { --dno-b: calc(var(--tap-lg) + var(--space-3) * 2 + var(--space-5) + env(safe-area-inset-bottom)); }
+
+  .dno {
+    display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-4);
+    position: absolute; z-index: var(--z-text); left: var(--space-5); right: var(--space-5); bottom: var(--dno-b);
+    transition: bottom var(--dur-3) var(--ease-out);
+  }
+  .tekst, [data-pogl] .tekst, .korak--l .tekst, .korak--d .tekst {
+    position: relative; inset: auto; transform: none; max-width: none; width: 100%;
+  }
+  .etikete { text-shadow: none; }
+  .etikete::before { content: none; }
+  .display, .h2 { font-size: var(--fs-display-m); line-height: 1.04; }
+  [data-pogl="1"] .display { max-width: none; }
+  .kicker { margin-bottom: var(--space-2); }
+  .meta, .actions, .scrollhint { display: none; }
+  .hint--dreh { position: static; }
+  .hint--klopf { position: static; } /* iznad naslova, na tamnom trotoaru ispod izloga */
+
+  /* Brot: naslov, pa vodoravni niz etiketa sa scroll-snap, pa tačke */
+  .linije { display: none; }
+  [data-pogl="5"] .copy { display: none; }
+  .dno--brot { left: 0; right: 0; }
+  .dno--brot .tekst, .dno--brot .tacke { padding: 0 var(--space-5); }
+  .etikete {
+    position: static; width: 100%; display: flex; gap: var(--space-3); overflow-x: auto; overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory; scroll-padding-inline: var(--space-5); padding: 0 var(--space-5); scrollbar-width: none;
+  }
+  .etikete::-webkit-scrollbar { display: none; }
+  .etiketa {
+    flex: 0 0 calc(100% - 56px); scroll-snap-align: start; padding: var(--space-4);
+    border: 1px solid var(--color-line); border-radius: var(--radius-md); background: var(--color-bg);
+  }
+  .etiketa[aria-current="true"] { border: 1px solid rgba(232, 121, 43, .6); padding: var(--space-4); }
+  .tacke { display: flex; gap: 8px; }
+  .tacke i { width: 6px; height: 6px; border-radius: 3px; background: var(--color-line-strong); transition: width var(--dur-3) var(--ease-out), background-color var(--dur-3); }
+  .tacke i.on { width: 18px; background: var(--color-accent); }
+
+  /* 96 px: nazubljeni rub kese ne ulazi pod oznake lenjira */
+  [data-pogl="7"] .pogl__in { display: block; padding: 96px 0 0; min-height: 0; }
+
+  .futer__in { gap: var(--space-5); padding: 0 var(--space-5) calc(var(--space-6) + env(safe-area-inset-bottom)); }
+  .futer__links { flex-direction: column; gap: 0; margin-top: var(--space-3); }
+  .futer__legal { flex-direction: column; gap: var(--space-1); }
+
+  .mode-3d .pogl:not(.lead-on) .pozno { opacity: 0; transition: opacity var(--dur-3) var(--ease-in); }
+}

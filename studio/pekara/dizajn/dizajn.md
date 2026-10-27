@@ -115,7 +115,7 @@ Posao ovde je HTML sloj preko fiksnog Three.js canvas-a, ne 3D. Pozadina mockup-
 Maketa na dasci u mraku, i jedan topao prozor. HTML sloj se ponaša kao **natpis uz maketu u muzeju**: malo elemenata, tih, precizan, i nikad ne preuzima svetlo od scene.
 
 - **Jedan topli izvor:** žar `#e8792b` je jedina zasićena boja u UI-ju. Koristi se za dugme Vorbestellen, kazaljku sata, aktivni hleb i mali „prozor" u logotipu, i nigde više. Tako UI ponavlja pravilo scene: „sve svetlo kreće iz pekare".
-- **Tekst stoji na mirnom delu kadra** (nebo, tamni zid, prazna daska), bez senke i bez gradijent-mrlje. **Nema ploča ni kartica:** hlebovi dobijaju etikete sa tankom linijom do police, radno vreme je tipografska tabela na nebu.
+- **Tekst stoji na mirnom delu kadra** (nebo, tamni zid, prazna daska). Pomaže samo blaga eliptična senka (do 0,55) i senka slova, bez ploče i bez vidljive ivice. **Nema ploča ni kartica:** hlebovi dobijaju etikete sa tankom linijom do police, radno vreme je tipografska tabela na nebu.
 - **Dan je papir:** Sackerl forma je jedini predmet u UI-ju: svetla ploča boje brašna sa nazubljenim gornjim rubom papirne kese. Jutro zato deluje kao promena materijala, a ne kao novi „light mode".
 - Gustina: retka. Po kadru jedna reč poglavlja, jedan naslov, najviše dve rečenice. Vreme stoji samo u satu, ne ponavlja se u tekstu.
 
@@ -129,7 +129,7 @@ Uzeto (princip, ne kopija):
 - Kod pekara bez 3D (Sonoma Bakery, UND NY, [Awwwards elementi](https://www.awwwards.com/inspiration/transition-sonoma-bakery)) samo ton: mnogo prostora, kratke rečenice, cena kao deo tipografije.
 
 Izbegnuto kao izlizano:
-- Tamni gradijent ispod teksta („scrim"), glassmorphism kartice sa blur-om preko 3D-a, teški bloom preko svega (`trendovi.md`, Izbegavati).
+- Pravougaoni tamni gradijent ispod teksta („scrim" sa ivicom), glassmorphism kartice sa blur-om preko 3D-a, teški bloom preko svega (`trendovi.md`, Izbegavati).
 - Tekst kao 3D geometrija (La Revoltosa to radi; ovde bi pojeo čitljivost na telefonu i pristupačnost).
 - Krupni „hero brojevi", scroll-procenat u uglu, numerisane kartice (01–04) i eyebrow-i u sitnim verzalima sa razmakom i crticom. Umesto toga postoji pravi sat sa lenjirom 04–07, koji nosi značenje.
 - Mreža od 4 iste kartice za proizvode (šablon). Hleb je u vitrini, pa je etiketa uz njega.
@@ -212,9 +212,9 @@ Naslovi imaju `text-wrap: balance`. H1 na 1440 je namerno u tri reda (max 8.5ch)
 ## 4. Komponente
 
 ### Kako tekst stoji na sceni (najvažnije pravilo)
-- **Strana neba.** Za svako poglavlje kamera u 3D ostavlja jednu stranu kadra praznu (nebo ili tamna daska), i tekst ide tamo. Nema senke iza slova, scrima ni blura. Programer i 3D dogovaraju kadar, a ne obrnuto. U mockup-u: 04:00 levo (kuća desno od centra), 05:00 desno (kuća levo, uz lampu), 06:30 levo.
+- **Strana neba.** Za svako poglavlje kamera u 3D ostavlja jednu stranu kadra praznu (nebo ili tamna daska), i tekst ide tamo. Bez blura i bez pravougaonog scrima; dozvoljena je samo blaga eliptična senka (vidi ispod). Programer i 3D dogovaraju kadar, a ne obrnuto. U mockup-u: 04:00 levo (kuća desno od centra), 05:00 desno (kuća levo, uz lampu), 06:30 levo.
 - **Zabranjene zone:** osvetljen izlog, vrata, ulica ispred njih i glava ulične lampe. Tekst nikad ne prelazi preko toplog prozora: to je junak. Preko stakla smeju samo tanke linije do hleba (sa tamnim haloom).
-- **Bez ploča za sadržaj.** Jedini predmet je Sackerl forma. Hint-ovi su male pilule, a donja traka je deo navigacije.
+- **Bez ploča za sadržaj.** Jedini predmet je Sackerl forma. Hint-ovi su male pilule, a donja traka je deo navigacije. Blaga eliptična senka do 0,55 je dozvoljena, ploča nije.
 - Najveća širina pasusa je 34ch. Iznad naslova stoji samo reč poglavlja („Das Grätzl", „Der Anschnitt", „In der Auslage", „Das Grätzl wacht auf", „Vorbestellen"). Za čitač ekrana ispred nje ide skriveno vreme („vier Uhr. ").
 
 ### Sat 04:00 → 07:00
@@ -226,7 +226,7 @@ Naslovi imaju `text-wrap: balance`. H1 na 1440 je namerno u tri reda (max 8.5ch)
 ### Dugmad
 - **Primarno (žar):** `#e8792b` / tekst noć, pill (oblik zemičke), 44 px (u donjoj traci na 390 je 52 px, `btn-lg` 52 px). Hover `#f08a40`, active 1 px niže, fokus 2 px žar obris + 3 px razmak. Isključeno: `#3a3029` pozadina, tekst `#b8a690`, bez kursora.
 - **Ghost:** providno, ivica `#857462` 1 px, tekst brašno („Menü").
-- **Tekst-dugme „Ton an":** na desktopu stoji u navigaciji ispred Vorbestellen (prigušeno, 44 px visine), a na 390 je u meniju. Ovo je `<button aria-pressed>`, podrazumevano isključen.
+- **Zvuka nema** (odluka direktora, 27. 10. 2026): prekidač „Ton an" je uklonjen iz navigacije i menija.
 - **Dnevno (u formi):** noć na brašnu, puna širina forme, 52 px.
 - Na celoj stranici je jedno žar dugme u kadru. U formi je dugme tamno, da se Sackerl ne „takmiči" sa navigacijom.
 - Strelica je deo teksta (`→`, `aria-hidden`), bez ikonice.
@@ -235,7 +235,7 @@ Naslovi imaju `text-wrap: balance`. H1 na 1440 je namerno u tri reda (max 8.5ch)
 - Bez trake i pozadine: logotip levo, sat u centru, linkovi i Vorbestellen desno, sve direktno na nebu (koje je tamno u svakom kadru do 06:30; od 07:00 nav dobija punu `#201a15` traku, prelaz `--dur-5`).
 - Logotip: „Krume" u Bricolage 700 i mali žar pravougaonik 12×16, „jedini upaljen prozor".
 - Aktivni link: `aria-current="location"` + podvlaka u žaru.
-- **390:** logotip · sat · „Menü" (44 px). Meni je puna ploča `#201a15` preko ekrana, sa linkovima od 56 px i prekidačem „Ton an" na dnu. **Donja traka** sadrži samo „Für morgen vorbestellen" (52 px, cela širina). **Pojavljuje se tek kad hero kadar izađe** (prelaz `--dur-3`, translateY 100% → 0, bez pokreta sa reduced motion) i sakrije se kad je forma u vidu, da ne bude dva ista dugmeta. Koristi `env(safe-area-inset-bottom)`.
+- **390:** logotip · sat · „Menü" (44 px). Meni je puna ploča `#201a15` preko ekrana, sa linkovima od 56 px. **Donja traka** sadrži samo „Für morgen vorbestellen" (52 px, cela širina). **Pojavljuje se tek kad hero kadar izađe** (prelaz `--dur-3`, translateY 100% → 0, bez pokreta sa reduced motion) i sakrije se kad je forma u vidu, da ne bude dva ista dugmeta. Koristi `env(safe-area-inset-bottom)`.
 
 ### Hint-ovi
 - „← Dreh das Grätzl →" je mala puna pilula (površina, 16 px) u donjem desnom uglu kadra 04:00 (na 390 iznad naslova, ispod makete). Nestaje posle prvog povlačenja. Bez WebGL-a i sa reduced motion se ne prikazuje.
@@ -281,7 +281,7 @@ Futer je **večernji kadar** (7b iz mape): ista maketa, nebo palo u veče, svetl
 ## 6. Dubina
 
 Slojevi: canvas (0) · tekst, etikete i kesa (10) · nav (50) · donja traka (60) · skip-link (100).
-Senke postoje samo na hint-pilulama (`--shadow-plate`) i na kesi (`--shadow-bag`). Tekst preko scene nema senku. Sjaj (`--glow-window`) imaju samo stvari koje „gore": logo-prozor, tačka sata i tačka „otvoreno".
+Senke postoje samo na hint-pilulama (`--shadow-plate`) i na kesi (`--shadow-bag`). Tekst preko scene ima samo senku slova i blagu eliptičnu senku (do 0,55). Sjaj (`--glow-window`) imaju samo stvari koje „gore": logo-prozor, tačka sata i tačka „otvoreno".
 
 ## 7. Oblici
 
@@ -295,7 +295,7 @@ Sme:
 - Prave reči iz tekstovi.md. Austrijski izrazi ostaju.
 
 Ne sme:
-- Gradijent, scrim ili blur iza teksta da bi se „spasila" čitljivost. Pomera se kamera.
+- Ploča, pravougaoni scrim ili blur iza teksta da bi se „spasila" čitljivost. Prvo se pomera kamera, a blaga eliptična senka je samo dopuna.
 - Ploče i kartice za sadržaj, numeracija 01–04, sitni verzali sa razmakom.
 - Tekst za čitanje manji od 16 px.
 - Tekst preko osvetljenog izloga, vrata ili ulice.
@@ -312,7 +312,7 @@ Kao u `mockup-1440.png`: tekst u mirnoj strani kadra, nav bez trake, etikete hle
 ### 390 px (nije umanjen desktop)
 - **Svaki kadar je ceo ekran (100svh)**, a canvas je fiksan preko cele visine. Kamera drži ugaonu kuću i topli prozor u gornjih ~60%, a donji deo kadra je mirna praznina (tamna daska, ulica koja se gasi, nebo). Tamo leži tekst. Nema „slika gore, tamni blok dole".
 - Na dnu stoje samo reč poglavlja i naslov 34 px (lh 1.04). Lead dolazi tek na skrol (vidi prelaze). Naslovi do 32 znaka staju u 2 reda.
-- Dugmad u tekstu se sklanjaju. CTA je u donjoj traci (52 px), koja se pojavljuje tek posle hero kadra. „Ton an" je u meniju.
+- Dugmad u tekstu se sklanjaju. CTA je u donjoj traci (52 px), koja se pojavljuje tek posle hero kadra.
 - Brot des Tages: vodoravni niz sa jednom etiketom i scroll-snap. 06:30: tabela na nebu ispod naslova, a kesa preko cele širine posle kadra. Futer: kuća gore, tekst ispod.
 - Dodirne površine su najmanje 44 px: linkovi u nav-u i futeru, stepper, hint-ovi, „Menü", tačke niza (područje 44 px oko tačke).
 - Ivice teksta su 20 px. Bez hover-zavisnosti.

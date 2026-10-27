@@ -1,0 +1,70 @@
+/* Krume · „Dein Sackerl für morgen": jedini predmet u UI-ju, papirna kesa boje brašna
+   sa nazubljenim gornjim rubom. Dnevni sloj (--day-*). */
+
+.sackerl {
+  position: relative; z-index: var(--z-text); width: min(440px, 100%); margin-top: 12px;
+  padding: var(--space-7) var(--space-6) var(--space-6); border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  background: var(--day-bg); color: var(--day-text); box-shadow: var(--shadow-bag);
+  font-variation-settings: "opsz" var(--opsz-text);
+}
+.sackerl::before {
+  content: ""; position: absolute; left: 0; right: 0; top: -11px; height: 12px; background: var(--day-bg);
+  clip-path: polygon(0 100%, 0 40%, 3% 0, 6% 40%, 9% 0, 12% 40%, 15% 0, 18% 40%, 21% 0, 24% 40%, 27% 0, 30% 40%, 33% 0, 36% 40%, 39% 0, 42% 40%, 45% 0, 48% 40%, 51% 0, 54% 40%, 57% 0, 60% 40%, 63% 0, 66% 40%, 69% 0, 72% 40%, 75% 0, 78% 40%, 81% 0, 84% 40%, 87% 0, 90% 40%, 93% 0, 96% 40%, 99% 0, 100% 30%, 100% 100%);
+}
+.sackerl .kicker { color: var(--day-text-muted); }
+.sackerl .h2 { font-size: clamp(1.875rem, 1.5rem + 1.2vw, 2.5rem); padding-right: 7rem; }
+.sackerl .copy { margin-top: var(--space-3); font-size: var(--fs-body); color: var(--day-text-muted); }
+.sackerl :where(a, button, input, select):focus-visible { outline-color: var(--day-accent); }
+
+.pecat {
+  position: absolute; top: var(--space-5); right: var(--space-5); transform: rotate(6deg); padding: 4px 10px;
+  border: 1.5px solid var(--day-accent); border-radius: var(--radius-sm); color: var(--day-accent);
+  font-size: 12px; font-weight: 680; letter-spacing: .08em; text-transform: uppercase; white-space: nowrap;
+}
+.pecat.je-reserviert { background: var(--day-accent); color: var(--day-bg); }
+
+.sackerl__felder { display: grid; gap: var(--space-4); margin-top: var(--space-5); }
+.red { display: grid; grid-template-columns: 1fr 150px; gap: var(--space-4); align-items: start; }
+.polje { display: grid; gap: 6px; min-width: 0; }
+.polje label { font-weight: var(--wght-ui); }
+.polje > input, .polje select, .stepper {
+  width: 100%; min-height: 48px; border-radius: var(--radius-sm); border: 1px solid var(--day-line);
+  background: #fffdf8; color: var(--day-text); font-size: 1rem; padding: 0 var(--space-4);
+  transition: border-color var(--dur-2) var(--ease-out), box-shadow var(--dur-2) var(--ease-out);
+}
+.polje select {
+  appearance: none; padding-right: 40px; cursor: pointer;
+  background-image: linear-gradient(45deg, transparent 50%, var(--day-text) 50%), linear-gradient(135deg, var(--day-text) 50%, transparent 50%);
+  background-position: calc(100% - 20px) 21px, calc(100% - 15px) 21px; background-size: 5px 5px; background-repeat: no-repeat;
+}
+.polje > input::placeholder { color: #8a7d6c; opacity: 1; }
+.polje > input:focus-visible, .polje select:focus-visible, .stepper:focus-within {
+  outline: none; border-color: var(--day-accent); box-shadow: 0 0 0 3px rgba(122, 74, 36, .18);
+}
+.stepper { display: grid; grid-template-columns: 44px 1fr 44px; align-items: center; padding: 0; }
+.stepper button {
+  height: 44px; border: 0; border-radius: var(--radius-sm); background: transparent; color: var(--day-text);
+  font-size: 1.25rem; cursor: pointer;
+}
+.stepper button:hover { background: rgba(122, 74, 36, .08); }
+.stepper button:focus-visible { outline: 2px solid var(--day-accent); outline-offset: -2px; }
+.stepper input {
+  width: 100%; min-width: 0; height: 44px; border: 0; background: transparent; color: inherit; text-align: center;
+  font-weight: 620; font-variant-numeric: tabular-nums; appearance: textfield; -moz-appearance: textfield;
+}
+.stepper input:focus { outline: none; }
+.stepper input::-webkit-inner-spin-button, .stepper input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+
+.polje [aria-invalid="true"], .stepper:has([aria-invalid="true"]) { border-color: var(--day-error); }
+.fehler { color: var(--day-error); font-weight: var(--wght-ui); }
+
+.btn-dan { width: 100%; margin-top: var(--space-2); background: var(--day-text); color: var(--day-bg); }
+.btn-dan:hover { background: #2b241f; }
+.danke:empty { display: none; }
+.danke { font-weight: var(--wght-ui); }
+.napomena { color: var(--day-text-muted); }
+
+@media (max-width: 700px) {
+  .sackerl { width: 100%; margin-top: 12px; border-radius: 0; padding: var(--space-7) var(--space-5); }
+  .red { grid-template-columns: 1fr; }
+}

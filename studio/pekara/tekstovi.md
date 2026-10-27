@@ -81,7 +81,7 @@ Tekstopisac, 27. 10. 2026. Izvori činjenica: `studio/pekara/brief.md`, `studio/
 | Kaisersemmel | Handgeschlagen, fünf Schwünge, resch bis Mittag. | aus dem Ofen um 5:50 | € 0,70 |
 | Mohnwecken | Viel Mohn, wenig Gerede. Am besten mit Butter. | aus dem Ofen um 6:10 | € 3,20 |
 | Laugenbrezel | Glänzend, grobes Salz, innen weich wie am ersten Tag. | aus dem Ofen um 6:25 | € 1,40 |
-| Roggenlaib | Dunkle Kruste, saftige Krume, hält eine ganze Woche. | aus dem Ofen um 6:40 | € 5,90 |
+| Roggenlaib | Dunkle Kruste, saftige Krume, hält eine ganze Woche. | aus dem Ofen um 6:00 | € 5,90 |
 
 **Breads (EN):**
 | Name | Text | Time | Price |
@@ -89,7 +89,9 @@ Tekstopisac, 27. 10. 2026. Izvori činjenica: `studio/pekara/brief.md`, `studio/
 | Kaisersemmel | Shaped by hand, five folds, crisp till noon. | out of the oven at 5:50 | € 0.70 |
 | Mohnwecken (poppy seed loaf) | Lots of poppy seed, no fuss. Best with butter. | out of the oven at 6:10 | € 3.20 |
 | Laugenbrezel (lye pretzel) | Glossy, coarse salt, soft inside like on day one. | out of the oven at 6:25 | € 1.40 |
-| Roggenlaib (rye loaf) | Dark crust, moist crumb, keeps for a whole week. | out of the oven at 6:40 | € 5.90 |
+| Roggenlaib (rye loaf) | Dark crust, moist crumb, keeps for a whole week. | out of the oven at 6:00 | € 5.90 |
+
+**Napomena (27. 10. 2026, krug popravki):** Roggenlaib je bio „aus dem Ofen um 6:40", a to je posle otvaranja u 6:30. Sada je 6:00 (i u kadru 06:00 hleb je već na pultu). Redosled etiketa prati hlebove na pultu u 3D, pa vremena ne idu po redu.
 
 **Button:** keiner (dugme je u poglavlju 6)
 
@@ -131,6 +133,7 @@ Kontrola nema vidljivo dugme, pa jedan kratak nagoveštaj sme da postoji. Prikaz
 **Hinweis (DE):** ← Dreh das Grätzl →   **(EN):** ← Turn the block →
 **Hinweis am Fenster (DE):** Klopf ans Fenster.   **(EN):** Knock on the window.   `[SMER]`
   Prikazuje se jednom, uz topli prozor, tek kad je kamera blizu (poglavlje 3). Nestaje posle prvog tapa.
+**Napomena (27. 10. 2026, odluka direktora):** zvuka nema i neće ga biti. Prekidač „Ton an" je uklonjen iz nav-a (1440) i iz menija (390), a statusna poruka „Die Türglocke läutet." se ne koristi. Redovi ispod ostaju samo kao arhiva.
 **Ton-Schalter (DE):** Ton an / Ton aus   **(EN):** Sound on / Sound off
 **Ton-Schalter aria-label (DE):** Geräusche der Bäckerei, Türglocke   **(EN):** Bakery sounds, door bell
   Kao `<button aria-pressed="false">`, podrazumevano isključen (smer). Tekst na dugmetu se menja, aria-label ostaje isti.

@@ -6,33 +6,35 @@
 <title>Krume · Bäckerei in Wien (Konzept)</title>
 <meta name="description" content="Krume backt, bevor Wien aufwacht: Kaisersemmel, Mohnwecken, Laugenbrezel und Roggenlaib, jeden Morgen frisch aus dem Ofen. Ein Konzept von Nemi Studio.">
 <meta name="theme-color" content="#14110f">
-<link rel="preload" href="assets/fonts/fraunces-latin-full-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/bricolage-latin-var.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="flap.css">
 </head>
 <body>
 <a class="skip" href="#inhalt">Zum Inhalt</a>
 
-<header class="nav" id="nav">
+<header class="nav">
   <a class="nav__brand" href="#top" aria-label="Krume, zum Anfang">Krume</a>
-  <span class="nav__clock" aria-hidden="true"><span data-clock>04:00</span></span>
+  <nav class="nav__links" aria-label="Seiten">
+    <a href="#handwerk">Handwerk</a>
+    <a href="#brot">Brot des Tages</a>
+    <a href="#auf">Öffnungszeiten</a>
+  </nav>
+  <span class="nav__clock" aria-hidden="true" data-clock>04:00</span>
   <a class="nav__cta" href="#vorbestellen">Vorbestellen</a>
 </header>
 
 <main id="inhalt">
-  <!-- 04:00 → 07:00: der Bildlauf ist die Nacht in der Backstube -->
+  <!-- 04:00 → 07:00: der Bildlauf ist die Nacht in der Backstube, am Ende geht der Ofen auf -->
   <section class="hero" id="top" aria-labelledby="hero-title">
     <div class="hero__stage">
       <canvas class="hero__mehl" aria-hidden="true"></canvas>
-      <p class="hero__time" aria-hidden="true"><span data-clock>04:00</span></p>
-
-      <div class="hero__oven" aria-hidden="true">
-        <div class="hero__glow"></div>
-        <img class="hero__bread" src="assets/img/morgen-700.webp" srcset="assets/img/morgen-700.webp 700w, assets/img/morgen-1400.webp 1400w" sizes="(max-width: 700px) 80vw, 40vw" alt="" width="1400" height="2100">
-        <div class="hero__door"><span class="hero__handle"></span></div>
-      </div>
 
       <div class="hero__text">
-        <h1 id="hero-title">Bevor Wien aufwacht, <em>backen wir.</em></h1>
+        <p class="hero__time" aria-hidden="true" data-clock>04:00</p>
+        <h1 id="hero-title">Bevor Wien aufwacht, backen wir.</h1>
+        <p class="hero__lead">Krume ist eine Bäckerei in Neubau. Sauerteigbrot und Semmeln, jeden Morgen ab 6:30 frisch aus dem Ofen.</p>
+        <a class="knopf" href="#vorbestellen">Für morgen vorbestellen</a>
         <ol class="hero__steps">
           <li data-from="0"><time>04:00</time> Der Teig ruht.</li>
           <li data-from=".25"><time>05:30</time> Der Ofen glüht.</li>
@@ -40,80 +42,122 @@
           <li data-from=".62"><time>07:00</time> Wir sperren auf.</li>
         </ol>
       </div>
-      <p class="hero__hint" aria-hidden="true">Scrollen, und der Morgen beginnt</p>
+
+      <div class="hero__ofen" aria-hidden="true">
+        <div class="ofen">
+          <div class="ofen__mund">
+            <div class="ofen__glut"></div>
+            <img class="ofen__brot" src="assets/img/morgen-700.webp" srcset="assets/img/morgen-700.webp 700w, assets/img/morgen-1400.webp 1400w" sizes="(max-width: 800px) 70vw, 34vw" alt="" width="1400" height="2100">
+          </div>
+          <div class="ofen__tuer">
+            <div class="ofen__tuer-vorn"><span class="ofen__fenster"></span><span class="ofen__griff"></span></div>
+            <div class="ofen__tuer-innen"></div>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
   <section class="handwerk" id="handwerk" aria-labelledby="handwerk-title">
-    <h2 id="handwerk-title">Teig. Zeit. <em>Ofen.</em></h2>
-    <div class="handwerk__grid">
-      <article class="schritt">
-        <img src="assets/img/teig-700.webp" srcset="assets/img/teig-700.webp 700w, assets/img/teig-1400.webp 1400w" sizes="(max-width: 800px) 92vw, 30vw" alt="Ein Teigballen auf einem bemehlten Tisch, Mehlstaub in der Luft" width="1400" height="934" loading="lazy">
-        <p class="schritt__nr">01</p>
-        <h3>Teig</h3>
-        <p>Mehl, Wasser, Salz und Sauerteig. Mehr braucht ein gutes Brot nicht, dafür jeden Tag die gleiche Sorgfalt.</p>
-      </article>
-      <article class="schritt">
-        <img src="assets/img/mehl-700.webp" srcset="assets/img/mehl-700.webp 700w, assets/img/mehl-1400.webp 1400w" sizes="(max-width: 800px) 92vw, 30vw" alt="Hände, von denen Mehl im warmen Licht staubt" width="1400" height="934" loading="lazy">
-        <p class="schritt__nr">02</p>
-        <h3>Zeit</h3>
-        <p>Unser Sauerteig reift über Nacht. Zeit ist die Zutat, die man am Ende schmeckt.</p>
-      </article>
-      <article class="schritt">
-        <img src="assets/img/ofen-700.webp" srcset="assets/img/ofen-700.webp 700w, assets/img/ofen-1400.webp 1400w" sizes="(max-width: 800px) 92vw, 30vw" alt="Ein Wagen voller frisch gebackener Laibe in der Backstube" width="1400" height="2100" loading="lazy">
-        <p class="schritt__nr">03</p>
-        <h3>Ofen</h3>
-        <p>Um halb sechs geht der erste Schub hinein. Wenn wir aufsperren, ist die Kruste noch warm.</p>
-      </article>
+    <div class="handwerk__kopf">
+      <h2 id="handwerk-title" data-auf>Teig, Zeit, Ofen.</h2>
+      <p data-auf>Mehr braucht ein gutes Brot nicht. Dafür machen wir es jede Nacht gleich sorgfältig, von Hand, in einer Backstube mit einem Ofen.</p>
+    </div>
+    <dl class="fakten">
+      <div data-auf><dt>4 Zutaten</dt><dd>Mehl, Wasser, Salz und Sauerteig</dd></div>
+      <div data-auf><dt>18 Stunden</dt><dd>reift der Teig, bevor er gebacken wird</dd></div>
+      <div data-auf><dt>5:30</dt><dd>geht der erste Schub in den Ofen</dd></div>
+      <div data-auf><dt>250 °C</dt><dd>braucht die Kruste, damit sie singt</dd></div>
+    </dl>
+    <div class="handwerk__bilder">
+      <figure class="schritt">
+        <div class="schritt__rahmen"><img src="assets/img/teig-700.webp" srcset="assets/img/teig-700.webp 700w, assets/img/teig-1400.webp 1400w" sizes="(max-width: 800px) 92vw, 30vw" alt="Ein Teigballen auf einem bemehlten Tisch, Mehlstaub in der Luft" width="1400" height="934" loading="lazy"></div>
+        <figcaption><h3>Teig</h3><p>Wir mischen am Nachmittag, mit der Hand und mit Geduld.</p></figcaption>
+      </figure>
+      <figure class="schritt">
+        <div class="schritt__rahmen"><img src="assets/img/mehl-700.webp" srcset="assets/img/mehl-700.webp 700w, assets/img/mehl-1400.webp 1400w" sizes="(max-width: 800px) 92vw, 30vw" alt="Hände, von denen Mehl im warmen Licht staubt" width="1400" height="934" loading="lazy"></div>
+        <figcaption><h3>Zeit</h3><p>Der Sauerteig reift über Nacht. Zeit ist die Zutat, die man am Ende schmeckt.</p></figcaption>
+      </figure>
+      <figure class="schritt">
+        <div class="schritt__rahmen"><img src="assets/img/ofen-700.webp" srcset="assets/img/ofen-700.webp 700w, assets/img/ofen-1400.webp 1400w" sizes="(max-width: 800px) 92vw, 30vw" alt="Ein Wagen voller frisch gebackener Laibe in der Backstube" width="1400" height="2100" loading="lazy"></div>
+        <figcaption><h3>Ofen</h3><p>Wenn wir um halb sieben aufsperren, ist die Kruste noch warm.</p></figcaption>
+      </figure>
     </div>
   </section>
 
   <section class="brot" id="brot" aria-labelledby="brot-title">
     <div class="brot__kopf">
-      <h2 id="brot-title">Brot des <em>Tages</em></h2>
-      <p>Was um sieben in der Vitrine liegt. Was aus ist, ist aus, morgen backen wir wieder.</p>
+      <h2 id="brot-title" data-auf>Brot des Tages</h2>
+      <p data-auf>Was um sieben in der Vitrine liegt. Was aus ist, ist aus, morgen backen wir wieder.</p>
     </div>
-    <ul class="brot__liste">
-      <li class="laib">
-        <img src="assets/img/semmel-700.webp" srcset="assets/img/semmel-700.webp 700w, assets/img/semmel-1400.webp 1400w" sizes="(max-width: 800px) 92vw, 24vw" alt="Ein Korb mit Semmeln und Weckerln auf dunklem Grund" width="1400" height="934" loading="lazy">
-        <h3>Kaisersemmel</h3>
-        <p>Handgeschlagen, fünf Schwünge, resch bis Mittag.</p>
-        <p class="laib__zeit">aus dem Ofen 5:50</p>
-      </li>
-      <li class="laib">
-        <img src="assets/img/mohn-700.webp" srcset="assets/img/mohn-700.webp 700w, assets/img/mohn-1400.webp 1400w" sizes="(max-width: 800px) 92vw, 24vw" alt="Ein Wecken mit Mohn und Sesam auf einem Holzbrett" width="1400" height="2098" loading="lazy">
-        <h3>Mohnwecken</h3>
-        <p>Viel Mohn, wenig Gerede. Am besten mit Butter.</p>
-        <p class="laib__zeit">aus dem Ofen 6:10</p>
-      </li>
-      <li class="laib">
-        <img src="assets/img/salz-700.webp" srcset="assets/img/salz-700.webp 700w, assets/img/salz-1400.webp 1400w" sizes="(max-width: 800px) 92vw, 24vw" alt="Grobes Salz rieselt auf zwei Laugenbrezeln" width="1400" height="1858" loading="lazy">
-        <h3>Laugenbrezel</h3>
-        <p>Glänzend, grobes Salz, innen weich wie am ersten Tag.</p>
-        <p class="laib__zeit">aus dem Ofen 6:25</p>
-      </li>
-      <li class="laib">
-        <img src="assets/img/roggen-700.webp" srcset="assets/img/roggen-700.webp 700w, assets/img/roggen-1400.webp 1400w" sizes="(max-width: 800px) 92vw, 24vw" alt="Ein angeschnittener Roggenlaib auf schwarzem Grund" width="1400" height="2100" loading="lazy">
-        <h3>Roggenlaib</h3>
-        <p>Dunkle Kruste, saftige Krume, hält eine ganze Woche.</p>
-        <p class="laib__zeit">aus dem Ofen 6:40</p>
-      </li>
-    </ul>
+    <div class="brot__index">
+      <ul class="brot__liste">
+        <li class="laib" data-bild="0">
+          <button class="laib__zeile" type="button" aria-pressed="true">
+            <span class="laib__name">Kaisersemmel</span>
+            <span class="laib__text">Handgeschlagen, fünf Schwünge, resch bis Mittag.</span>
+            <span class="laib__zeit">aus dem Ofen um 5:50</span>
+            <span class="laib__preis">€ 0,70</span>
+          </button>
+          <img class="laib__bild" src="assets/img/semmel-700.webp" alt="Ein Korb mit Semmeln und Weckerln auf dunklem Grund" width="1400" height="934" loading="lazy">
+        </li>
+        <li class="laib" data-bild="1">
+          <button class="laib__zeile" type="button" aria-pressed="false">
+            <span class="laib__name">Mohnwecken</span>
+            <span class="laib__text">Viel Mohn, wenig Gerede. Am besten mit Butter.</span>
+            <span class="laib__zeit">aus dem Ofen um 6:10</span>
+            <span class="laib__preis">€ 3,20</span>
+          </button>
+          <img class="laib__bild" src="assets/img/mohn-700.webp" alt="Ein Wecken mit Mohn und Sesam auf einem Holzbrett" width="1400" height="2098" loading="lazy">
+        </li>
+        <li class="laib" data-bild="2">
+          <button class="laib__zeile" type="button" aria-pressed="false">
+            <span class="laib__name">Laugenbrezel</span>
+            <span class="laib__text">Glänzend, grobes Salz, innen weich wie am ersten Tag.</span>
+            <span class="laib__zeit">aus dem Ofen um 6:25</span>
+            <span class="laib__preis">€ 1,40</span>
+          </button>
+          <img class="laib__bild" src="assets/img/salz-700.webp" alt="Grobes Salz rieselt auf zwei Laugenbrezeln" width="1400" height="1858" loading="lazy">
+        </li>
+        <li class="laib" data-bild="3">
+          <button class="laib__zeile" type="button" aria-pressed="false">
+            <span class="laib__name">Roggenlaib</span>
+            <span class="laib__text">Dunkle Kruste, saftige Krume, hält eine ganze Woche.</span>
+            <span class="laib__zeit">aus dem Ofen um 6:40</span>
+            <span class="laib__preis">€ 5,90</span>
+          </button>
+          <img class="laib__bild" src="assets/img/roggen-700.webp" alt="Ein angeschnittener Roggenlaib auf schwarzem Grund" width="1400" height="2100" loading="lazy">
+        </li>
+      </ul>
+      <div class="brot__vitrine" aria-hidden="true">
+        <img class="an" src="assets/img/semmel-1400.webp" alt="" width="1400" height="934" loading="lazy">
+        <img src="assets/img/mohn-1400.webp" alt="" width="1400" height="2098" loading="lazy">
+        <img src="assets/img/salz-1400.webp" alt="" width="1400" height="1858" loading="lazy">
+        <img src="assets/img/roggen-1400.webp" alt="" width="1400" height="2100" loading="lazy">
+      </div>
+    </div>
   </section>
 
-  <section class="auf" id="vorbestellen" aria-labelledby="auf-title">
-    <p class="auf__zeit" aria-hidden="true">07:00</p>
-    <h2 id="auf-title">Wir sperren <em>auf.</em></h2>
-    <div class="auf__grid">
-      <dl class="auf__zeiten">
-        <div><dt>Di – Sa</dt><dd>6:30 – 14:00</dd></div>
-        <div><dt>So</dt><dd>7:00 – 11:00</dd></div>
-        <div><dt>Mo</dt><dd>Ruhetag</dd></div>
-        <div><dt>Wo</dt><dd>Wien, 7. Bezirk</dd></div>
+  <section class="auf" id="auf" aria-labelledby="auf-title">
+    <img class="auf__foto" src="assets/img/ofen-1400.webp" srcset="assets/img/ofen-700.webp 700w, assets/img/ofen-1400.webp 1400w" sizes="100vw" alt="Ein Wagen voller frisch gebackener Laibe in der Backstube" width="1400" height="2100" loading="lazy">
+    <div class="karte">
+      <h2 id="auf-title">Wir sperren auf.</h2>
+      <div class="flap" data-flap-from="04:00" data-flap-to="07:00" aria-hidden="true"></div>
+      <p class="karte__adresse">Neubau, 1070 Wien<br>fünf Minuten vom Siebensternplatz</p>
+      <dl class="karte__zeiten">
+        <div><dt>Dienstag bis Samstag</dt><dd>6:30 – 14:00</dd></div>
+        <div><dt>Sonntag</dt><dd>7:00 – 11:00</dd></div>
+        <div><dt>Montag</dt><dd>Ruhetag</dd></div>
       </dl>
-      <form class="vor" id="vorForm" novalidate>
-        <h3>Vorbestellen</h3>
-        <p>Bis 18 Uhr bestellen, am nächsten Morgen abholen.</p>
+      <a class="knopf knopf--breit" href="#vorbestellen">Für morgen vorbestellen</a>
+    </div>
+  </section>
+
+  <section class="vor" id="vorbestellen" aria-labelledby="vor-title">
+    <form class="vor__form" id="vorForm" novalidate>
+      <h2 id="vor-title" data-auf>Dein Sackerl für morgen</h2>
+      <p data-auf>Bis 18 Uhr bestellen, am nächsten Morgen ab 6:30 abholen. Wir schreiben deinen Namen drauf.</p>
+      <div class="vor__felder" data-auf>
         <label for="vor-brot">Brot</label>
         <select id="vor-brot" name="brot">
           <option>Kaisersemmel</option>
@@ -124,19 +168,52 @@
         <label for="vor-menge">Stück</label>
         <input id="vor-menge" name="menge" type="number" inputmode="numeric" min="1" max="40" value="4">
         <label for="vor-name">Name</label>
-        <input id="vor-name" name="name" type="text" autocomplete="name" placeholder="z. B. Anna" required>
-        <button type="submit">Für morgen reservieren</button>
+        <input id="vor-name" name="name" type="text" autocomplete="given-name" placeholder="z. B. Anna" maxlength="24" required>
+        <button class="knopf" type="submit">Für morgen reservieren</button>
         <p class="vor__danke" role="status" aria-live="polite"></p>
-      </form>
+      </div>
+    </form>
+
+    <!-- das Sackerl: ein Papiersack in 3D, der Stempel zeigt, was im Formular steht -->
+    <div class="sack" aria-hidden="true">
+      <div class="sack__koerper">
+        <div class="sack__seite sack__vorn">
+          <div class="sack__stempel">
+            <span class="sack__marke">Krume</span>
+            <span class="sack__name" data-sack="name">Für dich</span>
+            <span class="sack__inhalt" data-sack="inhalt">4 × Kaisersemmel</span>
+            <span class="sack__zeit">morgen ab 6:30</span>
+          </div>
+          <span class="sack__reserviert">Reserviert</span>
+        </div>
+        <div class="sack__seite sack__hinten"></div>
+        <div class="sack__seite sack__links"></div>
+        <div class="sack__seite sack__rechts"></div>
+        <div class="sack__lasche"></div>
+      </div>
     </div>
   </section>
 </main>
 
 <footer class="fuss">
-  <p><strong>Krume</strong> · Bäckerei in Wien</p>
-  <p>Konzept von Nemi Studio. Krume ist ausgedacht, Fotos von Unsplash als Platzhalter.</p>
+  <svg class="fuss__rand" viewBox="0 0 240 12" preserveAspectRatio="none" aria-hidden="true"><path d="M0 12V6l5-6 5 6 5-6 5 6 5-6 5 6 5-6 5 6 5-6 5 6 5-6 5 6 5-6 5 6 5-6 5 6 5-6 5 6 5-6 5 6 5-6 5 6 5-6 5 6 5-6 5 6 5-6 5 6 5-6 5 6 5-6 5 6 5-6 5 6 5-6 5 6 5-6 5 6 5-6 5 6 5-6 5 6 5-6 5 6 5-6 5 6 5-6 5 6 5-6 5 6 5-6 5 6 5-6 5 6 5-6 5 6 5-6 5 6 5-6 5 6 5-6 5 6 5-6 5 6 5-6 5 6 5-6 5 6 5-6 5 6 5-6 5 6 5-6 5 6 5-6 5 6 5-6 5 6 5-6 5 6V12z"/></svg>
+  <div class="fuss__blatt">
+    <div class="fuss__gruss">
+      <h2>Bis morgen früh.</h2>
+      <p>Um vier gehen bei uns die Lichter an. Um halb sieben sperren wir auf, und das erste Blech ist noch warm.</p>
+    </div>
+    <div class="fuss__adresse">
+      <img class="fuss__marke" src="assets/img/semmel-700.webp" alt="" width="1400" height="934" loading="lazy">
+      <a href="#vorbestellen">Vorbestellen</a>
+      <a href="#brot">Brot des Tages</a>
+      <a href="#auf">Öffnungszeiten</a>
+      <a href="#top">Zurück zum Anfang</a>
+    </div>
+    <p class="fuss__impressum"><strong>Krume</strong> ist ein Konzept von Nemi Studio, die Bäckerei ist ausgedacht. Fotos von Unsplash: Maria Orlova, Duncan Kidd, Austin Ban, Maite Paternain, Mae Mu, Diego Arenas de Rodrigo, Alexandra Dobrin, sehoon ye.</p>
+  </div>
 </footer>
 
+<script src="flap.js" defer></script>
 <script src="app.js" defer></script>
 </body>
 </html>

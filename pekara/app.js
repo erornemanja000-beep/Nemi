@@ -3,12 +3,13 @@
   const root = document.documentElement;
   root.classList.add('js');
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const feinerZeiger = matchMedia('(hover: hover) and (pointer: fine)').matches;
 
   const hero = document.querySelector('.hero');
-  const oven = document.querySelector('.hero__oven');
+  const ofenBox = document.querySelector('.hero__ofen');
+  const ofen = document.querySelector('.ofen');
   const steps = [...document.querySelectorAll('.hero__steps li')];
   const clocks = [...document.querySelectorAll('[data-clock]')];
-  const hint = document.querySelector('.hero__hint');
 
   const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
   const smooth = (a, b, v) => { const t = clamp((v - a) / (b - a)); return t * t * (3 - 2 * t); };
@@ -26,11 +27,10 @@
     const span = hero.offsetHeight - innerHeight;
     const p = span > 0 ? clamp((scrollY - hero.offsetTop) / span) : 1;
     heroP = p;
-    const door = smooth(.16, .55, p);
     // am Ende wächst die Ofenöffnung über den ganzen Bildschirm
-    const cover = 2.4 * Math.max(innerWidth / oven.offsetWidth, innerHeight / oven.offsetHeight);
+    const cover = 2.4 * Math.max(innerWidth / ofenBox.offsetWidth, innerHeight / ofenBox.offsetHeight);
     const z = smooth(.68, .97, p);
-    hero.style.setProperty('--door', door.toFixed(4));
+    hero.style.setProperty('--door', smooth(.16, .55, p).toFixed(4));
     hero.style.setProperty('--warm', smooth(.08, .7, p).toFixed(4));
     hero.style.setProperty('--zoom', (1 + z * z * (cover - 1)).toFixed(4));
     hero.style.setProperty('--hell', smooth(.9, 1, p).toFixed(4));
@@ -40,7 +40,6 @@
     let jetzt = -1;
     steps.forEach((li, i) => { const on = p >= +li.dataset.from; li.classList.toggle('on', on); if (on) jetzt = i; });
     steps.forEach((li, i) => li.classList.toggle('jetzt', i === jetzt));
-    hint.classList.toggle('weg', p > .03);
   }
 
   if (!reduce) {
@@ -52,6 +51,31 @@
   } else {
     steps.forEach(li => li.classList.add('on'));
   }
+
+  /* ---------- Neigen mit dem Zeiger: Ofen und Sackerl drehen sich leicht zur Maus ---------- */
+  // x und y sind die Zeigerposition relativ zur Mitte des Elements, je von -1 bis 1
+  // gibt {rx, ry} in Grad zurück: rx dreht um die waagrechte Achse (oben/unten), ry um die senkrechte (links/rechts)
+  function neigung(x, y, max) {
+    // TODO(human): Zeigerposition in eine Drehung übersetzen. Solange hier 0 steht, bleiben Ofen und Sackerl still.
+    return {rx: 0, ry: 0};
+  }
+  const folgen = (flaeche, ziel, max, setzen) => {
+    if (reduce || !feinerZeiger) return;
+    flaeche.addEventListener('pointermove', e => {
+      const r = ziel.getBoundingClientRect();
+      const x = clamp((e.clientX - (r.left + r.width / 2)) / (innerWidth / 2), -1, 1);
+      const y = clamp((e.clientY - (r.top + r.height / 2)) / (innerHeight / 2), -1, 1);
+      setzen(neigung(x, y, max), x, y);
+    });
+    flaeche.addEventListener('pointerleave', () => setzen({rx: 0, ry: 0}, 0, 0));
+  };
+  folgen(hero, ofenBox, 14, ({rx, ry}, x, y) => {
+    ofen.style.setProperty('--tx', ry.toFixed(2) + 'deg');
+    ofen.style.setProperty('--ty', rx.toFixed(2) + 'deg');
+    // das Brot im Ofen liegt tiefer und wandert gegen die Drehung, so wirkt der Ofen hohl
+    ofen.style.setProperty('--px', (-x * 14).toFixed(1) + 'px');
+    ofen.style.setProperty('--py', (-y * 10).toFixed(1) + 'px');
+  });
 
   /* ---------- Mehlstaub im Licht des Ofens ---------- */
   const cv = document.querySelector('.hero__mehl');
@@ -66,7 +90,7 @@
     const zeichne = ts => {
       if (!sichtbar || heroP >= .98) { laeuft = false; return; }
       ctx.clearRect(0, 0, w, h);
-      const r = oven.getBoundingClientRect(), ox = r.left + r.width / 2, oy = r.top + r.height / 2;
+      const r = ofenBox.getBoundingClientRect(), ox = r.left + r.width / 2, oy = r.top + r.height / 2;
       const licht = .15 + smooth(.16, .55, heroP) * .85;
       for (const s of staub) {
         s.y -= s.v; if (s.y < -.02) { s.y = 1.02; s.x = Math.random(); }
@@ -84,22 +108,55 @@
     starte();
   }
 
-  /* ---------- Einblenden beim Scrollen ---------- */
-  const karten = document.querySelectorAll('.schritt, .laib');
-  if (reduce || !('IntersectionObserver' in window)) karten.forEach(k => k.classList.add('da'));
+  /* ---------- Einblenden beim Scrollen: Überschrift, dann Text, dann der Rest ---------- */
+  const teile = document.querySelectorAll('[data-auf]');
+  if (reduce || !('IntersectionObserver' in window)) teile.forEach(t => t.classList.add('da'));
   else {
     const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('da'); io.unobserve(e.target); } }), {threshold: .15});
-    karten.forEach((k, i) => { k.style.transitionDelay = (i % 4) * 90 + 'ms'; io.observe(k); });
+    document.querySelectorAll('section').forEach(s => s.querySelectorAll('[data-auf]').forEach((t, i) => { t.style.transitionDelay = Math.min(i, 5) * 80 + 'ms'; io.observe(t); }));
   }
 
-  /* ---------- Vorbestellen (Konzept: nichts wird verschickt) ---------- */
+  /* ---------- Brot des Tages: die Vitrine zeigt die Zeile unter dem Zeiger ---------- */
+  const zeilen = [...document.querySelectorAll('.laib__zeile')];
+  const vitrine = [...document.querySelectorAll('.brot__vitrine img')];
+  const zeige = i => {
+    zeilen.forEach((z, j) => z.setAttribute('aria-pressed', String(i === j)));
+    vitrine.forEach((b, j) => b.classList.toggle('an', i === j));
+  };
+  zeilen.forEach((z, i) => {
+    z.addEventListener('pointerenter', () => zeige(i));
+    z.addEventListener('focus', () => zeige(i));
+    z.addEventListener('click', () => zeige(i));
+  });
+
+  /* ---------- Vorbestellen: das Sackerl zeigt, was im Formular steht (Konzept: nichts wird verschickt) ---------- */
   const form = document.getElementById('vorForm');
+  const sack = document.querySelector('.sack');
+  const koerper = sack.querySelector('.sack__koerper');
+  const feld = n => form.elements.namedItem(n);
+  const stempel = n => sack.querySelector(`[data-sack="${n}"]`);
+  // der gezackte Rand, wie mit der Schere geschnitten
+  const zacken = Array.from({length: 15}, (_, i) => `${((i / 14) * 100).toFixed(2)}% ${i % 2 ? 0 : 1.2}em`).join(', ');
+  koerper.style.setProperty('--zacken', `polygon(0 100%, ${zacken}, 100% 100%)`);
+
+  const menge = () => clamp(parseInt(feld('menge').value, 10) || 1, 1, 40);
+  const fuelle = () => {
+    stempel('name').textContent = feld('name').value.trim() || 'Für dich';
+    stempel('inhalt').textContent = `${menge()} × ${feld('brot').value}`;
+    sack.classList.remove('zu');
+  };
+  form.addEventListener('input', fuelle);
   form.addEventListener('submit', e => {
     e.preventDefault();
-    const f = form.elements, danke = form.querySelector('.vor__danke');
-    const name = f.namedItem('name').value.trim();
-    if (!name) { danke.textContent = 'Bitte gib deinen Namen an, damit wir das Sackerl beschriften können.'; f.namedItem('name').focus(); return; }
-    const menge = clamp(parseInt(f.namedItem('menge').value, 10) || 1, 1, 40);
-    danke.textContent = `Danke, ${name}! ${menge} × ${f.namedItem('brot').value} liegen morgen ab 6:30 für dich bereit. (Konzept: hier käme die Bestellung bei der Bäckerei an.)`;
+    const danke = form.querySelector('.vor__danke');
+    const name = feld('name').value.trim();
+    if (!name) { danke.textContent = 'Bitte gib deinen Namen an, damit wir das Sackerl beschriften können.'; feld('name').focus(); return; }
+    fuelle();
+    sack.classList.add('zu');
+    danke.textContent = `Danke, ${name}! ${menge()} × ${feld('brot').value} liegen morgen ab 6:30 für dich bereit. (Konzept: hier käme die Bestellung bei der Bäckerei an.)`;
+  });
+  folgen(document.getElementById('vorbestellen'), koerper, 18, ({rx, ry}) => {
+    koerper.style.setProperty('--sx', (-8 + rx).toFixed(2) + 'deg');
+    koerper.style.setProperty('--sy', (-28 + ry).toFixed(2) + 'deg');
   });
 })();

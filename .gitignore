@@ -14,3 +14,7 @@ studio/pekara/blender/kadrovi/
 # test snimci ekrana
 studio/pekara/izrada/
 .DS_Store
+# Poly Haven teksture i HDRI (velike, preuzimaju se ponovo po QUELLEN.md)
+studio/pekara/blender/teksture/**
+!studio/pekara/blender/teksture/QUELLEN.md
+studio/pekara/blender/proba-foto/krug*/

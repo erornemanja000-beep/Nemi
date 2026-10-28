@@ -1194,7 +1194,7 @@ def gpu():
         prefs.compute_device_type = "METAL"
         prefs.get_devices()
         for dv in prefs.devices:
-            dv.use = True
+            dv.use = dv.type == "METAL"           # samo GPU: CPU uz GPU na M1 usporava
         bpy.context.scene.cycles.device = "GPU"
     except Exception as e:
         print("GPU nije dostupan, CPU:", e)

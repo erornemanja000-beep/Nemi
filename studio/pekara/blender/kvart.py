@@ -487,7 +487,15 @@ CX, CY = (BX0 + BX1) / 2, (BY0 + BY1) / 2
 
 
 class Niska(Kuca):
-    """Kuca preko puta, presecena iznad prizemlja kao na maketi: gore je taman ravan krov (fix A)."""
+    """Kuca preko puta, presecena iznad prizemlja kao na maketi: gore je taman ravan krov (fix A).
+    FOTO (krug 2): kadar 1 gleda u njihova dvorista, pa su bile crni blokovi. Sad su niske prizemne kuce
+    (Vorstadthaus): svetliji malter, prozori i u dvoristu (poneki slabo upaljen), nizak dvovodni krov sa
+    strehom, olukom i dimnjakom. U polusenci su, tamnije od pekare."""
+
+    def __init__(self, *a, **kw):
+        super().__init__(*a, **kw)
+        if FOTO:   # ceo zid je "prizemlje": malter bez rustike, svetliji od rustike suseda
+            self.M["prizemlje"] = mat_plaster(self.name + "_zid", tint(a[4], -0.1), tex="malter")[0]
 
     def izlog_slabo(self, e, s0, s1, z0=0.5, h=1.65):
         """Izlog kao "tamno" u kitu, ali staklo slabo toplo svetli (kafana koja jos nije otvorila)."""
@@ -503,6 +511,53 @@ class Niska(Kuca):
         fac.box(self.b("tabla_zel"), s, z, 0.06, 0.62, 0.55, 0.55)
         fac.box(self.b("zlato"), s, z - 0.03, 0.04, 0.68, 0.61, 0.55)
 
+    def krov_foto(self, H):
+        """Nizak dvovodni krov, sleme paralelno sa ulicom; nagib i dimnjak se smenjuju po kuci."""
+        f, d, L = self.fac[0], self.fac[1].L, self.fac[0].L
+        k = int(self.name[2:])
+        st, kr, me = self.b("stuko"), self.b("krov"), self.b("metal")
+        F = self.foot
+        ring(st, offset_poly(F, [0.12] * len(F)), H - 0.28, H + 0.04, offset_poly(F, [-0.2] * len(F)))   # venac
+        rh = d / 2 * (0.55, 0.68, 0.5, 0.62)[k % 4]
+        R0 = H + 0.04
+        z_e = R0 - 0.08
+        f.extrude_s(self.b("kalkan"), 0.02, L - 0.02, [(0.0, R0 - 0.05), (-d / 2, R0 + rh - 0.1), (-d, R0 - 0.05)])
+        for o_e in (0.42, -d - 0.42):                                       # ulicna i dvorisna ploca
+            f.extrude_s(kr, 0.0, L, [(o_e, z_e), (-d / 2, R0 + rh + 0.1), (-d / 2, R0 + rh - 0.1), (o_e, z_e - 0.2)])
+            sg = 1 if o_e > 0 else -1                                        # oluk ispod strehe
+            f.extrude_s(me, 0.0, L, [(o_e - sg * 0.02, z_e - 0.36), (o_e + sg * 0.12, z_e - 0.36),
+                                     (o_e + sg * 0.12, z_e - 0.22), (o_e - sg * 0.02, z_e - 0.22)])
+        f.extrude_s(me, 0.0, L, [(-d / 2 + 0.12, R0 + rh + 0.06), (-d / 2 - 0.12, R0 + rh + 0.06), (-d / 2, R0 + rh + 0.2)])
+        s_c = L * (0.3 if k % 2 else 0.68)                                  # dimnjak
+        p = f.pt(s_c, -d / 2 - 0.45, 0)
+        z1 = R0 + rh + 0.9
+        wbox(self.b("dimnjak"), (p.x, p.y, (R0 + rh - 0.6 + z1) / 2), (0.55, 0.75, z1 - (R0 + rh - 0.6)), f.ang)
+        wbox(self.b("dimnjak"), (p.x, p.y, z1 + 0.06), (0.7, 0.9, 0.12), f.ang)
+        fb = self.fac[2]                                                     # olucna cev na dvorisnom uglu
+        fb.box(me, fb.L - 0.25, 0.1, 0.1, 0.1, z_e - 0.4, 0.12)
+
+    def prozori_dvor(self, H):
+        """Dvorisna fasada (ivica 2, ka kameri u pogl. 1): prozori sa krstom, sambranom i klupicom."""
+        fac, k = self.fac[2], int(self.name[2:])
+        L = fac.L
+        n = max(1, int((L - 1.2) / 2.3))
+        z0, h, w = 0.95, min(1.5, H - 1.45), 0.95
+        st, ok = self.b("stuko"), self.b("okvir")
+        for i in range(n):
+            s = 0.6 + (L - 1.2) * (i + 0.5) / n
+            fac.box(self.b("cut_gf"), s, z0, w, 0.6, h, 0.0, jit=False)
+            upaljen = (k + 2 * (self.name[1] == "Z")) % 3 == 1 and i == n // 2
+            fac.box(self.b("upaljen" if upaljen else "tamno"), s, z0, w, 0.03, h, -0.16, jit=False)
+            fac.box(ok, s, z0, 0.06, 0.05, h, -0.13)
+            fac.box(ok, s, z0 + h * 0.62, w, 0.05, 0.06, -0.13)
+            for sg in (-1, 1):
+                fac.box(ok, s + sg * (w / 2 - 0.03), z0, 0.06, 0.05, h, -0.13)
+                fac.box(st, s + sg * (w / 2 + 0.07), z0 - 0.02, 0.14, 0.07, h + 0.04, 0.03)
+            fac.box(ok, s, z0, w, 0.05, 0.06, -0.13)
+            fac.box(ok, s, z0 + h - 0.06, w, 0.05, 0.06, -0.13)
+            fac.box(st, s, z0 - 0.1, w + 0.3, 0.16, 0.08, 0.06)                # klupica
+            fac.box(st, s, z0 + h, w + 0.28, 0.08, 0.14, 0.03)                 # nadprozornik
+
     def niska(self, H, gfspec):
         F = self.foot
         prism(self.b("prizemlje"), F, 0.0, H)
@@ -510,9 +565,13 @@ class Niska(Kuca):
         ring(self.b("sokla"), offset_poly(F, self.offs(0.06)), 0.0, 0.45, IN)
         # fix A: odozgo (pogl. 1, 6, 7) presek sa sobama i narandzastim rubom izgledao je kao nedovrsena parcela;
         # sad je to tamna mirna masa: ravan krov i nizak zidic, bez detalja, utapa se u maglu
-        self.B["krov_n"] = Builder(self.name + "_krov_n", KROV_NASPRAM, 0.02, 1)
-        prism(self.B["krov_n"], F, H - 0.02, H + 0.04)
-        ring(self.B["krov_n"], F, H + 0.04, H + 0.2, offset_poly(F, [-0.22] * len(F)))
+        if FOTO:
+            self.krov_foto(H)
+            self.prozori_dvor(H)
+        else:
+            self.B["krov_n"] = Builder(self.name + "_krov_n", KROV_NASPRAM, 0.02, 1)
+            prism(self.B["krov_n"], F, H - 0.02, H + 0.04)
+            ring(self.B["krov_n"], F, H + 0.04, H + 0.2, offset_poly(F, [-0.22] * len(F)))
         self.haus_s = self.fac[0].L / 2
         for it in gfspec:
             e = it[-1]
@@ -548,7 +607,8 @@ def red_naspram(pref, smer, start, kraj, sirine):
         spec = [("haustor", L * 0.22, 0), ("kafe" if i % 2 == 0 else "tamno", L * 0.42, L - 0.6, 0)] if i % 3 == 0 else \
                [("roleta", 0.6, L * 0.55, 0), ("prozor", L * 0.75, 0), ("schild", L * 0.62, 0)] if i % 3 == 1 else \
                [("prozor", L * 0.2, 0), ("haustor", L * 0.5, 0), ("prozor", L * 0.8, 0), ("schild", L * 0.36, 0)]
-        h = Niska(f"{pref}{i + 1}", foot, [0], {}, NASPRAM_BOJE[(i * 3 + (smer == "Z")) % len(NASPRAM_BOJE)])
+        kw = {"krov_boja": CREP if (i + (smer == "Z")) % 3 == 0 else KROV} if FOTO else {}
+        h = Niska(f"{pref}{i + 1}", foot, [0], {}, NASPRAM_BOJE[(i * 3 + (smer == "Z")) % len(NASPRAM_BOJE)], **kw)
         H = (2.9, 3.25, 2.95, 3.4, 3.05)[(i + 2 * (smer == "Z")) % 5]     # razlicite visine reza: red nije krut
         h.niska(H, spec)
         h.finish()
@@ -627,8 +687,15 @@ for i, (lx, ly, ang) in enumerate(LAMPE):
     ob.rotation_euler = (0, 0, math.radians(ang))
     scene.collection.objects.link(ob)
     a = math.radians(ang)
-    lt = add_light(f"Lampa_{i + 1}_svetlo", "POINT", (lx + math.cos(a) * 1.1, ly + math.sin(a) * 1.1, 4.2),
-                   energy=35, color=(0.75, 0.85, 1.0), shadow_soft_size=0.15)
+    if FOTO:
+        # Spot tik ispod stakla (svetlo nije zatvoreno u neprozirnoj kapi), mali radijus, 2700 K; stub blago nakrivljen
+        ob.rotation_euler = (random.uniform(-0.008, 0.008), random.uniform(-0.008, 0.008), math.radians(ang))
+        lt = add_light(f"Lampa_{i + 1}_svetlo", "SPOT", (lx + math.cos(a) * 1.1, ly + math.sin(a) * 1.1, 4.04),
+                       energy=60, shadow_soft_size=0.04, spot_size=math.radians(130), spot_blend=0.6,
+                       use_temperature=True, temperature=2700.0, color=(1.0, 1.0, 1.0))
+    else:
+        lt = add_light(f"Lampa_{i + 1}_svetlo", "POINT", (lx + math.cos(a) * 1.1, ly + math.sin(a) * 1.1, 4.2),
+                       energy=35, color=(0.75, 0.85, 1.0), shadow_soft_size=0.15)
     lt.parent = ob
     lt.matrix_parent_inverse = ob.matrix_world.inverted()
     lampe.append(ob)
@@ -691,7 +758,8 @@ for i, (fx, fy, fa, col, kesa) in enumerate(FIG):
         bl.append(bs)
     ob = u_jedan(f"Figura_{i + 1}", bl)
     ob.location = (fx, fy, 0.0)
-    ob.rotation_euler = (0, 0, math.radians(fa))
+    tilt = 0.03 if FOTO else 0.0                    # FOTO: figure ne stoje savrseno uspravno (rucno zalepljene)
+    ob.rotation_euler = (random.uniform(-tilt, tilt), random.uniform(-tilt, tilt), math.radians(fa))
     ob["kesa"] = kesa
     figure.append(ob)
 
@@ -708,6 +776,37 @@ for i, (tx, ty, r) in enumerate(((-11.5, 33.5, 1.5), (24.0, 22.0, 2.2))):
 
 # --- dim samo iz dimnjaka pekare
 dim(dim_tops[0], 11)
+
+
+def mat_magla(name):
+    """Tanka prizemna magla: Volume Scatter, gustina opada sa visinom (Generated Z) i rastrgana sumom."""
+    m = bpy.data.materials.new(name)
+    m.use_nodes = True
+    nt = m.node_tree
+    nt.nodes.remove(nt.nodes["Principled BSDF"])
+    vs = nt.nodes.new("ShaderNodeVolumeScatter")
+    vs.inputs["Color"].default_value = hexc("#cfc6bc")
+    vs.inputs["Anisotropy"].default_value = 0.45            # svetlo izloga i lampi dobija oreol prema kameri
+    tc = nt.nodes.new("ShaderNodeTexCoord")
+    sp = nt.nodes.new("ShaderNodeSeparateXYZ")
+    nt.links.new(tc.outputs["Generated"], sp.inputs["Vector"])
+    vis = math_n(nt, "POWER", map_n(nt, sp.outputs["Z"], 1.0, 0.0), 2.0)
+    nz = noise(nt, tc.outputs["Object"], 0.09, 3, 0.5)
+    pr = map_n(nt, nz.outputs["Fac"], 0.35, 0.7, 0.15, 1.0)
+    d = math_n(nt, "MULTIPLY", math_n(nt, "MULTIPLY", vis, pr), float(os.environ.get("KRUME_MAGLA", "0.07")))
+    nt.links.new(d, vs.inputs["Density"])
+    nt.links.new(vs.outputs["Volume"], nt.nodes["Material Output"].inputs["Volume"])
+    return m
+
+
+if FOTO:
+    # magla samo nad ulicama (dve kutije, L oko bloka, bez preklapanja): ne ulazi u pekaru ni u blok, nema globalnog volumena
+    MAGLA = mat_magla("magla")
+    for nm, (x0, y0, x1, y1) in (("Magla_jug", (IX0, NAS, IX1, -0.3)), ("Magla_zapad", (NAS, -0.3, -0.3, IY1))):
+        bmg = Builder(nm, MAGLA, bevel=0)
+        prism(bmg, rect(x0, y0, x1, y1), -0.3, 2.6)
+        mg = bmg.finish()
+        mg.visible_shadow = False
 
 # ---------------------------------------------------------------- svetlo i render (odeljci kita)
 exec(kit_deo(SEC + "svetlo\n", SEC + "kamere\n"), globals())

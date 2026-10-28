@@ -212,7 +212,7 @@ Naslovi imaju `text-wrap: balance`. H1 na 1440 je namerno u tri reda (max 8.5ch)
 ## 4. Komponente
 
 ### Kako tekst stoji na sceni (najvažnije pravilo)
-- **Strana neba.** Za svako poglavlje kamera u 3D ostavlja jednu stranu kadra praznu (nebo ili tamna daska), i tekst ide tamo. Bez blura i bez pravougaonog scrima; dozvoljena je samo blaga eliptična senka (vidi ispod). Programer i 3D dogovaraju kadar, a ne obrnuto. U mockup-u: 04:00 levo (kuća desno od centra), 05:00 desno (kuća levo, uz lampu), 06:30 levo.
+- **Strana neba.** Za svako poglavlje kamera u 3D ostavlja jednu stranu kadra praznu (nebo ili tamna daska), i tekst ide tamo. Bez blura i bez pravougaonog scrima; dozvoljena je samo blaga eliptična senka (vidi ispod). Programer i 3D dogovaraju kadar, a ne obrnuto. U mockup-u: 04:00 levo (kuća desno od centra), 05:00 levo (kao u HTML-u, mapi skrola i `Pogl_3`; ranije je ovde pisalo „desno"), 06:30 levo.
 - **Zabranjene zone:** osvetljen izlog, vrata, ulica ispred njih i glava ulične lampe. Tekst nikad ne prelazi preko toplog prozora: to je junak. Preko stakla smeju samo tanke linije do hleba (sa tamnim haloom).
 - **Bez ploča za sadržaj.** Jedini predmet je Sackerl forma. Hint-ovi su male pilule, a donja traka je deo navigacije. Blaga eliptična senka do 0,55 je dozvoljena, ploča nije.
 - Najveća širina pasusa je 34ch. Iznad naslova stoji samo reč poglavlja („Das Grätzl", „Der Anschnitt", „In der Auslage", „Das Grätzl wacht auf", „Vorbestellen"). Za čitač ekrana ispred nje ide skriveno vreme („vier Uhr. ").
@@ -333,3 +333,8 @@ Kao u `mockup-1440.png`: tekst u mirnoj strani kadra, nav bez trake, etikete hle
 ## Otvoreno
 - Probni renderi imaju plavo nebo (`#12243b`), a brief kaže noć `#14110f`. Kontrast je proveren za oba. Ako 3D ide toplije i tamnije, odnosi samo rastu.
 - Pozicije etiketa na desktopu su ručno namerene na probnom renderu. Na sajtu ih određuje projekcija iz 3D-a, a etikete ostaju u desnoj koloni na nebu.
+
+## Odluke korisnika, 28. 10. 2026 (prelazak na fotorealističnu Cycles sekvencu)
+- **Izgled:** sajt prelazi sa Three.js scene na sekvencu slika renderovanu u Blender Cycles-u, koja se vrti na skrol. Cilj je „fotografisana minijatura": prave PBR teksture i HDRI sa Poly Haven-a (CC0, `studio/pekara/blender/teksture/QUELLEN.md`).
+- **Rez kriške (poglavlje 3):** pravi zid. U rezu se vide cigla sa fugama, kora maltera, tavanica sa gredama i pod. Mrvica hleba kao materijal reza se više ne koristi; „Krume" ostaje samo ime i tekst.
+- **„Dreh das Grätzl":** pravog okretanja više nema. Umesto njega je lažna dubina (blago pomeranje slike za mišem ili nagibom telefona). Hint „← Dreh das Grätzl →" se menja ili uklanja (`tekstopisac`).

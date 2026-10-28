@@ -2,19 +2,28 @@
 # (poglavlja 3-5). Stoji tacno u praznom objektu "Pekara_otvor" iz kvart.blend: spoljne zidove (fasada A,
 # zakosen ugao, fasada B, sa izlozima i vratima) nosi Kriska iz kvarta, ovde su samo pod, plafoni, unutrasnji
 # zidovi (pregradni i zadnji) i namestaj. Lica u ravni unutrasnjeg lica Kriske su presek (ton kore).
-# Proceduralno, bez addon-a i bez preuzimanja. Materijali zajednicki sa kitom se ucitavaju iz kuca_kit.blend.
+# Proceduralno, bez addon-a; foto kadar jos koristi CC0 teksture iz teksture/ (Poly Haven, QUELLEN.md). Materijali zajednicki sa kitom se ucitavaju iz kuca_kit.blend.
 # Bake i izvoz u glTF: bake_enterijer.py.
 # Pokretanje:
 #   Blender -b -P enterijer.py                  (gradi, cuva enterijer.blend, renderuje presek, vitrinu, pec)
 #   Blender -b -P enterijer.py -- presek        (samo jedan kadar: presek | vitrina | pec)
+#   Blender -b -P enterijer.py -- ofen          (foto proba Cycles: stanica Ofen, vrata otvorena, izmaglica,
+#                                                proba-foto/4-ofen-wide.png 1600x1000)
 #   Blender -b -P enterijer.py -- norender      (samo gradi i cuva .blend)
 # Koordinate: kao u kitu i kvartu. Ishodiste (0, 0, 0) je zamisljeni ostar ugao zgrade (presek pravaca dve
 # ulicne fasade) na visini trotoara. +X ide duz fasade A (ulica ka -Y), +Y duz fasade B (ulica ka -X),
 # Z gore, metar. Pod pekare je na z = 0,12 (jedan stepenik).
-# Okruzenje: KRUME_SAMPLES, KRUME_RES (procenat rezolucije), KRUME_EXPOSURE.
+# Okruzenje: KRUME_SAMPLES, KRUME_RES (procenat rezolucije), KRUME_EXPOSURE; za "ofen" jos KRUME_OFEN_EV,
+# KRUME_OFEN_ZAR (svetlo zara, W), KRUME_OFEN_EM (emisija zara), KRUME_MAGLA (gustina izmaglice), KRUME_OFEN_IME,
+# KRUME_ZRACI i KRUME_ODBIJENO (W), KRUME_HDRI (jacina u odsjajima), KRUME_CIGLA (svetlina foto cigle),
+# KRUME_OFEN_POLICA (faktor svetla police), KRUME_NISA (odbijeno svetlo u nisi za drva, W). Krug 3 (samo "ofen",
+# sve u Pomocno): liveno gvozdje vrata (mat_vrata_foto), slozena drva u nisi (Pomocno_drva_foto, stare cepanice
+# u nisi sakriva Mask), sator od cepanica u komori sa svetlom zraka (light linking: osvetljava samo izmaglicu i
+# prasinu), izmaglica brasna umesto pramenova dima. KRUME_WEB=1: bez foto sloja (PBR teksture iz teksture/, HDRI).
 
 import bpy, bmesh, math, os, random, sys, time
 from mathutils import Vector, Matrix, Quaternion, Euler
+from mathutils import noise as mnoise
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ARGS = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
@@ -43,6 +52,10 @@ Y_ZAD = 8.4            # zadnji zid (unutrasnje lice), debeo 0,3 do Y_OUT
 Z_BOT = -0.1           # dno ploce poda, ispod trotoara kvarta (z = 0)
 POD, PLAFON = 0.12, 4.1
 SPRAT, PLAFON2 = 4.52, 7.8             # pod i plafon magacina na prvom spratu
+# pec (zidana, lucni otvor): mere su ovde jer ih koriste i materijali (cadj oko otvora, izlizan prag)
+PX0, PX1, PY0, PY1 = X_PREG - 3.45, X_PREG, 4.4, Y_ZAD
+PCX = (PX0 + PX1) / 2                      # osa otvora peci
+O_W, O_Z0, O_H = 0.86, 1.0, 0.62           # otvor: sirina, prag, visina do temena luka
 
 # ---------------------------------------------------------------- scena
 for ob in list(bpy.data.objects):
@@ -103,10 +116,15 @@ def mixc(nt, fac, a, b):
     mx = nt.nodes.new("ShaderNodeMix")
     mx.data_type = "RGBA"
     sock = {s.identifier: s for s in mx.inputs}
-    nt.links.new(fac, sock["Factor_Float"])
+    if isinstance(fac, (int, float)):
+        sock["Factor_Float"].default_value = fac
+    else:
+        nt.links.new(fac, sock["Factor_Float"])
     for key, v in (("A_Color", a), ("B_Color", b)):
         if isinstance(v, str):
             sock[key].default_value = hexc(v)
+        elif isinstance(v, tuple):
+            sock[key].default_value = v
         else:
             nt.links.new(v, sock[key])
     return [s for s in mx.outputs if s.identifier == "Result_Color"][0]
@@ -133,6 +151,66 @@ def bump(nt, height, strength, dist, normal=None):
     if normal is not None:
         nt.links.new(normal, bp.inputs["Normal"])
     return bp.outputs["Normal"]
+
+
+# ---- foto sloj (Cycles): zaobljene ivice u sencenju, habanje, cadj u udubljenjima, razlika po komadu.
+# Sve je proceduralno; na sajtu (bake albeda) ostaje samo ono sto je u Base Color.
+def bevel_n(nt, radius=0.004, samples=8):
+    """Bevel cvor: ivica se zaobli samo u sencenju, pa svetlo "lize" ivicu kao na pravom predmetu."""
+    bv = nt.nodes.new("ShaderNodeBevel")
+    bv.samples = samples
+    bv.inputs["Radius"].default_value = radius
+    return bv.outputs["Normal"]
+
+
+def ivica(nt, radius=0.01, gain=9.0):
+    """1 na ispupcenoj ivici, 0 na ravnom: Bevel normala naspram prave normale (kao u mat_gvozdje)."""
+    dot = nt.nodes.new("ShaderNodeVectorMath")
+    dot.operation = "DOT_PRODUCT"
+    nt.links.new(bevel_n(nt, radius), dot.inputs[0])
+    nt.links.new(nt.nodes.new("ShaderNodeNewGeometry").outputs["Normal"], dot.inputs[1])
+    return math_n(nt, "MULTIPLY", math_n(nt, "SUBTRACT", 1.0, dot.outputs["Value"]), gain, clamp=True)
+
+
+def supljina(nt, dist=0.08):
+    """1 u uglovima i fugama (AO u blizini), 0 na otvorenom: tamo se skuplja cadj i prasina."""
+    ao = nt.nodes.new("ShaderNodeAmbientOcclusion")
+    ao.samples = 8
+    ao.inputs["Distance"].default_value = dist
+    return math_n(nt, "SUBTRACT", 1.0, ao.outputs["AO"])
+
+
+def po_komadu(nt, co, k=17.0):
+    """Object Info Random: svaki objekat dobija svoj pomak suma (dve vekne nisu iste) i broj 0-1."""
+    rnd = nt.nodes.new("ShaderNodeObjectInfo").outputs["Random"]
+    add = nt.nodes.new("ShaderNodeVectorMath")
+    add.operation = "ADD"
+    nt.links.new(co, add.inputs[0])
+    nt.links.new(math_n(nt, "MULTIPLY", rnd, k), add.inputs[1])
+    return add.outputs["Vector"], rnd
+
+
+def ogrebotine(nt, co, scale=9.0, sirina=0.025, gustina=0.5):
+    """Ogrebotine od noza: tanke prave crte u tri pravca (Voronoi ivice razvucene duz crte), isprekidane sumom.
+    Vraca masku 0-1."""
+    acc = None
+    for ang, seed in ((0.25, 0.0), (1.75, 4.1), (-0.9, 9.3)):
+        rot = nt.nodes.new("ShaderNodeMapping")
+        rot.inputs["Rotation"].default_value = (0, 0, ang)
+        rot.inputs["Location"].default_value = (seed, seed * 0.7, 0)
+        nt.links.new(co, rot.inputs["Vector"])
+        st = nt.nodes.new("ShaderNodeMapping")
+        st.inputs["Scale"].default_value = (0.12, 1.0, 1.0)
+        nt.links.new(rot.outputs["Vector"], st.inputs["Vector"])
+        vo = nt.nodes.new("ShaderNodeTexVoronoi")
+        vo.feature = "DISTANCE_TO_EDGE"
+        vo.inputs["Scale"].default_value = scale
+        nt.links.new(st.outputs["Vector"], vo.inputs["Vector"])
+        crta = math_n(nt, "LESS_THAN", vo.outputs["Distance"], sirina)
+        prekid = math_n(nt, "GREATER_THAN", noise(nt, rot.outputs["Vector"], scale * 0.6, 2).outputs["Fac"], gustina)
+        m_ = math_n(nt, "MULTIPLY", crta, prekid)
+        acc = m_ if acc is None else math_n(nt, "MAXIMUM", acc, m_)
+    return acc
 
 
 def wall_uv(nt, co):
@@ -204,29 +282,188 @@ def mat_tiles(name, c1, c2, mortar, scale, wall=False, rough=0.6, b_s=0.35):
     return m
 
 
-def mat_cigla(name, c1="#8a4b2d", c2="#6e3a24", mortar="#a69a86"):
-    """Cigla peci: krecni malter, cigle u dva tona, cadj odozgo (gradijent po z)."""
+def cigle(nt, uv, w, h, fuga_w):
+    """Sopstveni raspored cigli (Brick tekstura nema broj cigle): uv u metrima (u vodoravno, v uspravno),
+    svaki drugi red pomeren za pola cigle. Vraca masku fuge (1 u fugi), id cigle (vektor za White Noise)
+    i rastojanje do ivice cigle (m)."""
+    sep = nt.nodes.new("ShaderNodeSeparateXYZ")
+    nt.links.new(uv, sep.inputs["Vector"])
+    u, v = sep.outputs["X"], sep.outputs["Y"]
+    row = math_n(nt, "FLOOR", math_n(nt, "DIVIDE", v, h))
+    us = math_n(nt, "ADD", u, math_n(nt, "MULTIPLY", math_n(nt, "FRACT", math_n(nt, "MULTIPLY", row, 0.5)), w))
+    col = math_n(nt, "FLOOR", math_n(nt, "DIVIDE", us, w))
+    fu = math_n(nt, "MULTIPLY", math_n(nt, "FRACT", math_n(nt, "DIVIDE", us, w)), w)
+    fv = math_n(nt, "MULTIPLY", math_n(nt, "FRACT", math_n(nt, "DIVIDE", v, h)), h)
+    du = math_n(nt, "MINIMUM", fu, math_n(nt, "SUBTRACT", w, fu))
+    dv = math_n(nt, "MINIMUM", fv, math_n(nt, "SUBTRACT", h, fv))
+    d = math_n(nt, "MINIMUM", du, dv)
+    fuga = ramp(nt, d, (1, 1, 1, 1), (0, 0, 0, 1), fuga_w * 0.5, fuga_w * 0.5 + 0.004)
+    idv = nt.nodes.new("ShaderNodeCombineXYZ")
+    nt.links.new(col, idv.inputs["X"])
+    nt.links.new(row, idv.inputs["Y"])
+    return fuga, idv.outputs["Vector"], d
+
+
+# ---- PBR teksture (Poly Haven, CC0; izvori u teksture/QUELLEN.md): samo foto kadar (Cycles), ne bake za sajt.
+# Mape idu preko UV mape "foto_uv" (kocka po glavnoj osi lica, u metrima / velicina plocice, vidi foto_uv()),
+# da Normal Map cvor (tangentni prostor) ima ispravne tangente; Box projekcija bi ih pokvarila.
+TEKS = os.path.join(HERE, "teksture")
+FOTO_UV = "foto_uv"
+
+
+def slika(rel, boja=False):
+    img = bpy.data.images.load(os.path.join(TEKS, rel), check_existing=True)
+    img.colorspace_settings.name = "sRGB" if boja else "Non-Color"     # rough, normal, disp: Non-Color
+    return img
+
+
+def pbr(nt, ime, w, h, nor_s=1.0, disp=False):
+    """diff, rough, normal (Normal Map cvor, nor_gl) i disp jednog aseta; plocica teksture je w x h metara."""
+    uv = nt.nodes.new("ShaderNodeUVMap")
+    uv.uv_map = FOTO_UV
+    mp = nt.nodes.new("ShaderNodeMapping")
+    mp.inputs["Scale"].default_value = (1.0 / w, 1.0 / h, 1.0)
+    nt.links.new(uv.outputs["UV"], mp.inputs["Vector"])
+
+    def tx(suf, boja=False):
+        t = nt.nodes.new("ShaderNodeTexImage")
+        t.image = slika(f"{ime}/{ime}_{suf}", boja)
+        t.interpolation = "Cubic" if suf.startswith("disp") else "Linear"
+        nt.links.new(mp.outputs["Vector"], t.inputs["Vector"])
+        return t.outputs["Color"]
+
+    nm = nt.nodes.new("ShaderNodeNormalMap")
+    nm.space, nm.uv_map = "TANGENT", FOTO_UV
+    nm.inputs["Strength"].default_value = nor_s
+    nt.links.new(tx("nor_gl_2k.jpg"), nm.inputs["Color"])
+    r = {"diff": tx("diff_2k.jpg", True), "rough": tx("rough_2k.jpg"), "nor": nm.outputs["Normal"]}
+    if disp:
+        r["disp"] = tx("disp_2k.png")
+    return r
+
+
+def skala(nt, col, k):
+    """Boja puta broj (posvetli ili potamni teksturu)."""
+    vm = nt.nodes.new("ShaderNodeVectorMath")
+    vm.operation = "SCALE"
+    nt.links.new(col, vm.inputs[0])
+    if isinstance(k, (int, float)):
+        vm.inputs["Scale"].default_value = k
+    else:
+        nt.links.new(k, vm.inputs["Scale"])
+    return vm.outputs["Vector"]
+
+
+def bevel_na(nt, normal, radius):
+    """Bevel cvor preko vec izmenjene normale (normal mapa): zaobljena ivica + detalj teksture."""
+    bv = nt.nodes.new("ShaderNodeBevel")
+    bv.samples = 8
+    bv.inputs["Radius"].default_value = radius
+    nt.links.new(normal, bv.inputs["Normal"])
+    return bv.outputs["Normal"]
+
+
+def mat_cigla(name, c1="#8a4b2d", c2="#6e3a24", mortar="#a69a86", otvor=False, foto=0.0):
+    """Cigla peci u pravoj meri (25 x 7,5 cm): svaka cigla svoj ton (White Noise po broju cigle), sitna mrlja
+    i okrnjene ivice, malter uvucen i tamniji od prasine i cadji, cadj odozgo (gradijent po z).
+    otvor=True: cadj iznad i oko lucnog otvora (dim izlazi gore uz lice peci), u prugama i u udubljenjima.
+    foto > 0: cigla i malter su iz fotografije (brick_wall_006, plocica 2,75 x 3,25 m = cigla ~26 x 8,6 cm sa
+    fugom), potamnjeni na ton peci (foto = faktor svetline); cadj, AO u fugama i krupna mrlja ostaju preko."""
     m, nt, p = node_mat(name)
     co = obj_co(nt)
-    br = nt.nodes.new("ShaderNodeTexBrick")
-    br.inputs["Color1"].default_value = hexc(c1)
-    br.inputs["Color2"].default_value = hexc(c2)
-    br.inputs["Mortar"].default_value = hexc(mortar)
-    br.inputs["Scale"].default_value = 4.0
-    br.inputs["Mortar Size"].default_value = 0.018
-    br.inputs["Brick Width"].default_value = 0.5
-    br.inputs["Row Height"].default_value = 0.16
-    br.offset = 0.5
-    nt.links.new(wall_uv(nt, co), br.inputs["Vector"])
+    if foto:
+        return mat_cigla_foto(m, nt, p, co, foto, otvor)
+    fuga, idv, d = cigle(nt, wall_uv(nt, co), 0.25, 0.075, 0.012)
+    wn = nt.nodes.new("ShaderNodeTexWhiteNoise")
+    nt.links.new(idv, wn.inputs["Vector"])
+    cr = nt.nodes.new("ShaderNodeValToRGB")
+    els = cr.color_ramp.elements
+    lo = tuple(c * 0.7 for c in hexc(c2)[:3]) + (1,)
+    els[0].position, els[0].color = 0.0, lo
+    els[1].position, els[1].color = 1.0, tuple(min(1, c * 1.12) for c in hexc(c1)[:3]) + (1,)
+    for pos, c in ((0.25, hexc(c2)), (0.6, hexc(c1))):
+        e = els.new(pos)
+        e.color = c
+    nt.links.new(wn.outputs["Value"], cr.inputs["Fac"])
+    brick = mixc(nt, math_n(nt, "MULTIPLY", noise(nt, co, 22.0, 5, 0.6).outputs["Fac"], 0.35), cr.outputs["Color"],
+                 tuple(c * 0.6 for c in hexc(c2)[:3]) + (1,))
+    # okrnjene ivice: uz fugu sum "pojede" ivicu cigle, pa se tu vidi malter
+    krn = math_n(nt, "MULTIPLY", math_n(nt, "LESS_THAN", d, 0.014),
+                 math_n(nt, "GREATER_THAN", noise(nt, co, 40.0, 4, 0.7).outputs["Fac"], 0.62))
+    fuga_m = math_n(nt, "MAXIMUM", fuga, krn)
+    malter = ramp(nt, noise(nt, co, 9.0, 4).outputs["Fac"], tuple(c * 0.55 for c in hexc(mortar)[:3]) + (1,),
+                  tuple(c * 0.85 for c in hexc(mortar)[:3]) + (1,), 0.3, 0.7)
+    col = mixc(nt, fuga_m, brick, malter)
+    cav = supljina(nt, 0.06)
+    col = mixc(nt, math_n(nt, "MULTIPLY", cav, 0.55), col, "#1d1612")
+    soot = cadj_peci(nt, co, cav, otvor)
+    col = mixc(nt, math_n(nt, "MINIMUM", soot, 0.95), col, "#151010")
+    nt.links.new(col, p.inputs["Base Color"])
+    # malter uvucen 4 mm, svaka cigla malo nagnuta (id), sitno zrno; preko Bevel cvora (ivice peci)
+    nag = nt.nodes.new("ShaderNodeTexWhiteNoise")
+    nt.links.new(idv, nag.inputs["Vector"])
+    nag.noise_dimensions = "4D"
+    nag.inputs["W"].default_value = 3.3
+    h_ = math_n(nt, "ADD", math_n(nt, "SUBTRACT", 1.0, fuga_m), math_n(nt, "MULTIPLY", nag.outputs["Value"], 0.12))
+    n0 = bevel_n(nt, 0.012)
+    n1 = bump(nt, noise(nt, co, 45.0, 5, 0.6).outputs["Fac"], 0.3, 0.003, n0)
+    nt.links.new(bump(nt, h_, 0.8, 0.004, n1), p.inputs["Normal"])
+    nt.links.new(math_n(nt, "MULTIPLY_ADD", fuga_m, 0.08, math_n(nt, "MULTIPLY_ADD", soot, -0.15, 0.88)),
+                 p.inputs["Roughness"])
+    return m
+
+
+def mat_cigla_foto(m, nt, p, co, ton, otvor):
+    """Foto cigla (vidi mat_cigla): albedo iz teksture puta ton, fuga iz disp mape (nisko = malter), normal mapa
+    + disp kao bump (malter uvucen ~1 cm; prava displacement ne treba, kadar nije blize od 1,5 m)."""
+    t = pbr(nt, "brick_wall_006", 2.75, 3.25, nor_s=0.9, disp=True)
+    dsp = t["disp"]
+    fuga_m = ramp(nt, dsp, (1, 1, 1, 1), (0, 0, 0, 1), 0.22, 0.34)
+    hs = nt.nodes.new("ShaderNodeHueSaturation")          # foto cigla je narandzastija od cigle peci
+    hs.inputs["Saturation"].default_value = 1.0
+    nt.links.new(t["diff"], hs.inputs["Color"])
+    col = skala(nt, hs.outputs["Color"], ton)
+    # krupna mrlja (jace i slabije pecena polja), pa malter jos malo potamnjen od prasine
+    col = mixc(nt, math_n(nt, "MULTIPLY", noise(nt, co, 1.3, 4).outputs["Fac"], 0.45), col,
+               tuple(c * ton * 0.25 for c in (0.35, 0.12, 0.06)) + (1,))
+    col = mixc(nt, math_n(nt, "MULTIPLY", fuga_m, 0.35), col, tuple(c * ton for c in (0.12, 0.1, 0.08)) + (1,))
+    cav = supljina(nt, 0.06)
+    col = mixc(nt, math_n(nt, "MULTIPLY", cav, 0.55), col, "#1d1612")
+    soot = cadj_peci(nt, co, cav, otvor)
+    col = mixc(nt, math_n(nt, "MINIMUM", soot, 0.95), col, "#151010")
+    nt.links.new(col, p.inputs["Base Color"])
+    n0 = bevel_na(nt, t["nor"], 0.012)
+    nt.links.new(bump(nt, dsp, 0.55, 0.012, n0), p.inputs["Normal"])
+    nt.links.new(math_n(nt, "MULTIPLY_ADD", soot, -0.12, math_n(nt, "MULTIPLY_ADD", t["rough"], 0.25, 0.7)),
+                 p.inputs["Roughness"])
+    return m
+
+
+def cadj_peci(nt, co, cav, otvor):
+    """Cadj odozgo (gradijent po z), a uz otvor=True i oko lucnog otvora: pruge navise i gusce u udubljenjima."""
     sep = nt.nodes.new("ShaderNodeSeparateXYZ")
     nt.links.new(co, sep.inputs["Vector"])
     soot = math_n(nt, "MULTIPLY", noise(nt, co, 2.5, 4).outputs["Fac"],
                   math_n(nt, "SUBTRACT", sep.outputs["Z"], 1.4, clamp=True))
-    nt.links.new(mixc(nt, math_n(nt, "MINIMUM", soot, 0.75), br.outputs["Color"], "#1d1612"), p.inputs["Base Color"])
-    n1 = bump(nt, noise(nt, co, 30.0, 4).outputs["Fac"], 0.25, 0.01)
-    nt.links.new(bump(nt, br.outputs["Fac"], 0.6, 0.03, n1), p.inputs["Normal"])
-    p.inputs["Roughness"].default_value = 0.9
-    return m
+    if otvor:
+        dz = math_n(nt, "SUBTRACT", sep.outputs["Z"], O_Z0 + O_H * 0.8)
+        zz = math_n(nt, "ADD", math_n(nt, "DIVIDE", math_n(nt, "MAXIMUM", dz, 0.0), 1.25),
+                    math_n(nt, "DIVIDE", math_n(nt, "MINIMUM", dz, 0.0), 0.5))
+        xx = math_n(nt, "DIVIDE", math_n(nt, "SUBTRACT", sep.outputs["X"], PCX),
+                    math_n(nt, "MULTIPLY_ADD", math_n(nt, "MAXIMUM", dz, 0.0), 0.35, 0.62))
+        r = math_n(nt, "SQRT", math_n(nt, "ADD", math_n(nt, "POWER", xx, 2.0), math_n(nt, "POWER", zz, 2.0)))
+        oko = math_n(nt, "SUBTRACT", 1.0, math_n(nt, "MAXIMUM", math_n(nt, "SUBTRACT", r, 0.45), 0.0), clamp=True)
+        oko = math_n(nt, "POWER", oko, 1.6)
+        pr = nt.nodes.new("ShaderNodeMapping")                 # pruge: sum razvucen uspravno (dim se penje)
+        pr.inputs["Scale"].default_value = (7.0, 7.0, 1.1)
+        nt.links.new(co, pr.inputs["Vector"])
+        pruge = ramp(nt, noise(nt, pr.outputs["Vector"], 1.0, 5, 0.65).outputs["Fac"], (0.35, 0.35, 0.35, 1),
+                     (1, 1, 1, 1), 0.35, 0.65)
+        lice = math_n(nt, "LESS_THAN", sep.outputs["Y"], PY0 + 0.06)   # samo lice peci, ne komora
+        oko = math_n(nt, "MULTIPLY", math_n(nt, "MULTIPLY", oko, pruge), lice)
+        oko = math_n(nt, "MAXIMUM", oko, math_n(nt, "MULTIPLY", math_n(nt, "MULTIPLY", cav, oko), 2.0))
+        soot = math_n(nt, "MAXIMUM", soot, math_n(nt, "MULTIPLY", oko, 0.95))
+    return soot
 
 
 def mat_simple(name, col, rough=0.7, metal=0.0, emit=None, strength=0.0, coat=0.0, sss=0.0):
@@ -338,8 +575,21 @@ def mat_drvo(name, c_lo, c_hi, rough=0.55, axis="X", scale=3.0, coat=0.0, vlakno
         sk["B_Color"].default_value = dark
         wood = [s_ for s_ in mx.outputs if s_.identifier == "Result_Color"][0]
     nz = noise(nt, co, 1.2, 3)
-    nt.links.new(mixc(nt, math_n(nt, "MULTIPLY", nz.outputs["Fac"], 0.3), wood, c_lo), p.inputs["Base Color"])
-    nt.links.new(bump(nt, wv.outputs["Fac"], 0.1, 0.006), p.inputs["Normal"])
+    col = mixc(nt, math_n(nt, "MULTIPLY", nz.outputs["Fac"], 0.3), wood, c_lo)
+    # pore: sitne izduzene tacke duz vlakna; izlizane ivice malo svetlije (Bevel)
+    mpp = nt.nodes.new("ShaderNodeMapping")
+    mpp.inputs["Scale"].default_value = (0.15, 1.0, 1.0) if axis == "X" else (1.0, 0.15, 1.0)
+    nt.links.new(co, mpp.inputs["Vector"])
+    vop = nt.nodes.new("ShaderNodeTexVoronoi")
+    vop.inputs["Scale"].default_value = 260.0
+    nt.links.new(mpp.outputs["Vector"], vop.inputs["Vector"])
+    pore = math_n(nt, "LESS_THAN", vop.outputs["Distance"], 0.1)
+    col = mixc(nt, math_n(nt, "MULTIPLY", pore, 0.45), col, tuple(c * 0.4 for c in hexc(c_lo)[:3]) + (1,))
+    col = mixc(nt, math_n(nt, "MULTIPLY", ivica(nt, 0.006), 0.25), col, c_hi)
+    nt.links.new(col, p.inputs["Base Color"])
+    n0 = bevel_n(nt, 0.004)
+    n1 = bump(nt, math_n(nt, "SUBTRACT", 1.0, pore), 0.15, 0.0008, n0)
+    nt.links.new(bump(nt, wv.outputs["Fac"], 0.1, 0.006, n1), p.inputs["Normal"])
     p.inputs["Roughness"].default_value = rough
     if coat:
         p.inputs["Coat Weight"].default_value = coat
@@ -349,27 +599,37 @@ def mat_drvo(name, c_lo, c_hi, rough=0.55, axis="X", scale=3.0, coat=0.0, vlakno
 
 def mat_testo(name, flour=0.35):
     """Sirovo testo: mat krem-bez koza (topliji i tamniji ton u udubljenjima mrlje, sitni mehurici),
-    preko nje trag brasna u mekim mrljama. Sve je u boji (albedo), jer sajt nema SSS ni sjaj."""
+    preko nje trag brasna u mekim mrljama. Boja je u albedu (sajt), a za Cycles jos SSS (testo propusta svetlo),
+    pomak suma po komadu (Object Info) i brasno kao drugi sloj: suvlje i hrapavije, gusce odozgo."""
     m, nt, p = node_mat(name)
-    co = obj_co(nt)
+    co, rnd = po_komadu(nt, obj_co(nt))
     koza = ramp(nt, noise(nt, co, 9.0, 4, 0.55).outputs["Fac"], "#cdb18a", "#e0caa8", 0.3, 0.7)
     vo = nt.nodes.new("ShaderNodeTexVoronoi")
     vo.inputs["Scale"].default_value = 140.0
     nt.links.new(co, vo.inputs["Vector"])
     mehur = math_n(nt, "MULTIPLY", math_n(nt, "LESS_THAN", vo.outputs["Distance"], 0.12), 0.35)
     koza = mixc(nt, mehur, koza, "#bb9c74")
+    koza = mixc(nt, math_n(nt, "MULTIPLY", rnd, 0.25), koza, "#c9a77c")
     nz = noise(nt, co, 16.0, 6, 0.62)
     fl = ramp(nt, nz.outputs["Fac"], (0, 0, 0, 1), (1, 1, 1, 1), 0.6 - flour * 0.18, 0.74 - flour * 0.12)
-    nt.links.new(mixc(nt, math_n(nt, "MULTIPLY", fl, 0.35 + flour * 0.5), koza, BRASNO), p.inputs["Base Color"])
-    p.inputs["Roughness"].default_value = 0.85
-    p.inputs["Subsurface Weight"].default_value = 0.35
-    p.inputs["Subsurface Radius"].default_value = (0.015, 0.009, 0.005)
-    nt.links.new(bump(nt, noise(nt, co, 120.0, 3).outputs["Fac"], 0.08, 0.002), p.inputs["Normal"])
+    gn = nt.nodes.new("ShaderNodeSeparateXYZ")
+    nt.links.new(nt.nodes.new("ShaderNodeNewGeometry").outputs["Normal"], gn.inputs["Vector"])
+    gore = math_n(nt, "MULTIPLY_ADD", math_n(nt, "MAXIMUM", gn.outputs["Z"], 0.0), 0.5, 0.6)
+    fl_m = math_n(nt, "MULTIPLY", math_n(nt, "MULTIPLY", fl, 0.35 + flour * 0.5), gore, clamp=True)
+    nt.links.new(mixc(nt, fl_m, koza, BRASNO), p.inputs["Base Color"])
+    nt.links.new(math_n(nt, "MULTIPLY_ADD", fl_m, 0.13, 0.82), p.inputs["Roughness"])
+    p.inputs["Subsurface Weight"].default_value = 0.6
+    p.inputs["Subsurface Radius"].default_value = (0.02, 0.011, 0.006)
+    p.inputs["Subsurface Scale"].default_value = 0.5
+    p.inputs["Specular IOR Level"].default_value = 0.35
+    n1 = bump(nt, noise(nt, co, 120.0, 3).outputs["Fac"], 0.08, 0.002)
+    nt.links.new(bump(nt, fl_m, 0.15, 0.0006, n1), p.inputs["Normal"])
     return m
 
 
 def mat_sto(name):
-    """Ploca radnog stola: svetla bukva sa godovima, preko nje brasno u mrljama."""
+    """Ploca radnog stola: svetla bukva sa godovima i porama, ogrebotine od noza i strugalice (svetlije, sveze
+    drvo, u njima brasno), brasno u mrljama u dva sloja (krupne mrlje + sitan posip), izlizana ivica."""
     m, nt, p = node_mat(name)
     co = obj_co(nt)
     mp = nt.nodes.new("ShaderNodeMapping")
@@ -382,11 +642,26 @@ def mat_sto(name):
     wv.inputs["Detail"].default_value = 3
     nt.links.new(mp.outputs["Vector"], wv.inputs["Vector"])
     wood = ramp(nt, wv.outputs["Fac"], "#9c6b3c", "#c4925c")
+    mpp = nt.nodes.new("ShaderNodeMapping")
+    mpp.inputs["Scale"].default_value = (0.15, 1.0, 1.0)
+    nt.links.new(co, mpp.inputs["Vector"])
+    vop = nt.nodes.new("ShaderNodeTexVoronoi")
+    vop.inputs["Scale"].default_value = 260.0
+    nt.links.new(mpp.outputs["Vector"], vop.inputs["Vector"])
+    pore = math_n(nt, "LESS_THAN", vop.outputs["Distance"], 0.1)
+    wood = mixc(nt, math_n(nt, "MULTIPLY", pore, 0.4), wood, "#5a3b1f")
+    ogr = ogrebotine(nt, co, 7.0, 0.02, 0.45)
+    wood = mixc(nt, math_n(nt, "MULTIPLY", ogr, 0.7), wood, "#dcb98e")
     fl = noise(nt, co, 3.2, 6, 0.65)
     mask = ramp(nt, fl.outputs["Fac"], (0, 0, 0, 1), (1, 1, 1, 1), 0.5, 0.66)
-    nt.links.new(mixc(nt, mask, wood, BRASNO), p.inputs["Base Color"])
-    nt.links.new(bump(nt, wv.outputs["Fac"], 0.12, 0.01), p.inputs["Normal"])
-    p.inputs["Roughness"].default_value = 0.75
+    posip = ramp(nt, noise(nt, co, 38.0, 4, 0.7).outputs["Fac"], (0, 0, 0, 1), (1, 1, 1, 1), 0.58, 0.68)
+    fl_m = math_n(nt, "MAXIMUM", mask, math_n(nt, "MULTIPLY", math_n(nt, "MAXIMUM", posip, ogr), 0.55))
+    nt.links.new(mixc(nt, fl_m, wood, BRASNO), p.inputs["Base Color"])
+    nt.links.new(math_n(nt, "MULTIPLY_ADD", fl_m, 0.2, 0.72), p.inputs["Roughness"])
+    n0 = bevel_n(nt, 0.008)
+    n1 = bump(nt, math_n(nt, "SUBTRACT", 1.0, math_n(nt, "MAXIMUM", ogr, pore)), 0.25, 0.0008, n0)
+    n2 = bump(nt, fl_m, 0.2, 0.0006, n1)
+    nt.links.new(bump(nt, wv.outputs["Fac"], 0.12, 0.01, n2), p.inputs["Normal"])
     return m
 
 
@@ -427,15 +702,39 @@ def mat_pruce(name):
 def mat_kora(name, light, dark, rough=0.55, mode="semmel"):
     """Kora hleba. Atribut "boja" (po temenu): R = koliko je pecena, G = maska (mak, Ausbund, brasno)."""
     m, nt, p = node_mat(name)
-    co = obj_co(nt)
+    co, rnd = po_komadu(nt, obj_co(nt))                   # svaki komad pecen malo drugacije
     at = nt.nodes.new("ShaderNodeAttribute")
     at.attribute_name = "boja"
     sp = nt.nodes.new("ShaderNodeSeparateColor")
     nt.links.new(at.outputs["Color"], sp.inputs["Color"])
     mott = noise(nt, co, 45.0, 4, 0.55)
     bake = math_n(nt, "MULTIPLY_ADD", mott.outputs["Fac"], 0.5, sp.outputs["Red"])
+    bake = math_n(nt, "MULTIPLY_ADD", rnd, 0.16, math_n(nt, "SUBTRACT", bake, 0.08))
+    # mehurici (plikovi u kori): sitne kupole, vrh tamniji (jace pecen)
+    vb = nt.nodes.new("ShaderNodeTexVoronoi")
+    vb.inputs["Scale"].default_value = 110.0
+    nt.links.new(co, vb.inputs["Vector"])
+    plik = ramp(nt, vb.outputs["Distance"], (1, 1, 1, 1), (0, 0, 0, 1), 0.05, 0.22)
+    plik = math_n(nt, "MULTIPLY", plik, math_n(nt, "GREATER_THAN", noise(nt, co, 14.0, 2).outputs["Fac"], 0.52))
+    bake = math_n(nt, "MULTIPLY_ADD", plik, 0.18, bake)
     col = ramp(nt, math_n(nt, "SUBTRACT", bake, 0.22, clamp=True), light, dark)
+    # mikro-pukotine: tanka mreza (Voronoi ivice), svetlija (ispod kore je bleda)
+    vp = nt.nodes.new("ShaderNodeTexVoronoi")
+    vp.feature = "DISTANCE_TO_EDGE"
+    vp.inputs["Scale"].default_value = 70.0
+    nt.links.new(co, vp.inputs["Vector"])
+    puk = math_n(nt, "MULTIPLY", math_n(nt, "LESS_THAN", vp.outputs["Distance"], 0.025),
+                 math_n(nt, "GREATER_THAN", noise(nt, co, 9.0, 3).outputs["Fac"], 0.55))
+    col = mixc(nt, math_n(nt, "MULTIPLY", puk, 0.55), col, light)
     fine = bump(nt, noise(nt, co, 260.0, 4).outputs["Fac"], 0.18, 0.0015)
+    fine = bump(nt, plik, 0.25, 0.0012, fine)
+    fine = bump(nt, math_n(nt, "SUBTRACT", 1.0, puk), 0.3, 0.0005, fine)
+    if mode == "semmel":                                  # brasno kao drugi sloj: tanko, u mrljama, odozgo
+        gn = nt.nodes.new("ShaderNodeSeparateXYZ")
+        nt.links.new(nt.nodes.new("ShaderNodeNewGeometry").outputs["Normal"], gn.inputs["Vector"])
+        fl = ramp(nt, noise(nt, co, 20.0, 6, 0.65).outputs["Fac"], (0, 0, 0, 1), (1, 1, 1, 1), 0.56, 0.7)
+        fl = math_n(nt, "MULTIPLY", math_n(nt, "MULTIPLY", fl, math_n(nt, "MAXIMUM", gn.outputs["Z"], 0.0)), 0.45)
+        col = mixc(nt, fl, col, BRASNO)
     G = sp.outputs["Green"]
     if mode == "mak":
         dots = []
@@ -490,6 +789,8 @@ def mat_krume(name, c_lo, c_hi, pore="#3a2a1d"):
     nt.links.new(mixc(nt, pr, base, pore), p.inputs["Base Color"])
     nt.links.new(bump(nt, math_n(nt, "SUBTRACT", 1.0, pr), 0.5, 0.0015), p.inputs["Normal"])
     p.inputs["Roughness"].default_value = 0.9
+    p.inputs["Subsurface Weight"].default_value = 0.3     # mekana sredina propusta malo svetla
+    p.inputs["Subsurface Radius"].default_value = (0.008, 0.005, 0.003)
     return m
 
 
@@ -511,10 +812,23 @@ def mat_gvozdje(name, c_lo, c_hi, edge, rough=0.55, metal=0.6):
     nt.links.new(geo.outputs["Normal"], dot.inputs[1])
     ivica = math_n(nt, "MULTIPLY", math_n(nt, "SUBTRACT", 1.0, dot.outputs["Value"]), 9.0, clamp=True)
     ivica = math_n(nt, "MULTIPLY", ivica, math_n(nt, "MULTIPLY_ADD", noise(nt, co, 40.0, 3).outputs["Fac"], 0.8, 0.4))
-    nt.links.new(mixc(nt, math_n(nt, "MINIMUM", ivica, 1.0), base, edge), p.inputs["Base Color"])
-    nt.links.new(bump(nt, noise(nt, co, 60.0, 4).outputs["Fac"], 0.25, 0.002), p.inputs["Normal"])
-    p.inputs["Roughness"].default_value = rough
-    p.inputs["Metallic"].default_value = metal
+    # prag peci (polica za lopatu) je izglacan od lopate: pojas na vrhu praga u osi otvora (svetske koordinate)
+    pos = nt.nodes.new("ShaderNodeSeparateXYZ")
+    nt.links.new(geo.outputs["Position"], pos.inputs["Vector"])
+    gn = nt.nodes.new("ShaderNodeSeparateXYZ")
+    nt.links.new(geo.outputs["Normal"], gn.inputs["Vector"])
+    prag = math_n(nt, "MULTIPLY", math_n(nt, "GREATER_THAN", gn.outputs["Z"], 0.8),
+                  math_n(nt, "LESS_THAN", math_n(nt, "ABSOLUTE", math_n(nt, "SUBTRACT", pos.outputs["X"], PCX)), 0.4))
+    prag = math_n(nt, "MULTIPLY", prag, math_n(nt, "GREATER_THAN", pos.outputs["Y"], PY0 - 0.21))
+    prag = math_n(nt, "MULTIPLY", prag, math_n(nt, "LESS_THAN", math_n(nt, "ABSOLUTE",
+                  math_n(nt, "SUBTRACT", pos.outputs["Z"], O_Z0 - 0.02)), 0.03))
+    prag = math_n(nt, "MULTIPLY", prag, ramp(nt, noise(nt, co, 18.0, 4).outputs["Fac"], (0.3, 0.3, 0.3, 1),
+                                             (1, 1, 1, 1), 0.35, 0.6))
+    hab = math_n(nt, "MAXIMUM", math_n(nt, "MINIMUM", ivica, 1.0), prag)
+    nt.links.new(mixc(nt, hab, base, edge), p.inputs["Base Color"])
+    nt.links.new(bump(nt, noise(nt, co, 60.0, 4).outputs["Fac"], 0.25, 0.002, bv.outputs["Normal"]), p.inputs["Normal"])
+    nt.links.new(math_n(nt, "MULTIPLY_ADD", hab, -0.3, rough), p.inputs["Roughness"])
+    nt.links.new(math_n(nt, "MULTIPLY_ADD", hab, 0.35, metal, clamp=True), p.inputs["Metallic"])
     return m
 
 
@@ -546,6 +860,16 @@ def mat_cepanica(name):
     at2 = math_n(nt, "ARCTAN2", G, R)
     puk = math_n(nt, "SINE", math_n(nt, "MULTIPLY_ADD", nzr, 3.0, math_n(nt, "MULTIPLY_ADD", A, 900.0, at2)))  # jedna pukotina, ugao po cepanici
     puk = math_n(nt, "MULTIPLY", math_n(nt, "GREATER_THAN", puk, 0.993), math_n(nt, "GREATER_THAN", rn, 0.35))
+    # jos nekoliko kracih radijalnih pukotina od suvljenja (od kore ka srzi), svaka cepanica svoj ugao i broj
+    puk2 = math_n(nt, "SINE", math_n(nt, "MULTIPLY_ADD", nzr, 5.0,
+                                     math_n(nt, "MULTIPLY", math_n(nt, "MULTIPLY_ADD", A, 1300.0, at2), 3.0)))
+    puk2 = math_n(nt, "MULTIPLY", math_n(nt, "GREATER_THAN", puk2, 0.985),
+                  math_n(nt, "GREATER_THAN", rn, math_n(nt, "MULTIPLY_ADD", nzr, 0.4, 0.45)))
+    puk = math_n(nt, "MAXIMUM", puk, puk2)
+    # tragovi testere na celu: fine paralelne crte, preko njih prljavstina
+    tes = math_n(nt, "SINE", math_n(nt, "MULTIPLY", math_n(nt, "MULTIPLY_ADD", G, 0.2, R), 2 * math.pi * 420.0))
+    pres = mixc(nt, math_n(nt, "MULTIPLY", ramp(nt, tes, (0, 0, 0, 1), (1, 1, 1, 1), 0.3, 1.0), 0.12), pres, "#6e4c2e")
+    pres = mixc(nt, 0.35, pres, "#7d6a55")                    # odlezalo drvo: celo posivi
     pres = mixc(nt, puk, pres, "#3a2616")
     pres = mixc(nt, math_n(nt, "GREATER_THAN", rn, 0.9), pres, "#3b2a1e")
     # kora
@@ -567,9 +891,336 @@ def mat_cepanica(name):
     ugalj = math_n(nt, "GREATER_THAN", sep.outputs["Z"], 0.95)
     col = mixc(nt, math_n(nt, "MULTIPLY", ugalj, 0.85), col, "#141010")
     nt.links.new(col, p.inputs["Base Color"])
-    nt.links.new(bump(nt, math_n(nt, "MAXIMUM", math_n(nt, "MULTIPLY", brazda, math_n(nt, "SUBTRACT", 1.0, B)), puk),
-                      -0.5, 0.004), p.inputs["Normal"])
-    p.inputs["Roughness"].default_value = 0.9
+    # ugljenisane cepanice u komori: koza kao krokodilska (Voronoi ivice), pukotine tinjaju (samo emisija;
+    # albedo za sajt ostaje isti)
+    vu = nt.nodes.new("ShaderNodeTexVoronoi")
+    vu.feature = "DISTANCE_TO_EDGE"
+    vu.inputs["Scale"].default_value = 85.0
+    nt.links.new(co, vu.inputs["Vector"])
+    tinja = math_n(nt, "MULTIPLY", ramp(nt, vu.outputs["Distance"], (1, 1, 1, 1), (0, 0, 0, 1), 0.0, 0.045),
+                   ramp(nt, noise(nt, co, 4.0, 3).outputs["Fac"], (0, 0, 0, 1), (1, 1, 1, 1), 0.4, 0.7))
+    tinja = math_n(nt, "MULTIPLY", tinja, ugalj)
+    nt.links.new(ramp(nt, tinja, "#3a0a00", "#ff6a10", 0.0, 1.0), p.inputs["Emission Color"])
+    nt.links.new(math_n(nt, "MULTIPLY", tinja, 4.0), p.inputs["Emission Strength"])
+    hgt = math_n(nt, "MAXIMUM", math_n(nt, "MULTIPLY", brazda, math_n(nt, "SUBTRACT", 1.0, B)), puk)
+    hgt = math_n(nt, "MAXIMUM", hgt, math_n(nt, "MULTIPLY", tinja, 0.8))
+    n1 = bump(nt, math_n(nt, "MULTIPLY", noise(nt, vk.outputs["Vector"], 25.0, 5, 0.65).outputs["Fac"],
+                         math_n(nt, "SUBTRACT", 1.0, B)), 0.5, 0.004, bevel_n(nt, 0.006))
+    nt.links.new(bump(nt, hgt, -0.5, 0.004, n1), p.inputs["Normal"])
+    nt.links.new(math_n(nt, "MULTIPLY_ADD", B, -0.1, 0.92), p.inputs["Roughness"])
+    return m
+
+
+# ---- foto varijante (samo Cycles kadar "ofen"; sajt i bake koriste gornje materijale, vidi foto_sloj())
+def mat_gvozdje_foto(name):
+    """Pocrnelo gvozdje iz rusty_metal_02 (plocica 0,9 m): siva boja fotografije postaje skoro crno gvozdje,
+    rdja (zasicena mesta) tamno smedja i mat; izlizane ivice i izglacan pojas lopate na pragu kao u mat_gvozdje."""
+    m, nt, p = node_mat(name)
+    co = obj_co(nt)
+    t = pbr(nt, "rusty_metal_02", 0.9, 0.9, nor_s=0.6)
+    hsv = nt.nodes.new("ShaderNodeSeparateColor")
+    hsv.mode = "HSV"
+    nt.links.new(t["diff"], hsv.inputs["Color"])
+    rdj = ramp(nt, hsv.outputs["Green"], (0, 0, 0, 1), (1, 1, 1, 1), 0.3, 0.6)
+    gv = ramp(nt, hsv.outputs["Blue"], "#191512", "#3a332d", 0.4, 0.9)
+    base = mixc(nt, math_n(nt, "MULTIPLY", rdj, 0.85), gv, "#3a2014")
+    nb = bevel_na(nt, t["nor"], 0.012)
+    geo = nt.nodes.new("ShaderNodeNewGeometry")
+    dot = nt.nodes.new("ShaderNodeVectorMath")
+    dot.operation = "DOT_PRODUCT"
+    nt.links.new(nb, dot.inputs[0])
+    nt.links.new(geo.outputs["Normal"], dot.inputs[1])
+    ivica_ = math_n(nt, "MULTIPLY", math_n(nt, "SUBTRACT", 1.0, dot.outputs["Value"]), 6.0, clamp=True)
+    ivica_ = math_n(nt, "MULTIPLY", ivica_, math_n(nt, "MULTIPLY_ADD", noise(nt, co, 40.0, 3).outputs["Fac"], 0.8, 0.2))
+    pos = nt.nodes.new("ShaderNodeSeparateXYZ")
+    nt.links.new(geo.outputs["Position"], pos.inputs["Vector"])
+    gn = nt.nodes.new("ShaderNodeSeparateXYZ")
+    nt.links.new(geo.outputs["Normal"], gn.inputs["Vector"])
+    prag = math_n(nt, "MULTIPLY", math_n(nt, "GREATER_THAN", gn.outputs["Z"], 0.8),
+                  math_n(nt, "LESS_THAN", math_n(nt, "ABSOLUTE", math_n(nt, "SUBTRACT", pos.outputs["X"], PCX)), 0.4))
+    prag = math_n(nt, "MULTIPLY", prag, math_n(nt, "GREATER_THAN", pos.outputs["Y"], PY0 - 0.21))
+    prag = math_n(nt, "MULTIPLY", prag, math_n(nt, "LESS_THAN", math_n(nt, "ABSOLUTE",
+                  math_n(nt, "SUBTRACT", pos.outputs["Z"], O_Z0 - 0.02)), 0.03))
+    prag = math_n(nt, "MULTIPLY", prag, ramp(nt, noise(nt, co, 18.0, 4).outputs["Fac"], (0.3, 0.3, 0.3, 1),
+                                             (1, 1, 1, 1), 0.35, 0.6))
+    hab = math_n(nt, "MULTIPLY", math_n(nt, "MAXIMUM", math_n(nt, "MINIMUM", ivica_, 1.0), prag),
+                 math_n(nt, "SUBTRACT", 1.0, rdj))
+    nt.links.new(mixc(nt, hab, base, "#77706a"), p.inputs["Base Color"])
+    nt.links.new(nb, p.inputs["Normal"])
+    r_ = math_n(nt, "MULTIPLY_ADD", t["rough"], 0.35, math_n(nt, "MULTIPLY_ADD", rdj, 0.25, 0.42))
+    nt.links.new(math_n(nt, "MULTIPLY_ADD", hab, -0.25, r_, clamp=True), p.inputs["Roughness"])
+    nt.links.new(math_n(nt, "MULTIPLY_ADD", rdj, -0.55, math_n(nt, "MULTIPLY_ADD", hab, 0.3, 0.65), clamp=True),
+                 p.inputs["Metallic"])
+    return m
+
+
+def mat_drvo_foto(name, k=1.15):
+    """Drvo radnje (pult, lopata, polica, rukohvat) iz wood_table_worn (plocica 1,2 m), boja puta k."""
+    m, nt, p = node_mat(name)
+    t = pbr(nt, "wood_table_worn", 1.2, 1.2, nor_s=0.8)
+    nt.links.new(skala(nt, t["diff"], k), p.inputs["Base Color"])
+    nt.links.new(bevel_na(nt, t["nor"], 0.005), p.inputs["Normal"])
+    nt.links.new(math_n(nt, "MULTIPLY_ADD", t["rough"], 0.5, 0.35), p.inputs["Roughness"])
+    return m
+
+
+def mat_sto_foto(name):
+    """Ploca stola: wood_table_worn posvetljen u bukvu, preko njega ogrebotine od noza i brasno kao u mat_sto."""
+    m, nt, p = node_mat(name)
+    co = obj_co(nt)
+    t = pbr(nt, "wood_table_worn", 1.2, 1.2, nor_s=0.8)
+    hs = nt.nodes.new("ShaderNodeHueSaturation")
+    hs.inputs["Saturation"].default_value = 0.85
+    nt.links.new(skala(nt, t["diff"], 3.0), hs.inputs["Color"])
+    wood = hs.outputs["Color"]
+    ogr = ogrebotine(nt, co, 7.0, 0.02, 0.45)
+    wood = mixc(nt, math_n(nt, "MULTIPLY", ogr, 0.7), wood, "#dcb98e")
+    mask = ramp(nt, noise(nt, co, 3.2, 6, 0.65).outputs["Fac"], (0, 0, 0, 1), (1, 1, 1, 1), 0.5, 0.66)
+    posip = ramp(nt, noise(nt, co, 38.0, 4, 0.7).outputs["Fac"], (0, 0, 0, 1), (1, 1, 1, 1), 0.58, 0.68)
+    fl_m = math_n(nt, "MAXIMUM", mask, math_n(nt, "MULTIPLY", math_n(nt, "MAXIMUM", posip, ogr), 0.55))
+    nt.links.new(mixc(nt, fl_m, wood, BRASNO), p.inputs["Base Color"])
+    nt.links.new(math_n(nt, "MULTIPLY_ADD", fl_m, 0.2, math_n(nt, "MULTIPLY_ADD", t["rough"], 0.3, 0.5)),
+                 p.inputs["Roughness"])
+    n1 = bump(nt, math_n(nt, "SUBTRACT", 1.0, ogr), 0.25, 0.0008, bevel_na(nt, t["nor"], 0.008))
+    nt.links.new(bump(nt, fl_m, 0.2, 0.0006, n1), p.inputs["Normal"])
+    return m
+
+
+def mat_zar_foto(name):
+    """Zar za fotografiju (zar_pec ostaje za sajt): nepravilni grumeni uglja sa crnom korom i malo sivog pepela,
+    a svetle samo pukotine i procepi izmedju grumena (AO). Boja je Blackbody 900-1300 K po toploti, jacina je
+    "Emission Strength" (KRUME_OFEN_EM). Grumeni su u geometriji (Subdivision + Displace, foto_sloj())."""
+    m, nt, p = node_mat(name)
+    co = obj_co(nt)
+    vo = nt.nodes.new("ShaderNodeTexVoronoi")             # pukotine kore: Voronoi ivice, isprekidane sumom
+    vo.feature = "DISTANCE_TO_EDGE"
+    vo.inputs["Scale"].default_value = 30.0
+    vo.inputs["Randomness"].default_value = 0.85
+    nt.links.new(co, vo.inputs["Vector"])
+    puk = math_n(nt, "MULTIPLY", ramp(nt, vo.outputs["Distance"], (1, 1, 1, 1), (0, 0, 0, 1), 0.0, 0.045),
+                 ramp(nt, noise(nt, co, 9.0, 3).outputs["Fac"], (0, 0, 0, 1), (1, 1, 1, 1), 0.42, 0.6))
+    # tinjanje ispod pepela: nepravilna polja koja svetle tamnocrveno (ne mreza linija)
+    tinja = ramp(nt, noise(nt, co, 14.0, 6, 0.7).outputs["Fac"], (0, 0, 0, 1), (0.55, 0.55, 0.55, 1), 0.55, 0.75)
+    procep = math_n(nt, "POWER", supljina(nt, 0.04), 1.6)  # izmedju grumena je najtoplije
+    zona = ramp(nt, noise(nt, co, 2.2, 4, 0.55).outputs["Fac"], (0.3, 0.3, 0.3, 1), (1, 1, 1, 1), 0.35, 0.7)
+    heat = math_n(nt, "MAXIMUM", math_n(nt, "MAXIMUM", math_n(nt, "MULTIPLY", puk, 0.75), tinja), procep)
+    heat = math_n(nt, "MULTIPLY", heat, zona, clamp=True)
+    bb = nt.nodes.new("ShaderNodeBlackbody")
+    nt.links.new(math_n(nt, "MULTIPLY_ADD", heat, 400.0, 850.0), bb.inputs["Temperature"])
+    nt.links.new(bb.outputs["Color"], p.inputs["Emission Color"])
+    em = nt.nodes.new("ShaderNodeValue")                  # jacina (menja je render petlja)
+    em.name, em.outputs[0].default_value = "jacina", 6.0
+    nt.links.new(math_n(nt, "MULTIPLY", math_n(nt, "POWER", heat, 2.2), em.outputs[0]), p.inputs["Emission Strength"])
+    p.inputs["Emission Strength"].default_value = 1.0
+    gn = nt.nodes.new("ShaderNodeSeparateXYZ")
+    nt.links.new(nt.nodes.new("ShaderNodeNewGeometry").outputs["Normal"], gn.inputs["Vector"])
+    pepeo = math_n(nt, "MULTIPLY", ramp(nt, noise(nt, co, 11.0, 5, 0.6).outputs["Fac"], (0, 0, 0, 1), (1, 1, 1, 1),
+                                        0.55, 0.75), math_n(nt, "MAXIMUM", gn.outputs["Z"], 0.0))
+    pepeo = math_n(nt, "MULTIPLY", pepeo, math_n(nt, "SUBTRACT", 1.0, heat), clamp=True)
+    kora = ramp(nt, noise(nt, co, 40.0, 4).outputs["Fac"], "#0b0908", "#1c1714", 0.3, 0.7)
+    nt.links.new(mixc(nt, math_n(nt, "MULTIPLY", pepeo, 0.8), kora, "#5d5752"), p.inputs["Base Color"])
+    nt.links.new(math_n(nt, "MULTIPLY_ADD", pepeo, 0.1, 0.82), p.inputs["Roughness"])
+    p.inputs["Specular IOR Level"].default_value = 0.3
+    n1 = bump(nt, noise(nt, co, 60.0, 5, 0.65).outputs["Fac"], 0.4, 0.002)
+    nt.links.new(bump(nt, math_n(nt, "SUBTRACT", 1.0, puk), 0.6, 0.004, n1), p.inputs["Normal"])
+    return m
+
+
+def mat_vrata_foto(name, unutra=False):
+    """Krug 3: vrata peci kao teško liveno gvozdje (samo foto kadar). rusty_metal_02 (plocica 0,6 m) daje rdju i
+    rupice, preko toga livacka kora: krupno zrno peska i sitne pore (Voronoi), sve kao bump. Lokalni z vrata
+    (0 na sarki, ~0,74 na temenu luka): gornja ivica je nagaravljena od plamena, ivice izlizane do sjajnog
+    gvozdja. unutra=True: strana ka vatri (stit i rebra), skoro cela pod cadji i pahuljama pepela."""
+    m, nt, p = node_mat(name)
+    co = obj_co(nt)
+    t = pbr(nt, "rusty_metal_02", 0.6, 0.6, nor_s=0.7)
+    hsv = nt.nodes.new("ShaderNodeSeparateColor")
+    hsv.mode = "HSV"
+    nt.links.new(t["diff"], hsv.inputs["Color"])
+    rdj = ramp(nt, hsv.outputs["Green"], (0, 0, 0, 1), (1, 1, 1, 1), 0.28, 0.6)
+    # livacka kora: zrno peska i pore (samo neke Voronoi celije postaju rupica)
+    zrno = noise(nt, co, 420.0, 5, 0.7).outputs["Fac"]
+    vo = nt.nodes.new("ShaderNodeTexVoronoi")
+    vo.inputs["Scale"].default_value = 160.0
+    nt.links.new(co, vo.inputs["Vector"])
+    pora = math_n(nt, "MULTIPLY", ramp(nt, vo.outputs["Distance"], (1, 1, 1, 1), (0, 0, 0, 1), 0.0, 0.22),
+                  math_n(nt, "GREATER_THAN", _bw(nt, vo.outputs["Color"]), 0.72))
+    sep = nt.nodes.new("ShaderNodeSeparateXYZ")
+    nt.links.new(co, sep.inputs["Vector"])
+    # cadj: gornja ivica (lokalni z) u jezicima plamena, gusca u udubljenjima
+    jez = noise(nt, co, 9.0, 4, 0.6).outputs["Fac"]
+    cadj = math_n(nt, "ADD", math_n(nt, "MULTIPLY", sep.outputs["Z"], 2.2),
+                  math_n(nt, "MULTIPLY_ADD", jez, 0.9, -1.25))
+    cadj = math_n(nt, "MINIMUM", math_n(nt, "MAXIMUM", cadj, 0.0), 1.0)
+    cav = supljina(nt, 0.03)
+    cadj = math_n(nt, "MAXIMUM", cadj, math_n(nt, "MULTIPLY", cav, 0.8))
+    if unutra:
+        cadj = math_n(nt, "MAXIMUM", cadj, ramp(nt, noise(nt, co, 6.0, 4).outputs["Fac"], (0.55, 0.55, 0.55, 1),
+                                                (0.95, 0.95, 0.95, 1), 0.3, 0.7))
+    gv = ramp(nt, hsv.outputs["Blue"], "#1a1613", "#36302b", 0.45, 0.95)
+    gv = mixc(nt, math_n(nt, "MULTIPLY", zrno, 0.35), gv, "#100d0b")
+    col = mixc(nt, math_n(nt, "MULTIPLY", rdj, 0.8), gv, "#3b1f12")
+    col = mixc(nt, math_n(nt, "MULTIPLY", pora, 0.85), col, "#080605")
+    col = mixc(nt, math_n(nt, "MULTIPLY", cadj, 0.92), col, "#0a0807")
+    pep = math_n(nt, "MULTIPLY", ramp(nt, noise(nt, co, 26.0, 5, 0.7).outputs["Fac"], (0, 0, 0, 1), (1, 1, 1, 1),
+                                      0.6, 0.72), 0.55 if unutra else 0.2)
+    col = mixc(nt, math_n(nt, "MULTIPLY", pep, cadj), col, "#4a4540")
+    # izlizane ivice: Bevel naspram prave normale, isprekidano; na cadji i rdji slabije
+    nb = bevel_na(nt, t["nor"], 0.01)
+    geo = nt.nodes.new("ShaderNodeNewGeometry")
+    dot = nt.nodes.new("ShaderNodeVectorMath")
+    dot.operation = "DOT_PRODUCT"
+    nt.links.new(nb, dot.inputs[0])
+    nt.links.new(geo.outputs["Normal"], dot.inputs[1])
+    hab = math_n(nt, "MULTIPLY", math_n(nt, "SUBTRACT", 1.0, dot.outputs["Value"]), 7.0, clamp=True)
+    hab = math_n(nt, "MULTIPLY", hab, ramp(nt, noise(nt, co, 30.0, 4).outputs["Fac"], (0, 0, 0, 1), (1, 1, 1, 1),
+                                           0.4, 0.62))
+    hab = math_n(nt, "MULTIPLY", hab, math_n(nt, "SUBTRACT", 1.0, math_n(nt, "MULTIPLY", rdj, 0.7)))
+    hab = math_n(nt, "MULTIPLY", hab, 0.35 if unutra else 0.9)
+    nt.links.new(mixc(nt, hab, col, "#6f6a64"), p.inputs["Base Color"])
+    vis = math_n(nt, "ADD", math_n(nt, "MULTIPLY", zrno, 0.5), math_n(nt, "MULTIPLY", pora, -1.0))
+    vis = math_n(nt, "ADD", vis, math_n(nt, "MULTIPLY", rdj, -0.35))
+    nt.links.new(bump(nt, vis, 0.7, 0.0015, nb), p.inputs["Normal"])
+    r_ = math_n(nt, "MULTIPLY_ADD", t["rough"], 0.25, math_n(nt, "MULTIPLY_ADD", rdj, 0.2, 0.55))
+    r_ = math_n(nt, "MULTIPLY_ADD", cadj, 0.25, r_)
+    nt.links.new(math_n(nt, "MULTIPLY_ADD", hab, -0.35, r_, clamp=True), p.inputs["Roughness"])
+    met = math_n(nt, "MULTIPLY_ADD", cadj, -0.45, math_n(nt, "MULTIPLY_ADD", rdj, -0.45, 0.6))
+    nt.links.new(math_n(nt, "MULTIPLY_ADD", hab, 0.5, met, clamp=True), p.inputs["Metallic"])
+    return m
+
+
+def mat_mesing_foto(name):
+    """Mesing posle godina uz pec: potamneo, braon patina u mrljama, svetao samo gde ga ruka dodiruje (ivice)."""
+    m, nt, p = node_mat(name)
+    co = obj_co(nt)
+    pat = ramp(nt, noise(nt, co, 35.0, 5, 0.65).outputs["Fac"], (0, 0, 0, 1), (1, 1, 1, 1), 0.4, 0.65)
+    hab = ivica(nt, 0.004, 6.0)
+    col = mixc(nt, math_n(nt, "MULTIPLY", pat, 0.85), "#5e4421", "#2a1d10")
+    nt.links.new(mixc(nt, hab, col, "#a07a3c"), p.inputs["Base Color"])
+    nt.links.new(math_n(nt, "MULTIPLY_ADD", pat, 0.3, math_n(nt, "MULTIPLY_ADD", hab, -0.2, 0.45)), p.inputs["Roughness"])
+    nt.links.new(math_n(nt, "MULTIPLY_ADD", pat, -0.5, 0.95), p.inputs["Metallic"])
+    nt.links.new(bump(nt, noise(nt, co, 200.0, 4).outputs["Fac"], 0.2, 0.0008), p.inputs["Normal"])
+    return m
+
+
+def _bw(nt, col):
+    bw_ = nt.nodes.new("ShaderNodeRGBToBW")
+    nt.links.new(col, bw_.inputs["Color"])
+    return bw_.outputs["Val"]
+
+
+def mat_cepanica_foto(name):
+    """Krug 3: cepanice u nisi za fotografiju (pile_drva_foto). Atribut "drvo" = (x, y, vrsta, R): na celu x, y
+    od srzi, vrsta 1; na kori (luk, duz ose) vrsta 0; na cepanoj strani (preko, duz ose) vrsta 0,5. Atribut
+    "drvo_s" (R) je seme komada: svaka cepanica ima svoj ton, sivilo, gustinu godova i svoje pukotine."""
+    m, nt, p = node_mat(name)
+    co = obj_co(nt)
+    at = nt.nodes.new("ShaderNodeAttribute")
+    at.attribute_name = "drvo"
+    sp = nt.nodes.new("ShaderNodeSeparateColor")
+    nt.links.new(at.outputs["Color"], sp.inputs["Color"])
+    X, Y, B, A = sp.outputs["Red"], sp.outputs["Green"], sp.outputs["Blue"], at.outputs["Alpha"]
+    at2 = nt.nodes.new("ShaderNodeAttribute")
+    at2.attribute_name = "drvo_s"
+    sp2 = nt.nodes.new("ShaderNodeSeparateColor")
+    nt.links.new(at2.outputs["Color"], sp2.inputs["Color"])
+    seme = sp2.outputs["Red"]
+
+    def rnd(off):
+        wn = nt.nodes.new("ShaderNodeTexWhiteNoise")
+        wn.noise_dimensions = "1D"
+        nt.links.new(math_n(nt, "ADD", seme, off), wn.inputs["W"])
+        return wn.outputs["Value"]
+
+    celo = math_n(nt, "GREATER_THAN", B, 0.75)
+    cepano = math_n(nt, "MULTIPLY", math_n(nt, "GREATER_THAN", B, 0.25), math_n(nt, "LESS_THAN", B, 0.75))
+    v2 = nt.nodes.new("ShaderNodeCombineXYZ")
+    nt.links.new(X, v2.inputs["X"])
+    nt.links.new(Y, v2.inputs["Y"])
+    nt.links.new(math_n(nt, "MULTIPLY", seme, 3.7), v2.inputs["Z"])
+    sep2 = nt.nodes.new("ShaderNodeCombineXYZ")
+    nt.links.new(X, sep2.inputs["X"])
+    nt.links.new(Y, sep2.inputs["Y"])
+    ln2 = nt.nodes.new("ShaderNodeVectorMath")
+    ln2.operation = "LENGTH"
+    nt.links.new(sep2.outputs["Vector"], ln2.inputs[0])
+    r = ln2.outputs["Value"]
+    rn = math_n(nt, "DIVIDE", r, A)
+    nzr = noise(nt, v2.outputs["Vector"], 22.0, 4, 0.6).outputs["Fac"]
+    # godovi: 7-14 mm, krivudavi (sum), kasno drvo tamna tanka linija
+    gust = math_n(nt, "MULTIPLY_ADD", rnd(0.1), 70.0, 70.0)
+    god = math_n(nt, "FRACT", math_n(nt, "MULTIPLY", math_n(nt, "MULTIPLY_ADD", nzr, 0.014, r), gust))
+    god = ramp(nt, god, (0, 0, 0, 1), (1, 1, 1, 1), 0.72, 0.95)
+    svetlo, tamno = "#866649", "#3e2c1e"
+    pres = mixc(nt, math_n(nt, "MULTIPLY", _bw(nt, god), 0.85), svetlo, tamno)
+    pres = mixc(nt, math_n(nt, "MULTIPLY", ramp(nt, rn, (1, 1, 1, 1), (0, 0, 0, 1), 0.15, 0.55), rnd(0.2)), pres,
+                "#4a3324")                                                    # tamnija srz, ne kod svake
+    # sivilo odlezalog drveta i prljavstina: svaka cepanica drugacije
+    siv = math_n(nt, "MULTIPLY_ADD", rnd(0.3), 0.4, 0.1)
+    mrlja = ramp(nt, noise(nt, v2.outputs["Vector"], 9.0, 5, 0.65).outputs["Fac"], (0, 0, 0, 1), (1, 1, 1, 1), 0.4, 0.7)
+    pres = mixc(nt, math_n(nt, "MULTIPLY", siv, math_n(nt, "MULTIPLY_ADD", mrlja, 0.5, 0.6), clamp=True), pres,
+                "#6a6259")
+    # tragovi testere (blago zakrivljeni lukovi lancane testere)
+    tes = math_n(nt, "SINE", math_n(nt, "MULTIPLY", math_n(nt, "MULTIPLY_ADD", nzr, 0.006,
+                                                         math_n(nt, "MULTIPLY_ADD", X, 0.3, Y)), 2 * math.pi * 260.0))
+    pres = mixc(nt, math_n(nt, "MULTIPLY", ramp(nt, tes, (0, 0, 0, 1), (1, 1, 1, 1), 0.4, 1.0),
+                           math_n(nt, "MULTIPLY", rnd(0.4), 0.2)), pres, "#3e2e21")
+    # radijalne pukotine od suvljenja: tri po komadu, svaka svoj ugao, duzina (od kore ka srzi) i sirina
+    puk = None
+    for k_ in range(3):
+        a_ = math_n(nt, "MULTIPLY", rnd(1.0 + k_), 2 * math.pi)
+        s_, c_ = math_n(nt, "SINE", a_), math_n(nt, "COSINE", a_)
+        duz = math_n(nt, "ADD", math_n(nt, "MULTIPLY", X, c_), math_n(nt, "MULTIPLY", Y, s_))
+        pop = math_n(nt, "ABSOLUTE", math_n(nt, "SUBTRACT", math_n(nt, "MULTIPLY", Y, c_), math_n(nt, "MULTIPLY", X, s_)))
+        pop = math_n(nt, "ADD", pop, math_n(nt, "MULTIPLY", math_n(nt, "SUBTRACT", nzr, 0.5), 0.006))
+        poc = math_n(nt, "MULTIPLY", A, math_n(nt, "MULTIPLY_ADD", rnd(2.0 + k_), 0.75, 0.05))    # odakle krece
+        sir = math_n(nt, "MULTIPLY", math_n(nt, "MULTIPLY_ADD", rnd(3.0 + k_), 0.004, 0.0015),
+                     math_n(nt, "DIVIDE", math_n(nt, "SUBTRACT", duz, poc), math_n(nt, "MAXIMUM", math_n(nt, "SUBTRACT", A, poc), 0.005)))
+        p_ = math_n(nt, "MULTIPLY", math_n(nt, "LESS_THAN", pop, sir), math_n(nt, "GREATER_THAN", duz, poc))
+        p_ = math_n(nt, "MULTIPLY", p_, math_n(nt, "GREATER_THAN", rnd(5.0 + k_), 0.25 if k_ else 0.0))
+        puk = p_ if puk is None else math_n(nt, "MAXIMUM", puk, p_)
+    pres = mixc(nt, puk, pres, "#120c08")
+    # beljika (svetliji prsten) i kora po obodu cela; tamnija ivica cela (prljavstina, upijena vlaga)
+    pres = mixc(nt, math_n(nt, "MULTIPLY", ramp(nt, rn, (0, 0, 0, 1), (1, 1, 1, 1), 0.78, 0.86), 0.35), pres, "#8a7258")
+    kora_r = math_n(nt, "GREATER_THAN", rn, math_n(nt, "MULTIPLY_ADD", nzr, 0.04, 0.9))
+    pres = mixc(nt, kora_r, pres, "#2b2019")
+    pres = mixc(nt, math_n(nt, "MULTIPLY", math_n(nt, "LESS_THAN", r, 0.0035), 0.8), pres, "#2a1c12")   # srz
+    # kora: uzduzne brazde i ploce, poneka cepanica bez kore (oljuštena mesta)
+    vk = nt.nodes.new("ShaderNodeCombineXYZ")
+    nt.links.new(X, vk.inputs["X"])
+    nt.links.new(math_n(nt, "MULTIPLY", Y, 0.18), vk.inputs["Y"])
+    nt.links.new(math_n(nt, "MULTIPLY", seme, 7.0), vk.inputs["Z"])
+    vo = nt.nodes.new("ShaderNodeTexVoronoi")
+    vo.feature = "DISTANCE_TO_EDGE"
+    vo.inputs["Scale"].default_value = 70.0
+    nt.links.new(vk.outputs["Vector"], vo.inputs["Vector"])
+    brazda = ramp(nt, vo.outputs["Distance"], (1, 1, 1, 1), (0, 0, 0, 1), 0.02, 0.09)
+    kora = ramp(nt, noise(nt, vk.outputs["Vector"], 40.0, 5, 0.6).outputs["Fac"], "#3a2b20", "#5a4a3c", 0.35, 0.7)
+    kora = mixc(nt, brazda, kora, "#140f0b")
+    oljust = math_n(nt, "MULTIPLY", ramp(nt, noise(nt, vk.outputs["Vector"], 6.0, 3).outputs["Fac"], (0, 0, 0, 1),
+                                         (1, 1, 1, 1), 0.55, 0.6), rnd(6.0))
+    # cepana strana: vlakna duz ose, sivo-smedja
+    vl = nt.nodes.new("ShaderNodeMapping")
+    vl.inputs["Scale"].default_value = (60.0, 2.0, 1.0)
+    nt.links.new(vk.outputs["Vector"], vl.inputs["Vector"])
+    vlak = noise(nt, vl.outputs["Vector"], 3.0, 6, 0.7).outputs["Fac"]
+    cep = ramp(nt, vlak, "#4d3b2c", "#7a6650", 0.3, 0.75)
+    kora = mixc(nt, oljust, kora, cep)
+    col = mixc(nt, cepano, kora, cep)
+    col = mixc(nt, celo, col, pres)
+    # ton po komadu (neke tamnije, neke svetlije), pa AO izmedju cepanica
+    col = skala(nt, col, math_n(nt, "MULTIPLY_ADD", rnd(7.0), 0.5, 0.55))
+    cav = supljina(nt, 0.05)
+    col = mixc(nt, math_n(nt, "MULTIPLY", cav, 0.75), col, "#0b0806")
+    nt.links.new(col, p.inputs["Base Color"])
+    hgt = math_n(nt, "MAXIMUM", math_n(nt, "MULTIPLY", brazda, math_n(nt, "SUBTRACT", 1.0, celo)), puk)
+    hgt = math_n(nt, "ADD", hgt, math_n(nt, "MULTIPLY", math_n(nt, "MULTIPLY", vlak, cepano), 0.6))
+    n1 = bump(nt, math_n(nt, "MULTIPLY", noise(nt, vk.outputs["Vector"], 25.0, 5, 0.65).outputs["Fac"],
+                         math_n(nt, "SUBTRACT", 1.0, celo)), 0.5, 0.004, bevel_n(nt, 0.005))
+    n1 = bump(nt, math_n(nt, "MULTIPLY", _bw(nt, god), celo), 0.15, 0.0008, n1)
+    nt.links.new(bump(nt, hgt, -0.6, 0.003, n1), p.inputs["Normal"])
+    nt.links.new(math_n(nt, "MULTIPLY_ADD", celo, 0.04, 0.88), p.inputs["Roughness"])
+    p.inputs["Specular IOR Level"].default_value = 0.35
     return m
 
 
@@ -585,7 +1236,7 @@ M.update({
     "pult_daska": mat_drvo("pult_daska", "#8f6440", "#b4875a", rough=0.6, axis="X", scale=16.0, vlakno=0.6),        # topla bukva
     "samot": mat_samot("samot_pod"),
     "gvozdje_cadj": mat_simple("gvozdje_cadj", "#16110e", rough=0.85, metal=0.3),
-    "cigla": mat_cigla("cigla"),
+    "cigla": mat_cigla("cigla", otvor=True),
     "cadj": mat_cigla("cadj", "#3b2116", "#2c1810", "#4a3a2e"),       # zagorela cigla u komori
     "gvozdje": mat_gvozdje("gvozdje", "#26211e", "#3d3530", "#8a8279"),
     "mesing": mat_simple("mesing", "#b8873a", rough=0.3, metal=1.0),
@@ -609,6 +1260,41 @@ M.update({
     "krume_rog": mat_krume("krume_roggen", "#7d6248", "#937455"),
     "nebo_napolju": mat_simple("nebo_napolju", "#0b0f18", rough=1.0, emit="#1c2639", strength=0.6),
 })
+# foto materijali (PBR teksture): grade se samo bez KRUME_WEB, a dodeljuju samo za kadar "ofen" (foto_sloj)
+FOTO = not os.environ.get("KRUME_WEB")
+M_FOTO = {}
+
+
+def potamni(mat, name, k, em=1.0):
+    """Kopija materijala sa Base Color puta k (samo foto kadar: svetle povrsine koje u noci ne smeju da vode),
+    em: faktor emisije (tinjanje cepanica u komori)."""
+    m2 = mat.copy()
+    m2.name = name
+    nt = m2.node_tree
+    p = nt.nodes["Principled BSDF"]
+    nt.links.new(skala(nt, p.inputs["Base Color"].links[0].from_socket, k), p.inputs["Base Color"])
+    if em != 1.0 and p.inputs["Emission Strength"].links:
+        nt.links.new(math_n(nt, "MULTIPLY", p.inputs["Emission Strength"].links[0].from_socket, em),
+                     p.inputs["Emission Strength"])
+    return m2
+
+
+if FOTO:
+    M_FOTO = {
+        "cigla": mat_cigla("cigla_foto", otvor=True, foto=float(os.environ.get("KRUME_CIGLA", "0.5"))),
+        "cadj": mat_cigla("cadj_foto", foto=0.16),
+        "gvozdje": mat_gvozdje_foto("gvozdje_foto"),
+        "drvo_radnja": mat_drvo_foto("drvo_radnja_foto"),
+        "sto_ploca": mat_sto_foto("sto_ploca_foto"),
+        "zar_pec": mat_zar_foto("zar_foto"),
+        "drva": potamni(M["drva"], "drva_foto", 0.45, em=2.5),          # cela cepanica ne sme da bude svetlija od zara
+        "zid_unutra": potamni(M["zid"], "zid_unutra_foto", 0.4),  # svetao zid gore levo (naslov "Ofen.")
+        # krug 3: vrata peci (samo na objektu PecVrata, vidi VRATA_FOTO), mesing, cepanice u nisi
+        "vrata": mat_vrata_foto("vrata_foto"),
+        "vrata_unutra": mat_vrata_foto("vrata_unutra_foto", unutra=True),
+        "mesing": mat_mesing_foto("mesing_foto"),
+        "drva_nisa": mat_cepanica_foto("drva_nisa_foto"),
+    }
 
 
 # ---------------------------------------------------------------- geometrija
@@ -844,10 +1530,7 @@ b_nb = Builder("Pomocno_nebo", M["nebo_napolju"], bevel=0, coll=C_POM)
 bx(b_nb, -6.0, -2.0, -0.5, -5.9, 14.0, 8.0, jit=False)
 b_nb.finish()
 
-# ---------------------------------------------------------------- pec (zidana, lucni otvor)
-PX0, PX1, PY0, PY1 = X_PREG - 3.45, X_PREG, 4.4, Y_ZAD
-PCX = (PX0 + PX1) / 2                      # osa otvora peci
-O_W, O_Z0, O_H = 0.86, 1.0, 0.62           # otvor: sirina, prag, visina do temena luka
+# ---------------------------------------------------------------- pec (zidana, lucni otvor; mere PX0... gore)
 b_pec = Builder("Pec", [M["cigla"], M["cadj"]], bevel=0.025, seg=2)
 bx(b_pec, PX0, PY0, POD, PX1, PY1, 2.35, jit=False)
 bx(b_pec, PX0 - 0.06, PY0 - 0.06, 2.35, PX1, PY1, 2.5, jit=False)          # venac od cigle
@@ -943,8 +1626,15 @@ for row in range(3):
         x0 = PX0 + 0.5 + i * 0.27 + row * 0.13
         cepanica(b_cep, (x0, PY0 - 0.12 - RNG_CEP.uniform(0, 0.05), POD + 0.32 + row * 0.15),
                  (x0 + random.uniform(-0.03, 0.03), PY0 + 0.9, POD + 0.32 + row * 0.15), RNG_CEP.uniform(0.058, 0.07), 14)
-for ob_ in (b_gv, b_kapa, b_zar, b_cep):
+# zar: komadi uglja nisu glatka jaja, nego krti, nepravilni grumeni (sum pomera temena; bez globalnog random-a)
+for v in b_zar.bm.verts:
+    v.co += mnoise.noise_vector(v.co * 9.0) * 0.018
+b_cep.bm.normal_update()
+for ob_ in (b_gv, b_kapa, b_zar):
     ob_.finish()
+b_cep.smooth, b_cep.seg = True, 2
+ob_cep = b_cep.finish()
+ob_cep.data.set_sharp_from_angle(angle=math.radians(40))    # glatka kora, ostro celo
 
 # pod komore: samotne ploce sa cadji i pepelom (inace ravna cadjava povrsina), plus dve gomilice pepela uz zar
 M["pepeo"] = mat_plaster("pepeo", "#5f5852", var=0.25, bump_s=0.8, rough=1.0)
@@ -1542,6 +2232,309 @@ b_iv = Builder("Pomocni_ivicnjak", M["ivicnjak"], bevel=0.04, coll=C_POM)
 bx(b_iv, -3.0, -3.0, -0.4, X_OUT, -2.75, -0.02, jit=False)
 b_iv.finish()
 
+# ---------------------------------------------------------------- pomocno: izmaglica brasna i toplote (samo foto kadar)
+# Volumen samo ispred peci (ne globalno, ni u komori: tamo bi zar izgubio kontrast). Krug 3: ne vise pramenovi
+# dima, nego mirna izmaglica brasna i pepela koja lebdi u vazduhu: gusca pri dnu i uz lice peci, siroka preko
+# celog lica, sa krupnim oblacima i sitnim zrnom. Svetlo je samo zraci iz vatre (L_ZRACI), pa se u izmaglici
+# vide snopovi i tamne pruge senki cepanica (ostala svetla ne osvetljavaju volumen). Pali je samo kadar "ofen".
+M_MAGLA = bpy.data.materials.new("izmaglica")
+M_MAGLA.use_nodes = True
+ntm = M_MAGLA.node_tree
+ntm.nodes.remove(ntm.nodes["Principled BSDF"])
+vol = ntm.nodes.new("ShaderNodeVolumePrincipled")
+vol.inputs["Color"].default_value = hexc("#d9cbb6")
+vol.inputs["Anisotropy"].default_value = 0.45            # svetlo se rasipa napred: zraci se vide ka kameri
+co_m = ntm.nodes.new("ShaderNodeTexCoord").outputs["Object"]
+mp_m = ntm.nodes.new("ShaderNodeMapping")                # oblaci malo razvuceni vodoravno (prasina se slegla)
+mp_m.inputs["Scale"].default_value = (0.8, 1.0, 1.3)
+ntm.links.new(co_m, mp_m.inputs["Vector"])
+
+
+def _f(col):
+    bw_ = ntm.nodes.new("ShaderNodeRGBToBW")
+    ntm.links.new(col, bw_.inputs["Color"])
+    return bw_.outputs["Val"]
+
+
+oblak = _f(ramp(ntm, noise(ntm, mp_m.outputs["Vector"], 1.6, 4, 0.55).outputs["Fac"], (0.4, 0.4, 0.4, 1),
+                (1, 1, 1, 1), 0.3, 0.72))
+zrno_m = _f(ramp(ntm, noise(ntm, co_m, 16.0, 3, 0.6).outputs["Fac"], (0.65, 0.65, 0.65, 1), (1, 1, 1, 1), 0.35, 0.7))
+sep_m = ntm.nodes.new("ShaderNodeSeparateXYZ")
+ntm.links.new(co_m, sep_m.inputs["Vector"])
+
+
+def _opseg(val, a, b, lo):
+    """Linearno lo..1 izmedju a i b (metri; Color Ramp prima samo polozaje 0-1)."""
+    mr = ntm.nodes.new("ShaderNodeMapRange")
+    mr.inputs["From Min"].default_value, mr.inputs["From Max"].default_value = a, b
+    mr.inputs["To Min"].default_value, mr.inputs["To Max"].default_value = lo, 1.0
+    ntm.links.new(val, mr.inputs["Value"])
+    return mr.outputs["Result"]
+
+
+uz_pec = _opseg(sep_m.outputs["Y"], PY0 - 1.7, PY0 - 0.1, 0.3)
+visina = _opseg(sep_m.outputs["Z"], 2.45, O_Z0 - 0.2, 0.3)            # gusca nisko (brasno se slegne)
+visina = math_n(ntm, "MULTIPLY", visina, _opseg(sep_m.outputs["Z"], POD, O_Z0 - 0.1, 0.4))   # ali ne veo preko drva
+sredina = _f(ramp(ntm, math_n(ntm, "ABSOLUTE", math_n(ntm, "SUBTRACT", sep_m.outputs["X"], PCX)),
+                  (1, 1, 1, 1), (0.35, 0.35, 0.35, 1), 0.45, 1.0))
+gust = math_n(ntm, "MULTIPLY", math_n(ntm, "MULTIPLY", oblak, zrno_m), math_n(ntm, "MULTIPLY", visina, sredina))
+gust = math_n(ntm, "MULTIPLY", gust, uz_pec)
+ntm.links.new(math_n(ntm, "MULTIPLY", gust, float(os.environ.get("KRUME_MAGLA", "0.5"))), vol.inputs["Density"])
+ntm.links.new(vol.outputs["Volume"], ntm.nodes["Material Output"].inputs["Volume"])
+M_MAGLA.cycles.volume_step_rate = 2.0              # sitniji korak: ostrije ivice senki u snopu
+b_mg = Builder("Pomocno_izmaglica", M_MAGLA, bevel=0, coll=C_POM)
+bx(b_mg, PCX - 1.65, PY0 - 1.75, POD + 0.02, PCX + 1.65, PY0 - 0.02, 2.48, jit=False)
+OB_MAGLA = b_mg.finish()
+OB_MAGLA.hide_render = True
+# svetlo koje izlazi kroz otvor (spot duboko u komori, okrenut ka pekari): otvor ga oblikuje u snop, pa se u
+# izmaglici vide zraci, a vrata, prag i cepanice dobijaju topao odsjaj odozgo. Samo foto kadar.
+ld_ot = bpy.data.lights.new("Pomocno_svetlo_otvor", "SPOT")
+ld_ot.energy, ld_ot.color, ld_ot.shadow_soft_size = float(os.environ.get("KRUME_OTVOR", "150")), (1.0, 0.42, 0.12), 0.2
+ld_ot.spot_size, ld_ot.spot_blend = math.radians(62), 0.35
+L_OTVOR = bpy.data.objects.new("Pomocno_svetlo_otvor", ld_ot)
+L_OTVOR.location = (PCX, PY0 + 0.35, O_Z0 + 0.5)
+L_OTVOR.rotation_euler = (Vector((PCX - 0.15, PY0 - 3.0, 0.75)) - L_OTVOR.location).to_track_quat("-Z", "Y").to_euler()
+C_POM.objects.link(L_OTVOR)
+L_OTVOR.hide_render = True
+
+# ---------------------------------------------------------------- foto sloj (krug 2): PBR teksture, zar, svetla, HDRI
+# Sve ovo vazi samo za kadar "ofen" i dodaje se tek posle cuvanja enterijer.blend (bake za sajt vidi stare
+# materijale, bez UV mape "foto_uv" i bez modifikatora na zaru).
+# Zraci: malo tacka-svetlo duboko u komori, u visini cepanica koje gore; deluje samo na izmaglicu. Cepanice,
+# gomile zara i ivice luka ga seku, pa iz otvora izlaze snopovi sa tamnim prugama izmedju (ne jednolik veo).
+ld_zr = bpy.data.lights.new("Pomocno_svetlo_zraci", "POINT")
+ld_zr.energy = float(os.environ.get("KRUME_ZRACI", "1400"))
+ld_zr.color, ld_zr.shadow_soft_size = (1.0, 0.45, 0.13), 0.02
+L_ZRACI = bpy.data.objects.new("Pomocno_svetlo_zraci", ld_zr)
+L_ZRACI.location = (PCX + 0.05, PY0 + 3.15, O_Z0 + 0.14)
+L_ZRACI.visible_diffuse = L_ZRACI.visible_glossy = False     # samo u izmaglici (zraci), povrsine osvetljava zar
+C_POM.objects.link(L_ZRACI)
+# odbijeno svetlo: zar osvetli pod, sto i zidove pekare, a oni vrate slab topao sjaj na lice peci, drva i pod.
+# Velika meka povrsina iza kamere, da senke imaju detalj (na fotografiji nema potpuno crnog).
+ld_ob = bpy.data.lights.new("Pomocno_svetlo_odbijeno", "AREA")
+ld_ob.shape, ld_ob.size, ld_ob.size_y = "RECTANGLE", 3.2, 1.8
+ld_ob.energy = float(os.environ.get("KRUME_ODBIJENO", "55"))
+ld_ob.color = (1.0, 0.6, 0.36)
+L_ODB = bpy.data.objects.new("Pomocno_svetlo_odbijeno", ld_ob)
+L_ODB.location = (PCX + 0.9, 1.1, 2.4)          # malo desno: leva trecina ostaje mirnija
+L_ODB.rotation_euler = (Vector((PCX + 0.3, PY0, 0.9)) - L_ODB.location).to_track_quat("-Z", "Y").to_euler()
+C_POM.objects.link(L_ODB)
+L_ODB.visible_camera = False
+for l_ in (L_ZRACI, L_ODB):
+    l_.hide_render = True
+
+# ---- krug 3 (samo foto kadar, sve u Pomocno, sakriveno van "ofen"): drva u nisi, vatra u komori, prasina
+NISA_X0, NISA_X1, NISA_Z0, NISA_Z1 = PX0 + 0.35, PX1 - 0.35, POD + 0.25, O_Z0 - 0.22     # vidi Rez_pec
+FOTO_OBJ = []
+
+
+def cepanica_foto(b, lay, lay2, c, d, L, R, vrsta, seme, rng):
+    """Cepanica za foto kadar: oblica (vrsta 0), polovina (1) ili klin (2), c je teziste prednjeg cela, d osa
+    (ka nazad), L duzina. Celo je blago koso i nije u ravni sa susedima, ivice preseka su neravne. Atributi
+    "drvo" i "drvo_s" kao u mat_cepanica_foto. Vraca poluprecnik obuhvatnog kruga (za slaganje)."""
+    bm = b.bm
+    d = Vector(d).normalized()
+    u = Vector((0, 0, 1)).cross(d).normalized()
+    w = d.cross(u)
+    if vrsta == 0:
+        n = 16
+        prof = [(R * (1 + rng.uniform(-0.05, 0.05)), 2 * math.pi * i / n, 0) for i in range(n)]
+        prof = [(r_ * math.cos(a_), r_ * math.sin(a_), k_) for r_, a_, k_ in prof]
+    else:
+        ug = math.pi if vrsta == 1 else rng.uniform(1.1, 1.8)
+        n = max(5, int(16 * ug / (2 * math.pi)) + 2)
+        prof = [(R * (1 + rng.uniform(-0.05, 0.05)) * math.cos(ug * i / n), R * (1 + rng.uniform(-0.05, 0.05)) *
+                 math.sin(ug * i / n), 0 if i < n else 1) for i in range(n + 1)]
+        for t_ in (0.62, 0.3):                            # cepana strana od kraja luka ka srzi, neravna
+            prof.append((t_ * R * math.cos(ug) + rng.uniform(-0.006, 0.006), t_ * R * math.sin(ug) +
+                         rng.uniform(-0.006, 0.006), 1))
+        prof.append((rng.uniform(-0.004, 0.004), rng.uniform(-0.004, 0.004), 1))
+        for t_ in (0.3, 0.62):
+            prof.append((t_ * R + rng.uniform(-0.006, 0.006), rng.uniform(-0.006, 0.006), 1))
+    rot = rng.uniform(0, 2 * math.pi)
+    prof = [(x * math.cos(rot) - y * math.sin(rot), x * math.sin(rot) + y * math.cos(rot), k_) for x, y, k_ in prof]
+    cx, cy = sum(q[0] for q in prof) / len(prof), sum(q[1] for q in prof) / len(prof)
+    rb = max(math.hypot(x - cx, y - cy) for x, y, _ in prof)
+    tf, tb = (rng.uniform(-0.09, 0.09), rng.uniform(-0.09, 0.09)), (rng.uniform(-0.06, 0.06), rng.uniform(-0.06, 0.06))
+    F, Bk = [], []
+    for x, y, _ in prof:
+        q = Vector(c) + (x - cx) * u + (y - cy) * w
+        F.append(bm.verts.new(q + d * (tf[0] * (x - cx) + tf[1] * (y - cy))))
+        Bk.append(bm.verts.new(q + d * (L + tb[0] * (x - cx) + tb[1] * (y - cy))))
+    fs = [(bm.faces.new(F), 2), (bm.faces.new(list(reversed(Bk))), 2)]
+    k = len(prof)
+    for i in range(k):
+        j = (i + 1) % k
+        fs.append((bm.faces.new((F[i], Bk[i], Bk[j], F[j])), prof[i][2]))
+    for f, vr in fs:
+        if vr == 0:                                       # kora: luk oko srzi bez skoka na savu
+            ce = f.calc_center_median() - Vector(c)
+            ac = math.atan2(ce.dot(w) + cy, ce.dot(u) + cx)
+        for lp in f.loops:
+            rel = lp.vert.co - Vector(c)
+            x, y, a = rel.dot(u) + cx, rel.dot(w) + cy, rel.dot(d)
+            if vr == 2:
+                lp[lay] = (x, y, 1.0, R)
+            elif vr == 0:
+                ang = math.atan2(y, x)
+                ang = ac + (ang - ac + math.pi) % (2 * math.pi) - math.pi
+                lp[lay] = (ang * R, a, 0.0, R)
+            else:
+                lp[lay] = (math.hypot(x, y), a, 0.5, R)
+            lp[lay2] = (seme, 0.0, 0.0, 1.0)
+    return rb
+
+
+if FOTO:
+    # drva u nisi: slozena gomila oblica, polovina i klinova razlicitih precnika (najnize mesto prvo, kao kad se
+    # slaze rukom); cela vire razlicito (0-13 cm ispred lica), svako malo koso
+    rng_d = random.Random(31)
+    b_df = Builder("Pomocno_drva_foto", M_FOTO["drva_nisa"], bevel=0.003, seg=1, smooth=True, coll=C_POM)
+    lay_d = b_df.bm.loops.layers.float_color.new("drvo")
+    lay_s = b_df.bm.loops.layers.float_color.new("drvo_s")
+    slozeno, GOM_X1 = [], NISA_X0 + 1.75
+    for i in range(70):
+        vrsta = rng_d.choice((0, 0, 1, 2, 2, 2))
+        R = rng_d.uniform(0.04, 0.075) if vrsta == 0 else rng_d.uniform(0.07, 0.115)
+        rb_ = R * (1.0 if vrsta == 0 else 0.62 if vrsta == 1 else 0.7)
+        naj = None
+        for _ in range(40):
+            x = rng_d.uniform(NISA_X0 + rb_ + 0.01, GOM_X1)
+            z = NISA_Z0 + rb_
+            for xj, zj, rj in slozeno:
+                dx = abs(x - xj)
+                if dx < rb_ + rj:
+                    z = max(z, zj + math.sqrt((rb_ + rj) ** 2 - dx ** 2) * 0.96)
+            vrh = NISA_Z1 - 0.012 - max(0.0, x - (GOM_X1 - 0.45)) * 0.55       # desni kraj gomile se spusta
+            if z + rb_ <= vrh and (naj is None or z < naj[1]):
+                naj = (x, z)
+        if naj is None:
+            continue
+        x, z = naj
+        rb2 = cepanica_foto(b_df, lay_d, lay_s, (x, PY0 + rng_d.uniform(-0.13, 0.0), z),
+                            (rng_d.uniform(-0.03, 0.03), 1, rng_d.uniform(-0.02, 0.02)), rng_d.uniform(0.55, 0.95), R,
+                            vrsta, rng_d.uniform(0, 100), rng_d)
+        slozeno.append((x, z, min(rb2, rb_ * 1.1)))
+    # desno u nisi: dve cepanice bacene ukoso dublje unutra i komadi kore na podu
+    for x, yaw in ((NISA_X1 - 0.75, 0.5), (NISA_X1 - 0.4, -0.3)):
+        R = rng_d.uniform(0.07, 0.1)
+        cepanica_foto(b_df, lay_d, lay_s, (x, PY0 + 0.35, NISA_Z0 + R * 0.55), (math.sin(yaw), math.cos(yaw), 0), 0.5,
+                      R, 2, rng_d.uniform(0, 100), rng_d)
+    for i in range(14):
+        cepanica_foto(b_df, lay_d, lay_s, (rng_d.uniform(GOM_X1 - 0.2, NISA_X1 - 0.1), PY0 + rng_d.uniform(-0.05, 0.9),
+                                           NISA_Z0 + 0.004), (rng_d.uniform(-1, 1), rng_d.uniform(-1, 1), 0.0),
+                      rng_d.uniform(0.03, 0.09), rng_d.uniform(0.015, 0.03), 1, rng_d.uniform(0, 100), rng_d)
+    ob_df = b_df.finish()
+    ob_df.data.set_sharp_from_angle(angle=math.radians(40))
+    FOTO_OBJ.append(ob_df)
+    # vatra u komori: sator od cepanica oko gomilice zara (pocetak lozenja); svetlo zraka je u njemu, pa cepanice
+    # seku snopove koji izlaze kroz otvor (tamne pruge u izmaglici)
+    VC = Vector((PCX + 0.04, PY0 + 2.1, O_Z0 + 0.012))     # iza svetla zara (L_ZAR), da ga ne zaseni
+    b_vt = Builder("Pomocno_vatra_foto", potamni(M["drva"], "drva_vatra_foto", 0.4, em=0.7), bevel=0.004, seg=1,
+                   smooth=True, coll=C_POM)
+    for i in range(11):
+        a_ = 2 * math.pi * i / 11 + rng_d.uniform(-0.12, 0.12) + 0.3
+        p0 = VC + Vector((0.26 * math.cos(a_), 0.24 * math.sin(a_), 0.03))
+        top = VC + Vector((rng_d.uniform(-0.03, 0.03), rng_d.uniform(-0.03, 0.03), 0.4))
+        cepanica(b_vt, p0, p0 + (top - p0) * 1.12, rng_d.uniform(0.032, 0.05), 10)
+    ob_vt = b_vt.finish()
+    ob_vt.data.set_sharp_from_angle(angle=math.radians(40))
+    b_vz = Builder("Pomocno_vatra_zar", M_FOTO["zar_pec"], bevel=0, smooth=True, coll=C_POM)
+    for i in range(9):
+        ellipsoid(b_vz, VC + Vector((rng_d.uniform(-0.12, 0.12), rng_d.uniform(-0.12, 0.12), 0.02)),
+                  (rng_d.uniform(0.05, 0.1),) * 2 + (rng_d.uniform(0.03, 0.06),), rot=rng_d.uniform(0, 3), seg=(8, 5), jit=0)
+    FOTO_OBJ += [ob_vt, b_vz.finish()]
+    L_ZRACI.location = VC + Vector((0, 0.02, 0.15))
+    # prasina: sitne pahulje brasna i pepela u vazduhu; osvetljava ih samo svetlo zraka (light linking), pa
+    # zasvetle samo u snopu, kao na fotografiji
+    M_PRAH = mat_simple("prasina_foto", "#e6dccd", rough=1.0)
+    b_pr = Builder("Pomocno_prasina_foto", M_PRAH, bevel=0, smooth=True, coll=C_POM)
+    for i in range(500):
+        q = Vector((PCX + rng_d.gauss(0, 0.55), PY0 - 0.06 - abs(rng_d.gauss(0, 0.55)), O_Z0 + 0.3 + rng_d.gauss(0, 0.32)))
+        if q.y < PY0 - 1.6 or q.z < POD + 0.1:
+            continue
+        bmesh.ops.create_icosphere(b_pr.bm, subdivisions=1, radius=rng_d.uniform(0.0005, 0.0014),
+                                   matrix=Matrix.Translation(q))
+    FOTO_OBJ.append(b_pr.finish())
+    C_ZRACI = bpy.data.collections.new("Pomocno_zraci_primaju")
+    for ob_ in (FOTO_OBJ[-1], OB_MAGLA):
+        C_ZRACI.objects.link(ob_)
+    L_ZRACI.light_linking.receiver_collection = C_ZRACI
+    L_ZRACI.visible_diffuse = True
+    # odbijeno svetlo u nisi: slab topao odsjaj sa poda pekare, da se vidi dubina nise desno od drva
+    ld_ns = bpy.data.lights.new("Pomocno_svetlo_nisa", "AREA")
+    ld_ns.shape, ld_ns.size, ld_ns.size_y = "RECTANGLE", 1.3, 0.2
+    ld_ns.energy, ld_ns.color = float(os.environ.get("KRUME_NISA", "2.5")), (1.0, 0.58, 0.32)
+    L_NISA = bpy.data.objects.new("Pomocno_svetlo_nisa", ld_ns)
+    L_NISA.location = (NISA_X1 - 0.65, PY0 + 0.25, NISA_Z1 - 0.03)
+    L_NISA.rotation_euler = Vector((0, 0.8, -1)).to_track_quat("-Z", "Y").to_euler()
+    C_POM.objects.link(L_NISA)
+    L_NISA.visible_camera = False
+    FOTO_OBJ.append(L_NISA)
+    for ob_ in FOTO_OBJ:
+        ob_.hide_render = True
+SWAP, FOTO_STANJE = [], {"uv": False}
+VRATA_FOTO = {"gvozdje": "vrata", "gvozdje_cadj": "vrata_unutra"}     # vrata imaju svoje gvozdje (cadj po z vrata)
+if FOTO:
+    for ob in C_ENT.objects:
+        if ob.type == "MESH":
+            for i, mt in enumerate(ob.data.materials):
+                kljuc = VRATA_FOTO.get(mt.name, mt.name) if mt and ob.name == "PecVrata" else mt and mt.name
+                if kljuc in M_FOTO:
+                    SWAP.append((ob, i, mt, M_FOTO[kljuc]))
+
+
+def foto_uv(ob):
+    """UV "foto_uv" u metrima: svako lice se projektuje po glavnoj osi svoje normale (kocka, lokalne koordinate),
+    v je uvek uspravno (z) na zidovima, pa redovi cigli i vlakna drveta stoje vodoravno."""
+    me = ob.data
+    if FOTO_UV in me.uv_layers:
+        return
+    uvl = me.uv_layers.new(name=FOTO_UV)
+    for poly in me.polygons:
+        n = poly.normal
+        ax = max(range(3), key=lambda k: abs(n[k]))
+        for li in poly.loop_indices:
+            c = me.vertices[me.loops[li].vertex_index].co
+            uvl.data[li].uv = (c.y, c.z) if ax == 0 else (c.x, c.z) if ax == 1 else (c.x, c.y)
+
+
+def foto_sloj(on):
+    """Ukljuci ili iskljuci foto sloj: materijali sa teksturama, grumeni zara, svetla zraka i odbijeno, HDRI."""
+    if not FOTO:
+        return
+    if on and not FOTO_STANJE["uv"]:
+        for ob in {s_[0] for s_ in SWAP}:
+            foto_uv(ob)
+        ob_zar = bpy.data.objects["Zar"]
+        sd = ob_zar.modifiers.new("Foto_grumeni_sub", "SUBSURF")
+        sd.levels, sd.render_levels = 0, 2
+        tx_ = bpy.data.textures.new("zar_grumeni", "VORONOI")
+        tx_.noise_scale = 0.035
+        ds = ob_zar.modifiers.new("Foto_grumeni", "DISPLACE")
+        ds.texture, ds.texture_coords, ds.strength, ds.mid_level = tx_, "GLOBAL", 0.03, 0.6
+        # krug 3: cepanice u nisi zamenjuje Pomocno_drva_foto (Mask zadrzava samo cepanice u komori)
+        ob_c = bpy.data.objects["Cepanice"]
+        vg = ob_c.vertex_groups.new(name="foto_komora")
+        vg.add([v.index for v in ob_c.data.vertices if v.co.z > O_Z0 - 0.1], 1.0, "REPLACE")
+        mk = ob_c.modifiers.new("Foto_bez_nise", "MASK")
+        mk.vertex_group = "foto_komora"
+        ob_c.modifiers.move(len(ob_c.modifiers) - 1, 0)
+        FOTO_STANJE["uv"] = True
+    for ob, i, web, fm in SWAP:
+        ob.data.materials[i] = fm if on else web
+    for ob_ in (bpy.data.objects["Zar"], bpy.data.objects["Cepanice"]):
+        for md in ob_.modifiers:
+            if md.name.startswith("Foto_"):
+                md.show_render = on
+    L_ZRACI.hide_render = L_ODB.hide_render = not on
+    for ob_ in FOTO_OBJ:
+        ob_.hide_render = not on
+    # volumen osvetljavaju samo zraci (pruge); ostala svetla bi u izmaglici dala jednolik veo
+    for l_ in (L_OTVOR, L_ZAR, L_ODB, L_LAMPA, L_ULICA, L_POLICA) + tuple(o for o in FOTO_OBJ if o.type == "LIGHT"):
+        l_.visible_volume_scatter = not on
+    HDRI_ON.outputs[0].default_value = 1.0 if on else 0.0
+
 # ---------------------------------------------------------------- svet, kamere, render
 world = bpy.data.worlds.get("World") or bpy.data.worlds.new("World")
 scene.world = world
@@ -1553,7 +2546,26 @@ for nd in list(wn.nodes):
 bg = wn.nodes.new("ShaderNodeBackground")
 bg.inputs["Color"].default_value = hexc(NOC)
 bg.inputs["Strength"].default_value = float(os.environ.get("KRUME_AMB", "0.25"))
-wn.links.new(bg.outputs["Background"], [nd for nd in wn.nodes if nd.type == "OUTPUT_WORLD"][0].inputs["Surface"])
+w_out = [nd for nd in wn.nodes if nd.type == "OUTPUT_WORLD"][0]
+HDRI_ON = wn.nodes.new("ShaderNodeValue")
+HDRI_ON.outputs[0].default_value = 0.0
+if FOTO:
+    # HDRI (nocna ulica) samo u odsjajima (Is Glossy Ray) i veoma slabo: metal, staklo i glazura dobijaju nesto
+    # da odraze, a osvetljenje scene ostaje zar. Van foto kadra je HDRI_ON = 0, pa je svet isti kao pre.
+    env = wn.nodes.new("ShaderNodeTexEnvironment")
+    env.image = bpy.data.images.load(os.path.join(TEKS, "hdri", "cobblestone_street_night_2k.hdr"), check_existing=True)
+    bg_h = wn.nodes.new("ShaderNodeBackground")
+    bg_h.inputs["Strength"].default_value = float(os.environ.get("KRUME_HDRI", "0.12"))
+    wn.links.new(env.outputs["Color"], bg_h.inputs["Color"])
+    lp = wn.nodes.new("ShaderNodeLightPath")
+    fac = math_n(wn, "MULTIPLY", lp.outputs["Is Glossy Ray"], HDRI_ON.outputs[0])
+    mxs = wn.nodes.new("ShaderNodeMixShader")
+    wn.links.new(fac, mxs.inputs["Fac"])
+    wn.links.new(bg.outputs["Background"], mxs.inputs[1])
+    wn.links.new(bg_h.outputs["Background"], mxs.inputs[2])
+    wn.links.new(mxs.outputs["Shader"], w_out.inputs["Surface"])
+else:
+    wn.links.new(bg.outputs["Background"], w_out.inputs["Surface"])
 
 
 def add_cam(name, loc, target, lens, fstop=None, focus=None):
@@ -1576,6 +2588,10 @@ cam_presek = add_cam("Kadar_presek", (5.8, -14.6, 3.6), (5.8, 4.5, 3.75), 36)
 BRT = Vector((3.26, VY0 + 0.3, BREAD_Z + 0.03))
 cam_vitrina = add_cam("Kadar_vitrina", BRT + Vector((0.02, -0.98, 0.5)), BRT, 35, fstop=2.0)
 cam_pec = add_cam("Kadar_pec", (PCX - 0.95, PY0 - 1.75, 1.58), (PCX + 0.1, PY0 + 1.2, 1.02), 30)
+# foto kadar Ofen: stanica Ofen iz kamera.json (glTF -> Blender: x, -z, y), umeren DOF, fokus na otvoru peci
+OFEN_P, OFEN_C = Vector((9.27, 1.4, 1.62)), Vector((9.02, 4.4, 1.3))
+cam_ofen = add_cam("Kadar_ofen", OFEN_P, OFEN_C, 32, fstop=2.8,
+                   focus=(Vector((PCX, PY0 - 0.1, O_Z0 + 0.15)) - OFEN_P).length)
 
 # Stanice kamere za poglavlja 4 i 5: prazni objekti (polozaj kamere), custom property "cilj" (tacka pogleda,
 # Blender x/y/z u metrima) i "lens" (mm, senzor 36 mm po duzoj strani). Kamera ulazi spolja, kroz otvor posle
@@ -1615,8 +2631,9 @@ try:
     prefs.compute_device_type = "METAL"
     prefs.get_devices()
     for dv in prefs.devices:
-        dv.use = True
+        dv.use = dv.type == "METAL"           # samo GPU: CPU uz GPU na M1 usporava (sporiji uzima deo slike)
     cy.device = "GPU"
+    print("UREDJAJI", [(dv.name, dv.use) for dv in prefs.devices])
 except Exception as e:
     print("GPU nije dostupan, CPU:", e)
 cy.samples = int(os.environ.get("KRUME_SAMPLES", "256"))
@@ -1629,6 +2646,17 @@ cy.transmission_bounces = 6
 cy.caustics_reflective = False
 cy.caustics_refractive = False
 cy.sample_clamp_indirect = 6.0
+# foto podesavanja (vaze i za ostale kadrove): fiksan seed, OIDN sa albedo i normal prolazom, mekse odsjaje,
+# volumen sa korakom i najvise jednim odbijanjem, persistent data (isti BVH za vise kadrova)
+cy.seed, cy.use_animated_seed = 7, False
+cy.denoising_input_passes = "RGB_ALBEDO_NORMAL"
+cy.denoising_prefilter = "ACCURATE"
+cy.blur_glossy = 1.0
+cy.volume_bounces = 1
+cy.volume_step_rate = 3.0
+cy.volume_biased = True
+scene.render.use_motion_blur = False
+scene.render.use_persistent_data = True
 scene.view_settings.view_transform = "AgX"
 try:
     scene.view_settings.look = "AgX - Medium High Contrast"
@@ -1658,8 +2686,9 @@ blend1 = os.path.join(HERE, "enterijer.blend1")
 if os.path.exists(blend1):
     os.remove(blend1)
 
-def sjaj(on):
-    """Bloom iz kompozitora (samo kadar peci): zar i sijalica dobijaju oreol, kao bloom na sajtu."""
+def sjaj(on, blago=False):
+    """Bloom iz kompozitora (samo kadar peci): zar i sijalica dobijaju oreol, kao bloom na sajtu.
+    blago=True (foto kadar): samo najsvetlije tacke i slabije, kao rasipanje u objektivu."""
     scene.compositing_node_group = None
     if not on:
         return
@@ -1671,8 +2700,8 @@ def sjaj(on):
         rl = ng.nodes.new("CompositorNodeRLayers")
         gl = ng.nodes.new("CompositorNodeGlare")
         gl.inputs["Type"].default_value = "Bloom"
-        gl.inputs["Threshold"].default_value = 0.7
-        gl.inputs["Strength"].default_value = 0.9
+        gl.inputs["Threshold"].default_value = 1.2 if blago else 0.7
+        gl.inputs["Strength"].default_value = 0.25 if blago else 0.9
         gl.inputs["Size"].default_value = 0.6
         out = ng.nodes.new("NodeGroupOutput")
         ng.links.new(rl.outputs["Image"], gl.inputs["Image"])
@@ -1689,16 +2718,57 @@ if "norender" not in ARGS:
              ("pec", cam_pec, 40, 0.0, 0.0, 0.0, 130)]
     # probni kadrovi sa stanica (samo na zahtev: -- st4 st5), u bake/
     shots += [("st4", cam_st4, 1, 0.0, 0.0, 0.6, 80), ("st5", cam_st5, 1, 0.0, 0.0, 0.6, 80)]
+    # foto proba (samo na zahtev: -- ofen): Cycles kadar za sekvencu na skrol, u proba-foto/
+    shots += [("ofen", cam_ofen, 40, 0.0, 1.0, float(os.environ.get("KRUME_OFEN_EV", "0.3")),
+               float(os.environ.get("KRUME_OFEN_ZAR", "110")))]
+    STAT = {}
+
+    def _stat(st, *a):
+        """Poslednji red statistike rendera sa "Peak" (memorija), za izvestaj."""
+        if "Mem" in str(st) or "Peak" in str(st):
+            STAT["s"] = str(st).strip()
+
+    bpy.app.handlers.render_stats.append(_stat)
+    ZAR_EM = M["zar"].node_tree.nodes["Principled BSDF"].inputs["Emission Strength"]
+    zar_em0 = ZAR_EM.default_value
     for tag, cam, frame, km, kn, ex, ez in shots:
-        if (ARGS and tag not in ARGS) or (not ARGS and tag.startswith("st")):
+        if (ARGS and tag not in ARGS) or (not ARGS and tag in ("st4", "st5", "ofen")):
             continue
+        foto = tag == "ofen"
         scene.frame_set(frame)
         sk_m.value, sk_n.value = km, kn
         L_ZAR.data.energy = ez
         scene.view_settings.exposure = float(os.environ.get("KRUME_EXPOSURE", ex))
         scene.camera = cam
-        sjaj(tag == "pec")
-        scene.render.filepath = os.path.join(HERE, "bake" if tag.startswith("st") else "", f"enterijer-{tag}.png")
+        sjaj(tag in ("pec", "ofen"), blago=foto)
+        OB_MAGLA.hide_render = not foto or os.environ.get("KRUME_MAGLA") == "0"
+        L_OTVOR.hide_render = not foto
+        L_FILL.hide_render = foto                   # stona lampa makete ne postoji u "fotografiji"
+        ZAR_EM.default_value = float(os.environ.get("KRUME_OFEN_EM", "3.0")) if foto else zar_em0
+        # u fotografiji je zar glavno svetlo: ulica i nebo samo kao slab hladan odsjaj, da zid ima pad svetla
+        bg.inputs["Strength"].default_value = 0.06 if foto else float(os.environ.get("KRUME_AMB", "0.25"))
+        L_ULICA.data.energy = (0.35 if foto else 1.0) * float(os.environ.get("KRUME_ULICA", "70"))
+        L_LAMPA.data.energy = (0.12 if foto else 1.0) * float(os.environ.get("KRUME_LAMPA", "260"))
+        # krug 2: polica sa svetlim zidom gore levo (tu je naslov "Ofen.") samo kao slab trag, leva trecina mirna
+        L_POLICA.data.energy = (float(os.environ.get("KRUME_OFEN_POLICA", "0.08")) if foto else 1.0) * \
+            float(os.environ.get("KRUME_POLICA", "110"))
+        foto_sloj(foto)
+        if foto and FOTO:
+            M_FOTO["zar_pec"].node_tree.nodes["jacina"].outputs[0].default_value = \
+                float(os.environ.get("KRUME_OFEN_EM", "3.0"))
+        cy.samples = int(os.environ.get("KRUME_SAMPLES", "192" if foto else "256"))
+        cy.sample_clamp_indirect = 10.0 if foto else 6.0
+        cy.max_bounces = 6 if foto else 8
+        if foto and os.environ.get("KRUME_BORDER"):          # isecak za proveru detalja: "x0,x1,y0,y1" (0-1)
+            b_ = [float(v) for v in os.environ["KRUME_BORDER"].split(",")]
+            scene.render.use_border = scene.render.use_crop_to_border = True
+            r_ = scene.render
+            r_.border_min_x, r_.border_max_x, r_.border_min_y, r_.border_max_y = b_
+        if foto:
+            os.makedirs(os.path.join(HERE, "proba-foto"), exist_ok=True)
+            scene.render.filepath = os.path.join(HERE, "proba-foto", os.environ.get("KRUME_OFEN_IME", "4-ofen-wide.png"))
+        else:
+            scene.render.filepath = os.path.join(HERE, "bake" if tag.startswith("st") else "", f"enterijer-{tag}.png")
         t = time.time()
         bpy.ops.render.render(write_still=True)
-        print(f"RENDER enterijer-{tag}.png: {time.time() - t:.1f} s")
+        print(f"RENDER {os.path.basename(scene.render.filepath)}: {time.time() - t:.1f} s | {STAT.get('s', '')}")

@@ -11,8 +11,14 @@
 #   Blender -b -P kadrovi.py -- 3 7b            (samo izabrana poglavlja)
 #   Blender -b -P kadrovi.py -- 4 hoch          (samo jedan format)
 #   Blender -b -P kadrovi.py -- webp            (bez rendera: samo WebP iz postojecih PNG)
-# Okruzenje: KRUME_SAMPLES (96), KRUME_RES (procenat, 100), KRUME_PREFIX (folder za probe umesto kadrovi/;
-# uz njega se WebP ne pise).
+#   Blender -b -P kadrovi.py -- foto 3          (foto proba: proba-foto/<N>-<wide|hoch>.png, bez WebP-a)
+# "foto" (krug 3, Z1): hoch je 720x1440 sa vodoravnim uglom kadra 9:16 (kao camera.js), rez kuce je zid od cigle
+# sa malterom i Dippelbaum tavanica (umesto mrvice), enterijer dobija foto materijale kita, malo DOF-a.
+# Render je u oba nacina kao foto kit (krug 2): samo Metal, seed 7, adaptivno 0,02, OIDN sa albedo + normal.
+# Svaki Blender ide preko render_red.sh (jedan render u isto vreme): ./render_red.sh -b -P kadrovi.py -- foto 3
+# Okruzenje: KRUME_SAMPLES (96, foto 192), KRUME_RES (procenat, 100), KRUME_PREFIX (folder za probe umesto
+# kadrovi/; uz njega se WebP ne pise), KRUME_WEBP_DIR (umesto pekara/public/frames, za proveru),
+# KRUME_HOCH_SY (foto hoch: dodatni shift_y), KRUME_FSTOP (foto: f-broj, 0 = bez DOF-a).
 
 import bpy, math, os, sys, time
 from mathutils import Vector
@@ -20,13 +26,16 @@ from mathutils import Vector
 T0 = time.time()
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.abspath(os.path.join(HERE, "..", "..", ".."))
-PNG_DIR = os.environ.get("KRUME_PREFIX") or os.path.join(HERE, "kadrovi")
-WEBP_DIR = os.path.join(ROOT, "pekara", "public", "frames")
-ENTERIJER = os.path.join(HERE, "enterijer.blend")
 ARGS = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
-SAMPLES = int(os.environ.get("KRUME_SAMPLES", "96"))
+FOTO = "foto" in ARGS and "webp" not in ARGS
+PNG_DIR = os.environ.get("KRUME_PREFIX") or os.path.join(HERE, "proba-foto" if FOTO else "kadrovi")
+WEBP_DIR = os.environ.get("KRUME_WEBP_DIR") or os.path.join(ROOT, "pekara", "public", "frames")
+ENTERIJER = os.path.join(HERE, "enterijer.blend")
+SAMPLES = int(os.environ.get("KRUME_SAMPLES", "192" if FOTO else "96"))
 GRANICA = {"hoch": 150 * 1024, "wide": 220 * 1024}
 OBLICI = {"wide": (1600, 1000), "hoch": (900, 1600)}
+if FOTO:
+    OBLICI["hoch"] = (720, 1440)
 SVA = ["1", "2", "3", "4", "5", "6", "7", "7b"]
 os.makedirs(PNG_DIR, exist_ok=True)
 
@@ -103,15 +112,18 @@ try:
     prefs.compute_device_type = "METAL"
     prefs.get_devices()
     for dv in prefs.devices:
-        dv.use = True
+        dv.use = dv.type == "METAL"           # samo GPU: CPU uz GPU na M1 usporava
     cy.device = "GPU"
 except Exception as e:
     print("GPU nije dostupan, CPU:", e)
 cy.samples = SAMPLES
 cy.use_adaptive_sampling = True
-cy.adaptive_threshold = 0.03
+cy.adaptive_threshold = 0.02                      # kao foto kit (krug 2): isti seed, kadrovi se ne "pomeraju"
+cy.seed, cy.use_animated_seed = 7, False
 cy.use_denoising = True
 cy.denoiser = "OPENIMAGEDENOISE"
+cy.denoising_input_passes = "RGB_ALBEDO_NORMAL"
+cy.denoising_prefilter = "ACCURATE"
 scene.render.resolution_percentage = int(os.environ.get("KRUME_RES", "100"))
 scene.render.dither_intensity = 1.0               # sum preko nocnih gradijenata: bez stepenica u WebP-u
 scene.render.image_settings.file_format = "PNG"
@@ -123,6 +135,10 @@ cd = kam.data
 WN = scene.world.node_tree
 BG_CAM, BG_AMB = WN.nodes["Background"], WN.nodes["Background.001"]
 RAMP = WN.nodes["Color Ramp"].color_ramp.elements
+# foto kit (krug 2): "dan" pretapa noc (soba + HDRI_noc + Nebo_amb) u dan (konigsallee za svetlo, Sky za kameru)
+W_DAN = WN.nodes["dan"].outputs[0] if "dan" in WN.nodes else None
+W_JACINA = {n: WN.nodes[n].inputs["Strength"].default_value
+            for n in ("HDRI_noc", "Nebo_amb", "HDRI_dan", "Nebo_dan") if n in WN.nodes}
 PRAG = bpy.data.materials["staklo_tamno"].node_tree.nodes["prag"].outputs[0]
 LAMPA_MAT = bpy.data.materials["lampa"].node_tree.nodes["Principled BSDF"].inputs["Emission Strength"]
 SVETLA = {o.name: o.data.energy for o in OB if o.type == "LIGHT"}
@@ -173,6 +189,13 @@ def svetlo(doba, lampe, izlog=1.0, unutra=True):
         BG_AMB.inputs["Color"].default_value = (0.0461, 0.0368, 0.0331, 1)  # #3d3633 (kit)
         BG_AMB.inputs["Strength"].default_value = 0.9
         BG_CAM.inputs["Strength"].default_value = 1.6
+    if W_DAN:
+        # jutro i zora: nocni HDRI i hladno nebo ugaseni, dan = 1 (konigsallee); zora slabija kao gore (amb)
+        W_DAN.default_value = 1.0 if dan else 0.0
+        k = DAN[doba]["amb"] / DAN["jutro"]["amb"] if dan else 1.0
+        for n, e in W_JACINA.items():
+            noc_cvor = n in ("HDRI_noc", "Nebo_amb")
+            WN.nodes[n].inputs["Strength"].default_value = (0.0 if dan else e) if noc_cvor else e * k
 
 
 def sjaj(on):
@@ -199,6 +222,209 @@ def sjaj(on):
         print("Sjaj (glare) nije uspeo:", e)
 
 
+# ---------------------------------------------------------------- foto: rez kao prava prepolovljena maketa
+# Krug 3 (Z1): umesto mrvice rez pokazuje sta je u zidu i tavanici gruenderzeit kuce. Zid: cigla sa fugama
+# (brick_wall_006), spolja i iznutra kora maltera ~3 cm (AO "iznutra" nalazi ivicu reza, kao kora u kvart.py).
+# Tavanice (Plafon iz enterijera): odozdo malter, Dippelbaum grede (godovi na celu grede, fuge), nasip, daske.
+# Pod: beton, estrih, plocice. Tavanice po svetskom z (enterijer stoji), zid po koordinatama objekta (Kriska se mice).
+TEKS = os.path.join(HERE, "teksture")
+IZ_KITA = ["daska", "drvo_radnja", "metal", "staklo", "hleb", "trotoar", "ivicnjak"]   # kao u enterijer.py
+
+
+def _m(nt, op, a, b=None, c=None):
+    """Math cvor; a, b, c su broj ili izlaz."""
+    nd = nt.nodes.new("ShaderNodeMath")
+    nd.operation = op
+    for i, x in enumerate((a, b, c)):
+        if x is None:
+            continue
+        if isinstance(x, (int, float)):
+            nd.inputs[i].default_value = x
+        else:
+            nt.links.new(x, nd.inputs[i])
+    return nd.outputs[0]
+
+
+def _mr(nt, val, od, do):
+    """0 kod od, 1 kod do (smoothstep, odseceno)."""
+    nd = nt.nodes.new("ShaderNodeMapRange")
+    nd.interpolation_type = "SMOOTHSTEP"
+    nd.inputs["From Min"].default_value, nd.inputs["From Max"].default_value = od, do
+    nt.links.new(val, nd.inputs["Value"])
+    return nd.outputs["Result"]
+
+
+def _mix(nt, fac, a, b, blend="MIX"):
+    nd = nt.nodes.new("ShaderNodeMix")
+    nd.data_type, nd.blend_type = "RGBA", blend
+    for sock, x in (("Factor", fac), ("A", a), ("B", b)):
+        if isinstance(x, str):
+            nd.inputs[sock].default_value = hexc(x)
+        elif isinstance(x, (int, float)):
+            nd.inputs[sock].default_value = x
+        else:
+            nt.links.new(x, nd.inputs[sock])
+    return nd.outputs["Result"]
+
+
+def _rampa(nt, fac, boje):
+    r = nt.nodes.new("ShaderNodeValToRGB")
+    el = r.color_ramp.elements
+    for i, (pos, h) in enumerate(boje):
+        e = el[i] if i < len(el) else el.new(pos)
+        e.position, e.color = pos, hexc(h)
+    nt.links.new(fac, r.inputs["Fac"])
+    return r.outputs["Color"]
+
+
+def _sum(nt, co, scale, detail=3.0):
+    nz = nt.nodes.new("ShaderNodeTexNoise")
+    nz.inputs["Scale"].default_value = scale
+    nz.inputs["Detail"].default_value = detail
+    nt.links.new(co, nz.inputs["Vector"])
+    return nz.outputs["Fac"]
+
+
+def _slika(nt, fajl, co, boja=True):
+    tx = nt.nodes.new("ShaderNodeTexImage")
+    tx.projection, tx.projection_blend = "BOX", 0.2
+    tx.image = bpy.data.images.load(os.path.join(TEKS, fajl), check_existing=True)
+    if not boja:
+        tx.image.colorspace_settings.name = "Non-Color"
+    nt.links.new(co, tx.inputs["Vector"])
+    return tx
+
+
+def _novi(ime):
+    m = bpy.data.materials.new(ime)
+    m.use_nodes = True
+    nt = m.node_tree
+    return m, nt, nt.nodes["Principled BSDF"]
+
+
+def _zavrsi(nt, p, boja, visina, rough=0.9, jacina=0.5):
+    """Prasina od testere preko svega (krupne mrlje), bump iz visine."""
+    co = nt.nodes.new("ShaderNodeTexCoord").outputs["Object"]
+    prl = _m(nt, "MULTIPLY_ADD", _sum(nt, co, 2.5, 5.0), -0.3, 1.12)
+    nt.links.new(_mix(nt, 1.0, boja, prl, "MULTIPLY"), p.inputs["Base Color"])
+    p.inputs["Roughness"].default_value = rough
+    bp = nt.nodes.new("ShaderNodeBump")
+    bp.inputs["Strength"].default_value = jacina
+    bp.inputs["Distance"].default_value = 0.01
+    nt.links.new(visina, bp.inputs["Height"])
+    nt.links.new(bp.outputs["Normal"], p.inputs["Normal"])
+
+
+def mat_rez_zid():
+    m, nt, p = _novi("rez_zid_foto")
+    co = nt.nodes.new("ShaderNodeTexCoord").outputs["Object"]
+    mp = nt.nodes.new("ShaderNodeMapping")
+    mp.inputs["Scale"].default_value = (1 / 2.2, 1 / 2.2, 1 / 2.6)     # cigla ~21 x 7 cm (stari format, sa fugom)
+    nt.links.new(co, mp.inputs["Vector"])
+    dif = _slika(nt, "brick_wall_006/brick_wall_006_diff_2k.jpg", mp.outputs["Vector"])
+    disp = _slika(nt, "brick_wall_006/brick_wall_006_disp_2k.png", mp.outputs["Vector"], boja=False)
+    hs = nt.nodes.new("ShaderNodeHueSaturation")          # sveze presecena cigla: malo tamnija, manje narandzasta
+    hs.inputs["Saturation"].default_value = 0.8
+    hs.inputs["Value"].default_value = 0.85
+    nt.links.new(dif.outputs["Color"], hs.inputs["Color"])
+    # kora maltera: AO "iznutra" (samo sopstveni objekat) pada ispod 1 samo blizu ivice reza (~3 cm)
+    ao = nt.nodes.new("ShaderNodeAmbientOcclusion")
+    ao.inside, ao.only_local, ao.samples = True, True, 16
+    ao.inputs["Distance"].default_value = 0.07
+    wob = _m(nt, "MULTIPLY_ADD", _sum(nt, co, 14.0), 0.06, ao.outputs["AO"])
+    malt = _mr(nt, wob, 0.97, 0.92)
+    malter = _rampa(nt, _sum(nt, co, 7.0, 4.0), [(0.3, "#b9ae9c"), (0.7, "#d3c9b8")])
+    boja = _mix(nt, malt, hs.outputs["Color"], malter)
+    vis = _m(nt, "MULTIPLY", disp.outputs["Color"], _m(nt, "SUBTRACT", 1.0, malt))
+    _zavrsi(nt, p, boja, vis, rough=0.92, jacina=0.6)
+    return m
+
+
+def mat_rez_ploca(pod=False):
+    """Presek tavanice (Plafon: 4,10-4,52 i 7,80-8,10) ili poda (Pod: -0,10-0,12), slojevi po svetskom z."""
+    m, nt, p = _novi("rez_pod_foto" if pod else "rez_tavanica_foto")
+    g = nt.nodes.new("ShaderNodeNewGeometry").outputs["Position"]
+    sep = nt.nodes.new("ShaderNodeSeparateXYZ")
+    nt.links.new(g, sep.inputs["Vector"])
+    x, y, z = sep.outputs["X"], sep.outputs["Y"], sep.outputs["Z"]
+    co = nt.nodes.new("ShaderNodeTexCoord").outputs["Object"]
+    if pod:
+        zl = _m(nt, "ADD", z, 0.1)
+        beton = _rampa(nt, _sum(nt, co, 9.0, 5.0), [(0.35, "#5e5a54"), (0.65, "#77726a")])
+        estrih = _rampa(nt, _sum(nt, co, 20.0, 3.0), [(0.4, "#8e887d"), (0.6, "#a29b8f")])
+        boja = _mix(nt, _mr(nt, zl, 0.155, 0.16), beton, estrih)
+        boja = _mix(nt, _mr(nt, zl, 0.2, 0.203), boja, "#4a3b30")                    # plocice
+        vis = _m(nt, "MULTIPLY", _sum(nt, co, 40.0, 2.0), 0.3)
+        _zavrsi(nt, p, boja, vis, rough=0.9, jacina=0.3)
+        return m
+    gore = _m(nt, "GREATER_THAN", z, 6.0)
+    zl = _m(nt, "SUBTRACT", z, _m(nt, "MULTIPLY_ADD", gore, 3.7, 4.1))   # od dna tavanice
+    h = _m(nt, "MULTIPLY_ADD", gore, -0.12, 0.42)                         # debljina: 0,42 / 0,30
+    zt = _m(nt, "SUBTRACT", h, zl)                                        # do vrha (pod sprata)
+    # grede: po 25 cm jedna do druge (Dippelbaum), koordinata duz reza je x - y (ravni y, x i x + y = konst.)
+    s_ = _m(nt, "DIVIDE", _m(nt, "SUBTRACT", x, y), 0.25)
+    u = _m(nt, "FRACT", s_)
+    b = _m(nt, "FLOOR", s_)
+    zc = _m(nt, "SUBTRACT", zl, _m(nt, "MULTIPLY_ADD", h, 0.5, -0.045))  # sredina grede (0,03 do h - 0,12)
+    cv = nt.nodes.new("ShaderNodeCombineXYZ")
+    nt.links.new(_m(nt, "MULTIPLY", _m(nt, "SUBTRACT", u, 0.5), 0.25), cv.inputs["X"])
+    nt.links.new(zc, cv.inputs["Y"])
+    nt.links.new(_m(nt, "MULTIPLY", b, 3.17), cv.inputs["Z"])
+    wv = nt.nodes.new("ShaderNodeTexWave")                 # godovi na celu grede
+    wv.wave_type, wv.rings_direction = "RINGS", "Z"
+    wv.inputs["Scale"].default_value = 14.0
+    wv.inputs["Distortion"].default_value = 6.0
+    wv.inputs["Detail"].default_value = 3.0
+    nt.links.new(cv.outputs["Vector"], wv.inputs["Vector"])
+    wn_ = nt.nodes.new("ShaderNodeTexWhiteNoise")
+    wn_.noise_dimensions = "1D"
+    nt.links.new(b, wn_.inputs["W"])
+    # godovi tihi (ne smeju da se citaju kao sara), razlika po gredi jaca od godova
+    drvo = _rampa(nt, _m(nt, "MULTIPLY_ADD", wv.outputs["Fac"], 0.22, _m(nt, "MULTIPLY", wn_.outputs["Value"], 0.6)),
+                  [(0.0, "#4e3320"), (0.5, "#6b4a2f"), (1.0, "#83603f")])
+    drvo = _mix(nt, _m(nt, "MULTIPLY", _sum(nt, co, 25.0, 6.0), 0.5), drvo, "#3a2618")      # pukotine i prljavstina
+    fuga = _mr(nt, _m(nt, "MULTIPLY_ADD", _sum(nt, co, 30.0), 0.02, _m(nt, "MINIMUM", u, _m(nt, "SUBTRACT", 1.0, u))),
+               0.02, 0.04)                                                    # 0 u fugi (nejednake grede)
+    drvo = _mix(nt, fuga, "#1f150e", drvo)
+    nasip = _rampa(nt, _sum(nt, co, 60.0, 2.0), [(0.35, "#3e352e"), (0.65, "#62574b")])
+    daske = _rampa(nt, _sum(nt, cv.outputs["Vector"], 3.0, 6.0), [(0.3, "#7c5a3a"), (0.7, "#9a7650")])
+    malter = _rampa(nt, _sum(nt, co, 9.0, 4.0), [(0.3, "#c4bbab"), (0.7, "#d9d1c2")])
+    boja = _mix(nt, _mr(nt, zl, 0.028, 0.034), malter, drvo)
+    boja = _mix(nt, _mr(nt, zt, 0.122, 0.118), boja, nasip)
+    boja = _mix(nt, _mr(nt, zt, 0.047, 0.043), boja, "#2a1d14")                 # slepi pod (tanka tamna linija)
+    boja = _mix(nt, _mr(nt, zt, 0.04, 0.037), boja, daske)
+    vis = _m(nt, "MULTIPLY", fuga, 0.5)
+    _zavrsi(nt, p, boja, vis, rough=0.85, jacina=0.5)
+    return m
+
+
+def foto_materijali():
+    """Rez kuce, Kriske i enterijera dobija foto rez; materijali kita u enterijeru (append ih je ostavio kao
+    .001 iz enterijer.blend) prelaze na foto materijale kita iz kvart.blend (krug 2)."""
+    zid, plafon, pod = mat_rez_zid(), mat_rez_ploca(), mat_rez_ploca(pod=True)
+    n = 0
+    for o in OB:
+        if o.type != "MESH":
+            continue
+        for i, mt in enumerate(o.data.materials):
+            if not mt:
+                continue
+            if mt.name == "presek" or mt.name.startswith("presek_kora"):
+                o.data.materials[i] = pod if o.name == "Pod" else plafon if o.name == "Plafon" else zid
+                n += 1
+    remap = []
+    for mt in list(bpy.data.materials):
+        baza, _, suf = mt.name.rpartition(".")
+        if baza in IZ_KITA and suf.isdigit() and baza in bpy.data.materials:
+            mt.user_remap(bpy.data.materials[baza])
+            remap.append(mt.name)
+    print(f"FOTO rez: {n} slotova; kit u enterijeru -> foto kit: {remap}")
+
+
+if FOTO:
+    foto_materijali()
+
+
 def hlebovi(veliki):
     """Poglavlje 5: hlebovi 1,4x i razmaknuti po pultu, da se na kadru citaju (etikete idu uz njih)."""
     for i, (nm, (loc, sc)) in enumerate(sorted(HLEB.items())):
@@ -209,9 +435,10 @@ def hlebovi(veliki):
             o.scale = sc * 1.4
 
 
-def kadar(n, oblik, fstop=None, izmena=None):
+def kadar(n, oblik, fstop=None, izmena=None, fokus=None):
     """Kamera kao kadar() u kvart.py; za 4 i 5 polozaj i cilj sa Stanica_N iz enterijera.
-    izmena: dict za kadar gde Pogl_N ne pokazuje ono sto alt opisuje (p, c, lens, blize, sx, sy)."""
+    izmena: dict za kadar gde Pogl_N ne pokazuje ono sto alt opisuje (p, c, lens, blize, sx, sy, foto_sy).
+    fokus: tacka u fokusu (podrazumevano pekara, kao lazni tilt-shift)."""
     pe = OB[f"Pogl_{n}"]
     tel = oblik == "hoch"
     iz = izmena or {}
@@ -225,14 +452,21 @@ def kadar(n, oblik, fstop=None, izmena=None):
     kam.location = loc
     kam.rotation_euler = (cilj - loc).to_track_quat("-Z", "Y").to_euler()
     cd.lens = iz.get("lens", lens)
-    cd.sensor_fit = "AUTO"
+    cd.sensor_fit, cd.sensor_width = "AUTO", 36.0
     cd.clip_start = 0.02 if n in STANICA else 0.1
     cd.shift_x = 0.0 if tel else iz.get("sx", pe["shift_x"])
     cd.shift_y = iz.get("sy", pe["tel_shift_y"]) if tel else iz.get("sy", pe["shift_y"])
-    cd.dof.use_dof = fstop is not None
+    if FOTO and tel:
+        # foto hoch 720x1440 (render2.py, krug 2): isti vodoravni ugao kao kadar 9:16 (camera.js: uze od 9:16
+        # cuva vodoravni ugao), senzor 36 mm na visini 9:16 -> 20,25 mm sirine. Shift se uz HORIZONTAL meri
+        # sirinom (720 px), a u 9:16 visinom (1280 px): sy * 1280 / 720, pa jos foto_sy (kuca u gornjih ~60 %)
+        cd.sensor_fit, cd.sensor_width = "HORIZONTAL", 36.0 * 9 / 16
+        cd.shift_y = cd.shift_y * 1280 / 720 + float(os.environ.get("KRUME_HOCH_SY", iz.get("foto_sy", 0.0)))
+    cd.dof.use_dof = bool(fstop)
     if fstop:                                       # lazni tilt-shift: fokus na pekaru
         cd.dof.aperture_fstop = fstop
-        cd.dof.focus_distance = (Vector((1.5, 1.5, 4.0)) - loc).length
+        cd.dof.aperture_blades = 6
+        cd.dof.focus_distance = (Vector(fokus or (1.5, 1.5, 4.0)) - loc).length
     scene.render.resolution_x, scene.render.resolution_y = OBLICI[oblik]
 
 
@@ -255,7 +489,13 @@ POGLAVLJA = {
     "3": dict(n=3, wide=dict(p=(13.6, -8.6, 2.4), c=(6.2, -1.2, 3.3)),
               hoch=dict(p=(12.8, -9.5, 2.3), c=(6.6, -0.5, 2.9), tel_cilj=(6.6, -0.5, 2.9), blize=1.0, sy=-0.06),
               svetlo=dict(doba="noc", lampe=True, unutra=False),
-              st=dict(frame=40, enterijer=True, testo=(0.4, 0.0), zar=220.0, ekspozicija=0.3)),
+              st=dict(frame=40, enterijer=True, testo=(0.4, 0.0), zar=220.0, ekspozicija=0.3),
+              # foto (krug 3): malo DOF-a, fokus na rezu izvucene Kriske (kraj fasade A posle izvlacenja 4,5 m)
+              # svetla: manje hladne ulice u pekari, jaca topla lampa i polica (pekara se cita kao topla soba)
+              # hoch: jaci DOF, kaldrma u prvom planu (pod tekstom na dnu) je mutna i mirna
+              foto=dict(fstop=0.5, fstop_hoch=0.1, fokus=(8.0, -2.8, 3.0),
+                        svetla={"Svetlo_ulica": 0.35, "Svetlo_lampa": 1.8, "Svetlo_polica": 1.6,
+                                "Svetlo_magacin": 2.5})),
     # kadar pomeren udesno da se vide otvorena vrata peci (na stanici su na samoj ivici)
     "4": dict(n=4, wide=dict(sx=0.1), hoch=dict(tel_cilj=(7.4, 3.6, 1.1), lens=22), svetlo=dict(doba="noc", lampe=True, unutra=False), sjaj=True,
               st=dict(frame=70, enterijer=True, testo=(0.0, 1.0), zar=220.0, ekspozicija=0.6)),
@@ -270,7 +510,17 @@ POGLAVLJA = {
     "7b": dict(n=7, svetlo=dict(doba="vece", lampe=True), st=dict(frame=1), fstop=0.04),
 }
 
-VREME = {}
+VREME, MEM = {}, {}
+
+
+def _stat(*a):
+    """Poslednja statistika rendera (sadrzi "Peak"), za izvestaj o memoriji."""
+    for x in a:
+        if isinstance(x, str) and "Peak" in x:
+            MEM["s"] = x
+
+
+bpy.app.handlers.render_stats.append(_stat)
 for key in IZBOR:
     d = POGLAVLJA[key]
     svetlo(**d["svetlo"])
@@ -279,13 +529,25 @@ for key in IZBOR:
     sjaj(d.get("sjaj", False))
     for oblik in FORMATI:
         tel = oblik == "hoch"
-        kadar(d["n"], oblik, fstop=None if tel else d.get("fstop"), izmena=d.get(oblik))
-        scene.render.filepath = os.path.join(PNG_DIR, f"kadar-{key}-{oblik}.png")
+        fstop, fokus = (None if tel else d.get("fstop")), None
+        if FOTO and "foto" in d:                    # foto: DOF i na telefonu (fotografija makete), fokus na rezu
+            fstop = float(os.environ.get("KRUME_FSTOP", d["foto"].get("fstop_" + oblik, d["foto"]["fstop"])))
+            fokus = d["foto"]["fokus"]
+            for n_, k_ in d["foto"].get("svetla", {}).items():
+                if n_ in SVETLA:
+                    OB[n_].data.energy = SVETLA[n_] * k_
+        kadar(d["n"], oblik, fstop=fstop, izmena=d.get(oblik), fokus=fokus)
+        ime = f"{key}-{oblik}.png" if FOTO else f"kadar-{key}-{oblik}.png"
+        scene.render.filepath = os.path.join(PNG_DIR, ime)
         t = time.time()
         bpy.ops.render.render(write_still=True)
         VREME[f"{key}-{oblik}"] = time.time() - t
-        print(f"RENDER kadar-{key}-{oblik}.png: {VREME[f'{key}-{oblik}']:.1f} s")
+        pk = MEM.get("s", "").split("Peak")[-1].split("|")[0].strip(" :,") if MEM else "?"
+        print(f"RENDER {ime}: {VREME[f'{key}-{oblik}']:.1f} s, Mem Peak {pk}")
+    for n_ in d.get("foto", {}).get("svetla", {}):     # sledece poglavlje dobija svetla kao pre
+        if n_ in SVETLA:
+            OB[n_].data.energy = SVETLA[n_]
 
-if not os.environ.get("KRUME_PREFIX"):
+if not os.environ.get("KRUME_PREFIX") and not FOTO:
     svi_webp(IZBOR)
 print("VREME", {k: round(v) for k, v in VREME.items()}, f"ukupno {time.time() - T0:.0f} s")

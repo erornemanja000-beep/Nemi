@@ -1,6 +1,6 @@
 # Krume: gde smo stali (za nastavak)
 
-Poslednje ažuriranje: 28. 10. 2026, oko ponoći. Komanda za nastavak u terminalu: **NASTAVAK.PEKARA**
+Poslednje ažuriranje: 28. 10. 2026, ujutru (krug 3 peći gotov). Komanda za nastavak u terminalu: **NASTAVAK.PEKARA**
 
 ## Ukratko
 Krume (`pekara/`) je koncept-sajt bečke pekare: noć u kvartu od 04:00 do 07:00 na skrol.
@@ -23,7 +23,7 @@ Rok i brzina rendera. Predlog direktora je **1 + 3**: oko 200 kadrova po obliku 
 |---|---|---|
 | `1-wide.png`, `1-hoch.png` | grad u 04:00, krug 2 (teksture) | dobro: mokra kaldrma, prednje kuće, svetlije |
 | `3-wide.png`, `3-hoch.png` | presek sa izvučenom kriškom, krug 3 | dobro, ali vidi popravke |
-| `4-ofen-wide.png` | peć, krug 2 (krug 3 se renderovao u ponoć) | krug 3: vrata od gvožđa, cepanice, zraci, čestice |
+| `4-ofen-wide.png` | peć, krug 3 | dobro: cepana drva kao prava, niša sa dubinom, izmaglica brašna i prašina. Slabo: snopovi sa prugama nisu uspeli (kamera je u osi otvora), „šator" cepanica u komori je prosvetao, dve kose cepanice desno su neprirodne, vrh vrata je svetao |
 | `krug1/`, `krug2/` | stari krugovi za poređenje | |
 
 **Popravke za sledeći mali krug** (posle kruga 3 peći):
@@ -31,12 +31,12 @@ Rok i brzina rendera. Predlog direktora je **1 + 3**: oko 200 kadrova po obliku 
 - tavanica i zidovi u preseku su velike ravne bele površine; treba više detalja i toplije;
 - prazna tabla iznad vrata;
 - foto materijali enterijera (`foto_sloj()`, `M_FOTO`, UV `foto_uv` u `enterijer.py`) postoje samo za kadar „ofen". Treba ih sačuvati u `enterijer.blend`, da ih koristi `kadrovi.py -- foto`, i ponovo napraviti `enterijer.blend` posle novog `kuca_kit.blend`;
-- cepanice u niši (test kruga 3) deluju plastično; proveriti u konačnom renderu.
+- peć: potamneti „šator" cepanica u komori (ugljenisano, jače tinjanje), ukloniti dve kose cepanice desno, prigušiti vrh vrata. Snopovi: svetlo visoko pod svodom i ivica ili rešetka pod uglom, ili light group u kompozitu (kamera se ne pomera).
 
 ## Kako se renderuje (važno)
 - **Uvek preko** `studio/pekara/blender/render_red.sh <argumenti za Blender>`. Skripta ima zajedničku bravu (`/tmp/krume-render.lock`), pa radi samo jedan Blender odjednom (dva istovremena su rušila Blender), i `caffeinate` (Mac ne zaspi).
 - **Samo Metal GPU.** CPU uz GPU je na M1 usporavao do 20×; ispravljeno u svim skriptama.
-- **Mac na punjaču, poklopac otvoren.** Na bateriji noću zaspi (kadar od 9 min je trajao 1 h).
+- **Mac na punjaču, poklopac otvoren.** Na bateriji sa zatvorenim poklopcem Mac zaspi i `caffeinate` to ne sprečava: noću 27./28. 10. peć od ~5 min je trajala 4,6 h, a kadar 3 od 9 min 1 h.
 - **Primeri:**
   - grad: `kvart.py` gradi `kvart.blend`; render kadra 1 je bio skripta Z1 u scratchpad-u (`render2.py`);
   - presek i ostali kadrovi: `./render_red.sh -b -P kadrovi.py -- foto 3` (wide 1600×1000 i hoch 720×1440 u `proba-foto/`);

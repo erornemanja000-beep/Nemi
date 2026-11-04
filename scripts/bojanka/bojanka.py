@@ -4,10 +4,11 @@ Upotreba:
     python3 scripts/bojanka/bojanka.py studio/dons-bojanka
 
 Pravi <izlaz>/dons-malbuch-a4.pdf i pregled svake strane u <izlaz>/vorschau/.
-Treba: node + playwright (već su u okruženju) i pdftoppm.
+Treba: node sa paketom playwright i Chromium-om (u cloud okruženju su već tu) i pdftoppm (poppler).
 """
 import math
 import os
+import pathlib
 import re
 import subprocess
 import sys
@@ -343,6 +344,7 @@ def strana1():
 
 def strana2():
     p = Pero()
+    p.dodaj('<g transform="translate(500 640) scale(0.95) translate(-500 -640)">')
     p.dodaj(naslov("Der Eisladen"))
     sunce(p, 892, 108, 40)
     oblak(p, 118, 110, 62)
@@ -352,9 +354,9 @@ def strana2():
     for x0 in (170, 640):
         p.p(f"M {x0} 280 L {x0 + 190} 280 L {x0 + 190} 420 L {x0} 420 Z")
         p.p(f"M {x0 + 95} 280 L {x0 + 95} 420 M {x0} 330 L {x0 + 190} 330", "d")
-        for i, cx in enumerate((x0 + 30, x0 + 95, x0 + 160)):
-            p.p(f"M {cx} 440 L {cx} {412 - (i % 2) * 14}", "d")
-            cvet(p, cx, 400 - (i % 2) * 14, 26)
+        for cx in (x0 + 52, x0 + 138):
+            p.p(f"M {cx} 440 L {cx} 404", "d")
+            cvet(p, cx, 390, 34)
         p.p(f"M {x0 - 12} 420 L {x0 + 202} 420 L {x0 + 194} 458 L {x0 - 4} 458 Z")
     srce(p, 500, 352, 46)
     # venac
@@ -384,15 +386,13 @@ def strana2():
     p.p("M 420 880 L 444 836", "d")
     p.p("M 808 880 L 784 836", "d")
     p.p("M 444 836 L 784 836", "d")
-    znak = Pero(0.16, 478, 948)
-    don_glava(znak)
-    p.krug(478, 945, 50)
-    p.dodaj(str(znak))
+    p.krug(478, 945, 46)
+    srce(p, 478, 950, 50)
     p.dodaj('<text class="z2" x="602" y="962" text-anchor="middle" font-size="42">DON’S</text>')
     # prag i rešetka
     p.p("M 384 1010 L 844 1010 L 844 1036 L 384 1036 Z")
     p.p("M 520 1056 L 700 1056 L 700 1096 L 520 1096 Z")
-    for x in range(540, 700, 20):
+    for x in range(556, 700, 36):
         p.p(f"M {x} 1060 L {x} 1092", "d")
     # trotoar
     p.p("M 40 1170 L 960 1170 L 960 1250 L 40 1250 Z")
@@ -408,6 +408,7 @@ def strana2():
     don_telo(don)
     don_glava(don, pogled=(-8, 4))
     p.dodaj(str(don))
+    p.dodaj("</g>")
     return strana(str(p))
 
 
@@ -579,11 +580,10 @@ svg {{ display: block; width: 210mm; height: 297mm; }}
 .m1 {{ stroke: {INK}; stroke-width: 19; stroke-linecap: round; }}
 .m2 {{ stroke: #fff; stroke-width: 9; stroke-linecap: round; }}
 .t {{ font-family: Fraunces, serif; font-weight: 900; font-variation-settings: "SOFT" 100, "WONK" 0;
-      fill: #fff; stroke: {INK}; stroke-width: 5; stroke-linejoin: round; letter-spacing: 1px; }}
-.z {{ font-family: Figtree, sans-serif; font-weight: 900; fill: #fff; stroke: {INK}; stroke-width: 6;
-      stroke-linejoin: round; letter-spacing: 4px; }}
-.z2 {{ font-family: Fraunces, serif; font-weight: 900; font-variation-settings: "SOFT" 100;
-       fill: #fff; stroke: {INK}; stroke-width: 3.5; stroke-linejoin: round; }}
+      fill: #fff; stroke: {INK}; stroke-width: 10; stroke-linejoin: round; paint-order: stroke; letter-spacing: 2px; }}
+.z {{ font-family: Figtree, sans-serif; font-weight: 900; fill: #fff; stroke: {INK}; stroke-width: 12;
+      stroke-linejoin: round; paint-order: stroke; letter-spacing: 4px; }}
+.z2 {{ font-family: Fraunces, serif; font-weight: 900; font-variation-settings: "SOFT" 100; fill: {INK}; }}
 .f1 {{ font-family: Figtree, sans-serif; font-weight: 600; font-size: 26px; fill: {INK}; }}
 .f2 {{ font-family: Fraunces, serif; font-weight: 800; font-size: 30px; fill: {INK}; }}
 .f3 {{ font-family: Caveat, cursive; font-weight: 700; font-size: 32px; }}
@@ -597,7 +597,7 @@ def html():
     return (
         "<!doctype html><html lang=\"de\"><head><meta charset=\"utf-8\">"
         "<title>DON'S Eisdiele – Malbuch</title>"
-        f'<link rel="stylesheet" href="file://{FONTOVI}"><style>{CSS}</style></head><body>'
+        f'<link rel="stylesheet" href="{pathlib.Path(FONTOVI).as_uri()}"><style>{CSS}</style></head><body>'
         + "".join(strane)
         + "</body></html>"
     )
@@ -612,7 +612,7 @@ def main():
         with open(ulaz, "w", encoding="utf-8") as f:
             f.write(html())
         subprocess.run(["node", os.path.join(os.path.dirname(__file__), "pdf.js"), ulaz, pdf], check=True)
-    subprocess.run(["pdftoppm", "-png", "-r", "60", pdf, os.path.join(izlaz, "vorschau", "seite")], check=True)
+    subprocess.run(["pdftoppm", "-png", "-r", "80", pdf, os.path.join(izlaz, "vorschau", "seite")], check=True)
     print(pdf)
 
 

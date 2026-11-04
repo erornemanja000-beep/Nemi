@@ -44,6 +44,18 @@ python3 scripts/gradnja/sfx.py assets/lokal video/gradnja_sfx.wav
 Scenario (šta pada, gde i kada) je u `scripts/gradnja/scenario.py`. Tu se menjaju
 vremena, redosled i vrste pokreta.
 
+## Bojanka (probna, 4. 11. 2026)
+`studio/dons-bojanka/dons-malbuch-a4.pdf`: 5 strana A4 za decu, na nemačkom. Glavni lik je Don (francuski buldog iz logoa).
+1. „Don liebt Eis!" (Don liže kornet) · 2. „Der Eisladen" (lokal sa natpisom DON'S) · 3. „Der Eisbecher" ·
+4. „Die Eisrose" (ruža od sladoleda iz videa) · 5. „Erfinde deine Sorte!" (prazne kugle i linija za ime ukusa)
+
+Crteži su vektorske linije (SVG) koje je napisao Claude. Za Amazon KDP se to verovatno računa kao AI sadržaj
+(prijaviti pri objavi), a autorska zaštita je upitna dok čovek bitno ne doradi crteže. Fontovi su sa sajta (Fraunces, Figtree, Caveat). Pregled strana je u `studio/dons-bojanka/vorschau/`.
+```
+python3 scripts/bojanka/bojanka.py studio/dons-bojanka
+```
+Za KDP bi trebala verzija 8,5×11" sa 3 mm preklopa (bleed), zasebne korice i bar 24 strane.
+
 ## Sledeći koraci
 - Spojiti AI klipove (ruža, latica) sa gradnjom u CapCut-u
 - Po želji: uspravna 9:16 verzija za Instagram

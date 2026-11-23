@@ -44,7 +44,7 @@ ScaledBorderAndShadow: yes
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
 Style: Naslov,Inter Black,{NASLOV_VELICINA},&H00FFFFFF,&H00FFFFFF,&H00000000,&H78000000,0,0,0,0,100,100,0,0,1,7,3,8,50,50,{NASLOV_Y},1
 Style: Titl,Inter Black,{TITL_VELICINA},&H00FFFFFF,&H00FFFFFF,&H00000000,&H78000000,0,0,0,0,100,100,0,0,1,8,3,5,40,40,0,1
-Style: Autor,Inter Bold,34,&H20FFFFFF,&H20FFFFFF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,1,3,0,8,50,50,0,1
+Style: Autor,Inter Bold,40,&H20FFFFFF,&H20FFFFFF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,1,3,0,8,50,50,0,1
 
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text

@@ -22,11 +22,12 @@ def greska(poruka: str) -> None:
 def proveri_ffmpeg() -> None:
     for alat in ("ffmpeg", "ffprobe"):
         if not shutil.which(alat):
-            greska(f"{alat} nije instaliran ili nije u PATH-u (Mac: brew install ffmpeg).")
+            greska(f"{alat} nije instaliran ili nije u PATH-u (Mac: brew install ffmpeg-full, pa $(brew --prefix ffmpeg-full)/bin u PATH).")
     # titlovi traže ffmpeg sa libass-om (filter "ass")
     filteri = subprocess.run(["ffmpeg", "-hide_banner", "-filters"], capture_output=True, text=True).stdout
     if not re.search(r"^\s*\S+\s+ass\s", filteri, re.M):
-        greska("ovaj ffmpeg nema libass (filter 'ass'), pa ne može da piše titlove.")
+        greska("ovaj ffmpeg nema libass (filter 'ass'), pa ne može da piše titlove. "
+               "Mac: brew install ffmpeg-full (obični ffmpeg iz Homebrew-a nema libass).")
 
 
 def vreme(tekst: str | float | int) -> float:

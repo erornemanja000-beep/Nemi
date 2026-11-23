@@ -1,3 +1,7 @@
 ulaz/
 izlaz/
 *.part
+.venv/
+modeli/
+snimci/
+chat/

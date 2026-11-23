@@ -68,5 +68,8 @@ preko Creator Rewards, jer TikTok preuzete klipove vodi kao neoriginalne.
 - Prvi talas streamera: IShowSpeed, TheBurntPeanut, xQc, Kai Cenat, CaseOh (`studio/clipper/streameri.md`).
 
 ## Sledeći koraci
-- Alati iz `clipper/BEZBEDNOST.md` (yt-dlp, Whisper) pa transkript i izbor trenutaka sa udicama
+- `bezbednost` (23. 11.): yt-dlp, faster-whisper, streamlink uz uslove; liste sa heševima u `clipper/zahtevi/`;
+  na Mac-u `ffmpeg-full` (obični nema libass). Korisnik instalira po `clipper/BEZBEDNOST.md`, deo 7.
+- Prvo pokretanje na Mac-u (ffmpeg 9.1) proveriti `split.py` na pravom snimku
+- Transkript (faster-whisper) i izbor trenutaka sa udicama
 - Snimanje live-a i brzina chata (Twitch IRC), za 19. 11.

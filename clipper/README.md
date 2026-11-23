@@ -20,8 +20,28 @@ posle prijavi u TikTok Creator Rewards. Od 19. 11. isto se radi sa live streamov
 | `BEZBEDNOST.md` | pregled alata za preuzimanje, transkript i snimanje live-a |
 | `ulaz/`, `izlaz/` | izvorni videi i gotovi klipovi (ne idu u git) |
 
-Treba samo Python 3.10+ i ffmpeg. Za preuzimanje i transkript (yt-dlp, Whisper) prvo pročitati
-`BEZBEDNOST.md`.
+Za `split.py` i `momenti.py` trebaju samo Python i ffmpeg **sa libass-om** (titlovi). Za preuzimanje,
+transkript i snimanje live-a (yt-dlp, faster-whisper, streamlink) važi `BEZBEDNOST.md`: tačne verzije,
+zastavice koje se uvek dodaju i ono što se ne sme pokretati.
+
+### Instalacija na Mac-u (Apple Silicon)
+
+Ukratko (cela uputstva i obrazloženje su u `BEZBEDNOST.md`, deo 7):
+
+1. U `~/.zprofile` upisati `HOMEBREW_NO_ANALYTICS=1`, `HOMEBREW_NO_AUTO_UPDATE=1`, `HF_HUB_DISABLE_TELEMETRY=1`
+   i ostale promenljive iz dela 7, **pre** Homebrew-a.
+2. Homebrew iz `.pkg` fajla sa GitHub izdanja, uz proveru potpisa (`pkgutil --check-signature`).
+3. `brew install python@3.14 ffmpeg-full`. Obični `ffmpeg` iz Homebrew-a **nema libass** i titlovi ne rade.
+   `ffmpeg-full` nije sam u PATH-u, pa se dodaje `$(brew --prefix ffmpeg-full)/bin`.
+4. venv `clipper/.venv` na Python-u 3.14 i paketi samo iz zaključanih lista sa heševima:
+   `python -m pip install --require-hashes --only-binary=:all: -r clipper/zahtevi/yt-dlp.txt
+   -r clipper/zahtevi/whisper.txt -r clipper/zahtevi/streamlink.txt`
+5. Model za transkript jednom, po tačnom repou i commit-u, uz proveru SHA-256 (deo 7, korak 3).
+
+Liste u `zahtevi/` su doslovno prepisane iz priloga u `BEZBEDNOST.md`. Nove verzije idu samo preko `bezbednost`-a.
+
+**Uslovi platformi:** YouTube i Twitch u svojim uslovima korišćenja zabranjuju preuzimanje sadržaja i automatski
+pristup bez dozvole (citati u `BEZBEDNOST.md`, deo 6). O tome odlučuje vlasnik naloga.
 
 ## Kako se radi
 

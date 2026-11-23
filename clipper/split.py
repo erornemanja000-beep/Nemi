@@ -51,6 +51,19 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 """
 
 
+CENZURA = {"fuck": "f*ck", "fucking": "f*cking", "fucked": "f*cked", "shit": "sh*t", "bitch": "b*tch",
+           "nigga": "n*gga", "niggas": "n*ggas", "ass": "a**", "damn": "d*mn"}
+
+
+def cenzurisi(rec: str) -> str:
+    """Psovke u titlu sa zvezdicom (TikTok slabije širi klipove sa psovkama u tekstu)."""
+    jezgro = rec.strip(".,!?\"'").lower()
+    if jezgro in CENZURA:
+        zamena = CENZURA[jezgro]
+        return rec.lower().replace(jezgro, zamena) if rec.islower() else rec.replace(rec.strip(".,!?\"'"), zamena)
+    return rec
+
+
 def grupisi(reci, max_reci=3, max_znakova=16, pauza=0.6):
     """Reči u kratke grupe (2–3 reči) koje se smenjuju na ekranu."""
     grupe, grupa = [], []
@@ -72,7 +85,7 @@ def grupisi(reci, max_reci=3, max_znakova=16, pauza=0.6):
     return grupe
 
 
-def napravi_ass(args, duzina: float, reci) -> str:
+def napravi_ass(args, duzina: float, reci, titl_y: int = POLA) -> str:
     redovi = [ASS_ZAGLAVLJE]
     kraj_svega = ass_vreme(duzina)
 
@@ -91,7 +104,8 @@ def napravi_ass(args, duzina: float, reci) -> str:
                       + ass_tekst(args.autor))
 
     for grupa in grupisi(reci):
-        tekst_reci = [ass_tekst(r[2].upper() if not args.mala_slova else r[2]) for r in grupa]
+        tekst_reci = [cenzurisi(r[2]) if getattr(args, "cenzura", True) else r[2] for r in grupa]
+        tekst_reci = [ass_tekst(t if args.mala_slova else t.upper()) for t in tekst_reci]
         for i, (pocetak, _, _) in enumerate(grupa):
             kraj = grupa[i + 1][0] if i + 1 < len(grupa) else grupa[-1][1]
             if kraj <= pocetak:
@@ -103,7 +117,7 @@ def napravi_ass(args, duzina: float, reci) -> str:
             pop = r"{\fscx80\fscy80\t(0,90,\fscx100\fscy100)}" if i == 0 else ""
             redovi.append(
                 f"Dialogue: 3,{ass_vreme(pocetak)},{ass_vreme(kraj)},Titl,,0,0,0,,"
-                + r"{\an5\pos(" + f"{S // 2},{POLA}" + ")}" + pop + " ".join(delovi)
+                + r"{\an5\pos(" + f"{S // 2},{titl_y}" + ")}" + pop + " ".join(delovi)
             )
     return "\n".join(redovi) + "\n"
 

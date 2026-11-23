@@ -103,6 +103,9 @@ def ucitaj_reci(putanja: Path) -> list[tuple[float, float, str]]:
     tada se koriste prava vremena. Kod običnih titlova vreme rečenice se deli na reči
     srazmerno dužini reči.
     """
+    if putanja.suffix == ".json":  # izlaz transkript.py: [{"p", "k", "r"}]
+        return [(float(w["p"]), float(w["k"]), str(w["r"])) for w in json.loads(putanja.read_text(encoding="utf-8"))]
+
     tekst = putanja.read_text(encoding="utf-8-sig", errors="replace").replace("\r", "")
 
     # Kju počinje redom sa vremenom i traje do potpuno praznog reda. YouTube u kjuu ima

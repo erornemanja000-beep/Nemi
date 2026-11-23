@@ -14,8 +14,10 @@ posle prijavi u TikTok Creator Rewards. Od 19. 11. isto se radi sa live streamov
 |---|---|
 | `split.py` | od jednog isečka pravi gotov klip (ili PNG za brzu proveru rasporeda) |
 | `momenti.py` | u dugom videu nalazi najglasnije trenutke (vrisak, smeh, galama) i predlaže isečke |
+| `hype.py` | klip u tri dela: gore igra, u sredini kamera streamera, dole naš Hype pojas (AI vožnja + brzinomer koji prati glas) |
+| `transkript.py` | tekst iz govora sa vremenom svake reči (faster-whisper), izlaz `.reci.json` za `--titlovi` |
 | `alati.py` | zajedničke funkcije: vreme, ffprobe, čitanje SRT/VTT titlova (i YouTube vremena po reči) |
-| `pozadine/` | naše originalne pozadine (render iz `motion/`, kompozicija `Pozadina`) |
+| `pozadine/` | naše pozadine: `voznja_neon.mp4` (AI, Kling v3 preko Artlist-a, za Hype pojas) i ranije kuglice iz `motion/` |
 | `fontovi/` | Inter Black i Bold (OFL licenca, `LICENSE-Inter.txt`) |
 | `BEZBEDNOST.md` | pregled alata za preuzimanje, transkript i snimanje live-a |
 | `ulaz/`, `izlaz/` | izvorni videi i gotovi klipovi (ne idu u git) |
@@ -91,3 +93,20 @@ prijema u program prave se verzije od 61 do 75 s.
 - Od 19. 11.: snimanje live-a (Twitch i YouTube) u delovima, merenje brzine chata (najbolji znak
   viralnog trenutka), klipovi 10–20 minuta posle trenutka.
 - Pozadina od našeg GTA 6 snimka, ako postoji konzola.
+
+## Hype format (probni klip 23. 11. 2026)
+
+```
+python clipper/transkript.py clipper/ulaz/twitch/speed.mp4          # pa pregledati .reci.json (Whisper greši imena i sleng)
+python3 clipper/hype.py --izvor clipper/ulaz/twitch/speed.mp4 --od 18 --do 27 \
+    --igra 405:90:1290:860 --kamera 2:464:384:238 --voznja clipper/pozadine/voznja_neon.mp4 \
+    --naslov "Speed's first ever robbery in GTA 6" --autor "@IShowSpeed" \
+    --titlovi clipper/ulaz/twitch/speed.reci.json --izlaz clipper/izlaz/speed_pljacka.mp4
+```
+
+- Raspored: igra 720 px, kamera 668 px, Hype pojas 532 px. Titlovi su na spoju igre i kamere, iznad lica.
+- `--igra` i `--kamera` su pravougaonici u izvoru. Za Speed-ov Twitch (1920×1080): kamera levo `2:464:384:238`,
+  a igra `405:90:1290:860`, bez chata gore desno i bez njegovih titlova na dnu.
+- Psovke se u titlu pišu sa zvezdicom (`SH*T`), zvuk ostaje. `--bez-cenzure` to isključuje.
+- Hype pojas sadrži realističan AI snimak, pa se na TikTok-u uključuje oznaka „AI-generated content".
+- YouTube iz oblaka traži prijavu („nisi bot"); Twitch klipovi rade. Na Mac-u YouTube treba da radi bez kolačića.

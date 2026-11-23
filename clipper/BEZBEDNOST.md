@@ -331,6 +331,12 @@ a transkribuje sa `word_timestamps=True, vad_filter=True`.
 Linux server koristi iste liste (manylinux x86_64, Python 3.13 ili 3.14). ffmpeg iz distribucije mora imati
 filter `ass`. Za Windows ili Linux aarch64 liste se prave ponovo.
 
+## Napomena posle prve upotrebe (direktor, 23. 11. 2026)
+
+Zakucani faster-whisper 1.2.1 poziva `av.open(..., metadata_errors="ignore")`, a zakucani av 19.0.2 tu opciju više
+nema (`TypeError`). Paketi se ne menjaju: `clipper/transkript.py` dekodira zvuk ffmpeg-om i Whisper-u daje niz
+uzoraka, pa se av za dekodiranje ne koristi. Model je preuzet po tačnom commit-u i heš se poklopio.
+
 ## 8. Nalazi u postojećem kodu
 
 - **NISKO, `clipper/alati.py:25`:** poruka kaže „Mac: brew install ffmpeg”, a taj ffmpeg nema libass, pa

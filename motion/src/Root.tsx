@@ -4,6 +4,7 @@ import {FPS} from './theme';
 import {Wuerfelwelt, WUERFELWELT_TRAJANJE} from './Wuerfelwelt';
 import {Pozadina} from './pozadine/Pozadina';
 import * as Sim from './pozadine/simulacija';
+import {HYPE_SIRINA, HYPE_VISINA, HypeTraka, type HypeProps} from './hype/HypeTraka';
 
 export const Root: React.FC = () => (
 	<>
@@ -31,6 +32,16 @@ export const Root: React.FC = () => (
 			width={Sim.SIRINA}
 			height={Sim.VISINA}
 			defaultProps={{seed: 1}}
+		/>
+		<Composition
+			id="HypeTraka"
+			component={HypeTraka}
+			durationInFrames={300}
+			fps={30}
+			width={HYPE_SIRINA}
+			height={HYPE_VISINA}
+			defaultProps={{vrednosti: [], video: 'clipper/voznja.mp4', oznaka: 'HYPE'} as HypeProps}
+			calculateMetadata={({props}) => ({durationInFrames: Math.max(1, props.vrednosti.length)})}
 		/>
 	</>
 );

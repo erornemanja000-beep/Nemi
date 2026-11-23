@@ -73,3 +73,9 @@ preko Creator Rewards, jer TikTok preuzete klipove vodi kao neoriginalne.
 - Prvo pokretanje na Mac-u (ffmpeg 9.1) proveriti `split.py` na pravom snimku
 - Transkript (faster-whisper) i izbor trenutaka sa udicama
 - Snimanje live-a i brzina chata (Twitch IRC), za 19. 11.
+
+## Probni klip „Hype" (23. 11.)
+- `clipper/izlaz/probni_speed_pljacka.mp4` (ne ide u git): Speed-ov Twitch klip „first robbery", 9 s, gore igra,
+  sredina kamera, dole naš Hype pojas (AI vožnja Kling v3 preko Artlist-a, 800 kredita; brzinomer prati glas).
+- Novi alati: `clipper/hype.py`, `clipper/transkript.py`, `motion/src/hype/HypeTraka.tsx`.
+- YouTube iz oblaka traži prijavu; Twitch radi. Kolačići su zabranjeni (BEZBEDNOST.md).

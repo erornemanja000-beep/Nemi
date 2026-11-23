@@ -63,6 +63,10 @@ preko Creator Rewards, jer TikTok preuzete klipove vodi kao neoriginalne.
 - `clipper/momenti.py`: trenuci po glasnoći (EBU R128), predlog isečaka i komande
 - `clipper/pozadine/`: naša animacija „kuglice u krugu" iz `motion/` (kompozicija `Pozadina`)
 
+## Odluke (23. 11.)
+- Radi na Mac-u; udice na engleskom.
+- Prvi talas streamera: IShowSpeed, TheBurntPeanut, xQc, Kai Cenat, CaseOh (`studio/clipper/streameri.md`).
+
 ## Sledeći koraci
 - Alati iz `clipper/BEZBEDNOST.md` (yt-dlp, Whisper) pa transkript i izbor trenutaka sa udicama
 - Snimanje live-a i brzina chata (Twitch IRC), za 19. 11.

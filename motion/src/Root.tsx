@@ -2,6 +2,8 @@ import {Composition} from 'remotion';
 import {Probni, PROBNI_TRAJANJE} from './Probni';
 import {FPS} from './theme';
 import {Wuerfelwelt, WUERFELWELT_TRAJANJE} from './Wuerfelwelt';
+import {Pozadina} from './pozadine/Pozadina';
+import * as Sim from './pozadine/simulacija';
 
 export const Root: React.FC = () => (
 	<>
@@ -20,6 +22,15 @@ export const Root: React.FC = () => (
 			fps={FPS}
 			width={1080}
 			height={1920}
+		/>
+		<Composition
+			id="Pozadina"
+			component={Pozadina}
+			durationInFrames={Sim.TRAJANJE}
+			fps={Sim.FPS}
+			width={Sim.SIRINA}
+			height={Sim.VISINA}
+			defaultProps={{seed: 1}}
 		/>
 	</>
 );

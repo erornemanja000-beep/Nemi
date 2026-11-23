@@ -59,3 +59,21 @@ python3 wuerfelwelt/voxel_welt.py && python3 wuerfelwelt/lik.py
 blender -b --factory-startup --python wuerfelwelt/blender_scena.py      # kadrovi u public/wuerfel/render/
 npx --no-install remotion render Wuerfelwelt out/wuerfelwelt.mp4
 ```
+
+## Pozadina za clipper (1080 × 960, 90 s)
+
+Gornja polovina uspravnih klipova iz `clipper/`: „kuglice u krugu". Prsten sa otvorom se okreće, kuglice odskaču,
+svaka koja izleti donese dve nove, a kad se krug napuni, pukne i gradi se iznova (otprilike na svakih 20–25 s).
+Mali događaj (izlazak, puls, promena smera) dešava se bar na svakih ~4 s. Nema teksta ni logoa, jer preko idu naslov i titlovi.
+
+| Fajl | Šta je |
+|---|---|
+| `src/pozadine/simulacija.ts` | fizika, izračunata unapred iz `seed`-a (sopstveni PRNG, fiksni korak), keš po modulu |
+| `src/pozadine/Pozadina.tsx` | crtanje u SVG-u: prsten, kuglice sa tragom, varnice, talasi, prasak |
+
+`seed` menja paletu i početne uslove. Render (iz `motion/`):
+
+```
+npx --no-install remotion render Pozadina ../clipper/pozadine/krug_1.mp4 --props='{"seed":1}' --muted --crf=26
+npx --no-install remotion render Pozadina ../clipper/pozadine/krug_2.mp4 --props='{"seed":2}' --muted --crf=26
+```

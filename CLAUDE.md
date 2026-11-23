@@ -12,6 +12,7 @@ Beleške o napretku su u `NAPREDAK.md`.
 | `freiraum-premium/` | premium verzija Freiraum-a sa skrol animacijama (`src/shared` je link na `freiraum/src/assets`) | `python3 freiraum-premium/build_offline.py <izlaz>` |
 | `RealEstates/` | Vista Estates, Vite + React + TS + Tailwind + GSAP + Three.js | `cd RealEstates && npm run build && npm run lint` |
 | `motion/` | video iz koda u Remotion-u (probni klip sa tehnikama iz reel-a); pravila u `motion/README.md` | `cd motion && npx --no-install remotion render Probni out/probni.mp4` |
+| `clipper/` | uspravni TikTok/Shorts klipovi streamera (split-screen, titlovi, trenuci po zvuku); uputstvo u `clipper/README.md` | `python3 clipper/split.py --help` |
 | `video/`, `frames/`, `assets/` | gotovi videi, kadrovi za AI klipove, promptovi | skripte u `scripts/` |
 
 Tekstovi na sajtovima klijenata su podrazumevano na nemačkom. Sve mora da radi na 390 px, na 1440 px i sa `prefers-reduced-motion`.

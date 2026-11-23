@@ -48,3 +48,21 @@ vremena, redosled i vrste pokreta.
 - Spojiti AI klipove (ruža, latica) sa gradnjom u CapCut-u
 - Po želji: uspravna 9:16 verzija za Instagram
 - Napraviti sam sajt (video kao početna animacija, pa sekcije o ukusima, lokalu, kontaktu)
+
+---
+
+# clipper: TikTok klipovi streamera (GTA 6, od 14. 11. 2026)
+
+Cilj: do 19. 11. (izlazak GTA 6) TikTok nalog sa 10.000 pratilaca i 100.000 pregleda, pa prijava u
+Creator Rewards. Do 19. 11. se seku YouTube videi (reakcije na GTA 6, intro, Shorts), a od 19. 11. live
+streamovi. Novac za klipove streamera je realniji preko kampanja (Whop Content Rewards i slično) nego
+preko Creator Rewards, jer TikTok preuzete klipove vodi kao neoriginalne.
+
+## Gotovo
+- `clipper/split.py`: klip 1080×1920, gore pozadina, dole streamer, udica, titlovi po reč (žuta reč), traka, -14 LUFS
+- `clipper/momenti.py`: trenuci po glasnoći (EBU R128), predlog isečaka i komande
+- `clipper/pozadine/`: naša animacija „kuglice u krugu" iz `motion/` (kompozicija `Pozadina`)
+
+## Sledeći koraci
+- Alati iz `clipper/BEZBEDNOST.md` (yt-dlp, Whisper) pa transkript i izbor trenutaka sa udicama
+- Snimanje live-a i brzina chata (Twitch IRC), za 19. 11.
